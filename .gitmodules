@@ -1,0 +1,3 @@
+[submodule "Manuscript/kaobook"]
+	path = Manuscript/kaobook
+	url = https://github.com/MevenBertrand/kaobook.git
