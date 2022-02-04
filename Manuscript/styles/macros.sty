@@ -1,0 +1,71 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% Non mathematical macros
+
+% Notes
+
+\RequirePackage{soul} %for highlighting, strinking out, etc
+\RequirePackage{todonotes}
+\RequirePackage[dvipsnames]{xcolor}
+
+\DeclareRobustCommand{\hlcolor}[2]{{\sethlcolor{#2}\hl{#1}}}
+
+\makeatletter
+\if@todonotes@disabled
+\newcommand{\todohl}[3]{#2}
+\else
+\newcommand{\todohl}[3]{\hlcolor{#1}{#2}\todo[color=#1,size=\footnotesize]{#3}}
+\fi
+\makeatother
+
+\newcommand{\note}[4]{\todohl{#2}{#3}{\fbox{\bfseries#1} #3}}
+
+\newcommand{\mlb}[2]{\note{MLB}{red!80!yellow}{#1}{#2}}
+
+% ie, eg and their friends
+
+\newcommand{\ie}{\textit{i.e.}\xspace}
+\newcommand{\eg}{\textit{e.g.}\xspace}
+\newcommand{\cf}{\textit{c.f.}\xspace}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% General maths
+
+% Symbols
+
+\RequirePackage{mathtools} % Subsumes the following
+% \RequirePackage{amsmath}
+% \RequirePackage{amssymb}
+% \RequirePackage{amsfonts}
+\RequirePackage{stmaryrd} % More symbols
+\RequirePackage{dsfont} % More double-struck stuff
+
+\renewcommand{\epsilon}{\varepsilon}
+\renewcommand{\phi}{\varphi}
+
+% Tikz and friends
+
+\RequirePackage{tikz}
+\usetikzlibrary{arrows}
+\usetikzlibrary{cd}
+\usetikzlibrary[patterns]
+
+% Colors in math mode, with correct spacing
+% https://tex.stackexchange.com/questions/21598/how-to-color-math-symbols
+
+\makeatletter
+
+\def\mathcolor#1#{\@mathcolor{#1}}
+\def\@mathcolor#1#2#3{%
+	\protect\leavevmode
+	\begingroup
+    \color#1{#2}#3%
+  \endgroup
+}
+
+\makeatother
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% Induction rules
+
+\usepackage{mathpartir}
+\renewcommand{\TirNameStyle}{\small} %style of the induction rule name for mathpartir

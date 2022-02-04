@@ -1,0 +1,70 @@
+%% Fonts
+
+\RequirePackage{fontspec} % To allow easy font selection
+% \RequirePackage{lmodern} % For the Latin Modern Font, but is this even useful?
+
+\setsansfont[ItalicFont={Fira Sans Light Italic},BoldFont={Fira Sans},BoldItalicFont={Fira Sans Italic}]{Fira Sans Light}
+\setmonofont[BoldFont={Fira Mono Medium}]{Fira Mono}
+\renewcommand{\familydefault}{\sfdefault}
+
+\RequirePackage{unicode-math}
+	\setmathfont{Libertinus Math}
+
+%% Characters
+
+% \RequirePackage[english=british]{csquotes} %Good english quotes
+
+%% Tables
+
+% \RequirePackage{diagbox} %For diagonal slash in a table
+
+%% Paragraphs
+
+%\RequirePackage{indentfirst} %To indent the first paragraph of a new section
+% \usepackage{ragged2e} %For better ragged/centered environments
+
+%% Changing the style of floats
+
+% \RequirePackage{float}
+% \floatstyle{boxed}
+% \restylefloat{figure}
+
+%% Titles (taken from M2 internship)
+
+% \usepackage{titlesec}
+
+% \titleformat{\section}
+% 	{\Large \bfseries}
+% 	{\hspace{1em}\thetitle.}
+% 	{1ex}
+% 	{}
+% [\titlerule]
+% \titlespacing*{\section}{0em}{2em}{2em}
+	
+% \titleformat{\subsection}
+% {\Large \bfseries}
+% {\thetitle.}
+% {1ex}
+% {}
+% \titlespacing*{\subsection}{0em}{1em}{1em}
+
+% \titleformat{\paragraph}[runin]{\scshape}{}{0pt}{}
+% \titlespacing{\paragraph}{0pt}{*2}{2\wordsep}
+
+%% Theorems, already present in kao but may need modifications
+
+% \RequirePackage[thmmarks, framed]{ntheorem}
+% \RequirePackage[ntheorem=true]{mdframed}
+
+%% References
+
+% \definecolor{linkred}{rgb}{0.82, 0.1, 0.26}
+% \definecolor{linkgreen}{rgb}{0.0, 0.5, 0.0}
+
+% \RequirePackage[colorlinks, urlbordercolor= blue, urlcolor=blue, citebordercolor=linkgreen, citecolor=linkgreen, linkbordercolor=linkred, linkcolor=linkred, bookmarksopen=true]{hyperref}
+% use hypersetup instead?
+
+%% Bibliography
+
+% \RequirePackage[backend=biber,style=alphabetic,citestyle=alphabetic]{biblatex}
+% \ExecuteBibliographyOptions{giveninits=true}
