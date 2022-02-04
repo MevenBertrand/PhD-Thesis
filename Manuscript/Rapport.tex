@@ -1,0 +1,1308 @@
+\documentclass[en]{myarticle}
+\usepackage[xelatex, coq]{style}
+
+\addbibresource{biblio.bib}
+
+
+
+\date{\today}
+\hypersetup{
+	pdftitle={Gradualizing CIC},
+	pdfauthor={Meven Bertrand},
+	pdfsubject={Mathematics}
+}
+
+\renewcommand{\mathtt}{\mathrm}
+
+\newcommand{\uni}[1][]{\square_{#1}}
+\newcommand{\cons}{\sim}
+\newcommand{\conv}{\equiv}
+\newcommand{\red}{\mapsto}
+\newcommand{\bred}{\red_\beta}
+\newcommand{\ired}{\red_\iota}
+\newcommand{\plred}{\red_+}
+\newcommand{\ifred}{\red_{\mathtt{if}}}
+\newcommand{\raired}{\red_{\mathtt{raise}}}
+\newcommand{\cared}{\red_{\mathtt{cast}}}
+\newcommand{\sub}[3]{#1\{#3 := #2\}}
+\newcommand{\comp}{\rightsquigarrow}
+\newcommand{\asc}[2]{#1 :: #2}
+\newcommand{\pre}{\sqsubseteq}
+
+\renewcommand{\P}{\operatorname{\Pi}}
+\renewcommand{\S}{\operatorname{\Sigma}}
+\newcommand{\unit}{\top}
+\DeclareMathOperator{\?}{?}
+\renewcommand{\l}{\operatorname{\lambda}}
+\newcommand{\rec}{\mathtt{rec}}
+\newcommand{\bool}{\mathbf{B}}
+\newcommand{\nat}{\mathbf{N}}
+\newcommand{\s}{\mathtt{S}}
+\newcommand{\eq}[3]{\mathtt{Id}_{#1}~#2~#3}
+\newcommand{\refl}{\mathtt{refl}}
+\newcommand{\ve}{\mathtt{Vect}}
+\newcommand{\nil}{\mathtt{nil}}
+\newcommand{\con}{\mathtt{cons}}
+\newcommand{\ite}[3]{\operatorname{\mathtt{if}}#1 \operatorname{\mathtt{then}}#2 \operatorname{\mathtt{else}}#3}
+\newcommand{\true}{\mathtt{true}}
+\newcommand{\false}{\mathtt{false}}
+\newcommand{\cas}{\operatorname{\mathtt{cast}}}
+\newcommand{\cast}[3]{\cas_{#1,#2}#3}
+\newcommand{\rai}{\mathtt{raise}}
+\newcommand{\quo}{\mathtt{quote}}
+\newcommand{\ta}{\mathtt{tag}}
+\newcommand{\Unta}{\mathtt{Untag}}
+\newcommand{\unta}{\mathtt{untag}}
+\newcommand{\ty}{\mathtt{type}}
+\newcommand{\El}{\mathtt{El}}
+\newcommand{\unc}[1][]{\mathcal{U}_i}
+\newcommand{\Pc}{\pi}
+\newcommand{\tyer}{\boxtimes}
+\newcommand{\tyerh}{\star}
+\newcommand{\bo}{\mathtt{box}}
+\newcommand{\ety}{\mathtt{etype}}
+\newcommand{\eEl}{\mathtt{eEl}}
+\newcommand{\Err}{\mathtt{Err}}
+\newcommand{\TV}{\mathtt{TypeVal}}
+\newcommand{\TE}{\mathtt{TypeErr}}
+
+
+\DeclareMathOperator{\dom}{dom}
+\DeclareMathOperator{\cod}{cod}
+
+\newcommand{\coc}{CC\textsubscript{$\omega$}}
+\newcommand{\gcic}{GCIC}
+\newcommand{\cacic}{CIC\textsubscript{$\cas$}}
+\newcommand{\cidc}{CIdC}
+\newcommand{\ett}{ETT}
+\newcommand{\eqcic}{\ett\ + $\quo$}
+
+\begin{document}
+
+% Titlepage
+%------------------------------------------------------------------------------
+{
+\thispagestyle{empty}
+\raggedright
+%\AddToShipoutPictureBG*{\AtPageLowerLeft{\includegraphics[width=20.9cm]{foot.png}}}
+\vspace*{\stretch{2}}
+	
+	{\Large Internship Report – M2 Informatique Fondamentale \\
+	École Normale Supérieure de Lyon}
+	
+	\vspace{\stretch{1}}
+	
+	% Le titre
+	{\rule{\linewidth}{0.5mm}
+		\Huge\bfseries Gradualizing the Calculus of Inductive Constructions\\
+	\rule{\linewidth}{0.5mm}
+		\par}
+	
+	\vspace{\stretch{1}}
+	
+	{\LARGE Meven \textsc{Bertrand}}
+	
+	\vspace{\stretch{1}}
+	
+	{\Large Under the Supervision of Nicolas \textsc{Tabareau}}\\
+	{\large Équipe Gallinette, Laboratoire des Sciences du Numérique de Nantes}
+	
+	\vspace{\stretch{1}}
+	
+	{\Large In Collaboration with Éric \textsc{Tanter}}\\
+	{\large University of Chile \& Inria Paris}
+	
+	\vspace{\stretch{2}}
+	
+	{\Large\today}
+	
+	\vspace{\stretch{4}}
+	
+	\hspace*{\stretch{1}} \includegraphics[height=1.5cm]{logoens.pdf} \hspace{\stretch{1}} \includegraphics[height=2cm]{logoLS2N.png} \hspace*{\stretch{1}}
+	
+	
+	\vspace*{\stretch{2}}
+
+}
+\clearpage
+
+%Thanks
+%---------------------------------------------------------------------
+{\thispagestyle{empty}
+\vspace*{\stretch{1}}
+{\itshape\noindent\small
+	I would like to thank those that made these last six months so valuable to me.
+	
+	Nicolas and Éric, for guiding me all the way to this report. I was not really sure of where I was going, but thanks to you I ended up with a result I am proud of.
+	
+	The whole Gallinette team, for making me feel at home from day one and teaching me so much. I hope we have many more passionate conversations, be it on obscure points of type theory or on the CDG Express.
+	
+	Daniel, Marine, Valentin, Joanne, and all the friends and family that have been there every time I needed. I wouldn't have gone through these last months without collapsing, hadn't you been there.
+	
+	Tangi, for the good time we managed to share despite everything, and for the incredible lessons I've learned from you. Farewell.
+}
+\cleardoublepage\setcounter{page}{1}
+
+
+
+%\maketitle
+
+%\begin{abstract}
+%	This report presents the work done during an M2 internship within the Gallinette team, under the supervision of Nicolas \textsc{Tabareau}. The aim of the internship was to try and adapt the Gradual Typing approach to the Calculus of Inductive Constructions.
+%	
+%	The Calculus of Inductive Constructions (CIC) is a very powerful and expressive dependent type system, similar to those underlying proof assistants like Coq or Agda. The gradual typing methodology aims at making dynamic and static typing cohabit in a disciplined way. There has already been efforts into applying this approach to dependent type systems, integrating some level of dynamic checking to those. However, no work towards a fully gradual counterpart to the whole CIC has ever been done. Indeed, CIC poses many challenges to gradualization: dependent types, the universe hierarchy, and inductive types, require a careful treatment.
+%	
+%	We present here the solution we reached during the internship, preceded by a presentation of both CIC and gradual typing. There are still some technical details pertaining to general inductive types and the universe hierarchy to make precise, but once those are cleared, the content of the report should make it into a full-fledged paper.
+%\end{abstract}
+
+\tableofcontents
+
+\phantomsection
+\section*{Report Overview}
+\addcontentsline{toc}{section}{Report Overview}
+
+
+\paragraph{Gradual Typing}
+Gradual typing is a kind of typing discipline that aims for a cohabitation of static and dynamic types in one and the same type system, with the possibility for the programmer to control to which extent each piece of code is dynamically or statically typed. The aim is to combine in one system the advantages of both worlds: the static parts come with the usual strong guarantees and efficiency of static types, while the dynamic parts have the flexibility of dynamically typed languages. The most important feature of gradual typing is that this cohabitation is disciplined: a gradually typed language does not just consist of a juxtaposition of a dynamically and a statically typed language. Instead, it gives guarantees on the behaviour of a program when evolving its types alongside the dynamic-static axis, allowing for a smooth transition.
+
+There are two ways to look at gradual typing: one can see it as adding an optional typing discipline to dynamically typed languages, or adding a dynamic component to a static type system. The first alternative appears in practice, for instance in Python starting at version 3.5 \cite{Rossum2014}. However, from the point of view of theory, as studied type systems are mainly static, the usual challenge is to turn one's favourite (static) type system gradual. This is the approach we want to follow: gradualizing the Calculus of Inductive Constructions, which is most definitely our favourite type system.
+
+\paragraph{The Calculus of Inductive Constructions}
+The Calculus of Inductive Constructions (CIC) is the logical and type-theoretic formalism behind a whole set of proof assistants, notably Coq \cite{CoqMan}. Following the Curry-Howard isomorphism, it can be considered both as a higher-order logic, and as a type system for programs. It is in a way the pinnacle of this isomorphism, insofar as it is very close to the limit of how powerful and expressive a type system can get without becoming inconsistent – and thus worthless – as a logic. Of course, this comes with a cost, and programming with CIC is quite complex: the more expressive types get, the harder it is to make programs type-check…
+
+\paragraph{Gradualizing CIC}
+Although there had already been efforts into applying the gradual approach to type systems close to CIC, at the starting time of the internship, a gradual counterpart to the whole CIC had not yet been achieved. Indeed, CIC presents many challenges to gradualization: dependent types, the universe hierarchy, and inductive types, all distinctive features of CIC, require a careful treatment.
+
+Conceiving a gradual counterpart to CIC is however an interesting problem for multiple reasons. From the practical point of view, it could make programming in Coq and other proof assistants easier, by allowing the programmer to use the flexibility added by the gradual approach. From the theoretical point of view, it is an important test for gradual typing to try and apply it to a type system as complex as CIC. On the other side, gradualization requires some tools that do not belong to vanilla CIC, such as errors, making Gradual CIC a very interesting use case for the recent work on those.
+
+Our contribution is to give a first description of a Gradual Calculus of Inductive Constructions, decomposed in two phases. In a first phase, we extend CIC to a gradual type system \gcic, by modifying its typing rules. Terms in this new system are compiled back to terms in CIC by using a few axioms. The second phase aims at giving a semantics, and in particular a computational content, to those axioms. Our main tool there are the recently developed notion of syntactical models.
+
+There are still some technical details pertaining to general inductive types and the universe hierarchy to make precise, but once those are cleared, this contribution should make it into a full-fledged paper.
+
+\paragraph{Outline of the report}
+\autoref{CIC} presents CIC, and \autoref{GT} presents gradual typing. Both aim at giving quick presentations of those two lines of work, and thus contain mostly classical results. They are as self-contained as possible, and hopefully complete enough to enable the reader to follow the rest of the report. \autoref{gcic} presents the first phase towards the gradualization of CIC, as we just described above. \autoref{cast} presents the second phase. Those two sections constitute the core of this report, and, apart from \autoref{synmod}, are mostly novel work. We tried to keep a balance between avoiding too much technicalities, while still exposing in some details the crucial points. Finally, \autoref{exs} gives some concrete examples of the system described in the two previous sections. Although it lies at the very end, the reader might wish to look at it earlier in order to get a feeling of what we wish to achieve. Of particular interest is the discovery we expose there that the universe hierarchy prevents non-terminating behaviour usual of gradual type systems.
+
+
+\section{The Calculus of Inductive Constructions}
+\label{CIC}
+
+The Calculus of Inductive Constructions is a type system that consists of two main ingredients.
+The first one is the Calculus of Constructions (\coc), a formalism introduced by Coquand and Huet \cite{Coquand1988} which can be seen at the same time as a higher order logic and as a programming language with polymorphic types, corresponding to each other via the Curry-Howard isomorphism. \coc\ fits in the general picture of Pure Type Systems \cite{Barendregt1991}, and can thus be seen as a (very strong) extension of the simply typed lambda calculus.
+It is already very powerful and expressive enough to encode inductively defined datatypes, for instance integers. However, this encoding is not quite satisfactory, hence the introduction of the second ingredient: inductive types as a primitive construction, as introduced by Paulin-Mohring \cite{Paulin-Mohring1993}.
+
+In \autoref{CoC}, we give a quick introduction/recap of \coc, and present inductive types in \autoref{induc}, following \cite{Paulin-Mohring2015}. Apart from making the report self-contained, we also wish to present the precise version of CIC we use, as there are a huge number of variants for it.
+
+
+\subsection{The Calculus of Constructions}
+\label{CoC}
+
+As we already hinted, the Calculus of Constructions is a version on steroids of the simply typed lambda calculus (STLC). In STLC, the only binding allowed is terms binding other terms, and types exist mainly to prevent reduction from diverging. In \coc, in contrast, terms and types have bindings, both for terms and types. This makes types and terms much more similar, and they are given by the same grammar. To be able to have the property that any term has a type, and avoid paradoxes linked with circularity, there is also a need for a hierarchy of universes $\uni[i]$ indexed by integers, each being the type of the previous. The notion of type becomes a consequence of typing: a type is anything which has type $\uni[i]$ for some $i$.
+
+In \autoref{CCpres} we give the grammar to form terms $t$, contexts $\Gamma$, as well as the typing rules: $\vdash \Gamma$ means that the context $\Gamma$ is well-formed, and $\Gamma \vdash t : T$ means that in the context $\Gamma$ the term $t$ has type $T$. Finally, the relation $t \conv t'$ states that the terms $t$ and $t'$ are convertible, i.e. they should be seen as equal via calculation, just as for $\beta$-equivalence in STLC. Similarly to STLC, the main rule is $\beta$-reduction – although more will be added when extending \coc\ to CIC and beyond. It can be performed anywhere in a term, hence the congruence closure.
+
+\begin{figure}[ht]
+	\textbf{Terms:}
+	\[\begin{array}{rll}
+	t ::= & x & \text{variable} \\
+	\mid & \uni[i] & \text{universe} \\
+	\mid & t~t & \text{application} \\
+	\mid & \l x : t . t & \text{abstraction} \\
+	\mid & \P x : t . t & \text{dependent function type/universal quantification} \\
+	\end{array}\]
+
+	\textbf{Contexts:}
+	\[\Gamma := \cdot \mid x : t, \Gamma \]
+
+	\textbf{Typing:} 
+	\begin{mathpar}
+	\inferrule{ }{\vdash \cdot} \and
+	\inferrule{\Gamma \vdash A : \uni[i]}{\vdash \Gamma, x : A} \and
+	\inferrule{\Gamma \vdash B : \uni[i] \\ \Gamma \vdash x : A}{\Gamma, y : B \vdash x : A} \and
+	\inferrule{\vdash \Gamma, x : A}{\Gamma, x : A \vdash x : A} \and
+	\inferrule{\vdash \Gamma}{\Gamma \vdash \uni[i] : \uni[i + 1]} \and
+	\inferrule{\Gamma, x : A \vdash t : B \\ \Gamma \vdash \P x : A . B : \uni[i]}{\Gamma \vdash \l x : A . t :  \P x : A . B} \and
+	\inferrule{\Gamma, x : A \vdash B : \uni[i] \\ \Gamma \vdash A : \uni[j]}{\Gamma \vdash  \P x : A . B : \uni[\max(i,j)]} \and
+	\inferrule{\Gamma \vdash t :  \P x : A . B \\ \Gamma \vdash u : A}{\Gamma \vdash t~u : \sub{B}{u}{x}} \and
+	\inferrule{\Gamma \vdash t : A \\ A \conv B \\ \Gamma \vdash B : \uni[i]}{\Gamma \vdash t : B}
+	\end{mathpar}
+	
+	\textbf{Conversion:} 
+	\begin{mathpar} (\l x : A . t)~u \bred \sub{t}{u}{x} \and \text{+ rules for congruence closure} \end{mathpar}
+
+\caption{Grammar and typing rules of the Calculus of Constructions}
+\label{CCpres}
+\end{figure}
+
+We did not include all the features of the theory of Coq, notably the impredicative sort Prop, in order to focus on the core features of CIC we mentioned in the introduction, and simplify the presentation a bit.
+
+\mynote{MB}{Actually, for now we can't handle Prop (because we can't have a type recursion operator with impredicative types). But maybe this restriction can be lifted?}
+
+\mynote{MB}{What about cumulativity? It is easy to add here, but how much does it mess with the definitions of consistency and the like?}
+
+To improve readability further, we use a few notational shortcuts:
+\begin{itemize}
+	\item if the index of $\uni[i]$ is not crucial, we drop it, writing only $\uni$
+	\item we replace $ \P x : A . B$ by $A \to B$ if $x$ does not appear in $B$ (non-dependent function type)
+	\item we compress multiple $\l$ and $\Pi$ binders as one, e.g.\ we write $\l (x : A),(y : B) . t$ rather than $\l x : A . \l y : B . t$
+\end{itemize}
+
+The system \coc\ has many good properties, among which we want to mention two, as the wish to keep them will guide some choices in the next sections.
+
+\begin{prop}[Decidable typing]
+	Given a term $t$ and a context $\Gamma$, the two following problems are decidable:
+	\begin{itemize}
+		\item type inference: given a term $t$ and a context $\Gamma$, is there a term $T$ such that $\Gamma \vdash t : T$ holds?
+		\item type checking: given terms $t$ and $T$ and context $\Gamma$, is it true that $\Gamma \vdash t : T$ holds?
+	\end{itemize}
+\end{prop}
+
+ A crucial intermediate property is that $\conv$ is decidable, which in turn ensues from strong normalization and confluence of $\bred$. Thus, strong normalization is an important feature, as decidable type checking is a very desirable feature when the type system under design is to be implemented.
+ 
+\begin{prop}[Consistency]
+	Not all types are inhabited. In particular, there is no term of type $ \P x : \uni . x$.
+\end{prop}
+
+This property corresponds to the logical soundness of the system, as the type $ \P x : \uni . x$ is a way to represent falsehood. Indeed, following the Curry-Howard isomorphism – and viewing $\P$ as a universal quantification – it states that all propositions are true, similarly to the principle of explosion of logic.
+
+
+\subsection{Inductive Types}
+\label{induc}
+
+\paragraph{Impredicative definitions}
+The system \coc\ as just presented is already extremely powerful, both in terms of which functions are definable, and of which logical predicates are expressible.
+In particular, one can give a so-called impredicative encoding of usual data-structures, similar to what is done in untyped lambda calculus: a data-structure is expressed as a (weakly) initial algebra for a signature. For instance booleans correspond to the type $ \P X : \uni. X \to X \to X$, product of $A$ and $B$ to $ \P X : \uni . (A \to B \to X) \to X$, natural numbers to $ \P X : \uni . X \to (X \to X) \to X$, and so on. This works fine to do recursive definitions. Following our example, if $N$ is the type just given for natural numbers, a term $n$ of type $N$ can be used as a recursor, as follows
+\[\l (A : \uni), (a : A), (f : A \to A), (n : N) . n~A~a~f :  \P A : \uni . A \to (A \to A) \to N \to A \]
+However, this encoding has a drawback: without further assumptions on the system, the impredicative encoding only gives a weakly initial algebra and not an initial algebra. This means that the impredicative encoding is not well-suited to do induction, and indeed in \coc\ one cannot prove that the above $N$ satisfies the following induction principle (recall that $\P$ corresponds to universal quantification):
+\[ \P P : N \to \uni. P(z) \to ( \P n : N. P~n \to P~(S~n)) \to  \P n : N. P~n \]
+where $z := \l (X : \uni), (x : X), (f : X \to X) . x$ and $S := \l (n : N), (X : \uni), (x : X), (f : X \to X) . f~(n~X~x~f)$ are the respective impredicative encodings of zero and successor.
+
+\paragraph{Inductive Types}
+This problem was noticed early on in the development of \coc, and an alternative was proposed in \cite{Paulin-Mohring1993}: introducing a new concept to the theory that enables well-behaved inductive definitions. Those are the so-called inductive types. A generic inductive definition looks like follows (in a syntax close to Coq, see below for an example, and \autoref{indtyex} for more):
+\begin{lstlisting}
+Inductive $I~(x_1 : A_1)\dots(x_m : A_m)~(y_1 : B_1)\dots(y_n : B_n)$ : $\uni[i]$ :=
+	| $c_1$ : $ \P (z_1^1 : U_1^1), \dots, (z_{n_1}^1 : U_{n_1}^1) . I~x_1\dots x_m~t_1^1\dots t_n^1$
+	$\vdots$
+	| $c_k$ : $ \P (z_1^k : U_1^k), \dots, (z_{n_k}^k : U_{n_k}^k) . I~x_1\dots x_m~t_1^k\dots t_n^k$
+\end{lstlisting}
+\mynote{MB}{It seems quite unsatisfying to me to have a precise universe level in the definition, I feel like universe polymorphism would be nice to have instead. But does it mess stuff up in other places? I see a potential problem with the type recursion operator, otherwise it should be fine}
+
+Such a definition adds to the syntax of \coc\ the new terms
+\[I :  \P (x_1 : A_1),\dots (x_m : A_m),(y_1 : B_1),\dots (y_n : B_n) . \uni[i]\]
+and
+\[c_j :  \P (x_1 : A_1), \dots, (x_m : A_m), (z_1^1 : U_1^1), \dots, (z_{n_1}^1 : U_{n_1}^1) . I~x_1\dots x_m~t_1^1\dots t_n^1\]
+The term $I$ is to be understood as a new type family, defined inductively by the constructors $c_j$. For such a definition to be correct, there are technical conditions related to well-typedness of the terms $t_i^j$, as well as on the way $I$ itself can appear in the $U_i^j$ (the so-called positivity condition). We do not describe them here, the details can be found in \cite{Paulin-Mohring1993}, but these restrictions are crucial to ensure that the newly defined inductive types behave well, in particular that they do not compromise strong normalization of the system.
+
+Along with $I$ and $c_j$, a last term $\rec_I$ is generated, that should be understood as an induction principle for $I$, expressing that $I$ is initial. Intuitively, $\rec_I$ takes a type $P$ depending on $I$ and says that to inhabit $P$ for an arbitrary inhabitant of $I$ it suffices to inhabit $P$ for all constructors.  Giving an exact account of the shape of that principle is again quite technical. We also refer to \cite{Paulin-Mohring1993} for the details, and rather give a simple instance below, and more complex ones in \autoref{indtyex}.
+
+This principle goes with a new reduction rule, dubbed $\iota$-reduction and written $\ired$, saying that the term defined by $\rec_I$ reduces to the case given for constructor $c_j$ in case when used on a term with head constructor $c_j$. Again, see below and in \autoref{indtyex} for examples.
+
+These inductive definitions turn \coc\ into an open system that can be extended with new inductive types. To remain in a closed syntax with a finite number of constructors we work with CIC, a system obtained by adding to \coc\ a finite but arbitrary amount of well-formed inductive types. All definitions we give handle generic inductive types so that they work whatever we consider for CIC.
+
+\paragraph{Examples of inductive types}
+
+A very simple concrete example of the previous generic definitions are the booleans, given by:
+	\begin{lstlisting}
+	Inductive $\bool$ : $\uni$ :=
+	| $\true$ : $\bool$
+	| $\false$ : $\bool$
+	\end{lstlisting}
+
+The corresponding induction principle, with its computation rules, are
+	\[\rec_{\bool} : \P P : \bool \to \uni. (P~\true) \to (P~\false) \to \P b : \bool. P~b\]
+	\begin{mathpar}
+	\rec_{\bool}~P~t_{\true}~t_{\false}~\true \ired t_{\true} \and
+	\rec_{\bool}~P~t_{\true}~t_{\false}~\false \ired t_{\false}
+	\end{mathpar}
+
+In the next sections, we use multiple usual inductive types, both as examples of our framework and as tools: booleans $\bool$, natural numbers $\nat$, dependant sum $\S x : A. B$, equality $\eq{A}{a}{a'}$, vectors $\ve~A~n$, unit/true type $\unit$, empty/false type $\bot$. Their definitions using the previous syntax are presented in full in \autoref{indtyex}, together with the obtained terms and reduction rules. When needed, we assume that the version of CIC we consider contains at least those.
+
+\paragraph{Encoding via equality}
+
+An important distinction considering the arguments of inductive types is between parameters and indices. Let $I :  \P (x_1 : A_1),\dots (x_m : A_m),(y_1 : B_1),\dots (y_n : B_n) . \uni[i]$ be an inductive family, defined as above. The $x_i$ are called parameters and are uniform across constructors. The $y_i$, on the other hand, are called indices, and they depend on the constructor used. In particular, using the indices, one can possibly exclude impossible constructors. For instance, a term of type $\ve~A~(\s~n)$ cannot have been constructed with constructor $\nil$, as it constructs terms of type $\ve~A~0$.
+
+There is however a generic way to encode any inductive type in an indices-free way, using equalities. The idea is to replace the indices with parameters, and to make all constructors take equalities between those parameters and the indices of the original inductive. Given an inductive
+\begin{lstlisting}
+Inductive $I~(x_1 : A_1)\dots(x_m : A_m)~(y_1 : B_1)\dots(y_n : B_n)$ : $\uni[i]$ :=
+| $c_1$ : $ \P (z_1^1 : U_1^1), \dots, (z_{n_1}^1 : U_{n_1}^1). I~x_1\dots x_m~u_1^1\dots~u_n^1$
+$\vdots$
+| $c_k$ : $ \P (z_1^k : U_1^k), \dots, (z_{n_k}^k : U_{n_k}^k) . I~x_1\dots x_m~u_1^k\dots~u_n^k$
+\end{lstlisting}
+it can be transformed into
+\begin{lstlisting}
+Inductive $I'~(x_1 : A_1)\dots(x_m : A_m)~(y_1 : B_1)\dots(y_n : B_n)$ : $\uni[i]$ :=
+| $c_1'$ : $ \P (z_1^1 : U_1^1), \dots, (z_{n_1}^1 : U_{n_1}^1), (e_1^1 : \eq{B_1^1}{y_1}{{\tilde{u}_1^1}}),\dots (e_n^1 : \eq{B_n^1}{y_n}{{\tilde{u}_n^1}}). I~x_1\dots x_m~y_1\dots~y_n$
+$\vdots$
+| $c_k'$ : $ \P (z_1^k : U_1^k), \dots, (z_{n_k}^k : U_{n_k}^k), (e_1^k : \eq{B_1^k}{y_1}{{\tilde{u}_1^k}}),\dots (e_n^k : \eq{B_n^k}{y_n}{{\tilde{u}_n^k}}). I~x_1\dots x_m~y_1\dots~y_n$
+\end{lstlisting}
+where the $\tilde{u}_i^j$ are versions of the $u_i^j$ modified to be of type $B_i^j$, by using the equalities $e_i^l$. A concrete example is given for vectors in \autoref{vecid}.
+
+To see why this transformation is sensible note that while the $y_i$ in the return type are now parameters, they are still linked through the equalities $e_i^j$ to their actual value $u_i^j$.
+In fact the new $I'$ and $c_j'$ primitives can be used to simulate $I$ and $c_j$.  Indeed, terms $c_j''$ with the same type as the $c_j$ (with $I$ replaced with $I'$) can be constructed from the $c_j'$. Similarly, a term $\rec_I'$ of the same type as $\rec_I$ (with $I$ replaced with $I'$ and $c_j$ with $c_j''$) can be constructed from $\rec_{I'}$ by using the $e_i^j$. Moreover, this $\rec_I'$ has exactly the same computational behaviour as $\rec_I$.
+
+We describe this transformation as we use it in \autoref{recas}, when we translate inductive types: instead of giving the translation on every inductive types, we only translate inductive types with parameters and the equality type, resorting to this transformation to encode any inductive type using those.
+
+\section{Gradual Typing}
+\label{GT}
+
+As we already explained, one of the most widely asked question in the gradual typing literature is “How do I turn this static system gradual?”. Although there are of course a fair amount of variations between the answers, the mechanisms still usually have a somewhat common structure.
+
+The first step is to extend the type system with a new base type $\?$, that should be understood as a type that will only be checked at runtime, i.e.\ a dynamic type – similar to the \texttt{dynamic} keyword of C\#. The typing judgement is then modified to account for this introduction, by relaxing the typing rules with an optimistic treatment of $\?$. For instance, equality of types is replaced by a consistency relation $\cons$, saying that two types \emph{could} be equal. This optimism introduced at typing time is then counterbalanced by the introduction of some checks that can fail at run-time, should the optimistic assumption be violated – as in dynamic typing.
+
+In this section, we illustrate this process, using simply typed $\l$-calculus as a toy static type system, partly following \cite{Siek2015}. In \autoref{gtlc}, we present the gradualization, then discuss the properties a gradual type system should respect in \autoref{props}. Finally in \autoref{interm}, we give a quick look at other gradual type systems related to intermediate systems between simply typed lambda calculus and CIC.
+
+\subsection{Gradually Typed Lambda Calculus}
+\label{gtlc}
+
+\paragraph{Simply Typed Lambda Calculus}
+The exact system STLC we want to gradualize is given in \autoref{stlc}, it is simply typed lambda calculus with two base types and a few constants (booleans, natural numbers, sum and if), in order to see how they are handled. We call the types $T$ defined here static, as opposed to the gradual types we construct afterwards.
+\begin{figure}[h]
+	\textbf{Types:} $T := \bool \mid \nat \mid T \to T$
+	
+	\textbf{Terms:} $t := x \mid \underline{n} \mid \underline{b} \mid \l x : T . t \mid t~t \mid t + t \mid \ite{t}{t}{t}$ \quad with $n \in \NN$ and $b \in \BB$
+	
+	\textbf{Typing:}
+	\begin{mathpar}
+	\inferrule{(x : T) \in \Gamma}{\Gamma \vdash x : T}
+	
+	\inferrule{ }{\Gamma \vdash \underline{n} : \nat}
+	
+	\inferrule{ }{\Gamma \vdash \underline{b} : \bool}
+	
+	\inferrule{\Gamma, x : T_1 \vdash t : T_2}{\Gamma \vdash \l x : T_1 . t : T_1 \to T_2}
+
+	\inferrule{\Gamma \vdash t_1 : T_1 \\ \Gamma \vdash t_2 : T_2 \\ \dom(T_1) = T_2}{\Gamma \vdash t_1~t_2 : \cod(T_2)}
+
+	\inferrule{\Gamma \vdash t_1 : T_1 \\ \Gamma \vdash t_2 : T_2 \\ T_1 = \nat \\ T_2 = \nat}{\Gamma \vdash t_1+t_2 : \nat}
+
+	\inferrule{\Gamma \vdash t_1 : T_1 \\ \Gamma \vdash t_2 : T_2 \\ \Gamma \vdash t_3 : T_3 \\ T_1 = \bool \\ T_2 = T \\ T_3 = T}{\Gamma \vdash \ite{t_1}{t_2}{t_3} : T}
+	\end{mathpar}
+
+	\textbf{Reduction:}
+	\begin{mathpar}
+	(\l x : T . t)~u \bred \sub{t}{u}{x}
+	
+	\underline{n} + \underline{n'} \plred \underline{n + n'}
+	
+	\ite{\underline{\true}}{t_1}{t_2} \ifred t_1
+	
+	\ite{\underline{\false}}{t_1}{t_2} \ifred t_2
+	\end{mathpar}
+	
+	\caption{Simply Typed Lambda Calculus}
+	\label{stlc}
+\end{figure}
+
+The system itself is not very surprising, the only quite non-standard point is that instead of having the same type appear in multiple places, we explicit those relations using equalities. Because of that, we also use the $\dom$ and $\cod$ functions, that are defined such that $\dom(T_1 \to T_2) := T_1$, $\cod(T_1 \to T_2) = T_2$ and are undefined otherwise. In case they are not defined, the rule is not applicable.
+
+The reduction $\red$ is the contextual closure of the base reduction rules $\bred$, $\plred$ and $\ifred$, i.e.\ reduction can happen at any place in a term.
+
+\paragraph{Gradualizing Typing}
+
+The first step towards gradualization is to extend types to $T := \dots \mid \?$, with $\?$ representing a type we do not want to check at typing time. Term definition does not change in itself, but $\l$ abstractions now feature gradual types instead of static types. At typing time, we want to treat this $\?$ in an optimistic way, i.e. we consider it could stand for any other type. Thus, we define the consistency relation, as follows:
+\begin{df}[Consistency]
+	The consistency relation $\cons$ is inductively defined by the following rules:
+	\begin{mathpar}
+		\inferrule{ }{T \cons T}
+	
+		\inferrule{ }{\? \cons T}
+		
+		\inferrule{ }{T \cons \?}
+		
+		\inferrule{T_1 \cons T_2 \\ T_1' \cons T_2'}{T_1 \to T_1' \cons T_2 \to T_2'}
+	\end{mathpar}
+\end{df}
+
+Intuitively, two types are consistent if they \emph{could} be equal, were the occurrences of $\?$ to take the right values. Note that this relation is reflexive and symmetric but \emph{not} transitive: if it were transitive then it would relate all types, as any type is consistent with $\?$.
+
+All the typing rules are then updated accordingly, replacing equality of types with the looser relation of consistency. The domain and codomain functions are updated to $\dom_{\?}$ and $\cod_{\?}$ along the same idea: considering that $\?$ could be any type, its domain and codomain are both defined to be $\?$. In the end, we get the typing rules of \autoref{gtlcrules}, where the difference with the static rules have been highlighted.
+
+\begin{figure}[h]
+	\begin{mathpar}
+	\inferrule{(x : T) \in \Gamma}{\Gamma \vdash x : T}
+	
+	\inferrule{ }{\Gamma \vdash \underline{n} : \nat}
+	
+	\inferrule{ }{\Gamma \vdash \underline{b} : \bool}
+	
+	\inferrule{\Gamma, x : T_1 \vdash t : T_2}{\Gamma \vdash \l x : T_1 . t : T_1 \to T_2}
+	
+	\inferrule{\Gamma \vdash t_1 : T_1 \\ \Gamma \vdash t_2 : T_2 \\ \emphmath{\dom_{\?}}(T_1) \emphmath{\cons} T_2}{\Gamma \vdash t_1~t_2 : \emphmath{\cod_{\?}}(T_1)}
+	
+	\inferrule{\Gamma \vdash t_1 : T_1 \\ \Gamma \vdash t_2 : T_2 \\ T_1 \emphmath{\cons} \nat \\ T_2 \emphmath{\cons} \nat}{\Gamma \vdash t_1+t_2 : \nat}
+	
+	\inferrule{\Gamma \vdash t_1 : T_1 \\ \Gamma \vdash t_2 : T_2 \\ \Gamma \vdash t_3 : T_3 \\ T_1 \emphmath{\cons} \bool \\ T_2 \emphmath{\cons} T \\ T_3 \emphmath{\cons} T}{\Gamma \vdash \ite{t_1}{t_2}{t_3} : T}
+	\end{mathpar}
+	\caption{Typing rules of Gradually Typed Lambda Calculus}
+	\label{gtlcrules}
+\end{figure}
+
+With these rules, we get a new type system, dubbed Gradually Typed Lambda Calculus (GTLC), where typing is more flexible than in STLC. For instance, a term like $(\l x : \? . x + 1)~\true$ typechecks (with type $\nat$), because $\?$ is consistent with both $\nat$ and $\bool$. Of course, even if this term is type correct, we cannot just $\beta$-reduce it, because this would lead to a term $\true + 1$ that is not well-typed any more. Thus, we need to change the semantics as well, if we want to ensure that typing is preserved by reduction – a property usually known as subject reduction.
+
+\paragraph{Compilation to the Cast Calculus}
+
+As we just highlighted, we cannot just reuse the reduction of STLC for GTLC if we want to ensure subject reduction – an essential property of any type system. The problem is that we cannot just forget in terms that consistency was used to type them. That use needs to be reflected in the terms, in order to keep track of the fact that we were optimistic during typing, enabling us to check at "runtime" that the optimistic assumptions made by consistency indeed hold.
+
+We therefore compile well-typed terms of GTLC to an extension of STLC, called cast calculus, where we keep explicit track of the places where consistency was used, using a new $\cas$ operator. This compilation is directed by the typing derivation of the term of GTLC. The syntax of the cast calculus is given in \autoref{castcalc}, as well as some rules of the compilation, denoted as $\comp$, to give a flavour of the way it works. The whole compilation and the typing rules are detailed in \autoref{castcalcann}. The most important thing about the typing rules is that they are static, insofar as they do not resort to consistency, and treat $\?$ as just another base constant.
+
+\begin{figure}[h]
+	\textbf{Types:} $T := \bool \mid \nat \mid \? \mid T \to T$
+
+	\textbf{Terms:} $t := x \mid \underline{n} \mid \underline{b} \mid \l x : T . t \mid t~t \mid t + t \mid \ite{t}{t}{t} \mid \rai \mid \cast{T}{T}{t}$ with $n \in \NN$ and $b \in \BB$
+	
+	\textbf{Compilation from GTLC (extract):}
+	\begin{mathpar}
+	\inferrule{ }{\Gamma \vdash \underline{n} \comp \underline{n} : \nat}
+	
+	\inferrule{\Gamma \vdash t_1 \comp t_1' : T_1 \\ \Gamma \vdash t_2 \comp t_2' : T_2 \\ T_1 \cons \nat \\ T_2 \cons \nat}{\Gamma \vdash t_1+t_2 \comp (\cast{T_1}{\nat}{t_1'})+(\cast{T_2}{\nat}{t_2'}) : \nat}
+	
+	\inferrule{\Gamma \vdash t_1 \comp t_1' : T_1 \\ \Gamma \vdash t_2 \comp t_2' : T_2 \\ \dom_{\?}(T_1) \cons T_2}{\Gamma \vdash t_1~t_2 \comp (\cast{T_1}{\dom_{\?}(T_1) \to \cod_{\?}(T_1)}{t_1'})~(\cast{T_2}{\dom_{\?}(T_1)}{t_2'}) : \cod_{\?}(T_2)}
+	
+	\end{mathpar}
+	
+	\caption{The Cast Calculus (Extract)}
+	\label{castcalc}
+\end{figure}
+
+\paragraph{Reduction in the Cast Calculus}
+Now that the coercions have been inserted, the rules $\bred$ and $\ifred$ satisfy subject reduction. However, we also need reduction rules for our two new operators $\cas$ and $\rai$. For $\rai$, the rules are fairly easy: since we do not have any error catching mechanism, $\rai$ just propagates. For $\cast{T_1}{T_2}{t}$, the rules are given in \autoref{redcc}.
+
+\begin{figure}[h]
+	\begin{tabular}{rcl}
+		Success:&	$\cast{T_1}{T_2}{t} \cared t$& if $T_1$ and $T_2$ are $\bool$, $\nat$ or $\?$ and $T_1 = T_2$ \\
+		Failure:& $\cast{T_1}{T_2}{t} \cared t$& if $T_1$ and $T_2$ are both $\bool$, $\nat$ or $\cdot \to \cdot$ and have  different heads \\
+		Function:& \multicolumn{2}{l}{$\cast{T_1' \to T_1''}{T_2' \to T_2''}{t} \cared \l x : T_2' . \cast{T_1''}{T_2''}{t~(\cast{T_2'}{T_1'}{x})}$} \\
+		Cast cancellation:& \multicolumn{2}{l}{$\cast{\?}{T_2}{\cast{T_1}{\?}{t}} \cared \cast{T_1}{T_2}{t}$} \\
+	\end{tabular}
+
+	\caption{Reduction of the casting operator}
+	\label{redcc}
+\end{figure}
+
+The first two rules are the base cases: the cast disappears in case the types are equal base static types, and fails if they have different static head constructors. Otherwise, the third rule applies, recursively decomposing a cast between arrow types into a cast on the input and a cast on the output. The last rule is the most interesting: it enables to reveal the type of a term hidden under type $\?$ as it is used. It is in a way similar to looking up the type tag of a value at runtime in a dynamic typing setting. The term $\cast{T_1}{\?}{t}$ can indeed be seen as the term $t$ together with a type tag $T_1$, and casting this term to the type $T_2$ triggers a comparison between $T_1$ and $T_2$ in order to check that this cast is legal.
+
+%Taking the contextual closure of those rules gives a reduction $\red$ between terms of the cast calculus, that we extend to a term in GTLC as follows: $t \Downarrow t'$ if $\Gamma \vdash t \comp t_1 : T$, $t_1 \red^* t'$ and $t'$ is a normal form. If a term has no normal form (i.e. diverges), we write $t \Uparrow$.
+
+\subsection{Properties of Gradual Type Systems}
+\label{props}
+
+The main properties expected from a gradual type system are twofold. First, there should be an embedding of the corresponding fully static and fully dynamic systems into the gradual type system, in order to ensure that the gradual system really is a superset of those. But these properties do not say anything of what happens in between those two extremes. This is the reason why \cite{Siek2015} introduced the so-called gradual guarantee, which says what should happen when relaxing parts of a term from the static to the looser dynamic discipline.
+We give those properties in the case of GTLC as an illustration.
+
+\paragraph{Embeddings}
+
+We denote as $\vdash_S$ the typing judgement of STLC, and write $t \Downarrow_S t'$ if $t'$ is a normal form for $t$ in STLC. Then we have the following:
+
+\begin{prop}[Correctness of the embedding of STLC]
+	If $t$ is a term of STLC (that can also be seen as a term of GTLC without any $\?$) and $T$ is a type of STLC then
+	\begin{itemize}
+		\item $ \vdash_S t : T$ iff $\vdash t : T$
+		\item for any term $v$, $e \Downarrow_S v$ iff $e \Downarrow v$
+	\end{itemize}
+\end{prop}
+
+Which says that STLC really is a subsystem of GTLC, both from the typing and the reduction point of view.
+
+The embedding for the other end of the spectrum is a little bit more involved: we want to consider pure lambda calculus (PLC), given by the following syntax:
+\[t := x \mid \underline{n} \mid \underline{b} \mid \l x . t \mid t~t \mid t + t \mid \ite{t}{t}{t} \]
+The difference with STLC is that abstraction does not bear a type. We keep the same reduction rules as STLC, and of course that all terms are valid, as there are no types. We embed those terms into GTLC, as follows:
+\begin{df}[Embedding of pure lambda calculus in GTLC]
+	The embedding $\lceil \cdot \rceil$ is defined recursively on term of PLC as follows:
+	\begin{mathpar}
+		\lceil x \rceil :=  x \and
+		\lceil n \rceil := \asc{n}{\?} \and
+		\lceil b \rceil := \asc{b}{\?} \and
+		\lceil \l x . t \rceil := \asc{(\l x : \? . \lceil t \rceil)}{\?} \and
+		\lceil t~t' \rceil := \lceil t \rceil~\lceil t' \rceil \and
+		\lceil t + t' \rceil := \asc{(\lceil t \rceil + \lceil t' \rceil)}{\?} \and
+		\lceil \ite{t_1}{t_2}{t_3} \rceil := \ite{\lceil t_1 \rceil}{\lceil t_2 \rceil}{\lceil t_3 \rceil} \and
+	\end{mathpar}
+	where $\asc{t}{T}$ is a shortcut for $(\l x : T . x)~t$, so that $\asc{t}{T}$ always has type $T$.
+\end{df}
+
+We write $t \Downarrow_P v$ if $v$ is a normal form for $t$ in PLC, and we have the following:
+
+\begin{prop}[Correctness of the embedding of PLC]
+	If $t$ is any term of PLC, we have the following:
+	\begin{itemize}
+		\item if $t$ has no free variable, then $\vdash \lceil t \rceil : \?$
+		\item if $t \Downarrow_P v$, then either $\lceil t \rceil \Downarrow \cast{T}{\?}{v}$ for some $T$ or $\lceil t \rceil \Downarrow \rai$
+		\item if $\lceil t \rceil \Downarrow v$ then $t \Downarrow_P v'$ and $v = \cast{T}{\?}{v'}$ for some $T$
+	\end{itemize}
+\end{prop}
+
+This is similar to the embedding of STLC, apart from the fact that terms of PLC can be stuck because of a type error, that causes their GTLC counterpart to raise an error.
+
+\paragraph{Gradual Guarantee}
+
+These properties give constraints on both ends of the spectrum. The key property to link those ends is the so-called gradual guarantee. It is the core of the gradual approach, characterizing the relation between the dynamic and static types. To state it, we need the following:
+
+\begin{df}[Type precision]
+	The type precision ordering between types, written $\pre$, is given by the following rules:
+	\begin{mathpar}
+	\inferrule{ }{\? \pre T} \and
+	\inferrule{ }{\nat \pre \nat} \and
+	\inferrule{ }{\bool \pre \bool} \and
+	\inferrule{T_1 \pre T_2 \\ T_1' \pre T_2'}{T_1 \to T_1' \pre T_2 \to T_2'}
+	\end{mathpar}
+	
+	The relation is extended to terms, by saying a term $t$ of GTLC is more precise than another $t'$ if they have the same shape and if all types in the abstractions of $t$ are more precise than those in $t'$.
+\end{df}
+
+Intuitively, it says that $t$ and $t'$ are the same program, but with $t$ having more static type annotations than $t'$. Now the gradual guarantee goes as follows:
+
+\begin{prop}[Gradual Guarantee]
+	Suppose $t$ and $t'$ are terms of GTLC such that $t \pre t'$ and $\vdash t : T$. Then:
+	\begin{enumerate}
+		\item there is a type $T'$ such that $\vdash t' : T'$ and $T \pre T'$
+		\item if $t \Downarrow v$, then $t' \Downarrow v'$ with $v \pre v'$, and if $t \Uparrow$ then $t' \Uparrow$
+		\item if $t' \Downarrow v'$ then either $t \Downarrow v$ with $v \pre v'$ or $t \Downarrow \rai$, and if $t' \Uparrow$ then either $t \Uparrow$ or $t \Downarrow \rai$
+	\end{enumerate}
+\end{prop}
+
+The first property says that relaxing types cannot cause terms to fail typechecking. This is crucial, as the purpose of the gradual approach is to ensure a smooth transition between the dynamic and static worlds. The gradual guarantee ensures this: if the term on the static end typechecks, then every step of the transition also typechecks. There is no need for coordinated type annotations in different place, or to make efforts in order to understand how the typechecker works.
+The second and third properties give similar guarantees on the execution.
+
+\subsection{Beyond Simply Typed Lambda Calculus}
+\label{interm}
+
+Quite a few papers already handle some of the characteristic of CIC in a gradual setting. We give a short survey of those here.
+
+In \cite{Tanter2015}, a first approach to dependent types is given, but only refinement types (i.e. types $\S x : A. P~x$ for some proposition $P$) are studied, and the focus is set on decidable properties. The interest for decision is also present in \cite{Dagand2018}, where the focus is set on the relation between indexed and unindexed datatypes. In the same line of work, \cite{Lehmann2017} also focuses on refinement types. We found that we share some of their concerns with decidability when trying to handle identity types (see \autoref{recas}), however refinement types are a too specific kind of dependent types to give real insight for general \coc, let alone CIC.
+
+In \cite{Toro2019}, a gradualization of System F – an intermediate between STLC and \coc\ – is given, however the main challenge there is to preserve parametricity, a property that \coc\ does not enjoy without further addition. Thus, it is not really relevant in our setting.
+
+Finally, \cite{Eremondi2019} is maybe the most interesting approach to the question, as it considers \coc\ in full. Although inductive types are not considered at all there, their approach to consistency can be of use in our context – see \autoref{gcicss} for details.
+
+\mynote{MB}{The state of the art/biblio/field overview should be more precise – but I guess I'm not the best expert there.}
+
+\section{Type System for Gradual CIC}
+\label{gcic}
+
+Similarly to STLC, we separate the gradualization of CIC into two phases. The first one corresponds to the gradual typing discipline and to the insertion of a cast operator during typing to recover a statically well-typed term, while the second is studies the semantics of that cast operator. This section is devoted to the first part, and the next tackles the second.
+
+\subsection{Gradually Typed CIC}
+\label{gcicss}
+\mynote{MB}{There is quite a lot of dubious hand-waving to rewrite and improve in this section…}
+
+
+To extend the typing rules of CIC into a gradually typed system \gcic, we follow the same roadmap as for STLC:
+\begin{enumerate}
+	\item extend the syntax with a $\?$ constructor
+	\item modify the typing rules to use consistency rather than convertibility of types
+	\item define a meaningful consistency relation
+\end{enumerate}
+
+\paragraph{Extending the syntax}
+
+Because CIC does not make a syntactic difference between types and terms, we simply extend the term definition:
+\[t := \dots \mid \? \]
+
+\paragraph{Updating the typing}
+
+A nice feature of CIC is that its typing rules already incorporates a notion of comparison between types, up to conversion. So we just have to add the more permissive
+\[\inferrule{\Gamma \vdash t : A \\ A \cons B \\ \Gamma \vdash B : \uni}{\Gamma \vdash t : B} \]
+that makes use of the consistency relation $\cons$ instead of the conversion. Since $\cons$ is weaker than $\conv$, we could keep only this rule without changing the typable terms in our new system. However, every use of this rule will add a $\cas$ operation when compiled (similarly to GTLC), and we wish to avoid it when it is not needed. Thus we keep the usual conversion rule of CIC, that treats $\?$ as a constant without any special computational properties.
+Because $\?$ is a term, we also need a rule to type it, which is simply
+\[\inferrule{\Gamma \vdash T : \uni}{\Gamma \vdash \? : T} \]
+meaning that $\?$ as a term can inhabit any type. Indeed, we want to use $\?$ as any unknown part of a type, which can be any term, since we work with dependent types. Typically, we want to consider an inductive type with unknown index, such as $\ve~A~\?$. Thus $\?$ must be usable as a placeholder at any type, not just at $\uni$.
+
+\mynote{MB}{For now, this is buggy, because it allows to use too much consistency, in the following way:
+	\[
+	\inferrule*{
+		\inferrule*{\Gamma \vdash t : A \\ A \cons \?}{\Gamma \vdash t : \?} \\
+		\? \cons B	
+	}{
+		\Gamma \vdash t : B
+	}
+	\]
+	Thus a typable term has any type… To avoid this, we need to control where consistency is used, I guess we should integrate consistency inside the rules as in STLC rather than have a standalone rule.
+}
+
+\paragraph{Axiomatic consistency}
+
+Those modifications are quite straightforward, but the real complexity is hidden in the consistency relation. Its definition is not as simple as for GTLC, for at least two reasons. The first one is that consistency has to be defined on all terms, not only types, as $\?$ can appear in any position. The second is that it cannot be simply defined inductively on syntax as in GTLC, as we want consistency to take that computation into account, and thus be at least as strong as conversion.
+
+Another strong requirement is that we want consistency to be decidable, to ensure that typing stays so. This is in tension with the previous points, since a theoretically satisfying definition of consistency might be "too semantical" to be decidable. An example is given in the next paragraph.
+
+Looking at this in another way, however, there is also some freedom in definition on the choice of consistency. Thus, we express in an axiomatic way which properties a consistency should have, rather than define a precise one. We first need a notion of precision, with respect to which a consistency is defined.
+
+\begin{df}[Acceptable precision]
+	An acceptable precision $\pre$ is a binary relation between terms of GCIC such that:
+	\begin{enumerate}
+		\item $\pre$ is a preorder
+		\item $\pre$ contains conversion, i.e. if $t \conv t'$ then $t \pre t'$
+		\item if $t$ and $t'$ are static terms, then $t \pre t'$ iff $t \conv t'$
+	\end{enumerate}
+\end{df}
+
+\mynote{MB}{To relate to \cite{New2019}, they have “$\?$ is maximal” that we lack (but I see no obstacle to adding it), we also do not have that $\pre$ is a congruence (it might cause some indecidability troubles, not sure about that though) and 2. is specific to our setting where types compute (could be replaced by $\pre$ is a preorder on terms quotiented by $\conv$, directly).}
+
+\mynote{MB}{With AGT, it is pretty similar: we say nothing about $\?$ in this definition and do not have congruence rules, but we have computation.}
+
+\mynote{MB}{We have slack here, we only need to ensure that we keep the balance between having proofs that work (in particular we need the restriction 3. to ensure $\cons$ is not too big to have a conservative extension of CIC) and having a definitions that our concrete examples/implementation pass.}
+
+\begin{df}[Acceptable consistency]
+	An acceptable consistency $\cons$ with respect to an acceptable precision $\pre$ is a binary relation between terms of GCIC such that:
+	\begin{enumerate}
+		\item $\cons$ is reflexive and symmetric
+		\item $\cons$ is monotone with respect to $\pre$, i.e. if $t \cons t'$ and $t' \pre t''$ then $t \cons t''$
+		\item if $t$ and $t'$ are static terms, then $t \cons t'$ iff $t \conv t'$
+	\end{enumerate}
+\end{df}
+\mynote{MB}{Here we do not want to consider “consistent conversion” as in AGT, as in our setting this is the undecidable substitution consistency…}
+
+Note that that the monotony and reflexivity entail that an acceptable consistency must contain conversion. But monotony is much stronger, and it is the key ingredient ensuring the “typing” part of the gradual guarantee.
+
+\paragraph{Concrete consistencies}
+
+The smallest precision is simply conversion, and the smallest acceptable consistency (with respect to that precision) is also conversion. This consistency yields exactly the same typable terms as CIC.
+On the other end of the spectrum, the biggest precision is the precision that is conversion on static terms and such that any non-static term is greater than any other term. The greatest acceptable consistency (with respect to that precision) says that two terms are consistent if at least one of them is non-static, or if they are convertible. This consistency defers all type comparisons between non-static types to the cast operator.
+Of course, those two extremes cannot really be called gradual: the first lacks any kind of dynamic features, while the second does almost no static type checks.
+But they give an idea of what a consistency relation does: for each pair of types it arbitrates between rejecting it at typing time or accepting it and risking cast errors.
+
+A more interesting set of definitions is based on substitutions:
+\begin{df}[Substitution precision, substitution consistency]
+	A substitution $\sigma$ is a mapping from each $\?$ to a term.\\
+	The substitution precision $\pre_s$ is defined as follows: $t \pre_s t'$ if for every substitution $\sigma$ there is a substitution $\sigma'$ such that $\sigma(t) \conv \sigma'(t')$.\\
+	The substitution consistency $\cons_s$ is defined as follows: $t$ and $t'$ are consistent if they are unifiable, i.e. if there is a substitution $\sigma$ such that $\sigma(t) \conv \sigma(t')$.\\
+	The substitution precision is acceptable, and the substitution consistency is acceptable with respect to it.
+\end{df}
+
+\mynote{MB}{$\pre_s$ is quite vaguely defined, but the intended idea matches the definition of \cite{Castagna2019}. As for $\cons_s$ there is no equivalent definition there, but the way they decompose the rule with $\cons$ is pretty much unification. They cite \cite{Siek2008} for a comparison between the two.}
+
+\mynote{MB}{From the point of view of AGT, again this is the lifting of conversion (or should be with the correct definitions), but again it is undecidable.}
+
+These somewhat captures the informal semantics of $\?$, and they are quite close to the Abstract Gradual Typing approach \cite{Garcia2016}. However the problem of higher order unification is undecidable \cite{Dowek2001}, so that basing a definition of \gcic\ on substitution consistency makes typing undecidable.
+
+Because the substitution consistency seems a good theoretical definition of consistency, a good aim for a consistency relation is to give a decidable approximation of it. This approximation can lean on the conservative side, typically by resorting to a unification algorithm in the flavour of \cite{Ziliani2017} to try and find a suitable substitution. This solution, however, is not monotone with respect to the substitution precision, as it may fail to find a substitution that exists. On the other hand, the approximation can be too permissive, by allowing types to be consistent even when they are not unifiable. This a way to interpret the approximate normalization of \cite{Eremondi2019}. In this paper, they in particular prove that their consistency relation is acceptable with respect to substitution precision.
+
+Again, we do not wish to make a definitive choice, and leave the arbitration open. In particular, the different options could be compared in case of an implementation.
+%however we want to propose a last consistency, that is both easy to check and a reasonable over-approximation of the substitution consistency. First, normalize both terms. If both are static, check if the normal forms are equal. Otherwise, check if both normal forms have different type constructors ($\P$, $\uni$ or inductive type) as head constructor. If so, reject, and otherwise accept. This is quite rough, but as long as one does not play too much with reductions in the types, it should do a reasonable job.
+
+\subsection{Cast Insertion}
+\label{castins}
+
+As for STLC, once a term has a typing derivation, this derivation can be used to transform the term back to a statically typed term in a calculus with new primitives for casting, usually called a cast calculus. Thus we extend CIC with two new constants, yielding the system \cacic\ described in \autoref{cacic}.
+\begin{figure}[h]
+	\begin{mathpar}
+		t := \dots \mid \? \mid \cas
+		
+		\inferrule{ }{\vdash \? : \P A : \uni . A}
+		
+		\inferrule{ }{\vdash \cas : \P (A : \uni), (B : \uni), A \to B}
+	\end{mathpar}
+	\caption{Syntax and typing extension of \cacic}
+	\label{cacic}
+\end{figure}
+
+For now those constants are abstract axioms, and the next section is devoted to giving them a precise semantics. However, we can already give an intuition for it. The axiom $\cas$ is very similar to the one of the Cast Calculus for STLC: it should behave like the identity if its two first arguments are the same, and fail otherwise. The axiom $\?$ is a bit more involved: used as a term (i.e.\ on the left of a colon) it should be thought of as an error — the cast operator will reduce to it when its first arguments are not equal. However, when used as a type (i.e.\ on the right of a colon) $\?~\uni$ has the same semantics as $\?$ in GTLC: it represents a type that should be checked at runtime.
+
+Once we have the target, we can compile any typing derivation of \gcic\ into a derivation of \cacic. We give in \autoref{compcican} the whole set of compilation rules. The two most important are given in \autoref{compcic}, corresponding to the new typing rules associated respectively with $\?$ and $\cons$. The other rules are mostly compositional.
+
+\begin{figure}
+	\begin{mathpar}
+		\inferrule{\Gamma \vdash T : \uni \comp T'}{\Gamma \vdash \? : T \comp \?~T'}
+		
+		\inferrule{\Gamma \vdash t : A \comp t' \\ A \cons B \\ \Gamma \vdash A : \uni \comp A' \\ \Gamma \vdash B :\uni \comp B'}{\Gamma \vdash \cast{A'}{B'}{t'} }
+	\end{mathpar}
+\caption{Compilation rules for \gcic\ (Extract)}
+\label{compcic}
+\end{figure}
+
+\subsection{Instrumenting Refinement Algorithms}
+\label{refalg}
+
+\mynote{MB}{This is quite inbetween, I would say that we either explore it or drop it. It might go better with the implementation than with the theory. Although clarifying what the difference is between our $\?$ and the metavariables from unification might still be interesting…}
+
+To actually insert casts in a real life setting, resorting to the mechanism of the previous section is quite unfeasible, as it requires a fully annotated term to work on. Instead, a possibility for a concrete implementation is to instrument a refinement algorithm.
+
+Those algorithms are in charge, in a proof assistant, to transform a term given by the user to a term that can be fed to the core of the proof assistant. Initially, they were mostly devoted to inferring the types that were not given by the user, but in modern proof assistants they have a much broader role, see \cite{Asperti2012} for some examples. In particular, a recurring feature of modern refinement algorithm is to silently insert user-defined coercions: for instance, the user can declare a coercion from the type of groups to type $\uni$, mapping a group to its carrier, or from the type $\nat$ to the type of reals, that will be inserted silently by the refinement algorithm to bridge the gap each time a group (resp.\ natural number) is used when a type (resp.\ real) was expected.
+
+This usual use of coercions is very different from our cast. However, the mechanism to insert them, as described in \cite{Asperti2012}, is quite close to the one we want: whenever a term $t$ has a certain type $A$ and needs to be used at another type $B$, the system checks if there is an existing coercion between those two types, and in that case adds that coercion around $t$ to turn it into a term of type $B$. If instrumented correctly, this functionality could be used to implement a much better compilation from \gcic\ to \cacic: it would avoid having to implement the feature by hand, which is quite a heavy work, and would also enable the user to work with \gcic\ together with a functional refinement algorithm, making it much more practical.
+
+\subsection{Gradual Theorems}
+
+\mynote{MB}{We have to check the proofs actually go through, I guess they do but I was bluffing a bit.}
+
+From those definitions, we cannot give any theorem on the reduction of the terms, as for now $\cas$ is just a stuck axiom. However, we can already get the embedding of CIC and the typing part of the gradual guarantee. The central property is the following, ensuring that the cast insertion is well-behaved:
+\begin{prop}[Correctness of cast insertion]
+%	If $x_1 : A_1, \dots, x_n : A_n \vdash t : T$ in \gcic, then $x_1 : A_1', \dots, x_n : A_n' \vdash t' : T'$ where $A_i'$, $T'$ and $t'$ are respectively given by $x_1 : A_1, \dots, x_{i-1} : A_{i-1} \vdash A_i : \uni \comp A_i'$, $x_1 : A_1, \dots, x_n : A_n \vdash T : \uni \comp T'$ and $x_1 : A_1, \dots, x_n : A_n \vdash t : T \comp t'$.
+If $x_1 : A_1, \dots, x_n : A_n \vdash t : T$ in \gcic, then $x_1 : A_1', \dots, x_n : A_n' \vdash t' : T'$ where $x_1 : A_1, \dots, x_n : A_n \vdash t : T \comp t'$ and $A_i'$ and $T'$ are obtained by cast insertion in $A_i$ and $T$, respectively.
+\end{prop}
+
+\begin{dem}[Sketch]
+	Intuitively, the proof is by induction on the derivation of $\Gamma \vdash t : T$: we can transform a derivation tree for $t$ in \gcic\ into a derivation tree with almost the same shape in \cacic, the only difference being the place where consistency was used in \gcic\ and a cast was used instead in \cacic. However, to completely carry the proof, there are some technical subtleties to handle.\\
+	In particular, we need a lemma saying that we can choose a set of canonical typing derivations for every derivable judgement $\Gamma \vdash t : T$, such that a sub-derivation of a canonical derivation is itself a derivation. The aim is to ensure that every time we need to type $x_1 : A_1, \dots, x_{i-1} : A_{i-1} \vdash A_i : \uni$ the $A_i'$ we get is the same. This lemma is a consequence of decidability of typing: as long as we have a deterministic procedure for type checking, the derivation trees given by it are a system of canonical derivation. The induction is then performed on canonical derivations rather than on arbitrary derivations.
+\end{dem}
+
+For the static part, we get:
+\begin{prop}[Embedding of CIC in \cacic]
+	If $t$ and $T$ are terms of CIC, then $\vdash t : T$ is derivable in CIC iff it is derivable in \gcic.
+\end{prop}
+\mynote{MB}{As for now, I have no clue how to make this proof actually work.}
+\begin{dem}[Sketch]
+	The proposition is a consequence of the correctness property of cast insertion, and of the fact that an acceptable consistency corresponds to conversion on static terms.
+\end{dem}
+
+For the fully dynamic, we do not have an equivalent to the theorems on the embedding of pure lambda calculus, as we lack a system that could play the role of pure lambda calculus, i.e. a form of "untyped CIC".
+
+\mynote{MB}{We should explore a bit more what this is. I guess it looks like STLC with a lot of primitives that get stuck whenever the "types" are not correct, i.e.\ something close to the DTLC of \cite{Siek2015}.}
+
+For the gradual part, however, we get what we want:
+\begin{prop}[Gradual guarantee]
+	Let $t$, $s$ and $T$ be three terms of \gcic, such that $\vdash t : T$ in \gcic\ and $t \pre s$. Then we have that also $\vdash s : S$ for some term $S$ such that $T \pre S$.
+\end{prop}
+\begin{dem}[Sketch]
+	The key property here is that $\cons$ is monotone wrt. $\pre$, so that any use of the consistency rule to type $t$ is still correct in order to type $s$.
+\end{dem}
+
+
+\section{Realizing the Cast Operator}
+\label{cast}
+
+In this section, we concentrate on the way to give a semantics to \cacic\ by giving one to the axioms $\?$ and $\cas$ of the previous section. To do so, we resort to syntactical models, and in particular to the so-called exceptional type theory. The main feature of those syntactical models is to give us a way to handle exceptions inside CIC. This is a challenging problem, because effects mess up heavily with dependent types by exposing calling conventions, and because naïve exceptions break consistency (because any type can be inhabited using exceptions).
+
+\autoref{synmod} describes the general technique of syntactical models, \autoref{baplas} gives an overview of the way we use them, \autoref{recas} gives a syntactical translation of the cast operator in an intermediate type system, which is in turn justified via another syntactical model in \autoref{eahp}.
+
+\subsection{Syntactical Models}
+\label{synmod}
+
+Syntactical models of type theory, first described in \cite{Boulier2017}, are a way to give a semantics to a type theory using type theory itself. In general, to give a semantics and/or justify a type theory, one gives a model, i.e. objects in some meta-theory that interpret the syntax under consideration. Syntactical models are a very special kind of models, insofar as most objects in the source theory $\Ss$ are interpreted as the same objects in a target, usually simpler, type theory $\Tt$: a context is interpreted by a context, a term by a term, conversion by conversion, and typing should be preserved as well. Another way to look at syntactical models is to see them as a kind of compilation, transforming a program in $\Ss$ into a program in $\Tt$.
+
+An important use of those syntactical models is to justify $\Tt$ extended with some axiom. To do so, first find a suitable translation from $\Tt$ to itself, then find a term $t$ that inhabits the translation of the axiom's type. The consistency of the original $\Tt$ entails the consistency of $\Tt$ augmented by the axiom. But it is even better: because $t$ is a term, it has a computational behaviour, and is not just a stuck axiom. This computational behaviour can then be taken as a \emph{definition} for the computational rules of the axiom in the source theory.
+
+Used this way, syntactical translations are a dependently typed generalization of the idea underlying the CPS translation \cite{Griffin1990}, that realizes classical axioms in intuitionistic predicate logic by using a program transformation similar to the CPS transformation used in some compilers.
+
+\paragraph{The "$\times \bool$" model}
+
+A simple example, to get an idea of what happens when defining such syntactical models, is a translation from \coc+$\mathtt{Id}$ to \coc+$\mathtt{Id}$+$\bool$+$\Sigma$, that justifies the negation of function extensionality in \coc. Function extensionality is the type
+\[\mathtt{funext} := \P (A : \uni), (B : \uni), (f : A \to B), (g : A \to B). (\P x : A. f~x = g~x) \to f = g \]
+saying that functions are equal whenever they are pointwise equal. It is independent from CIC, however constructing a model that negates it is not that easy, since in such a model $\P$-types cannot be interpreted as usual set-theoretic functions, since those are by definition extensional.
+
+The translation is described in \autoref{tibool} on \coc, it can be extended functorially on the identity type. Note the different steps of the translation: the translation for term $[ \cdot ]$ is defined inductively, using an operation (here the identity) that maps the translation $[A]$ of a type of the source to a type $\lb A \rb$ of the target, and it is extended pointwise from types to contexts. This is the general pattern for such definitions.
+\begin{figure}[h]
+	\begin{mathpar}
+		{[x]} := x 
+
+		[\uni[i]] := \uni[i] 
+
+		[\l x : A . t] := (\l x : \lb A \rb . [t], \true) 
+
+		[t~t'] := (\pi_1 [t])~[t'] 
+
+		[\P x : A . B] := (\P x : \lb A \rb . [B]) \times \bool \\
+
+		\lb A \rb := [A] 
+
+		\lb \cdot \rb := \cdot 
+
+		\lb \Gamma, x : A \rb := \lb \Gamma \rb, x : \lb A \rb 
+	
+	\end{mathpar}
+
+	\caption{The "$\times \bool$" translation}
+	\label{tibool}
+\end{figure}
+
+This translation has the main property of a syntactic model: it preserves the typing judgement:
+\begin{prop}[Preservation of typing]
+	If $\Gamma \vdash t : A$ in the source theory, then $\lb \Gamma \rb \vdash [t] : \lb A \rb$ in the target theory.
+\end{prop}
+
+The proof of this proposition needs the following lemmas, which have to be true in any syntactical model:
+\begin{lem}[Preservation of substitution, conversion]
+	We have $[\sub{t}{t'}{x}] \conv \sub{[t]}{[t']}{x}$ for any terms $t$ and $t'$ of the source, and therefore if $t \conv t'$ in the source then $[t] \conv [t']$ in the target.
+\end{lem}
+
+Now that we have a model of \coc, we can extend it to a model of \coc+$\neg \mathtt{funext}$, by simply inhabiting the type $\lb \neg \mathtt{funext} \rb$. This can be done by picking $A$ and $B$ to be $\bool$, $f$ to be $(\l x : \bool . x, \true)$ and $g$ to be $(\l x : \bool. x, \false)$. By function extensionality, $f$ and $g$ are equal, from which we get $\true = \false$, and the absurd.
+
+\subsection{Battle plan}
+\label{baplas}
+
+Now that we have an idea of how to realize the cast operator, we can look at our battle plan, in \autoref{baplaf}.
+\begin{figure}[h]
+	\centering
+	\begin{tikzcd}
+		\text{\gcic} \dar["\text{1: replacing consistency with casting}"] \\
+		\text{\cacic} \dar["\text{2: encoding of inductives with equality}"] \\
+		\text{\cidc\ + $\cas$} \dar["\text{3: realizing $\cas$ and $\?$}"] \\
+		\text{\eqcic} \dar["\text{4: syntactical model}"] \\
+		\text{CIC + Induction-Recursion}
+	\end{tikzcd}
+	\caption{Battle plan}
+	\label{baplaf}
+\end{figure}
+
+We already described the type theories \gcic\ and \cacic, as well as step 1 of the translation in the previous section. Let us detail a bit more the rest of the plan.
+
+The theory \cidc\ corresponds to the theory where all inductives are indices-free, apart from the equality. We showed how to transform every inductive type in this way in \autoref{induc}, which corresponds to step 2.
+
+Step 3 realizes the abstract $\cas$ and $\?$ operators via a syntactical translation – this is the most novel part of this work. Instead of doing this translation directly back to CIC, we use an intermediate type theory \eqcic, that mixes two different constructions. The system \ett\ (for Exceptional Type Theory) is a version of CIC with errors, first described in \cite{Pedrot2018} as a syntactical model. This is not the end of the work on errors in CIC, which is continued in \cite{Pedrot2019}. However it is enough to serve as a base for their use within CIC, even if more developments in those line of works might give stronger properties for \gcic\ in the future. The $\quo$ operator is a type quoting operator, that allows to do recursion on types (also known as ad-hoc polymorphism). A syntactical model for this operator is given in \cite{Boulier2017}.
+
+Thus step 4 mainly consists in making those two translations work together in order to realize at the same time errors and ad-hoc polymorphism. Note that the final target is not pure CIC, but also contains Induction-Recursion \cite{Dybjer2000}, a generalization of inductive types. This feature is necessary for the syntactical translation of ad-hoc polymorphism.
+
+\subsection{Realizing the Cast}
+\label{recas}
+
+\paragraph{Target language}
+
+To realize the cast, our target language is CIC extended by some axioms:
+\begin{itemize}
+	\item a function $\rai$, intuitively corresponding to error raising
+	\item a family $\quo_i$ of quoting operators
+	\item three functions $\ta$, $\Unta$ and $\unta$ to respectively construct ($\ta$) and destruct ($\Unta$ and $\unta$) a term of type $\rai~\uni$
+\end{itemize}
+Their typing rules are given in \autoref{eqcicty}. Instead of giving the exact general shape of $P_I$, we give it on our favourite examples. It can be obtained on a generic inductive using parametricity techniques, in order to exactly pin down the available inductive hypothesis, and of course there needs to be one such clause for each inductive in the source theory.
+
+\mynote{MB}{There is a need to be precise on the exact shape of a generic $P_I$ (parametricity was a wild guess, and mostly bluff).}
+\mynote{MB}{What about $\quo$ if we have cumulativity? What does it change? Can we still make it work?}
+
+\begin{figure}[h]
+	\begin{mathpar}
+		\vdash \rai : \P A : \uni. A 
+
+		\vdash \ta : \P A : \uni. A \to \rai~\uni 
+
+		\vdash \Unta : \rai~\uni \to \uni 
+
+		\vdash \unta : \P x : \rai~\uni, \Unta~x 
+
+		\vdash \quo_0 : \P P : \uni[0] \to \uni[0]. P_0^0 \to P_{\mathtt{Id}}^0 \to P_{I} \to P_{\rai}^0 \to \P A : \uni[0]. P A  
+
+		\vdash \quo_{i+1} : \P P : \uni[i+1] \to \uni[i+1]. P~\uni[i] \to P^{i+1}_0 \to \dots \to P^{i+1}_{i+1} \to P_{\mathtt{Id}}^{i+1} \to P_{I} \to P_{\rai}^{i+1} \to \P A : \uni[i+1]. P A 
+
+	\end{mathpar}
+
+	where
+	\begin{mathpar}
+		P_j^i := \P A : \uni[j], B : (A \to \uni[i]). (\P x : A. P~(B~x)) \to P~(\P x : A. B~x) 
+
+		P_i^i := \P A : \uni[i], B : (A \to \uni[i]). P~A \to (\P x : A. P~(B~x)) \to P~(\P x : A. B~x) 
+
+		P_{\rai}^i := P~(\rai~\uni[i]) 
+
+		P_{\nat} := P~\nat 
+
+		P_{\Sigma} := \P A : \uni[i]. P~A \to \P B : A \to \uni[i]. (\P x : A. P~(B~x)) \to P(\S x : A. B~x) 
+
+		P_{\mathtt{Id}}^i := \P A : \uni[i]. P~A \to \P a,a' : A. P~(\eq{A}{a}{a'}) 
+
+	\end{mathpar}
+	
+	\caption{Axioms of \eqcic}
+	\label{eqcicty}
+\end{figure}
+
+The functions $\rai$ and $\quo$ are not very surprising: $\rai$ corresponds to some kind of polymorphic error, and $\quo$ to induction on types – with one clause for each possible case for a type in normal form (a universe, a $\P$-type, an inductive, or an error).
+
+The last three functions are much more surprising, as they really encompass our semantics for $\?$ (which will be translated to $\rai$). As a term, it is uninformative, but used as a type it has a different semantics: a term of type $\?~\uni$ can be a term of any type, because $\?$ stands for all possible types. So to construct a term of type $\rai~\uni$, one must provide a term $a$ together with its type $A$, which can be any type. This is what $\ta$ does. On the contrary, the $\Unta$ and $\unta$ primitive enable us to get back the type and term hidden in a term of type $\rai~\uni$.
+
+\mynote{MB}{Somehow say that $\?$ is some kind of positive/optimistically treated error?}
+
+This idea can be linked with at least two different intuitions. The first one is to remark that the primitives we provide for $\rai~\uni$ correspond to a negative presentation of the type $\S A : \uni. A$, so that $\rai~\uni$ corresponds to the disjoint sum of all possible types. Another way to consider it is to look into what happens in dynamically typed languages: usually, during executions, values are tagged with their type, and every time they are used the tag is inspected to be sure the value has the correct type. We chose the names $\ta$ and $\unta$ with that comparison in mind, as this is what they do: $\ta$ forms a term of type $\rai~\uni$ by tagging a term with its type, while $\Unta$ and $\unta$ respectively get the type and term of a tagged term.
+
+\paragraph{Syntactic translation}
+
+Now, using those primitives, we need to give the translations $[\cdot]$ and $\lb \cdot \rb$ from \cacic\ to the target we just described. The translation of the whole CIC fragment is completely transparent: we set $\lb A \rb := [A]$, and $[\cdot]$ is recursively defined on a term as the identity, apart from the axioms $\?$ and $\cas$.
+For those, again the case of $\?$ is quite straightforward: we set $[\?] := \rai$, as we already mentioned.
+
+Now only the actually tricky point remains: defining $[\cas] : \P (A : \uni), (B : \uni). A \to B$. We define $[\cas]$ by "pattern-matching" on its first two arguments, i.e. using $\quo$ twice. Rather than giving an actual term using $\quo$, we give the intended return term with each possible pair of types, in \autoref{cadef}. We do not give $t_I$ in full generality, but only its type, intuition, and some concrete examples.
+
+\begin{figure}[h]
+	\centering
+	\begin{tabular}{|c|c|c|c|c|c|c|}
+		\hline
+		\diagbox{$A$}{$B$}& $\uni[i]$ & $\P y : B_1. B_2$ & $\eq{A}{a}{a'}$ & $I'~y_1\dots y_n$ & $\rai~\uni[i]$ \\
+		\hline
+		$\uni[j]$ & $\begin{array}{rl}
+		\l x : \uni[i].x & \text{if $i = j$} \\
+		\rai & \text{otw.}
+		\end{array}$ & $\rai$ & $\rai$ & $\rai$ &$\l a : A . \ta~A~a $ \\
+		\hline
+		$\P x : A_1. A_2$ & $\rai$ & $t_\Pi$ & $\rai$ &  $\rai$ & $\l a : A . \ta~A~a$ \\
+		\hline
+		$\eq{B}{b}{b'}$ & $\rai$ & $\rai$ & $\rai$ & $\rai$ & $\l a : A . \ta~A~a$ \\
+		\hline
+		$I~x_1\dots~x_m$ & $\rai$ & $\rai$ & $\rai$ & $\begin{array}{rl}
+		\tilde{t}_I & \text{if $I = I'$} \\
+		\rai & \text{otw.}
+		\end{array}$ & $\l a : A . \ta~A~a$ \\
+		\hline
+		$\rai~\uni[j]$ & $t_\unta$ & $t_\unta$ & $t_\unta$ & $t_\unta$ & $\begin{array}{rl}
+		\l x : A . x & \text{if $i=j$} \\
+		\rai & \text{otw.}
+		\end{array}$ \\
+		\hline
+	\end{tabular}
+	
+	\[t_\Pi := \l (f : \P x : A_1. A_2), (y : B_1). \cast{\sub{A_2}{\cast{B_1}{A_1}{y}}{x}}{B_2}{(f~\cast{B_1}{A_1}{y})} \]
+	\[t_\unta := \l x : \rai~\uni . \cast{\Unta~x}{B}{\unta~x} \]
+	\[\tilde{t}_I := t_I~x_1 \dots x_n~y_1 \dots y_n \]
+	\[t_I : \P (x_1 : A_1), \dots, (x_n : A_n), (x : I~x_1\dots~x_n), (y_1 : A_1), \dots, (y_n : \sub{A_n}{y_i}{x_i}). I~y_1\dots~y_n \]
+	
+	\caption{Pattern-matching definition of $[\cas]~A~B$}
+	\label{cadef}
+\end{figure}
+
+\mynote{MB}{Writing this with the actual correct quote operator instead of hand-waving pattern matching might not be that easy.}
+
+Outside of the diagonal, $[\cast{A}{B}{}]$ is only defined when either $A$ or $B$ is $[\?]$, otherwise it is just an error: the types do not match so the casting fails.
+When $A$ is $[\?]$, untagging happens, and the value that is obtained is recursively cast using the type obtained.
+On the contrary, when $B$ is $[\?]$, the value of type $A$ is tagged. Combined together, these two rules are quite similar to the cast cancellation rule in the Cast Calculus: a cast from $A$ to $[\?]$ followed by a cast from $[\?]$ to $B$ corresponds to a cast from $A$ to $B$.
+
+On the diagonal, on the contrary, the cast should succeed, as the types match. In case of a base case, i.e. a universe or an error, the cast is simply discarded (if the universe levels agree). In case of a $\P$ a recursive call happens, again similarly to what happened for the arrow type in STLC. For inductive types as well an inductive call happens, using the term $t_I$ that basically keeps the shape of its argument intact, only inserting cast all over the place to correct the type. Examples are given in \autoref{caindex}. The case of $\ve'$ is the most interesting, as the original definition used indices: note how everything happening around the indices is shifted to the cast between equality types.
+
+\mynote{MB}{Having a generic definition for inductive types should be fine, but we must be sure we are given the correct induction hypotheses by $\quo$.}
+\mynote{MB}{I do not think we have anything to do with the universe indices if we have cumulativity, but it might be needed if we do not have it (we might want to relax our failure case to $i < j$).}
+
+\begin{figure}
+	\begin{mathpar}
+		
+	t_\bool := \rec_\bool~(\l b : \bool. \bool)~\true~\false 
+
+	t_\nat := \rec_\nat~(\l n : \nat . \nat)~0~(\l n : \nat . \s) 
+
+	t_\Sigma := \l (A : \uni), (A' : \uni \to A), (s : \S x : A. A'~x), (B : \uni), (B' : B \to \uni). u_\Sigma 
+
+	u_\Sigma := \rec_\Sigma~A~A'~(\l s : (\S x : A. A'~x). \S y : B. B'~y)~(\l a : A, a' : (A'~a). (\cast{A}{B}{a},\cast{A'a}{B'\cast{A}{B}{a}}{a'})~s
+
+	t_{\ve'} := \l (A : \uni), (m : \nat), (v : \ve'~A~m), (B : \uni), (n : \nat). u_{\ve'}
+
+	u_{\ve'} := \rec_{\ve'}~A~(\l m : \nat, v : \ve'~A~m. \P n : \nat, \ve'~B~n)~t_\nil~t_\con~m~v 
+
+	t_\nil := \l (m : \nat), (e : \eq{\nat}{m}{0}), (n : \nat) .\nil~B~\cast{\eq{\nat}{m}{0}}{\eq{\nat}{n}{0}}{e} 
+
+	t_\con := \l (m : \nat), (m': \nat), (a : A), (v' : \ve'~A~m'), (v'': \P n : \nat. \ve'~B~n), (e: \eq{\nat}{m}{(\s~m')}), (n : \nat). u_\con 
+
+	u_\con := \con~B~n~\cast{A}{B}{a}~(v''~m')~\cast{\eq{\nat}{m}{(\s~m')}}{\eq{\nat}{n}{(\s~m')}}{e} 
+	
+	\end{mathpar}
+	\caption{Examples of casting on inductive types}
+	\label{caindex}
+\end{figure}
+
+Finally, note that for the identity a cast never succeeds. This is because in general there is no way to decide whether the arguments of the identity type are equal or not. However, this very pessimistic behaviour could be made a lot better by resorting a decision procedure when it exists, and considering the identity type itself as inductively defined. Those ideas are in relation with the frameworks developed in \cite{Dagand2018} or \cite{Tabareau2018}. We do not describe this possibility in this report, at it would add another level of complexity, but we believe it would be an important piece of an actual implementation of \gcic.
+The impact of that systematic failure, together with the encoding of inductive types using equality, is that whenever indices are actually inspected, which amounts to destroying the equalities systematically added to the constructors, the obtained term always fails. A special case on vectors is studied in \autoref{veexs}.
+\mynote{MB}{We must say more about how to use \cite{Tabareau2018} to get a better cast for identities.}
+
+\subsection{Realizing the Intermediate Language}
+\label{eahp}
+
+The last level of the syntactic model is to give a model of \eqcic. It is novel, in the sense that both features have not been given a model together, however both ETT and ad-hoc polymorphism have been given a syntactic model, the first in \cite{Pedrot2018}, and the second in \cite{Boulier2017}.
+
+\paragraph{Ad-Hoc Polymorphism}
+
+In \cite{Boulier2017}, the key feature is to present universes via so-called codes: codes form a new type $\ty_i$, that is inductively defined together with a function $\El_i : \ty_i \to \uni[i]$ that describes how to interpret a code as a "real" type. This mutual definition is not a usual inductive one, but a recursive-inductive one. This generalization of inductive types due to Dybjer \cite{Dybjer2000} allows simultaneous definition of an inductive type and of a function using this type as domain. The shape of those definitions can be found in \cite{Boulier2017}, we simply add a constructor $\iota$ of $\ty_i$ for each inductive type $I$ in the source. The type of $\iota$ can be obtained by applying the $\lb \cdot \rb$ translation of the ad-hoc polymorphism model to the type of $I$, and $\El$ is defined to be $I$ on $\iota$, as expected. This recursive-inductive $\ty_i$ comes with a recursion principle $\rec_{\ty}$.
+
+\paragraph{Exceptional Type Theory}
+In \cite{Pedrot2018}, a framework called ETT is given for errors in ETT. The authors identify three points where some freedom is left in the translation: the type $\mathbb{E}$ of errors, and the terms $\tyer$ and $\tyerh$ respectively corresponding to $\lb \rai~\uni \rb$ and $[ \rai~\uni ]_\varnothing$, where $[\cdot]_\varnothing$ describes how to inhabit $\lb A \rb$ from an error. They choose to make the translation parametric in $\mathbb{E}$, but fix $\tyer$ and $\tyerh$ to be degenerate. Here we want to do the contrary. We fix $\mathbb{E}$ to be a singleton type, or even better totally erase is by replacing all instances of $\mathbb{E} \to A$ by the isomorphic $A$ ($\mathbb{E}$ only appears to the left of arrows). This is because we consider our errors as uninformative. On the contrary, our setting needs $\tyer$ to be non-trivial, so we define it to be the following inductive:
+\begin{lstlisting}
+Inductive $\tyer$ : $\uni$ :=
+	| $\bo$ : $\P A : \ty. \El~A \to \tyer$
+\end{lstlisting}
+And set $\tyerh := (\unit, \mathtt{tt})$.
+
+For the rest, we closely follow the paper. We first go on to define the inductive $\ety$ representing types that can raise errors:
+\begin{lstlisting}
+Inductive $\ety$ : $\uni$ :=
+	| $\TV$ : $\P A : \ty_i. \El_i A \to \ety$
+	| $\TE$ : $\ety_i$
+\end{lstlisting}
+Using its eliminator $\rec_{\ety}$ we define two functions $\eEl$ and $\Err$ that respectively recover the type and default element from a term of type $\ety$:
+\[\eEl : \ety \to \uni \]
+\[\Err : \P A : \ety. \eEl~A \]
+Finally, for each inductive $I$ in the source, we define an inductive $I^\bullet$ that corresponds to $I$ with one constructor $c^\bullet$ for each constructor $c$ of $I$, and an extra constructor $c^\bullet$ representing the primitive error on type $I$.
+
+\mynote{MB}{If we use RETT, does it still work? Does it give us better properties?}
+
+\paragraph{Syntactic translation}
+With these defined, the translation combines the ones for ad-hoc polymorphism and exceptions: they are transparent on terms, but heavily modify the interpretation of types – this is where the tricky work is. It is given in \autoref{eqtrans}, with $\unc[i]$ the code for the universe $\uni[i]$, and $\Pc$ the code for the product $\Pi$.
+
+\begin{figure}[h]
+	\begin{mathpar}
+	{[\uni[i]]} := \TV~\unc[i]~\TE_i 
+
+	{[x]} := x 
+
+	[\l x : A. M] :=  \l x : \lb A \rb . [M] 
+
+	[M~N] := [M]~[N] 
+
+	[\P x : A. B] := \TV~(\Pc~[A]~(\l x : \lb A \rb . [B]))~(\l x : \lb A \rb . [B]_\varnothing) 
+
+	[I] := \l x_1 : \lb A_1 \rb, \dots, x_n : \lb A_n \rb . \TV~(I^\bullet~x_1\dots~x_n)~(I_\varnothing~x_1\dots~x_n) 
+
+	[c] := c^\bullet 
+
+	[A]_\varnothing := \Err~[A] 
+
+	\lb A \rb := \El~[A] 
+
+	\end{mathpar}
+	\caption{Exceptional ad-hoc translation}
+	\label{eqtrans}
+\end{figure}
+
+\paragraph{Realizing the axioms}
+
+To finalize our translation, we still have to realize all the axioms in the translation. For $\rai$, $\ta$, $\Unta$ and $\unta$, see \autoref{rez}. Now that we have done the hard work of defining the target, the translation of the axioms are not too much work: $\rai$ is translated to $\Err$, and $\ta$, $\Unta$ and $\unta$ respectively amount to the constructor $\bo$, the first, and the second projection of $\tyer$.
+
+\begin{figure}[h]
+	\[\begin{array}{rll}
+	[\rai] &:& \lb \P A : \uni . A \rb \conv \P A : \ety . \eEl~A \\
+	&:=& \Err \\
+	{[\ta]} &:& \lb \P A : \uni . A \to \rai~\uni \rb \conv \P A : \ety. \eEl~A \to \tyer \\
+	& :=& \rec_{\ety}~(\l A : \ety . \eEl~A \to \tyer)~(\l (A : \ty), (A_\varnothing : \El~A) (a : A). \bo~A~a)~(\l x : \tyer. x) \\
+	{[\Unta]} &:& \lb \rai~\uni \to \uni \rb \conv \tyer \to \ety \\
+	&:=& \rec_{\tyer}~(\l x : \tyer. \ety)~(\l A : \ty, a : \El~A. \TV~A~a) \\
+	{[\unta]} &:& \lb \P x : \rai~\uni . \Unta~x \rb \conv \P x : \tyer. \eEl~(\Unta~x) \\
+	&:=& \rec_{\tyer}~(\l x : \tyer. \eEl~(\Unta~x))~(\l A : \ty, a : \El~A. a)
+	\end{array}	\]
+	
+	\caption{Realizations of $\rai$, $\ta$, $\Unta$ and $\unta$}
+	\label{rez}
+\end{figure}
+
+\strut\mynote{MB}{There is some cheating with $[\Unta]$: it uses the given value instead of the "real" default one. Is this sensible? I guess so, but I also feel like it might break weak consistency… Tread lightly.}
+
+We do not want to write down $[\quo]$ in extenso, but its definition simply combines $\rec_{\ety}$ and $\rec_{\ty}$ to do type-recursion on an $\ety$ and not only on a $\ty$.
+
+\subsection{Properties}
+
+\mynote{MB}{This was mostly bluff again, so we have to find the actual theorems we want, and actually do the proofs. In particular, I am not even sure my definition of reduction in the source is correct…}
+
+The first thing to prove is that our syntactical translations are correct, i.e. they both have the following properties:
+\begin{prop}[Correctness of the syntactic translations]
+	If $t$, $t'$ and $T$ are terms of the source calculus, and $\Gamma$ is a context of that source calculus, then
+	\begin{itemize}
+		\item if $t \red t'$ then $[t] \red [t']$
+		\item if $\Gamma \vdash t : T$ then $\lb \Gamma \rb \vdash [t] : \lb T \rb$
+	\end{itemize}
+\end{prop}
+\begin{dem}[Sketch]
+	The first point is direct, as for both translations $\beta$-redexes are interpreted by $\beta$-redexes, and $\iota$-redexes (application of the recursor of an inductive type to a term with a constructor of that inductive in head) as the same $\iota$-redexes.
+	
+	The second point amounts to verify that all inference rules for $\vdash$ in the source are derivable in the target, and indeed they are.
+\end{dem}
+
+From now on we denote as $[\cdot]$ (resp. $\lb \cdot \rb$) the composition of both translations on terms (resp. the composition of the term translation from \cacic\ to \eqcic\ with the type component of the ad-hoc exceptional translation), that give a syntactical model of \cacic.
+
+Because axioms do not compute, the reduction of \cacic\ is strictly included in the reduction of the target. However, we want our "axioms" to compute, hence the following definition.
+\begin{df}[Reduction for \cacic]
+	Define the relation $t \cared t'$ between terms of \cacic\ as the relation $[t] \red [t']$ between their translations.
+\end{df}
+This is the relation on which properties similar to the "reduction" part of the theorems on GTLC should be stated and proven. We did not extensively investigate those yet, so we leave that work open.
+
+A very strong difference with GTLC is the following proposition, direct consequence of the strong normalization of CIC with induction-recursion. We describe in \autoref{omexs} what the consequence for the stereotypical non-terminating term $\Omega$ in \gcic\ are.
+\begin{prop}[Strong normalization of \cacic]
+	The relation $\cared$ is strongly normalizing.
+\end{prop}
+
+Concerning consistency, as it was already the case for \ett, \cacic\ is inconsistent: one can inhabit $\bot$ using an error. However, everything is not lost, as the next proposition illustrates.
+\begin{prop}[Weak consistency]
+	If $\vdash t : \bot$ in \cacic, then $t \conv \rai~\bot$. Rephrased, the only way to inhabit $\bot$ in \cacic\ is to use an error.
+\end{prop}
+Concerning \gcic\ itself, depending on the consistency relation, we might get a stronger property, however we believe that concentrating on the consistency relation to avoid $\bot$ to be inhabited is not a good aim. A better way to do so should be to use the frameworks under investigation to control errors in CIC in \cite{Pedrot2018, Pedrot2019}, to provide us with a better way to handle and reason about errors arising from \gcic.
+
+\section{Use Examples}
+\label{exs}
+
+\mynote{MB}{To rewrite and extend. Maybe we want some companion code (with a lot of axioms) even if we do not have a proper formalization?}
+
+\subsection{Vectors}
+\label{veexs}
+
+A standard example for the use of indices is the type of vectors. On the upside, they enable type-safe functions, for instance the head function of type $\P (A : \uni), (n : \nat). \ve~A~(\s~n) \to A$. On the downside, programming with vectors easily gets quite involved, for instance giving the type $\P (A : \uni), (n : \nat). \ve~A~n \to \ve~A~n$ to a quicksort function as the following OCaml one (inspired from an example of \cite{Eremondi2019})
+\begin{lstlisting}[language=caml]
+let rec quicksort : int list -> int list = fun l ->
+match l with
+| [] -> []
+| h :: t -> (quicksort (filter (fun a -> a <= h) t))@[h]@(quicksort (filter (fun a -> h < a) t))
+\end{lstlisting}
+is already involved, as it requires a subtle handling of the indices. Instead, along the gradual typing philosophy, a first step would be to give it the type $\P (A : \uni), (n : \nat). \ve~A~n \to \ve~A~\?$ to enable an easy definition, leaving the work of giving it a static type to a second pass.
+
+Such a definition would insert some casts from a static $\ve~A~n$ to $\ve~A~\?$ and in the other direction as well. What happens when vectors obtained with such casts are used? As we encode indices via equality, the equality arguments are where the interesting stuff happens. For instance, let $v$ be a vector of size $3$ and consider the following term
+\[v' := \cast{\ve~A~5}{\ve~A~\?}{\cast{\ve~A~\?}{\ve~A~3}{v}}\]
+It reduces to an actual vector of length $3$ (in the sense that it uses $\con$ three times), but with a type $\ve~A~5$, obtained using a proof of $3 = 5$, that of course is an error. Thus, as long as $v'$ is used without inspecting that proof – in particular as long as $v'$ is used as a list – no error occurs. The faulty proof is simply carried around. However, if a function making actual use of the index is called, it exposes the lie, and raises an error. For instance, if one were to call a function taking the 4\textsuperscript{th} element of a list of length at least $4$ on $v'$, similar to the safe head function, one would end up in a branch that is supposedly unreachable because of typing, and where a term of type $A$ is obtained by elimination of $\bot$. Here this branch would actually be reached, but the error would propagate through the proof of false and its elimination, so that the provided term of type $A$ would simply be $\rai~A$.
+
+In general, indices are used to reason in unreachable branches, where they are used to create a proof of $\bot$ that can be eliminated. With gradual types, those branches might actually be reached using erroneous proofs, and so they would simply return an error. On the contrary indices are not useful in reachable branches, so as long as they are not needlessly inspected there, no error should be raised.
+
+\subsection{$\eta$-rule for inductive types}
+
+The need to have a return predicate when destroying terms of an inductive types (the first argument $P$ of all recursors) is quite an annoying feature in practice, as writing that return predicate explicitly is tedious. A desirable possibility is to get rid of that predicate in a systematic way. For booleans, this would give a recursor of the following type
+\[\rec'_{\bool} : \P (P_1 : \uni) (P_2 : \uni). P_1 \to P_2 \to \P b : \bool. \rec'_{\bool}~\uni~\uni~P_1~P_2~b \]
+In a proof assistant, the types $P_1$ and $P_2$ can be inferred, alleviating the user from the burden of giving an explicit $P$. However, because $\rec'_{\bool}$ is typed using itself, such a recursor cannot be used, unless the theory features so-called $\eta$-conversion, that allows the following reduction: $\rec'_{\bool}~P~P~p~p~b \red_\eta p$.
+Indeed, using that rule, in the previous example $\rec'_{\bool}~\uni~\uni~P_1~P_2~b$ can be given type $\uni$ instead of $\rec'_{\bool}~\uni~\uni~\uni~\uni~b$.
+
+Sadly, $\eta$-reduction for inductive types cannot be part of the theory, for decidability reasons: already on natural numbers it is undecidable to know whether $\eta$-reduction applies.
+
+However, in a gradual setting, $\eta$-conversion on types can be simulated: as soon as we have
+\[\rec'_{\bool}~\uni~\uni~P~P~b \cons P \]
+a term of the first type can be used as a term of the second, as if $\eta$-conversion had happened. Whenever the underlying term $\iota$-reduces because $b$ has taken a concrete value, the $\cas$ inserted around it reduces to $\cast{P}{P}{}$, and if $P$ is simple enough (as in our example) it completely disappears.
+
+\subsection{Non-terminating terms actually terminate}
+\label{omexs}
+
+A very interesting discovery we made while investigating \gcic\ concern the term $\Omega$ defined as follows:
+\[\Omega := (\l x : \? . x~x)~(\l x : \? . x~x) \]
+In pure lambda calculus, $\Omega$ is the stereotypical non-normalizable term. In most gradually typed languages, for instance GTLC, such a term is typable, runs without errors, and thus prevents the system from being strongly normalizing. In \gcic, in contrast, a particularly peculiar thing happens: $\Omega$ is typable, however the type hierarchy prevents it from looping. Instead, $\Omega$ reduces to an error. The detailed reduction is presented in the \autoref{omred}, the key point is that to make $\Omega$ loop a cast from $\?~\uni[i+1]$ to $\?~\uni[i]$ is needed, and as this is not the identity but an error, the whole term fails.
+
+\phantomsection
+\section*{Conclusion and Future Work}
+\addcontentsline{toc}{section}{Conclusion and Future Work}
+
+In this report, we presented a novel approach to gradualization in the context of CIC, the first one to try and tame the whole complexity of CIC. Its main theoretical contribution is the casting operator, presented through a syntactical translation, using the underspecification of the framework of ETT to give the error the semantics of a gradual type. Even if the intuitions behind this idea are not new, their use to interpret dynamic types as an inductive had not been observed before.
+
+Although the structure of GCIC is clear, there still remains some work to do on exact details pertaining to universe levels and full general definitions for inductive types. Another line of work we did not explore yet is to implement this work in Coq, using the meta-programming features of the TemplateCoq/MetaCoq project \cite{Anand2018} and drawing inspiration from the plugins for program translation of \cite{Boulier2017,Pedrot2018}. Both can go hand in hand, using the automated handling of universes in Coq to alleviate some of the burden of doing all of it by hand, an approach we already successfully used to back up our insight on the terminating $\Omega$, or construct and check some of quite indigestible terms, e.g.\ \autoref{caindex}.
+
+\phantomsection
+\addcontentsline{toc}{section}{References}
+\printbibliography
+
+\newpage
+\phantomsection
+\appendix
+\appendixpage
+\addappheadtotoc
+\addtocontents{toc}{\protect\setcounter{tocdepth}{-5}}
+
+\section{Usual Inductive Types}
+\label{indtyex}
+
+	Booleans:
+	\begin{lstlisting}
+	Inductive $\bool$ : $\uni$ :=
+	| true : $\bool$
+	| false : $\bool$
+	\end{lstlisting}
+	\[\rec_{\bool} : \P P : \bool \to \uni. (P~\true) \to (P~\false) \to \P b : \bool. P~b\]
+	\[\rec_{\bool}~P~t_{\true}~t_{\false}~\true \ired t_{\true}\]
+	\[\rec_{\bool}~P~t_{\true}~t_{\false}~\false \ired t_{\false}\]
+	
+	Natural numbers:
+	\begin{lstlisting}
+	Inductive $\nat$ : $\uni$ :=
+	| $0$ : $\nat$
+	| $\s$ : $\nat \to \nat$
+	\end{lstlisting}
+	\[\rec_{\nat} : \P P : \nat \to \uni. (P~0) \to (\P n : \nat. (P~n) \to P~(\s~n)) \to \P n : \nat. P~n \]
+	\[\rec_{\nat}~P~t_0~t_\s~0 \ired t_0\]
+	\[\rec_{\nat}~P~t_0~t_\s~(\s~t) \ired t_\s~t~(\rec_{\nat}~P~t_0~t_\s~t)\]
+	
+	Dependant sum:
+	\begin{lstlisting}
+	Inductive $\Sigma~(A : \uni)~(B : A \to \uni)$ : $\uni$ :=
+	| $\mathtt{p}$ : $\P a : A, b : B~a . \S A~B$
+	\end{lstlisting}
+	\[\rec_{\Sigma} : \P A : \uni, B : A \to \uni, P : (\Sigma~A~B) \to \uni. (\P a : A, b : B~a. P~(a,b)) \to \P s : (\Sigma~A~B). P~s \]
+	\[\rec_{\Sigma}~A~B~P~t_{\mathtt{p}}~(a,b) \ired t_{\mathtt{p}}~a~b \]
+	
+	Equality:
+	\begin{lstlisting}
+	Inductive $\mathtt{Id}~(A : \uni)~(a : A)~(a' : A)$ : $\uni$ :=
+	| $\refl$ : $\mathtt{Id}~A~a~a$
+	\end{lstlisting}
+	\[\rec_{\mathtt{Id}} : \P A : \uni, a : A, P : (\P a' : A. (\mathtt{Id}~A~a~a') \to \uni). (P~a~(\refl~A~a)) \to \P e : \mathtt{Id}~A~a~a'. P~a'~e \]
+	\[\rec_{\mathtt{Id}}~A~a~P~t_{\refl}~(\refl~A~a) \ired t_{\refl} \]
+	
+	Vectors:
+	\begin{lstlisting}
+	Inductive $\ve~(A : \uni)~(n : \nat)$ : $\uni$ :=
+	| $\nil$ : $\ve~A~0$
+	| $\con$ : $\P n : \nat, a : A, v : \ve~A~n. \ve~A~(\s~n)$
+	\end{lstlisting}
+	\[\rec_{\ve} : \P A : \uni, P : (\P n : \nat. \ve~A~n \to \uni). (P~0~(\nil~A)) \to\]
+	\[(\P n : \nat, a : A, v : \ve~A~n. P~n~v \to P~(\s~n)~(\con~A~n~a~v)) \to \P n : \nat, v : \ve~A~n. P~n~v  \]
+	\[\rec_{\ve}~A~P~t_{\nil}~t_{\con}~(\nil~A) \ired t_{\nil} \]
+	\[\rec_{\ve}~A~P~t_{\nil}~t_{\con}~(\con~A~n~a~v) \ired t_{\con}~n~a~v~(\rec_{\ve}~A~P~t_{\nil}~t_{\con}~v) \]
+	
+	Unit:
+	\begin{lstlisting}
+	Inductive $\unit$ : $\uni$ :=
+	| $\mathtt{tt}$ : $\unit$
+	\end{lstlisting}
+	\[\rec_{\unit} : \P P : \unit \to \uni, P~\mathtt{tt} \to \P x : \unit. P~x \]
+	\[\rec_{\unit}~P~p~\mathtt{tt} \ired p \]
+	
+	False:
+	\begin{lstlisting}
+	Inductive $\bot$ : $\uni$ :=
+	\end{lstlisting}
+	\[\rec_{\bot} : \P P : \bot \to \uni, x : \bot. P~x \]
+
+\section{Equality Encoding of Vectors}
+\label{vecid}
+
+	\begin{lstlisting}
+	Inductive $\ve'~(A : \uni)~(n : \nat)$ : $\uni$ :=
+	| $\nil'$ : $\eq{\nat}{n}{0} \to \ve'~A~n$
+	| $\con'$ : $\P m : \nat, a : A, v : \ve~A~m. (\eq{\nat}{\s~m}{n}) \to \ve~A~n$
+	\end{lstlisting}
+	\[\nil'' := \l A : \uni . \nil'~A~0~(\refl~\nat~0) \]
+	\[\con'' := \l A : \uni, n : \nat, a : A, v : \ve'~A~n . \con'~A~(\s~n)~n~a~v~(\refl~\nat~(\s~n))\]
+	\[\vdash \rec_{\ve}' : \P A : \uni, P : (\P n : \nat. \ve'~A~n \to \uni) . P~0~(\nil''~A) \to\]
+	\[(\P n : \nat, a : A, v : \ve'~A~n. P~n~v \to P~(\s~n) (\con''~A~n~a~v)) \to \P n : \nat, v : \ve'~A~n. P~n~v \]
+
+\section{Cast Calculus}
+\label{castcalcann}
+
+\subsection{Typing Rules}
+\begin{mathpar}
+\inferrule{(x : T) \in \Gamma}{\Gamma \vdash x : T} \and
+\inferrule{ }{\Gamma \vdash \underline{n} : \nat} \and
+\inferrule{ }{\Gamma \vdash \underline{b} : \bool} \and
+\inferrule{\Gamma, x : T_1 \vdash t : T_2}{\Gamma \vdash \l x : T_1 . t : T_1 \to T_2} \and
+\inferrule{\Gamma \vdash t_1 : T_1 \\ \Gamma \vdash t_2 : T_2 \\ \dom(T_1) = T_2}{\Gamma \vdash t_1~t_2 : \cod(T_2)} \and
+\inferrule{\Gamma \vdash t_1 : T_1 \\ \Gamma \vdash t_2 : T_2 \\ T_1 = \nat \\ T_2 = \nat}{\Gamma \vdash t_1+t_2 : \nat} \and
+\inferrule{\Gamma \vdash t_1 : T_1 \\ \Gamma \vdash t_2 : T_2 \\ \Gamma \vdash t_3 : T_3 \\ T_1 = \bool \\ T_2 = T \\ T_3 = T}{\Gamma \vdash \ite{t_1}{t_2}{t_3} : T} \and
+\inferrule{ }{\Gamma \vdash \rai : T}  \and
+\inferrule{\Gamma \vdash t : T_1}{\Gamma \vdash \cast{T_1}{T_2}{t} : T_2}  \and
+\end{mathpar}
+
+\subsection{Compilation Rules}
+
+\begin{mathpar}
+\inferrule{(x : T) \in \Gamma}{\Gamma \vdash x \comp x : T} \and
+\inferrule{ }{\Gamma \vdash \underline{n} \comp \underline{n} : \nat} \and
+\inferrule{ }{\Gamma \vdash \underline{b} \comp \underline{b} : \bool} \and
+\inferrule{\Gamma, x : T_1 \vdash t \comp t' : T_2}{\Gamma \vdash \l x : T_1 . t \comp \l x : T_1 . t' : T_1 \to T_2} \and
+\inferrule{\Gamma \vdash t_1 \comp t_1' : T_1 \\ \Gamma \vdash t_2 \comp t_2' : T_2 \\ \dom_{\?}(T_1) \cons T_2}{\Gamma \vdash t_1~t_2 \comp t_1'~(\cast{T_2}{\dom_{\?}(T_1)}{t_2'}): \cod_{\?}(T_1)} \and
+\inferrule{\Gamma \vdash t_1 \comp t_1' : T_1 \\ \Gamma \vdash t_2 \comp t_2' : T_2 \\ T_1 \cons \nat \\ T_2 \cons \nat}{\Gamma \vdash t_1+t_2 \comp \cast{T_1}{\nat}{t_1'}+\cast{T_2}{\nat}{t_2'} : \nat} \and
+\inferrule{\Gamma \vdash t_1 \comp t_1' : T_1 \\ \Gamma \vdash t_2 \comp t_2' : T_2 \\ \Gamma \vdash t_3 \comp t_3' : T_3 \\ T_1 \cons \bool \\ T_2 \cons T \\ T_3 \cons T}{\Gamma \vdash \ite{t_1}{t_2}{t_3} \comp \ite{(\cast{T_1}{\bool}{t_1'})}{(\cast{T_2}{T}{t_2'})}{(\cast{T_3}{T}{t_3'})} : T} \and
+\end{mathpar}
+
+\section{Compilation rules for \gcic}
+\label{compcican}
+
+\begin{mathpar}
+	\inferrule{ }{\vdash \cdot} \and
+	\inferrule{\Gamma \vdash A : \uni \comp A'}{\vdash \Gamma, x : A} \and
+	\inferrule{\Gamma \vdash B : \uni \comp B' \\ \Gamma \vdash x : A \comp t'}{\Gamma, y : B \vdash x : A \comp t'} \and
+	\inferrule{\vdash \Gamma, x : A}{\Gamma, x : A \vdash x : A \comp x} \and
+	\inferrule{\vdash \Gamma}{\Gamma \vdash \uni[i] : \uni[i + 1] \comp \uni[i]} \and
+	\inferrule{\Gamma, x : A \vdash t : B \comp t' \\ \Gamma \vdash \P x : A . B : \uni \comp \P x : A' . B'}{\Gamma \vdash \l x : A. t :  \P x : A . B \comp \l x : A'. t' } \and
+	\inferrule{\Gamma, x : A \vdash B : \uni[i] \comp B' \\ \Gamma \vdash A : \uni[j] \comp A'}{\Gamma \vdash  \P x : A . B : \uni[\max(i,j)] \comp \Pi x : A' . B'} \and
+	\inferrule{\Gamma \vdash t :  \P x : A . B \comp t' \\ \Gamma \vdash u : A \comp u'}{\Gamma \vdash t~u : \sub{B}{u}{x} \comp t'~u'} \and
+	\inferrule{\Gamma \vdash T : \uni \comp T'}{\Gamma \vdash \? : T \comp \?~T'} \and
+	\inferrule{\Gamma \vdash t : A \comp t' \\ A \cons B \\ \Gamma \vdash A : \uni \comp A' \\ \Gamma \vdash B :\uni \comp B'}{\Gamma \vdash \cast{A'}{B'}{t'} }  \and
+\end{mathpar}
+
+\section{Reduction of $\Omega$}
+\label{omred}
+We write $\?_i$ for $\?~\uni[i]$. We first get
+\[\vdash \Omega : \?_{i+1} \comp (\l x : \?_{i + 1}.(\cast{\?_{i+1}}{\?_{i+1} \to \?_{i+1}}{x})~x)~(\cast{\?_i \to \?_i}{\?_{i+1}}{(\l x : \?_i. \cast{\?_i}{\?_i \to \?_i}{x}~x)})\]
+For readability, we set
+\[\delta_i := \l x : \?_i . (\cast{\?_i}{\?_i \to \?_i}{x})~x \]
+and (with a slight notational abuse)
+\[\Omega_i := \delta_{i+1}~(\cast{\?_i \to \?_i}{\?_{i+1}}{\delta_i}) \]
+The reduction now gives
+\[\begin{array}{rcl}
+\Omega_i & \red^* & (\cast{\?_{i+1}}{\?_{i+1} \to \?_{i+1}}{\cast{\?_i \to \?_i}{\?_{i+1}}{\delta_i}})~(\cast{\?_i \to \?_i}{\?_{i+1}}{\delta_i}) \\
+		& \red^* & (\cast{\?_i \to \?_i}{\?_{i+1} \to \?_{i+1}}{\delta_i})~(\cast{\?_i \to \?_i}{\?_{i+1}}{\delta_i}) \\
+		& \red^* & (\l x : \?_{i+1}. \cast{\?_i}{\?_{i+1}}{((\cast{\?_i}{\?_i \to \?_i}{\cast{\?_{i+1}}{\?_i}{x}})~\cast{\?_{i+1}}{\?_i}{x})})(\cast{\?_i \to \?_i}{\?_{i+1}}{\delta_i}) \\
+		& \red^* & (\l x : \?_{i+1}.\cast{\?_i}{\?_{i+1}}{((\cast{\?_i}{\?_i \to \?_i}{\?~\?_i})~(\?~\?_i))})(\cast{\?_i \to \?_i}{\?_{i+1}}{\delta_i}) \\
+		& \red^* & \?~(\?_{i+1})
+\end{array} \]
+
+
+\end{document}
