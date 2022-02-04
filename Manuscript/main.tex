@@ -7,7 +7,7 @@
 ]{kaobook/kaobook}
 
 % Choose the language
-\usepackage[english]{babel} % Load characters and hyphenation
+\usepackage[french,english]{babel} % Load characters and hyphenation
 \usepackage[english=british]{csquotes}	% English quotes
 
 % Load packages for testing
@@ -135,17 +135,78 @@
 \mainmatter % Denotes the start of the main document content, resets page numbering and uses arabic numbers
 \setchapterstyle{kao} % Choose the default chapter heading style
 
-\chapter{First Chapter}
+\chapter*{How to read this thesis}
 
-\blindtext
+
+\selectlanguage{french}
+\chapter{Introduction (français)}
+
+Où j’introduis le sujet de manière générale :
+\begin{itemize}
+  \item logique
+  \item théorie des types
+  \item assistants à la démonstration
+  \item typage bidirectionnel
+\end{itemize}
+Et où j’explique ce qui vient d’où et quelles sont mes contributions, vu de très très loin.
+
+\selectlanguage{english}
+\chapter{Introduction (English)}
+
+Where I introduce the subject in a quite general manner:
+\begin{itemize}
+  \item logics
+  \item type theory
+  \item proof assistants
+  \item bidirectional typing
+\end{itemize}
+And where I also explain what comes from where and what my contributions are, seen from very
+far away.
 
 \pagelayout{wide} % No margins
-\addpart{Title of the Part}
+\addpart{Bidirectional typing for dependent types}
 \pagelayout{margin} % Restore margins
 
-\chapter{Second Chapter}
+\chapter{Warmup: CCω}
 
-\blindtext
+This could probably be taken quite literally from ITP21?
+
+\chapter{The real thing: extension to fancy CIC}
+
+Same, all hail ITP21
+
+\chapter{Bidirectional conversion, Abel style}
+
+Does this belong in this part, or in a self-standing part at the end?
+It would make little sense to come back to this after formalisation + gradual typing,
+but at the same time having it so early is a bit odd.
+
+\pagelayout{wide} % No margins
+\addpart{Formalizing a kernel for Coq}
+\pagelayout{margin} % Restore margins
+
+\chapter{The MetaCoq project}
+
+Probably have to write something new, a form of digest of JACM/CoqCoqCorrect/… maybe? Also
+depends whether we let this one out before the manuscript, I guess.
+
+\chapter{Proving the kernel correct}
+
+Longer description of what I did there, mixup between ITP and JACM.
+
+\pagelayout{wide} % No margins
+\addpart{Bidirectional Elaboration for Gradual Typing}
+\pagelayout{margin} % Restore margins
+
+\chapter{Bidirectional Typing Meet Dependent Types}
+
+Take inspiration from first sections of TOPLAS paper here.
+
+\chapter{GCIC, CastCIC and the Elaboration}
+
+Again, should be an adaptation from TOPLAS. Maybe I can do a bit more, especially if
+I concentrate on the bidirectional way of things. For instance, I could try and give a
+better algorithm for deciding conversion than the crappy one from the paper.
 
 \appendix % From here onwards, chapters are numbered with letters, as is the appendix convention
 
