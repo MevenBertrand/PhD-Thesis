@@ -2,24 +2,66 @@
 \label{ch:intro-fr}
 
 \selectlanguage{english}
-\begin{kaobox}[frametitle=Warning for the English-speaking readers, backgroundcolor=Black!10!White,frametitlebackgroundcolor=Black!10!White]
-  This section is an introduction intended for French-speaking readers. If you do not
-  read French, you should read \cref{ch:intro-en}, which is its translation in English.
+\begin{kaobox}[backgroundcolor=Black!10!White,frametitlebackgroundcolor=Black!10!White]
+  This section is an introduction intended for French-speaking readers.
+  If your English is better than your French,
+  you should instead read \cref{ch:intro-en}, its translation in English.
 \end{kaobox}
 \selectlanguage{french}
 
-Où j’introduis le sujet de manière générale, en français (voir \cref{ch:intro-en} pour l’anglais).
+Cette thèse se situe dans le domaine de la \kl{théorie des
+types (dépendants)}, lui-même au croisement entre informatique et logique mathématique.
+L’objectif principal est de participer aux fondements théoriques et pratiques des outils
+que l’on appelle \kl{assistants à la preuve}, des logiciels qui, comme leur nom
+l’indique, ont pour but d’assister des êtres humains dans la construction
+et la vérification de preuves – au sens mathématique du terme. Il sera dans cette thèse
+en particulier beaucoup question de l’assistant à la preuve \kl{Coq}, qui est celui
+sur lequel mon travail s’est principalement concentré.
+
+Pour replacer ce travail dans son contexte large, je propose dans cette introduction une histoire très parcellaire et orientée de la logique mathématique
+(\cref{sec:logique-histoire}), puis une courte présentation des assistants à la preuve,
+notamment ceux qui, comme \kl{Coq}, se basent sur la théorie des types (\cref{sec:assistants-preuve}). Enfin je finis par une présentation de mes contributions
+personnelles pendant la durée de cette thèse (\cref{sec:cette-these}).
 
 \section{Une très courte histoire de la logique}
+\label{sec:logique-histoire}
+
+\paragraph{Les syllogismes.}
+Dans la tradition occidentale, on peut faire remonter l’étude systématique de
+la logique à Aristote, dans son \textit{Organon}.\todo{Citer Aristote correctement}
+L’un des apports de ce travail est d’introduire les syllogismes.
+\marginnote{
+  Le syllogisme le plus connu est probablement Barbara, dont un exemple est :
+  \emph{tous les humains sont mortels ; Socrate est humain ; donc Socrate est mortel.}
+}
+Il s’agit de raisonnements dont la validité tient seulement au fait qu’ils
+suivent une structure générale, et non à son contenu particulier.
+Si un raisonnement est construit en assemblant ces syllogismes,
+le raisonnement dans son entier doit nécessairement l’être également, puisque
+chaque pas de raisonnement est valide.
+L’idée importante ici est celle de décomposition en composantes élémentaires. À
+partir d’un système de règles de raisonnement qu’on a identifiées comme valides 
+\textit{a priori},\sidenote{
+  Il peut s’agir de syllogismes, mais de bien d’autres systèmes… On en rencontra
+  un certain nombre dans cette thèse !
+}
+on a un moyen de s’assurer de la validité de raisonnements potentiellement
+très complexes.
+Il suffit de vérifier qu’ils peuvent être décomposés à partir
+des règles de base – et, bien entendu, que celles-ci soient correctes.
+
+\paragraph{Les débuts de la logique mathématique.}
+
 
 \begin{itemize}
-  \item logique grecque (sillogismes, petites composantes de base irréfutables)
+  \item logique grecque (syllogismes, petites composantes de base irréfutables)
   \item les soucis du langage naturel
   \item crise des fondements : quel système choisir ? -> Gödel : saut de la foi + vérité vs prouvabilité
 \end{itemize}
 Conclusion : les mathématicien·ne·s sont globalement content·e·s
 
 \section{Les ordinateurs entrent en scène}
+\label{sec:assistants-preuve}
 
 \subsection{Pourquoi les ordinateurs ?}
 
@@ -38,6 +80,7 @@ Curry-Howard, et la métaphore de la grammaire.
 À garder ?
 
 \section{Et cette thèse, alors ?}
+\label{sec:cette-these}
 
 \subsection{Le typage bidirectionnel}
 
