@@ -28,3 +28,9 @@ Manuscript/main.run.xml
 Manuscript/main.synctex.gz
 
 Manuscript/main.toc
+
+*.aux
+
+Manuscript/main.diagnose
+
+Manuscript/main.kaux

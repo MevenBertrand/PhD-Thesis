@@ -9,4 +9,3 @@ Packages/commands to setup:
 - includeonly
 - knowledge
 - kaobook
-- output-directory

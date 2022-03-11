@@ -1,5 +1,6 @@
 % Load the kaobook class
 \documentclass[
+  french,english,
 	fontsize=10pt, % Base font size
 	twoside=true, % Use different layouts for even and odd pages (in particular, if twoside=true, the margin column will be always on the outside)
 	%open=any, % If twoside=true, uncomment this to force new chapters to start on any page, not only on right (odd) pages
@@ -7,7 +8,7 @@
 ]{kaobook/kaobook}
 
 % Choose the language
-\usepackage[french,english]{babel} % Load characters and hyphenation
+\usepackage{babel} % Load characters and hyphenation
 \usepackage[english=british]{csquotes}	% English quotes
 
 % Load packages for testing
@@ -32,101 +33,11 @@
 
 \makeindex[columns=3, title=Alphabetical Index, intoc] % Make LaTeX produce the files required to compile the index
 
+%\includeonly{header,intro-fr}
 
 \begin{document}
 
-%----------------------------------------------------------------------------------------
-%	BOOK INFORMATION
-%----------------------------------------------------------------------------------------
-
-% \titlehead{Document Template}
-\title[PhD Thesis]{PhD Thesis}
-\author[M. Lennon-Bertrand]{Meven Lennon-Bertrand}
-\date{\today}
-% \publishers{An Awesome Publisher}
-
-%----------------------------------------------------------------------------------------
-
-\frontmatter % Denotes the start of the pre-document content, uses roman numerals
-
-%----------------------------------------------------------------------------------------
-%	COPYRIGHT PAGE
-%----------------------------------------------------------------------------------------
-
-\makeatletter
-\uppertitleback{\@titlehead} % Header
-
-\lowertitleback{
-	% \textbf{Disclaimer} \\
-	% You can edit this page to suit your needs. For instance, here we have a no copyright statement, a colophon and some other information. This page is based on the corresponding page of Ken Arroyo Ohori's thesis, with minimal changes.
-	
-	% \medskip
-	
-	% \textbf{No copyright} \\
-	% \cczero\ This book is released into the public domain using the CC0 code. To the extent possible under law, I waive all copyright and related or neighbouring rights to this work.
-	
-	% To view a copy of the CC0 code, visit: \\\url{http://creativecommons.org/publicdomain/zero/1.0/}
-	
-	% \medskip
-	
-	% \textbf{Colophon} \\
-	% This document was typeset with the help of \href{https://sourceforge.net/projects/koma-script/}{\KOMAScript} and \href{https://www.latex-project.org/}{\LaTeX} using the \href{https://github.com/fmarotta/kaobook/}{kaobook} class.
-	
-	% \medskip
-	
-	% \textbf{Publisher} \\
-	% First printed in May 2019 by \@publishers
-}
-\makeatother
-
-%----------------------------------------------------------------------------------------
-%	DEDICATION
-%----------------------------------------------------------------------------------------
-
-\dedication{
-	% The harmony of the world is made manifest in Form and Number, and the heart and soul and all the poetry of Natural Philosophy are embodied in the concept of mathematical beauty.\\
-	% \flushright -- D'Arcy Wentworth Thompson
-}
-
-%----------------------------------------------------------------------------------------
-%	OUTPUT TITLE PAGE AND PREVIOUS
-%----------------------------------------------------------------------------------------
-
-% Note that \maketitle outputs the pages before here
-\maketitle
-
-%----------------------------------------------------------------------------------------
-%	PREFACE
-%----------------------------------------------------------------------------------------
-
-\chapter*{Preface}
-
-%----------------------------------------------------------------------------------------
-%	TABLE OF CONTENTS & LIST OF FIGURES/TABLES
-%----------------------------------------------------------------------------------------
-
-\begingroup % Local scope for the following commands
-
-% Define the style for the TOC, LOF, and LOT
-%\setstretch{1} % Uncomment to modify line spacing in the ToC
-%\hypersetup{linkcolor=blue} % Uncomment to set the colour of links in the ToC
-\setlength{\textheight}{230\vscale} % Manually adjust the height of the ToC pages
-
-% Turn on compatibility mode for the etoc package
-\etocstandarddisplaystyle % "toc display" as if etoc was not loaded
-\etocstandardlines % "toc lines as if etoc was not loaded
-
-\tableofcontents % Output the table of contents
-
-% \listoffigures % Output the list of figures
-
-% Comment both of the following lines to have the LOF and the LOT on different pages
-% \let\cleardoublepage\bigskip
-% \let\clearpage\bigskip
-
-% \listoftables % Output the list of tables
-
-\endgroup
+\include{header}
 
 %----------------------------------------------------------------------------------------
 %	MAIN BODY
@@ -137,55 +48,15 @@
 
 \chapter*{How to read this thesis}
 
-
 \selectlanguage{french}
-\chapter{Introduction (français)}
 
-Où j’introduis le sujet de manière générale.
-
-\section{Une très courte histoire de la logique}
-
-\begin{itemize}
-  \item logique grecque (sillogismes, petites composantes de base irréfutables)
-  \item les soucis du langage naturel
-  \item crise des fondements : quel système choisir ? -> Gödel : saut de la foi + vérité vs prouvabilité
-\end{itemize}
-Conclusion : les mathématicien·ne·s sont globalement content·e·s
-
-\section{Les ordinateurs entrent en scène}
-
-\subsection{Pourquoi les ordinateurs ?}
-
-\begin{itemize}
-  \item Rend la vérification de preuve faisable quoique difficile, plutôt que parfaitement impossible.
-  \item Automatisation et calcul sous la main, très pratique pour plein de situations mathématiques.
-  \item Preuves et programmes au même endroit, parfait pour… la preuve de programmes.
-\end{itemize}
-
-\subsection{Théorie des types et langages de programmation}
-
-Curry-Howard, et la métaphore de la grammaire.
-
-\subsection{Une courte histoire des assistants à la preuve}
-
-À garder ?
-
-\section{Et cette thèse, alors ?}
-
-\subsection{Le typage bidirectionnel}
-
-\subsection{MetaCoq}
-
-\subsection{Élaboration bidirectionnelle pour le typage graduel}
+\include{intro-fr}
 
 \selectlanguage{english}
-\chapter{Introduction (English)}
 
-See the section above, should more or less be a translation.
+\include{intro-en}
 
-\chapter{Technical Introduction}
-
-Where I talk about CIC/MLTT, 
+\include{technical-intro}
 
 \pagelayout{wide} % No margins
 \addpart{Bidirectional typing for dependent types}
