@@ -23,7 +23,7 @@ Pour replacer ce travail dans son contexte large, je propose dans cette introduc
 notamment ceux qui, comme \kl{Coq}, se basent sur la théorie des types (\cref{sec:assistants-preuve}). Enfin je finis par une présentation de mes contributions
 personnelles pendant la durée de cette thèse (\cref{sec:cette-these}).
 
-\section{Une très courte histoire de la logique}
+\section{Une (très courte) histoire de la logique}
 \label{sec:logique-histoire}
 
 \paragraph{Les syllogismes.}
@@ -74,18 +74,72 @@ importante ici a été la réduction de l’analyse à un petit nombre de propri
 des nombres réels, puis les constructions de ces nombres réels à partir
 de l’arithmétique, données simultanément par plusieurs auteurs\sidenote{
   Cantor, Méray, Dedekind, Bertrand, Weierstraß
-}\todo{citation?} autour de 1870. De son côté Peano \cite{??} propose
+}\todo{citation?} autour de 1870. De son côté Peano \cite{PeanoAxioms} propose
 l’axiomatisation des nombres entier qui est nommée en son honneur.
 Enfin Cantor \cite{??}
 propose la théorie des ensembles comme un formalisme permettant
 de décrire la totalité des objets mathématiques sous la forme d’ensemble
 d’éléments.
 
-\begin{itemize}
-  \item les soucis du langage naturel
-  \item crise des fondements : quel système choisir ? -> Gödel : saut de la foi + vérité vs prouvabilité
-\end{itemize}
-Conclusion : les mathématicien·ne·s sont globalement content·e·s
+\paragraph{La crise des fondements.}
+Hélas, le système proposé dans \cite{Begriffsschrift}, fortement inspiré par
+les travaux de Cantor, est incohérent\sidenote{
+  C'est-à-dire qu’il permet de prouver le faux, et donc qu’il ne peut pas servir
+  de base valide pour la logique.
+} !
+Ce constat, dû à Russell \cite{Begriffsschrift}\todo{Citer le bon appendice},
+ouvre une période de crise, où la problématique de décrire un système qui permette
+de fonder l’entièreté des mathématiques,
+tout en évitant les inconsistances desquelles
+le système de Frege et probablement ceux de Cantor étaient victimes.
+
+Une première proposition de solution est avancée par Whitehead et Russell
+avec \cite{Principia}, un énorme travail qui non seulement propose un système
+logique qui évite les paradoxes conduisant à l’incohérence de
+\cite{Begriffsschrift}, mais de plus réalise dans ce système une quantité importante
+de mathématiques, en particulier une construction des entiers, de l’arithmétique et
+finalement des nombres réels.
+
+En parallèle, dans la continuité des travaux de Cantor, Zermelo \cite{Zermelo1905} et
+d’autres travaillent à fournir une description formelle de la théorie des ensemble
+qui soit elle aussi cohérente. Ceci aboutit à ce qui est appelé de nos jours la
+théorie des ensembles de Zermelo-Fraenkel (ZF, ou ZFC quand on y ajoute l’axiome
+du choix), qui semble également à même de fournir une base solide pour les
+mathématiques.
+
+\paragraph{L’incomplétude.}
+Un deuxième coup vient cependant frapper la recherche d’un système adéquat pour
+servir de fondation aux mathématiques : le théorème d’incomplétude de Gödel
+\cite{incomplétude}. Celui-ci affirme que tout système formel dans lequel on peut
+construire des nombres entiers vérifiant les axiomes de Peano – donc
+\textit{a fortiori} tout système suffisamment riche pour faire des mathématiques –
+ne peut pas démontrer sa propre cohérence. Ainsi, il n’existe pas de
+système sur lequel on puisse fonder les mathématiques en ayant la certitude
+formelle que ce système est adéquat : puisqu’on ne peut prouver la cohérence du
+système dans lui-même, il pourrait finalement s’avérer incohérent, ruinant les
+efforts fournis.
+
+Une conséquence de ce théorème est qu’un système suffisamment riche
+pour faire des mathématiques est nécessairement incomplet.\sidenote{
+  Cela signifie qu’il
+  existe des énoncés indépendants, à savoir des assertions qu’on ne peut
+  ni démontrer, ni réfuter – c’est-à-dire montrer la négation. La cohérence du
+  système considéré en est un exemple.
+}
+Ainsi, dans la suite je ne parlerai jamais de vérité absolue –
+ce qui n’aurait de sens que dans un système complet
+où tout énoncé est vrai ou faux –, mais
+uniquement de prouvabilité \emph{dans un système donné}.
+
+\paragraph{Une première conclusion.}
+Malgré les difficultés mises au jour au début du 20\textsuperscript{e}
+siècle, les mathématiciens et mathématiciennes sont globalement
+satisfait·e·s de la situation : ZFC fournit un système raisonnable sur
+lequel baser en principe toutes les mathématiques, et même si peu de
+personnes se risquent à tenter, dans la veine de \cite{Principia},
+d’effectivement écrire leurs mathématiques à ce niveau de précision,
+la communauté est convaincue que ce serait en théorie globalement
+possible, et cela suffit amplement à la plupart.
 
 \section{Les ordinateurs entrent en scène}
 \label{sec:assistants-preuve}
