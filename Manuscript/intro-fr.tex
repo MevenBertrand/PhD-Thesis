@@ -1,6 +1,8 @@
 \chapter{Introduction (Français)}
 \label{ch:intro-fr}
 
+\margintoc
+
 \selectlanguage{english}
 \begin{kaobox}[backgroundcolor=Black!10!White,frametitlebackgroundcolor=Black!10!White]
   This section is an introduction intended for French-speaking readers.
@@ -8,6 +10,8 @@
   you should instead read \cref{ch:intro-en}, its translation in English.
 \end{kaobox}
 \selectlanguage{french}
+
+\todo{Références manquantes}
 
 Cette thèse se situe dans le domaine de la \kl{théorie des
 types (dépendants)}, lui-même au croisement entre informatique et logique mathématique.
@@ -22,13 +26,14 @@ Pour replacer ce travail dans son contexte large, je propose dans cette introduc
 (\cref{sec:logique-histoire}), puis une courte présentation des assistants à la preuve,
 notamment ceux qui, comme \kl{Coq}, se basent sur la théorie des types (\cref{sec:assistants-preuve}). Enfin je finis par une présentation de mes contributions
 personnelles pendant la durée de cette thèse (\cref{sec:cette-these}).
+\todo{Ajouter disclaimer}
 
 \section{Une (très courte) histoire de la logique}
 \label{sec:logique-histoire}
 
-\paragraph{Les syllogismes.}
+\subsection{Les syllogismes}
 Dans la tradition occidentale, on peut faire remonter l’étude de
-la logique à Aristote, dans son \textit{Organon}.\todo{Citer Aristote correctement}
+la logique à Aristote, dans son \cite{Organon}.
 L’un des apports de ce travail est d’introduire les syllogismes.\sidenote{
   Le syllogisme le plus connu est probablement Barbara, dont un exemple est :
   \emph{tous les humains sont mortels ; Socrate est humain ; donc Socrate est mortel.}
@@ -49,7 +54,7 @@ très complexes.
 Il suffit de vérifier qu’ils peuvent être décomposés à partir
 des règles de base – et, bien entendu, que celles-ci soient correctes.
 
-\paragraph{Les débuts de la logique mathématique.}
+\subsection{Les débuts de la logique mathématique}
 À la suite d’Aristote, les mathématicien·ne·s se sont emparé·e·s de la question
 de la logique, en cherchant comment il était possible de fonder les mathématiques
 rigoureusement. Bien qu’il s’agisse d’une question ancienne, de véritables
@@ -73,15 +78,15 @@ effectivement être reconstruites à partir de briques élémentaires. Une étap
 importante ici a été la réduction de l’analyse à un petit nombre de propriétés
 des nombres réels, puis les constructions de ces nombres réels à partir
 de l’arithmétique, données simultanément par plusieurs auteurs\sidenote{
-  Cantor, Méray, Dedekind, Bertrand, Weierstraß
-}\todo{citation?} autour de 1870. De son côté Peano \cite{PeanoAxioms} propose
-l’axiomatisation des nombres entier qui est nommée en son honneur.
+  Cantor, Méray, Dedekind, Bertrand, Weierstraß \cite{??}
+} autour de 1870. De son côté Peano \cite{PeanoAxioms} propose
+l’axiomatisation des nombres entiers qui est nommée en son honneur.
 Enfin Cantor \cite{??}
 propose la théorie des ensembles comme un formalisme permettant
 de décrire la totalité des objets mathématiques sous la forme d’ensemble
 d’éléments.
 
-\paragraph{La crise des fondements.}
+\subsection{La crise des fondements}
 Hélas, le système proposé dans \cite{Begriffsschrift}, fortement inspiré par
 les travaux de Cantor, est incohérent\sidenote{
   C'est-à-dire qu’il permet de prouver le faux, et donc qu’il ne peut pas servir
@@ -133,26 +138,86 @@ uniquement de prouvabilité \emph{dans un système donné}.
 
 \paragraph{Une première conclusion.}
 Malgré les difficultés mises au jour au début du 20\textsuperscript{e}
-siècle, les mathématiciens et mathématiciennes sont globalement
-satisfait·e·s de la situation : ZFC fournit un système raisonnable sur
+siècle, la communauté mathématique est globalement
+satisfaite de la situation : ZFC fournit un système raisonnable sur
 lequel baser en principe toutes les mathématiques, et même si peu de
 personnes se risquent à tenter, dans la veine de \cite{Principia},
 d’effectivement écrire leurs mathématiques à ce niveau de précision,
-la communauté est convaincue que ce serait en théorie globalement
+elle est globalement convaincue que ce serait en théorie
 possible, et cela suffit amplement à la plupart.
+
+De plus, le développement et la vérification humaine de mathématiques véritablement
+formalisées semble essentiellement impossible et inutile.
+D’un côté, cela demanderait un effort considérable,
+tant de la part de l’autrice que de celle de la lectrice, tout en étant
+extrêmement laborieux et désagréable.
+Dans le même temps, cela ne permettrait pas de réduire de manière importante
+les risques d’erreurs, puisqu’il est
+humainement très difficile de détecter une petite erreur au milieu de centaines de pages de raisonnement.
+Enfin, décrire les mathématiques à ce niveau obscurcirait
+considérablement les intuitions mathématiques importantes,
+rendant la communication stérile.
 
 \section{Les ordinateurs entrent en scène}
 \label{sec:assistants-preuve}
 
+Un nouvel élément vient cependant altérer cette situation :
+l’avènement des ordinateurs.
+
 \subsection{Pourquoi les ordinateurs ?}
 
-\begin{itemize}
-  \item Rend la vérification de preuve faisable quoique difficile, plutôt que parfaitement impossible.
-  \item Automatisation et calcul sous la main, très pratique pour plein de situations mathématiques.
-  \item Preuves et programmes au même endroit, parfait pour… la preuve de programmes.
-\end{itemize}
+Les ordinateurs excellent là où les humains pêchent : leur spécialité est de traiter
+d’immenses volumes d’information très précise, exactement le type
+de besoins que soulève la manipulation de preuves formelles. C’est pourquoi, dès
+la fin des années 60\sidenote{
+  Avec des systèmes comme Automath \cite{??}, Mizar \cite{??}…}
+ont commencé à apparaître ce que l’on appelle \emph{assistants à la
+preuve}, des outils informatiques servant à écrire, vérifier et communiquer des
+preuves.
+Via la formalisation de ces preuves et la vérification par l’ordinateur qu’elles
+suivent bien les règles du système logique sous-jacent, les assistants à la preuve
+donnent accès à une fiabilité bien plus important que celle des preuves
+traditionnelles. Des mathématiciens de premier plan comme
+Hales~\sidecite[][Preface, p. xi]{Hales2012},
+Voevodsky~\cite{??} ou
+Scholze \cite{LiquidTensorExperiment}
+se sont déjà emparés des assistants à la preuve dans le but de lever les incertitudes
+sur la solidité de leur propre travail.
+
+Mais le terme d’\emph{assistant} à la preuve n’a pas été choisi par hasard : au-delà
+de la simple vérification, les assistants à la preuve ouvrent la porte à un large
+éventail d’outils mis à la disposition de la programmeuse. Il peut s’agir de simples
+facilités, comme la possibilité de pouvoir visualiser la structure des
+preuves, de suivre l’utilisation des hypothèses, etc.
+Mais l’informatique rend surtout possible l’automatisation de pans entiers
+de l’écriture de preuves,
+par exemple via l’utilisation d’un langage de tactique \cite{??} qui permet
+de décrire des preuves à niveau en programmant la manière dont elles sont générées,
+voire en utilisant directement la recherche en preuve automatique
+\cite{Sledgehammer,SMTCoq}. \textit{In fine}, cette automatisation permet d’écrire
+les preuves à relativement haut niveau, en laissant à l’assistant à la preuve le soin
+de générer une preuve formelle.
+Enfin, bien qu’encore relativement peu développées,
+les interactions entres les outils informatiques dédiés au calcul mathématique
+(systèmes de calcul formel, analyse numérique) et les assistants à la
+preuves sont une piste très prometteuse.
+
+De plus, si l’utilisation de programmes
+de toutes sortes permet de grandement augmenter
+les possibilités offertes par les assistants à la preuve,
+la présence au même endroit – l’ordinateur –
+de preuves et de programmes est parfaite pour… la preuve de programmes.
+Les assistants de preuves offrent un cadre naturel dans lequel
+montrer qu’un programme s’exécute correctement, en ne rencontrant pas de bug,
+en permettant de décrire au même endroit le code source du programme et sa
+preuve de correction, et de faire évoluer la seconde simultanément avec le premier.
 
 \subsection{Théorie des types et langages de programmation}
+
+Pour fonctionner, ces assistants à la preuve ont besoin d’une
+description formelle des "règles du jeu" mathématiques qu’ils sont censés imposer.
+En clair, ils demandent une étude renouvelée de la logique, mais dans le but
+pratique de construire des outils fonctionnels, agréables à utiliser et puissants.
 
 Curry-Howard, et la métaphore de la grammaire.
 
