@@ -171,7 +171,7 @@ d’immenses volumes d’information très précise, exactement le type
 de besoins que soulève la manipulation de preuves formelles. C’est pourquoi, dès
 la fin des années 60\sidenote{
   Avec des systèmes comme Automath \cite{??}, Mizar \cite{??}…}
-ont commencé à apparaître ce que l’on appelle \emph{assistants à la
+ont commencé à apparaître ce que l’on appelle \intro{assistants à la
 preuve}, des outils informatiques servant à écrire, vérifier et communiquer des
 preuves.
 Via la formalisation de ces preuves et la vérification par l’ordinateur qu’elles
@@ -226,7 +226,7 @@ puissants et faciles à utiliser.
 Il existe plusieurs familles d’assistants à la preuve, basées sur des fondements
 logique relativement différents. La famille qui m’intéresse dans cette thèse, est
 celle à laquelle appartient Coq, celle basée sur la
-\emph{correspondance de Curry-Howard} et la \emph{théorie des types dépendants}.
+\kl{correspondance de Curry-Howard} et la \kl{théorie des types dépendants}.
 
 Si on compare un programme informatique à un texte dans une langue naturelle,
 les types sont une sorte d’équivalent des catégories grammaticales.
@@ -245,7 +245,7 @@ Mais les utilisations des types sont très versatiles, et leurs capacités à en
 des propriétés des programmes sous-jacents peuvent servir à la compilation, la
 documentation, etc.
 
-\begin{marginfigure}
+\begin{marginfigure}[2em]
 
   % \begin{mathpar}
   %   \inferrule{ \Gamma, A \vdash B}{\Gamma \vdash A \Rightarrow B} \and
@@ -270,7 +270,7 @@ documentation, etc.
   \label{fig:curry-howard-exemple}
 \end{marginfigure}
 
-Plutôt qu’un théorème précis, la correspondance de Curry-Howard est une
+Plutôt qu’un théorème précis, la \intro{correspondance de Curry-Howard} est une
 idée très générale,
 selon lequel il existe une ressemblance forte entre d’un côté le monde de la
 logique et des preuves, et de l’autre celui des programmes et de leurs types.
@@ -287,25 +287,23 @@ Une paire $(a,b)$ a le type $A \times B$ si $a$ est de type $A$ et $b$
 est de type $B$.
 À l’inverse si $p$ est de type $A \times B$, alors sa première projection $p.1$
 est de type $A$ et sa seconde projection $p.2$ est de type $B$.
-Si on efface les termes/programmes des règles du bas,
-on obtient \emph{exactement} les règles du haut !
+Si on efface les termes\sidenote{
+  Dans ce contexte, on parle souvent de \emph{termes} plutôt que de programmes,
+  mais les deux sont synonymes.
+} des règles du bas, on obtient \emph{exactement} les règles du haut !
 
 Ceci s’étend bien au-delà du cas de la conjonction,
 en une correspondance générale entre d’une part les énoncés de la logique et les types des langages de programmation – \emph{propositions as types} –, et d’autre part les preuves d’un énoncé et les programmes ayant le type correspondant – \emph{proofs as programs}.
 Au-delà de la simple analogie entre formalismes d’origines différentes, cette correspondance est un outil puissant pour faire dialoguer deux mondes.
 En particulier, elle permet de relier deux problèmes \textit{a priori} éloignés :
-la vérification de la correction d’une preuve et l’analyse du type d’un terme
-\sidenote{
-  Dans ce contexte, on parle souvent de \emph{termes} plutôt que de programmes,
-  les deux sont ici synonymes.
-}.
+la vérification de la correction d’une preuve et l’analyse du type d’un terme.
 
 La correspondance de Curry-Howard est donc idéale pour servir de fondements aux
 assistants à la preuve, puisqu’elle permet de voir un système
 comme une logique, tout en autorisant l’utilisation d’idées venant de
 la large littérature sur les langages de programmation, notamment
 la théorie et l’implémentation des systèmes de types.
-Dans ce cadre, les systèmes types dépendants sont une famille dont
+Dans ce cadre, les \intro{systèmes de types dépendants} sont une famille dont
 la caractéristique principale, comme leur nom l’indique, est d’autoriser les
 types à dépendre de termes. L’exemple archétypique du point de vue de la 
 programmation est le type
@@ -319,18 +317,103 @@ sans lesquelles il est tout bonnement impossible d’exprimer la plupart des
 mathématiques. En revanche les systèmes à types dépendants, eux, sont suffisamment
 riches et puissant pour espérer y développer la plupart des mathématiques.
 
-\subsection{Une courte histoire des assistants à la preuve}
+\section{Grandeur et décadence d’un assistant à la preuve}
+\todo{Trouver un meilleur titre}
+\label{sec-coq}
 
-À garder ?
+  Intéressons-nous un peu plus en détail à l’assistant à la
+  preuve dont il sera le plus question dans cette thèse : Coq.
+
+  \subsection{La clé de voûte du système}
+  
+  \begin{figure}[h]
+
+    \centering
+    \includegraphics{./figures/coq-kernel-fr.pdf}
+  
+    \caption{Le fonctionnement de Coq}
+    \label{fig-coq}
+  \end{figure}
+
+  Coq est basé sur la \kl{correspondance de Curry-Howard} : les preuves sont vues comme des programmes dans un langage appelé \intro{Gallina},
+  et leur vérification est effectuée par un algorithme proche
+  de ceux utilisés pour les types des langages conventionnels.
+  Cependant, si dans les premières versions des années 80 Coq ressemblait à un langage de programmation un peu étrange, ce n’est actuellement plus du tout le cas.
+  La raison, comme on l’a expliqué plus haut, est que Coq est un \emph{assistant} à la preuve.
+  C’est pourquoi la majeure partie de Coq dans ses versions actuelles a pour but d’aider l’utilisatrice à générer une preuve correcte sans avoir à l’écrire directement.
+  Ce fonctionnement est illustré en \cref{fig-coq} : l’utilisatrice échange interactivement avec Coq, qui utilise cette interaction pour générer un terme de preuve. Celui-ci est ensuite envoyé à une partie bien spécifique du système, appelée \intro{noyau}.
+  C’est lui qui implémente l’algorithme de vérification de type, et s’assure ainsi de la correction des termes de preuve construits interactivement.
+  Le noyau est donc l’élément crucial du système, car c’est lui – et lui seul – qui est responsable en dernier recours de la validation des preuves.
+  
+  
+  Cette architecture, qui isole clairement la partie critique du système
+  est appelée \intro{critère de de Bruijn} \sidecite{Barendregt2001}, en 
+  hommage à l’un des pionniers des assistants à la preuve.
+  Elle a permis de mener à bien des projets de grande ampleur, parmi lesquels CompCert \sidecite{Kaestner2017} – un compilateur optimisant pour le langage C entièrement prouvé correct –, ou les preuves du théorème des quatre couleurs \sidecite{Gonthier2007} et du théorème de l’ordre impair \sidecite{Gonthier2013}, deux théorèmes importants et difficiles respectivement de la théorie des graphes et des groupes.
+  Cependant, si le reste de l’écosystème s’est beaucoup plus développé que le noyau depuis les débuts, celui-ci a également évolué, en se complexifiant graduellement.
+  Et comme tout développement logiciel, le noyau n’est pas à l’abri de bugs\sidenote{De l’ordre d'un bug détecté par an, une liste est maintenue à l’adresse suivante : \url{https://github.com/coq/coq/blob/master/dev/doc/critical-bugs}.}.
+  Ceux-ci sont en général difficilement exploitables par une utilisatrice de Coq, encore plus sans s’en rendre compte.
+  Néanmoins, ils existent, et la tendance à la complexification du noyau ne risque pas de s’arrêter de si tôt.
+
+\subsection{MetaCoq, une formalisation par Coq, pour Coq}
+\label{sec-metacoq}
+
+Si on veut garantir un niveau de fiabilité le plus élevé possible, il faut donc de nouvelles idées.
+Le projet MetaCoq, a pour but de répondre à cette problématique.
+L’idée est simple : il s’agit d’utiliser Coq lui-même pour certifier la correction de son noyau.
+
+Plus précisément, la première étape est de décrire à haut niveau le système de type sur lequel est basé le noyau, puis de démontrer ses propriétés théoriques.
+% , comme la confluence de la réduction, la préservation du typage par cette même réduction, etc.
+Une fois ces propriétés établies, la deuxième étape consiste à programmer un algorithme de vérification de type ressemblant au maximum à celui du noyau, directement en Gallina,\sidenote{
+  En effet, grâce à la correspondance de Curry-Howard, Gallina est certes un langage pour décrire des preuves, mais aussi un véritable langage de programmation fonctionnel !}
+tout en démontrant qu’il est bien correct\sidenote{
+  Si l’algorithme prétend qu’un terme est bien typé, alors c’est bien le cas.}
+et complet\sidenote{
+  L’algorithme répond bien affirmativement sur tous les termes bien typés.}.
+Enfin, une troisième étape extrait de ce programme Gallina certifié
+un programme efficace qui puisse être utilisé en lieu et place du noyau actuel.
+Cette extraction est elle-même complexe, car pour obtenir ce programme efficace il
+faut effacer le contenu lié à la preuve de correction
+pour ne garder que le contenu algorithmiquement intéressant.
+C’est pourquoi là encore on prouve que l’extraction est correcte\sidenote{
+  C'est-à-dire qu’elle préserve la sémantique des programmes.},
+à nouveau en la programmant en Gallina.
+
+Pour prouver la complétude de l’algorithme de typage, il est très utile de
+passer par une spécification intermédiaire plus structurée que la description
+théorique du système de type utilisée dans la première étape.
+En particulier, il est important de séparer deux problèmes proches, mais
+différents :
+d'une part, la vérification, où on cherche à \emph{vérifier}
+qu’un terme a bien un type
+donné ; de l’autre, l’inférence, où on cherche à \emph{trouver}
+un type pour un terme, s'il existe.
+L’algorithme de typage du noyau de Coq est bidirectionnel,
+c'est-à-dire qu’il alterne en permanence entre ces deux problèmes
+lorsqu’il vérifie qu’un terme est bien typé.
+% Par exemple, dans le cas d’une application $f~u$, il commence par inférer un type pour $f$, vérifie qu’il s’agit d’un type produit $\P x : A . B$ (une généralisation du type fonctionnel $A \to B$), puis vérifie que $u$ a le type $A$.
+Décrire formellement cette structure bidirectionnelle plus proche de l’algorithme
+permet de bien diviser les difficultés entre d’un côté
+son équivalence avec la présentation
+originale, et de l’autre la partie purement liée aux questions d’implémentation.
+
+\subsection{Un peu de flexibilité dans un monde désespérément statique}
+
 
 \section{Et cette thèse, alors ?}
 \label{sec:cette-these}
 
-Mais cela a un coût, car l’étude
-des systèmes de types dépendants sous tous leurs aspects
+Bien que très puissante, l’utilisation des types dépendants a un coût,
+car du fait de leur puissance logique, leur  tous leurs aspects
 est très complexe.
 
 \subsection{Le typage bidirectionnel}
+
+Ce typage bidirectionnel présente par ailleurs un certain nombre d’avantages théoriques au-delà du cadre de MetaCoq, qui sont cruciaux pour le travail évoqué en \cref{sec-graduel}.
+
+J’ai donc entrepris dans \cite{LennonBertrand2021} à la fois l’étude théorique de ce typage bidirectionnel dans le cadre complexe de Gallina, et la preuve en Coq de l’équivalence avec le système non-dirigé.
+Au passage, cette preuve a permis de détecter et corriger un bug dans le noyau qui était passé inaperçu jusque là.
+Il reste maintenant à prouver la complétude de l’algorithme vis-à-vis de cette nouvelle spécification, travail qui est en cours.
 
 \subsection{MetaCoq}
 
