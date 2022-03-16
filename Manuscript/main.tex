@@ -49,7 +49,7 @@
 \mainmatter % Denotes the start of the main document content, resets page numbering and uses arabic numbers
 \setchapterstyle{kao} % Choose the default chapter heading style
 
-\chapter*{How to read this thesis}
+\addchap{How to read this thesis}
 
 \selectlanguage{french}
 
@@ -63,18 +63,21 @@
 
 \pagelayout{wide} % No margins
 \addpart{Bidirectional typing for dependent types}
-\label{part:bidirectional-typing}
+\label{part:bidir}
 \pagelayout{margin} % Restore margins
 
 \chapter{Warmup: CCω}
+\label{chap:bidir-ccw}
 
 This could probably be taken quite literally from ITP21?
 
 \chapter{The real thing: extension to fancy CIC}
+\label{chap:bidir-cic}
 
 Same, all hail ITP21
 
 \chapter{Bidirectional conversion, Abel style}
+\label{chap:bidir-conv}
 
 Does this belong in this part, or in a self-standing part at the end?
 It would make little sense to come back to this after formalisation + gradual typing,
@@ -86,28 +89,30 @@ but at the same time having it so early is a bit odd.
 \pagelayout{margin} % Restore margins
 
 \chapter{The MetaCoq project}
+\label{chap:metacoq-general}
 
-Probably have to write something new, a form of digest of JACM/CoqCoqCorrect/… maybe? Also
-depends whether we let this one out before the manuscript, I guess.
+Probably have to write something new, a form of digest of JACM/CoqCoqCorrect/… maybe? Also depends whether we let this one out before the manuscript, I guess.
 
 \chapter{Proving the kernel correct}
+\label{chap:kernel-correctness}
 
 Longer description of what I did there, mixup between ITP and JACM.
 
 \pagelayout{wide} % No margins
 \addpart{Bidirectional Elaboration for Gradual Typing}
-\label{part:gradual-typing}
+\label{part:gradual}
 \pagelayout{margin} % Restore margins
 
-\chapter{Bidirectional Typing Meet Dependent Types}
+\chapter{Gradual Typing Meet Dependent Types}
+\label{chap:gradual-dependent}
 
 Take inspiration from first sections of TOPLAS paper here.
 
-\chapter{GCIC, CastCIC and the Elaboration}
+\chapter{From GCIC to CastCIC: Bidirectional Elaboration}
+\label{chap:bidir-gradual-elab}
 
 Again, should be an adaptation from TOPLAS. Maybe I can do a bit more, especially if
-I concentrate on the bidirectional way of things. For instance, I could try and give a
-better algorithm for deciding conversion than the crappy one from the paper.
+I concentrate on the bidirectional way of things. For instance, I could try and give a better algorithm for deciding conversion than the crappy one from the paper.
 
 \appendix % From here onwards, chapters are numbered with letters, as is the appendix convention
 
