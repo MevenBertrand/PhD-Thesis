@@ -13,7 +13,7 @@
 
 \todo{Références manquantes}
 
-Cette thèse se situe dans le domaine de la \kl{théorie des
+Cette thèse se situe dans le domaine de la \kl[type dépendant]{théorie des
 types (dépendants)}, lui-même au croisement entre informatique et logique mathématique.
 L’objectif principal est de participer aux fondements théoriques et pratiques des outils
 que l’on appelle \kl{assistants à la preuve}, des logiciels qui, comme leur nom
@@ -27,7 +27,6 @@ Pour replacer ce travail dans son contexte large, cette introduction commence pa
 puis une présentation des assistants à la preuve,
 notamment ceux qui, comme \kl{Coq}, se basent sur la théorie des types (\cref{sec:assistants-preuve}). Enfin la \cref{sec:cette-these} présente
 mes contributions personnelles cette thèse.
-\todo{Ajouter disclaimer ?}
 
 \section{Une (très courte) histoire de la logique}
 \label{sec:logique-histoire}
@@ -226,8 +225,8 @@ pratique de construire des outils à la fois fonctionnels,
 puissants et faciles à utiliser.
 Il existe plusieurs familles d’assistants à la preuve, basées sur des fondements
 logique relativement différents. La famille qui m’intéresse dans cette thèse, est
-celle à laquelle appartient Coq, celle basée sur la
-\kl{correspondance de Curry-Howard} et la \kl{théorie des types dépendants}.
+celle à laquelle appartient \kl{Coq}, celle basée sur la
+\kl{correspondance de Curry-Howard} et la \kl[type dépendant]{théorie des types dépendants}.
 
 Si on compare un programme informatique à un texte dans une langue naturelle,
 les types sont une sorte d’équivalent des catégories grammaticales.
@@ -294,7 +293,8 @@ Si on efface les termes\sidenote{
 } des règles du bas, on obtient \emph{exactement} les règles du haut !
 
 Ceci s’étend bien au-delà du cas de la conjonction,
-en une correspondance générale entre d’une part les énoncés de la logique et les types des langages de programmation – \emph{propositions as types} –, et d’autre part les preuves d’un énoncé et les programmes ayant le type correspondant – \emph{proofs as programs}.
+en une correspondance générale entre d’une part les énoncés de la logique et les types des langages de programmation , et d’autre part les preuves d’un énoncé et les programmes ayant le type correspondant\sidenote{
+  Le slogan en anglais est \textit{propositions as types, proofs as programs}.}.
 Au-delà de la simple analogie entre formalismes d’origines différentes, cette correspondance est un outil puissant pour faire dialoguer deux mondes.
 En particulier, elle permet de relier deux problèmes \textit{a priori} éloignés :
 la vérification de la correction d’une preuve et l’analyse du type d’un terme.
@@ -304,16 +304,16 @@ assistants à la preuve, puisqu’elle permet de voir un système
 comme une logique, tout en autorisant l’utilisation d’idées venant de
 la large littérature sur les langages de programmation, notamment
 la théorie et l’implémentation des systèmes de types.
-Dans ce cadre, les \intro{systèmes de types dépendants} sont une famille dont
+Dans ce cadre, les \intro[type dépendant]{systèmes de types dépendants} sont une famille dont
 la caractéristique principale, comme leur nom l’indique, est d’autoriser les
 types à dépendre de termes. L’exemple archétypique du point de vue de la 
 programmation est le type
-$Vect~A~n$\todo{setup macros} des listes contenant exactement $n$ éléments
-de type $A$, où $n$ est un entier.
+$\Vect A n$ des listes contenant exactement $n$ éléments
+de type $A$ – avec $n$ un entier.
 Du point de vue de la logique, cette
 dépendance correspond aux quantificateurs, nécessaires pour exprimer des
 propriétés universelles – pour tout entier $n$, la propriété $P(n)$ est
-vérifiée — et existentielles – il existe un entier $n$ tel que $P(n)$ tient,
+vérifiée — et existentielles – il existe un entier $n$ tel que $P(n)$ tient –,
 sans lesquelles il est tout bonnement impossible d’exprimer la plupart des
 mathématiques. En revanche les systèmes à types dépendants, eux, sont suffisamment
 riches et puissant pour espérer y développer la plupart des mathématiques.
@@ -322,8 +322,8 @@ riches et puissant pour espérer y développer la plupart des mathématiques.
 \todo{Trouver un meilleur titre}
 \label{sec:intro-coq}
 
-Intéressons-nous un peu plus en détail à l’assistant à la
-preuve dont il sera le plus question dans cette thèse : Coq.
+Intéressons-nous maintenant un peu plus précisément à l’assistant à la
+preuve dont il sera le plus question dans cette thèse : \intro{Coq}.
 
 \subsection{La clé de voûte du système}
 
@@ -339,47 +339,47 @@ preuve dont il sera le plus question dans cette thèse : Coq.
 Coq est basé sur la \kl{correspondance de Curry-Howard} : les preuves sont vues comme des programmes dans un langage appelé \intro{Gallina},
 et leur vérification est effectuée par un algorithme proche
 de ceux utilisés pour les types des langages conventionnels.
-Cependant, si dans les premières versions des années 80 Coq ressemblait à un langage de programmation un peu étrange, ce n’est actuellement plus du tout le cas.
-La raison, comme on l’a expliqué plus haut, est que Coq est un \emph{assistant} à la preuve.
-C’est pourquoi la majeure partie de Coq dans ses versions actuelles a pour but d’aider l’utilisatrice à générer une preuve correcte sans avoir à l’écrire directement.
-Ce fonctionnement est illustré en \cref{fig-coq} : l’utilisatrice échange interactivement avec Coq, qui utilise cette interaction pour générer un terme de preuve. Celui-ci est ensuite envoyé à une partie bien spécifique du système, appelée \intro{noyau}.
+Cependant, si dans les premières versions des années 80 \kl{Coq} ressemblait à un langage de programmation un peu étrange, ce n’est actuellement plus du tout le cas.
+La raison, comme on l’a expliqué plus haut, est que \kl{Coq} est un \emph{assistant} à la preuve.
+C’est pourquoi la majeure partie de \kl{Coq} dans ses versions actuelles a pour but d’aider l’utilisatrice à générer une preuve correcte sans avoir à l’écrire directement.
+Ce fonctionnement est illustré en \cref{fig-coq} : l’utilisatrice échange interactivement avec \kl{Coq}, qui utilise cette interaction pour générer un terme de preuve. Celui-ci est ensuite envoyé à une partie bien spécifique du système, appelée \intro{noyau}.
 C’est lui qui implémente l’algorithme de vérification de type, et s’assure ainsi de la correction des termes de preuve construits interactivement.
-Le noyau est donc l’élément crucial du système, car c’est lui – et lui seul – qui est responsable en dernier recours de la validation des preuves.
+Le \kl{noyau} est donc l’élément crucial du système, car c’est lui – et lui seul – qui est responsable en dernier recours de la validation des preuves.
 
 
 Cette architecture, qui isole clairement la partie critique du système
 est appelée \intro{critère de de Bruijn} \sidecite{Barendregt2001}, en 
 hommage à l’un des pionniers des assistants à la preuve.
 Elle a permis de mener à bien des projets de grande ampleur, parmi lesquels CompCert \sidecite{Kaestner2017} – un compilateur optimisant pour le langage C entièrement prouvé correct –, ou les preuves du théorème des quatre couleurs \sidecite{Gonthier2007} et du théorème de l’ordre impair \sidecite{Gonthier2013}, deux théorèmes importants et difficiles respectivement de la théorie des graphes et des groupes.
-Cependant, si le reste de l’écosystème s’est beaucoup plus développé que le noyau depuis les débuts, celui-ci a également évolué, en se complexifiant graduellement.
-Et comme tout développement logiciel, le noyau n’est pas à l’abri de bugs\sidenote{De l’ordre d'un bug détecté par an, une liste est maintenue à l’adresse suivante : \url{https://github.com/coq/coq/blob/master/dev/doc/critical-bugs}.}.
-Ceux-ci sont en général difficilement exploitables par une utilisatrice de Coq, encore plus sans s’en rendre compte.
-Néanmoins, ils existent, et la tendance à la complexification du noyau ne risque pas de s’arrêter de si tôt.
+Cependant, si le reste de l’écosystème s’est beaucoup plus développé que le \kl{noyau} depuis les débuts, celui-ci a également évolué, en se complexifiant graduellement.
+Et comme tout développement logiciel, le \kl{noyau} n’est pas à l’abri de bugs\sidenote{De l’ordre d'un bug détecté par an, une liste est maintenue à l’adresse suivante : \url{https://github.com/coq/coq/blob/master/dev/doc/critical-bugs}.}.
+Ceux-ci sont en général difficilement exploitables par une utilisatrice de \kl{Coq}, encore plus sans s’en rendre compte.
+Néanmoins, ils existent, et la tendance à la complexification du \kl{noyau} ne risque pas de s’arrêter de si tôt.
 
 \subsection{MetaCoq, une formalisation par Coq, pour Coq}
 \label{sec:intro-metacoq}
 
 
 Si on veut garantir un niveau de fiabilité le plus élevé possible, il faut donc de nouvelles idées.
-Le projet \kl{MetaCoq}, a pour but de répondre à cette problématique.
-L’idée est simple : il s’agit d’utiliser Coq lui-même pour certifier la correction de son noyau.
+Le projet \intro{MetaCoq}, a pour but de répondre à cette problématique.
+L’idée est simple : il s’agit d’utiliser \kl{Coq} lui-même pour certifier la correction de son \kl{noyau}.
 
-Plus précisément, la première étape est de décrire à haut niveau le système de type sur lequel est basé le noyau, puis de démontrer ses propriétés théoriques.
+Plus précisément, la première étape est de décrire à haut niveau le système de type sur lequel est basé le \kl{noyau}, puis de démontrer ses propriétés théoriques.
 % , comme la confluence de la réduction, la préservation du typage par cette même réduction, etc.
-Une fois ces propriétés établies, la deuxième étape consiste à programmer un algorithme de vérification de type ressemblant au maximum à celui du noyau, directement en Gallina,\sidenote{
-  En effet, grâce à la \kl{correspondance de Curry-Howard}, Gallina est certes un langage pour décrire des preuves, mais aussi un véritable langage de programmation fonctionnel !}
+Une fois ces propriétés établies, la deuxième étape consiste à programmer un algorithme de vérification de type ressemblant au maximum à celui du \kl{noyau}, directement en \kl{Gallina},\sidenote{
+  En effet, grâce à la \kl{correspondance de Curry-Howard}, \kl{Gallina} est certes un langage pour décrire des preuves, mais aussi un véritable langage de programmation fonctionnel !}
 tout en démontrant qu’il est bien correct\sidenote{
   Si l’algorithme prétend qu’un terme est bien typé, alors c’est bien le cas.}
 et complet\sidenote{
   L’algorithme répond bien affirmativement sur tous les termes bien typés.}.
-Enfin, une troisième étape extrait de ce programme Gallina certifié
-un programme efficace qui puisse être utilisé en lieu et place du noyau actuel.
+Enfin, une troisième étape extrait de ce programme \kl{Gallina} certifié
+un programme efficace qui puisse être utilisé en lieu et place du \kl{noyau} actuel.
 Cette extraction est elle-même complexe, car pour obtenir ce programme efficace il
 faut effacer le contenu lié à la preuve de correction
 pour ne garder que le contenu algorithmiquement intéressant.
 C’est pourquoi là encore on prouve que l’extraction est correcte\sidenote{
   C'est-à-dire qu’elle préserve la sémantique des programmes.},
-à nouveau en la programmant en Gallina.
+à nouveau en la programmant en \kl{Gallina}.
 
 Pour prouver la complétude de l’algorithme de typage, il est très utile de
 passer par une spécification intermédiaire plus structurée que la description
@@ -390,7 +390,7 @@ d'une part, la vérification, où on cherche à \emph{vérifier}
 qu’un terme a bien un type
 donné ; de l’autre, l’inférence, où on cherche à \emph{trouver}
 un type pour un terme, s'il existe.
-L’algorithme de typage du noyau de Coq est bidirectionnel,
+L’algorithme de typage du \kl{noyau} de \kl{Coq} est bidirectionnel,
 c'est-à-dire qu’il alterne en permanence entre ces deux problèmes
 lorsqu’il vérifie qu’un terme est bien typé.
 % Par exemple, dans le cas d’une application $f~u$, il commence par inférer un type pour $f$, vérifie qu’il s’agit d’un type produit $\P x : A . B$ (une généralisation du type fonctionnel $A \to B$), puis vérifie que $u$ a le type $A$.
@@ -402,7 +402,7 @@ originale, et de l’autre la partie purement liée aux questions d’implément
 \subsection{Un peu de flexibilité dans un monde désespérément statique}
 \label{sec:intro-graduel}
 
-Comme le cas de \kl{MetaCoq} l’illustre, Coq peut être utilisé comme un véritable langage
+Comme le cas de \kl{MetaCoq} l’illustre, \kl{Coq} peut être utilisé comme un véritable langage
 de programmation. Mieux : son système de type, grâce à son extrême expressivité, 
 permet d’exprimer des propriétés très complexes des programmes, et de vérifier
 avant même d’exécuter les programmes que celles-ci sont bien respectées par le code.
@@ -412,16 +412,16 @@ fortes sur le code une fois finalisé compliquent donc
 fortement la phase de développement.
 Une solution pour faciliter cette phase de développement
 est de s’inspirer d’une proposition issue de la théorie des langages de
-programmation : le typage graduel. Ici encore, la \kl{correspondance de Curry-Howard}
+programmation : le \kl{typage graduel}. Ici encore, la \kl{correspondance de Curry-Howard}
 est à l’œuvre, puisqu’on adapte des concepts venant du monde de la programmation
 au cadre de la logique.
 
 Il existe deux grandes approches de la vérification du type des programmes.
-Dans l’approche statique\sidenote{Qui est celle sur laquelle est basée Coq.},
+Dans l’approche statique\sidenote{Qui est celle sur laquelle est basée \kl{Coq}.},
 les types sont vérifiés en amont de l’exécution, alors que dans l’approche dynamique le bon typage des opérations est vérifié à la volée lors de cette même exécution.
 La discipline dynamique est plus flexible, parce qu’elle permet de vérifier exactement ce qui est nécessaire à la bonne exécution d’un programme.
 À l’inverse, la rigidité du typage statique permet de détecter des erreurs plus tôt dans le développement, et impose des invariants utiles pour optimiser la compilation ou l’exécution.
-Pourquoi choisir ? Le programme de recherche du \kl{typage graduel} \sidecite{Siek2015} vise à dépasser ce dilemme, en intégrant dans un même langage disciplines statiques et dynamiques.
+Pourquoi choisir ? Le programme de recherche du \intro{typage graduel} \sidecite{Siek2015} vise à dépasser ce dilemme, en intégrant dans un même langage disciplines statiques et dynamiques.
 L’idée est d’avoir une première passe de vérification avant l’exécution, comme en typage statique, tout en laissant la possibilité de déférer des vérifications de type à l’exécution, comme en typage dynamique.
 On a alors accès à tout un spectre de possibilités, d’une discipline totalement statique à une discipline totalement dynamique,
 en pouvant choisir finement quelles parties d’un programme on veut vérifier à quel moment. En particulier, on peut faire évoluer la discipline au fur et à mesure d’un développement logiciel, pour bénéficier de la flexibilité du typage dynamique dans les phases précoces et des garanties du typage statique par la suite.
@@ -457,7 +457,7 @@ difficiles à prouver dans le cadre standard.
 Le \cref{chap:bidir-ccw} présente les idées générales qui guident ce travail
 dans un cadre relativement simple, afin de faciliter leur exposition. 
 Le \cref{chap:bidir-cic} montre comment étendre ces idées à un
-cadre plus réaliste, proche de la théorie des types utilisée en pratique dans Coq.
+cadre plus réaliste, proche de la théorie des types utilisée en pratique dans \kl{Coq}.
 Enfin le \cref{chap:bidir-conv} traite du statut particulier de la
 conversion\sidenote{Cette notion cruciale permet d’intégrer dans la
   théorie des types dépendants l’idée de calcul des programmes.}
@@ -468,16 +468,16 @@ et des liens du typage bidirectionnel avec certains travaux récents
 
 La seconde partie de cette thèse (\nameref{part:metacoq})
 concerne le projet \kl{MetaCoq}
-et en particulier sur la formalisation, en Coq, des idées présentées dans la
+et en particulier sur la formalisation, en \kl{Coq}, des idées présentées dans la
 première partie. Le \cref{chap:metacoq-general} donne une présentation générale du
 projet, tandis que le \cref{chap:kernel-correctness} se concentre spécifiquement
-sur la preuve que le noyau implémenté par MetaCoq respecte sa spécification.
+sur la preuve que le \kl{noyau} implémenté par \kl{MetaCoq} respecte sa spécification.
 
 \subsection{Élaboration bidirectionnelle pour le typage graduel}
 
 Enfin la troisième et dernière partie (\nameref{part:gradual})
 présente mon travail
-dans le domaine des types graduels. Les types dépendants formant déjà des systèmes
+dans le domaine des \kl{types graduels}. Les types dépendants formant déjà des systèmes
 complexes, l’adaptation de ceux-ci à l’approche graduelle est particulièrement
 délicate. Un résumé des possibilités et problématiques associées est présentée
 en \cref{chap:gradual-dependent}.
@@ -487,13 +487,13 @@ car elle est trop flexible. La structure additionnelle apportée
 par le typage bidirectionnel est donc encore une fois cruciale.
 De plus, celle-ci s’est avérée très agréable pour présenter
 l’élaboration de termes depuis un langage source dans un langage cible, une
-caractéristique importante des langages graduels.
+caractéristique importante des \kl[graduel]{langages graduels}.
 L’utilisation d’une élaboration bidirectionnelle, et les propriétés qu’elle
 permet d’obtenir, sont décrites en \cref{chap:bidir-gradual-elab}.
 
 \subsection{Contributions personnelles}
 
-Mon travail de doctorat a débuté avec l’étude des types dépendants graduels.
+Mon travail de doctorat a débuté avec l’étude des \kl{types dépendants} \kl{graduels}.
 J’ai contribué avec Kenji Maillard, Nicolas Tabareau et Éric Tanter à
 \sidecite{LennonBertrand2020}, où nous étudions une extension graduelle
 pour le Calcul des Constructions Inductives. Mon travail technique s’est
@@ -507,19 +507,19 @@ fait d’une contribution moindre de ma part, et du fait qu’il
 Ce travail ayant montré la nécessité d’un système de types bidirectionnel
 et l’absence de résultat précis sur le sujet, j’ai
 étudié le sujet plus en détail, à la fois sur papier et par le biais d’une
-formalisation se basant sur MetaCoq, ce qui a donné lieu à une seconde publication
+formalisation se basant sur \kl{MetaCoq}, ce qui a donné lieu à une seconde publication
 \sidecite{LennonBertrand2021}, et correspond aux
 \cref{chap:bidir-ccw,chap:bidir-cic}, et à une partie du
 \cref{chap:kernel-correctness}.
 
 J’ai ensuite travaillé à intégrer cette formalisation à
-MetaCoq, et à l’utiliser afin de montrer la complétude du noyau
+\kl{MetaCoq}, et à l’utiliser afin de montrer la complétude du \kl{noyau}
 qui y est implémenté. Ceci correspond au reste du \cref{chap:kernel-correctness}.
 Au-delà de cette contribution principale,
 j’ai également participé à ce projet sur d’autres points plus mineurs.
 Cette partie de mon travail de thèse n’a pas encore été publié, mais nous y
-travaillons actuellement avec les autres contributeurs de MetaCoq.
+travaillons actuellement avec les autres contributeurs de \kl{MetaCoq}.
 
 Enfin le \cref{chap:bidir-conv} correspond à un travail que j’ai entamé dans
-le but d’étendre MetaCoq, mais qui n’a pas encore atteint le stade de la
+le but d’étendre \kl{MetaCoq}, mais qui n’a pas encore atteint le stade de la
 publication.

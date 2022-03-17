@@ -3,12 +3,17 @@
 \RequirePackage{fontspec} % To allow easy font selection
 % \RequirePackage{lmodern} % For the Latin Modern Font, but is this even useful?
 
-\setsansfont[ItalicFont={Fira Sans Light Italic},BoldFont={Fira Sans},BoldItalicFont={Fira Sans Italic}]{Fira Sans Light}
-\setmonofont[BoldFont={Fira Mono Medium}]{Fira Mono}
+
+\setromanfont[BoldFont={Libertinus Serif Semibold}, BoldItalicFont={Libertinus Serif Semibold Italic}]{Libertinus Serif}
+\setsansfont{Libertinus Sans}
+\setmonofont{Libertinus Mono}
 \renewcommand{\familydefault}{\sfdefault}
 
-\RequirePackage{unicode-math}
-	\setmathfont{Libertinus Math}
+% For code
+\newfontfamily\firacode{Fira Code Light}[BoldFont={Fira Code Medium},Contextuals={Alternate}]%
+\RequirePackage{lstfiracode}
+
+\setmathfont{Libertinus Math}
 
 %% Characters
 
@@ -55,14 +60,6 @@
 
 % \RequirePackage[thmmarks, framed]{ntheorem}
 % \RequirePackage[ntheorem=true]{mdframed}
-
-%% References
-
-% \definecolor{linkred}{rgb}{0.82, 0.1, 0.26}
-% \definecolor{linkgreen}{rgb}{0.0, 0.5, 0.0}
-
-% \RequirePackage[colorlinks, urlbordercolor= blue, urlcolor=blue, citebordercolor=linkgreen, citecolor=linkgreen, linkbordercolor=linkred, linkcolor=linkred, bookmarksopen=true]{hyperref}
-% use hypersetup instead?
 
 %% Bibliography
 
