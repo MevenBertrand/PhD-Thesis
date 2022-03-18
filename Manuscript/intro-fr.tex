@@ -11,8 +11,6 @@
 \end{kaobox}
 \selectlanguage{french}
 
-\todo{Références manquantes}
-
 Cette thèse se situe dans le domaine de la \kl[type dépendant]{théorie des
 types (dépendants)}, lui-même au croisement entre informatique et logique mathématique.
 L’objectif principal est de participer aux fondements théoriques et pratiques des outils
@@ -33,7 +31,7 @@ mes contributions personnelles cette thèse.
 
 \subsection{Les syllogismes}
 Dans la tradition occidentale, on peut faire remonter l’étude de
-la logique à Aristote, dans son \cite{Organon}.
+la logique à Aristote, dans son \textit{Organon}.
 L’un des apports de ce travail est d’introduire les syllogismes.\sidenote{
   Le syllogisme le plus connu est probablement Barbara, dont un exemple est :
   \emph{tous les humains sont mortels ; Socrate est humain ; donc Socrate est mortel.}
@@ -77,37 +75,38 @@ Le second a pour but de montrer que les mathématiques dans leur entier peuvent
 effectivement être reconstruites à partir de briques élémentaires. Une étape
 importante ici a été la réduction de l’analyse à un petit nombre de propriétés
 des nombres réels, puis les constructions de ces nombres réels à partir
-de l’arithmétique, données simultanément par plusieurs auteurs\sidenote{
-  Cantor, Méray, Dedekind, Bertrand, Weierstraß \cite{??}
-} autour de 1870. De son côté Peano \cite{PeanoAxioms} propose
-l’axiomatisation des nombres entiers qui est nommée en son honneur.
-Enfin Cantor \cite{??}
+de l’arithmétique, données quasiment simultanément par entre autres Dedekind
+\sidecite{Dedekind1872} et \sidecite{Cantor1872}.
+De son côté Peano \sidecite{Peano1889} propose
+une axiomatisation des nombres entiers proche de celle encore utilisée aujourd’hui.
+Enfin Cantor \sidecite{Cantor1883}
 propose la théorie des ensembles comme un formalisme permettant
 de décrire la totalité des objets mathématiques sous la forme d’ensemble
 d’éléments.
 
 \subsection{La crise des fondements}
-Hélas, le système proposé dans \cite{Begriffsschrift}, fortement inspiré par
-les travaux de Cantor, est incohérent\sidenote{
+Hélas, le système proposé dans \sidecite{Begriffsschrift}, fortement inspiré par
+les travaux de Cantor, est inconsistant\sidenote{
   C'est-à-dire qu’il permet de prouver le faux, et donc qu’il ne peut pas servir
   de base valide pour la logique.
 } !
-Ce constat, dû à Russell \cite{Begriffsschrift}\todo{Citer le bon appendice},
+Ce constat, dû à Russell \sidecite[][Nachwort p.~253]{Frege1903},
 ouvre une période de crise, où la problématique de décrire un système qui permette
 de fonder l’entièreté des mathématiques,
 tout en évitant les inconsistances desquelles
 le système de Frege et probablement ceux de Cantor étaient victimes.
 
 Une première proposition de solution est avancée par Whitehead et Russell
-avec \cite{Principia}, un énorme travail qui non seulement propose un système
-logique qui évite les paradoxes conduisant à l’incohérence de
-\cite{Begriffsschrift}, mais de plus réalise dans ce système une quantité importante
+avec \sidecite{Whitehead1913}, un énorme travail qui non seulement propose un système
+logique qui évite les paradoxes conduisant à l’inconsistance de
+\sidecite{Begriffsschrift}, mais de plus réalise dans ce système une quantité importante
 de mathématiques, en particulier une construction des entiers, de l’arithmétique et
 finalement des nombres réels.
 
-En parallèle, dans la continuité des travaux de Cantor, Zermelo \cite{Zermelo1905} et
+En parallèle, dans la continuité des travaux de Cantor,
+Zermelo \sidecite{Zermelo1908} et
 d’autres travaillent à fournir une description formelle de la théorie des ensemble
-qui soit elle aussi cohérente. Ceci aboutit à ce qui est appelé de nos jours la
+qui soit consistante. Ceci aboutit à ce qu’on appelle de nos jours la
 théorie des ensembles de Zermelo-Fraenkel (ZF, ou ZFC quand on y ajoute l’axiome
 du choix), qui semble également à même de fournir une base solide pour les
 mathématiques.
@@ -115,20 +114,20 @@ mathématiques.
 \paragraph{L’incomplétude.}
 Un deuxième coup vient cependant frapper la recherche d’un système adéquat pour
 servir de fondation aux mathématiques : le théorème d’incomplétude de Gödel
-\cite{incomplétude}. Celui-ci affirme que tout système formel dans lequel on peut
-construire des nombres entiers vérifiant les axiomes de Peano – donc
+\sidecite{Goedel1931}. Celui-ci affirme que tout système formel
+dans lequel on peut construire des nombres entiers comme de Peano – donc
 \textit{a fortiori} tout système suffisamment riche pour faire des mathématiques –
-ne peut pas démontrer sa propre cohérence. Ainsi, il n’existe pas de
+ne peut pas démontrer sa propre consistance. Ainsi, il n’existe pas de
 système sur lequel on puisse fonder les mathématiques en ayant la certitude
-formelle que ce système est adéquat : puisqu’on ne peut prouver la cohérence du
-système dans lui-même, il pourrait finalement s’avérer incohérent, ruinant les
+formelle que ce système est adéquat : puisqu’on ne peut prouver la consistance du
+système dans lui-même, il pourrait finalement s’avérer inconsistant, ruinant les
 efforts fournis.
 
 Une conséquence de ce théorème est qu’un système suffisamment riche
 pour faire des mathématiques est nécessairement incomplet.\sidenote{
   Cela signifie qu’il
   existe des énoncés indépendants, à savoir des assertions qu’on ne peut
-  ni démontrer, ni réfuter – c’est-à-dire montrer la négation. La cohérence du
+  ni démontrer, ni réfuter – c’est-à-dire montrer la négation. La consistance du
   système considéré en est un exemple.
 }
 Ainsi, dans la suite il ne sera jamais question de vérité absolue –
@@ -141,7 +140,7 @@ Malgré les difficultés mises au jour au début du 20\textsuperscript{e}
 siècle, la communauté mathématique est globalement
 satisfaite de la situation : ZFC fournit un système raisonnable sur
 lequel baser en principe toutes les mathématiques, et même si peu de
-personnes se risquent à tenter, dans la veine de \cite{Principia},
+personnes se risquent à tenter, dans la veine de \cite{Whitehead1913},
 d’effectivement écrire leurs mathématiques à ce niveau de précision,
 elle est globalement convaincue que ce serait en théorie
 possible, et cela suffit amplement à la plupart.
@@ -169,19 +168,20 @@ l’avènement des ordinateurs.
 Les ordinateurs excellent là où les humains pêchent : leur spécialité est de traiter
 d’immenses volumes d’information très précise, exactement le type
 de besoins que soulève la manipulation de preuves formelles. C’est pourquoi, dès
-la fin des années 60\sidenote{
-  Avec des systèmes comme Automath \cite{??}, Mizar \cite{??}…}
+le début des années 70\sidenote{
+  Avec des systèmes comme Automath \cite{DeBruijn1970}, Mizar \cite{Rudnicki1992}…}
 ont commencé à apparaître ce que l’on appelle \intro{assistants à la
 preuve}, des outils informatiques servant à écrire, vérifier et communiquer des
 preuves.
 Via la formalisation de ces preuves et la vérification par l’ordinateur qu’elles
 suivent bien les règles du système logique sous-jacent, les assistants à la preuve
 donnent accès à une fiabilité bien plus important que celle des preuves
-traditionnelles. Des mathématiciens de premier plan comme
-Hales~\sidecite[0em][Preface, p. xi]{Hales2012},
-Voevodsky~\cite{??} ou
-Scholze~\cite{LiquidTensorExperiment}
-se sont déjà emparés des assistants à la preuve dans le but de lever les incertitudes
+traditionnelles. Des mathématiciens reconnus comme
+Voevodsky~\sidecite{Voevodsky2010},
+Hales~\sidecite[][Preface, p. xi]{Hales2012},
+ou Scholze~\sidecite{Scholze2021}
+se sont déjà emparés des assistants à la preuve,
+notamment dans le but de lever les incertitudes
 sur la solidité de leur propre travail.
 
 Mais le terme d’\emph{assistant} à la preuve n’a pas été choisi par hasard : au-delà
@@ -194,10 +194,10 @@ facilités, comme la possibilité de pouvoir visualiser la structure des
 preuves, de suivre l’utilisation des hypothèses…
 Mais l’informatique rend surtout possible l’automatisation de pans entiers
 de l’écriture de preuves,
-par exemple via l’utilisation d’un langage de tactique \cite{??} qui permettent
-de programmer la manière dont les preuves sont
+par exemple via l’utilisation d’un langage de tactique \sidecite{Delahaye2000}
+qui permettent de programmer la manière dont les preuves sont
 générées, voire en utilisant directement la recherche en preuve automatique
-\cite{Sledgehammer,SMTCoq}.
+\sidecite{Boehme2010,Ekici2017}.
 \textit{In fine}, cette automatisation permet généralement d’écrire
 les preuves à haut niveau, en laissant à l’assistant à la preuve le soin
 de construire une preuve formelle.
@@ -318,8 +318,7 @@ sans lesquelles il est tout bonnement impossible d’exprimer la plupart des
 mathématiques. En revanche les systèmes à types dépendants, eux, sont suffisamment
 riches et puissant pour espérer y développer la plupart des mathématiques.
 
-\section{Grandeur et décadence d’un assistant à la preuve}
-\todo{Trouver un meilleur titre}
+\section{Coq et son noyau}
 \label{sec:intro-coq}
 
 Intéressons-nous maintenant un peu plus précisément à l’assistant à la
@@ -350,9 +349,9 @@ Le \kl{noyau} est donc l’élément crucial du système, car c’est lui – et
 Cette architecture, qui isole clairement la partie critique du système
 est appelée \intro{critère de de Bruijn} \sidecite{Barendregt2001}, en 
 hommage à l’un des pionniers des assistants à la preuve.
-Elle a permis de mener à bien des projets de grande ampleur, parmi lesquels CompCert \sidecite{Kaestner2017} – un compilateur optimisant pour le langage C entièrement prouvé correct –, ou les preuves du théorème des quatre couleurs \sidecite{Gonthier2007} et du théorème de l’ordre impair \sidecite{Gonthier2013}, deux théorèmes importants et difficiles respectivement de la théorie des graphes et des groupes.
+% Elle a permis de mener à bien des projets de grande ampleur, parmi lesquels CompCert \sidecite{Kaestner2017} – un compilateur optimisant pour le langage C entièrement prouvé correct –, ou les preuves du théorème des quatre couleurs \sidecite{Gonthier2007} et du théorème de l’ordre impair \sidecite{Gonthier2013}, deux théorèmes importants et difficiles respectivement de la théorie des graphes et des groupes.
 Cependant, si le reste de l’écosystème s’est beaucoup plus développé que le \kl{noyau} depuis les débuts, celui-ci a également évolué, en se complexifiant graduellement.
-Et comme tout développement logiciel, le \kl{noyau} n’est pas à l’abri de bugs\sidenote{De l’ordre d'un bug détecté par an, une liste est maintenue à l’adresse suivante : \url{https://github.com/coq/coq/blob/master/dev/doc/critical-bugs}.}.
+Et comme tout développement logiciel, il n’est pas à l’abri de bugs\sidenote{De l’ordre d'un bug détecté par an, une liste est maintenue à l’adresse suivante : \url{https://github.com/coq/coq/blob/master/dev/doc/critical-bugs}.}.
 Ceux-ci sont en général difficilement exploitables par une utilisatrice de \kl{Coq}, encore plus sans s’en rendre compte.
 Néanmoins, ils existent, et la tendance à la complexification du \kl{noyau} ne risque pas de s’arrêter de si tôt.
 
@@ -381,6 +380,8 @@ C’est pourquoi là encore on prouve que l’extraction est correcte\sidenote{
   C'est-à-dire qu’elle préserve la sémantique des programmes.},
 à nouveau en la programmant en \kl{Gallina}.
 
+\subsection{Vérification et inférence}
+
 Pour prouver la complétude de l’algorithme de typage, il est très utile de
 passer par une spécification intermédiaire plus structurée que la description
 théorique du système de type utilisée dans la première étape.
@@ -398,6 +399,15 @@ Décrire formellement cette structure bidirectionnelle plus proche de l’algori
 permet de bien diviser les difficultés entre d’un côté
 son équivalence avec la présentation
 originale, et de l’autre la partie purement liée aux questions d’implémentation.
+
+Dans le cadre spécifique des types dépendants, bien que présent depuis l’origine dans les algorithmes de vérification de type \sidecite{Huet1989},
+le typage bidirectionnel a été étonnamment peu étudié. En particulier, une preuve
+de l’équivalence entre cette présentation et celle utilisée de manière standard
+dans la littérature manquait !
+Pourtant, cette approche présente également
+des avantages théoriques : elle permet,
+par sa structure plus contrainte que la présentation standars,
+d’obtenir des propriétés difficiles à démontrer dans ce cadre standard.
 
 \subsection{Un peu de flexibilité dans un monde désespérément statique}
 \label{sec:intro-graduel}
@@ -433,27 +443,12 @@ Mon travail de doctorat lui-même
 est centré principalement autour du typage bidirectionnel, sous
 trois aspects, correspondant aux trois parties de cette thèse.
 
-\subsection{Le typage bidirectionnel en théorie}
+\subsection{Théorie du typage bidirectionnel}
 
-La première partie (\nameref{part:bidir})
-est une étude théorique du typage bidirectionnel.
-% La littérature sur ce sujet est relativement confidentielle :
-% la première présentation explicite de cette approche
-% est probablement \sidecite{Pierce2000},
-% et il faut attendre \sidecite{Dunfield2021} pour une étude plus globale de la
-% question.
-Dans le cadre spécifique des types dépendants, bien que présent depuis l’origine dans les algorithmes de vérification de type \sidecite{Huet1989},
-le typage bidirectionnel a été étonnamment peu étudié. En particulier, une preuve
-de l’équivalence entre cette présentation et celle utilisée de manière standard
-dans la littérature manquait !
-
-Cette partie répare ce manque, en étudiant le
-typage bidirectionnel dans le cadre des types dépendants, et en particulier la
-preuve de l’équivalence entre la présentation standard de la littérature et la
-bidirectionnelle. Elle présente également
-certains avantages théoriques de la présentation bidirectionnelle,
-qui permet, par sa structure plus contrainte, d’obtenir des propriétés
-difficiles à prouver dans le cadre standard.
+La première partie (\nameref{part:bidir}) répare (une partie du) manque d'étude
+théorique dans la littérature du typage bidirectionnel pour les types dépendant. Elle contient en particulier la
+preuve de l’équivalence entre la présentation standard de la littérature et celle
+bidirectionnelle.
 Le \cref{chap:bidir-ccw} présente les idées générales qui guident ce travail
 dans un cadre relativement simple, afin de faciliter leur exposition. 
 Le \cref{chap:bidir-cic} montre comment étendre ces idées à un
@@ -497,17 +492,18 @@ Mon travail de doctorat a débuté avec l’étude des \kl{types dépendants} \k
 J’ai contribué avec Kenji Maillard, Nicolas Tabareau et Éric Tanter à
 \sidecite{LennonBertrand2020}, où nous étudions une extension graduelle
 pour le Calcul des Constructions Inductives. Mon travail technique s’est
-majoritairement concentré sur les sections 4 et 5,
-qui correspondent au \cref{chap:bidir-gradual-elab}.
+majoritairement concentré sur le contenu correspondent au \cref{chap:bidir-gradual-elab}.
 Le \cref{chap:gradual-dependent} est également tiré de cette publication.
 Un second manuscrit avec les mêmes auteurs dans la continuité de
-\cite{LennonBertrand2020} est actuellement en phase de relecture, mais du
-fait d’une contribution moindre de ma part, et du fait qu’il
+\cite{LennonBertrand2020} est actuellement en phase de relecture, mais il
+ne fait pas appel directement au typage graduel, c’est pourquoi il n’en
+sera pas question dans cette thèse.
 
 Ce travail ayant montré la nécessité d’un système de types bidirectionnel
-et l’absence de résultat précis sur le sujet, j’ai
-étudié le sujet plus en détail, à la fois sur papier et par le biais d’une
-formalisation se basant sur \kl{MetaCoq}, ce qui a donné lieu à une seconde publication
+et le manque de résultats précis sur le sujet, je l’ai
+étudié plus en détail, à la fois sur papier et par le biais d’une
+formalisation se basant sur \kl{MetaCoq},
+ce qui a donné lieu à une seconde publication
 \sidecite{LennonBertrand2021}, et correspond aux
 \cref{chap:bidir-ccw,chap:bidir-cic}, et à une partie du
 \cref{chap:kernel-correctness}.

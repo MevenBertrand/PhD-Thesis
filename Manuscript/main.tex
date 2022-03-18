@@ -19,7 +19,8 @@
 %\usepackage{showlabels} % Uncomment to output the content of \label commands to the document where they are used
 
 % Load the bibliography package
-\usepackage[style=alphabetic]{kaobook/kaobiblio}
+\usepackage[style=alphabetic,maxbibnames=99]{kaobook/kaobiblio}
+% \DeclareFieldFormat*{title}{\mkbibemph{#1}}
 \addbibresource{biblio.bib} % Bibliography file
 
 % Load mathematical packages for theorems and related environments
