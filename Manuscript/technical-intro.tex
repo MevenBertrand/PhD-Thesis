@@ -1,4 +1,156 @@
-\chapter{Technical Introduction}
+\chapter{50 Shades of the Calculus of Inductive Constructions}
 \label{chap:tech-intro}
 
-Where I talk about CIC/MLTT.
+Most of this thesis revolves around \kl[dependent type]{dependent type systems}.
+Since these are
+quite complex, there is a high number of points where one can introduce slight variations
+when giving a precise definition of a system to study it.
+Some of these variations are unimportant, but some introduce large differences in the
+resulting systems. Thus, in this chapter we go over in details over
+the definition of what I will refer to as the
+\kl{Calculus of Inductive Constructions} (or simply \kl{CIC}), in the rest of this
+thesis, and which will serve as the basis for variations, theoretical study and extensions.
+While doing so, I will try to give an idea of the trade-offs involved, and of the reasons
+behind the choices made. Quite a few of those choices vary during the thesis,
+and this is by design: there is no single better choice, 
+something that I will try to make as clear as possible.
+
+For the impatient specialists, let me say now that with \kl{CIC}, I by default
+mean an intentional type theory, with Curry-style abstractions,
+a predicative hierarchy of Russel universes\sidenote{And only those: as a basis I do \emph{not} include an impredicative sort of propositions, a feature that is sometimes associated to the name \kl{CIC}.},
+and any amount of required inductive types, presented by recursors – 
+the ones appearing most often being the empty and
+unit types, booleans, natural numbers, dependent sums, lists, vectors and the equality.
+Conversion is by default the reflexive, symmetric transitive closure of reduction, and
+so in particular it is untyped. For the others, let me now detail what I mean by this.
+
+\begin{itemize}
+  \item $\lambda$ and $\Pi$ (mention binding, de Bruijn indices?)
+  \item universes (mention integers vs levels vs polymorphism)
+  \item prop!
+  \item inductive types (the whole variety of them?)
+  \item let bindings
+  \item fixpoints + match vs recursors
+  \item co-inductives (briefly I guess)
+  \item substitution
+  \item reduction, conversion (take 1)
+  \item conversion as a judgement
+\end{itemize}
+
+\section{Terms, typing and derivations}
+
+Throughout this chapter, \kl{CIC} is defined by means of a typing relation $\Gamma \vdash t : T$, which reads "in the context $\Gamma$, term $t$ has type $T$".
+From the logical point of view, this judgement means that $\Gamma$
+contains the hypothesis available to deduce the
+result $T$ by means of the proof $t$. On the programming side, it means that
+$t$ is a program, which uses the variables listed in $\Gamma$ together with their types,
+and has type $T$.
+Thus, $\Gamma$ is a list of declarations of the form $x : A$. We write $\emptycon$ for the
+empty context, and $\Gamma, x : A$ for the context $\Gamma$ extended with the new variable $x : A$, and $(x : A) \in \Gamma$ to denote that the declaration $x : A$ appears at some
+point in the context $\Gamma$.
+
+\begin{marginfigure}
+  \begin{mathpar}
+  \inferdef{Var}{(x : A) \in \Gamma \\ \vdash \Gamma}{\Gamma \vdash x : A}
+  \label{rule:cic-var}
+  \end{mathpar}
+\end{marginfigure}
+
+This typing relation itself is defined by means of inference rules,
+such as \ruleref{rule:cic-var} opposite. The way to read this rule is that the judgement
+underneath the line follows from the one above,
+\ie from $(x : A) \in \Gamma$
+and $\vdash \Gamma$ – a judgement that will be defined soon asserting that the context
+$\Gamma$ is well-formed – we can deduce $\Gamma \vdash x : A$.
+Once a set of such inference rules is fixed,
+typing is defined as the least relation closed by those
+rules. Equivalently, a judgement such as $\Gamma \vdash t : T$
+holds as soon as we can build a tree whose nodes are instances of the inference rules,
+and whose root is the judgement in question. A general setting
+to make this kind of definitions precise can be found in \sidecite{Bauer2020},
+in our case we will restrict to the level of presentation
+until \arefpart{metacoq}.
+
+As we have already introduced variables, a word on those as well. Variables are difficult
+to account for precisely, because of issues like shadowing – a conflict between two variables
+with the same name – or $\alpha$-equivalence – the identification between two terms
+only differing on variable names. There are multiple techniques to solve these issues
+– see the many solutions to the POPLMark Challenge \sidecite{Aydemir2005} –, 
+but again, we treat these issues in an informal way until \arefpart{metacoq}, assuming
+there is no shadowing whatsoever and identifying $\alpha$-equivalent terms when needed.
+
+A final important building block that we use in all our type theories is substitution,
+that we write $\subs{t}{x}{u}$. This replaces every occurrence of $x$ in $t$ by the term
+$u$. Once again, we will treat this operation informally, assuming it never creates
+shadowing – what is sometimes called "capture-avoiding" substitution.
+
+\section{Functional core: \intro{CCω}}
+\label{sec:tech-ccw}
+
+\subsection{Functions and applications}
+
+Let us now turn to the core of CIC, namely the
+\kl{Calculus of Constructions} (\kl{CCω}). Through the \kl{Curry-Howard correspondence},
+it is both a typed form of $\l$-calculus – \ie a kind of purely functional
+programming language – and a minimal form
+of logic – only containing universal quantification and implication.
+
+\begin{marginfigure}
+  \ContinuedFloat*
+  \begin{mathpar}
+    \inferdef{Abs}{\Gamma, x : A \vdash t : T}{\Gamma \vdash \l x : A .\ t : A \to T}
+    \and
+    \inferdef{App}{\Gamma \vdash f : A \to T \\ \Gamma \vdash u : A }{ \Gamma \vdash t\ u : T}
+  \end{mathpar}
+  \caption{Typing for non-dependent functions}
+  \label{fig:cic-nondep-fun}
+\end{marginfigure}
+
+Functions, also called $\l$-abstraction are written $\l x : A .\ t$. This corresponds
+to the mathematical notation $x \mapsto t$: the body $t$ of the function,
+is a term that might contain the variable $x$,
+and the constructor $\l$ abstracts over that variable to build a function.
+Conversely, function application is written simply using juxtaposition, as in $t\ u$.
+The type of functions is written $\to$, as in ordinary mathematics.
+You can see those at work in \cref{fig:cic-nondep-fun}: an abstraction build a term of arrow
+type, and application needs its function to be of arrow type, whose domain must correspond to
+that of the argument for it to be well-typed.
+Logically, those rules correspond to that of implication: if from a hypothesis $A$ one can
+deduce $T$, then $A \to T$ holds – reading $\to$ as implication; conversely if $A \to T$
+and $A$ both hold, then $T$ does as well.
+
+\begin{marginfigure}
+  \ContinuedFloat
+  \begin{mathpar}
+    \inferdef{Abs}{\Gamma, x : A \vdash t : T}{\Gamma \vdash \l x : A .\ t : \P x : A.\ T}
+    \label{rule:cic-abs}
+    \and
+    \inferdef{App}{\Gamma \vdash f : \P x : A.\ T \\ \Gamma \vdash u : A }{ \Gamma \vdash f\ u : \subs{T}{x}{u}}
+    \label{rule:cic-app}
+  \end{mathpar}
+  \caption{Typing for dependent functions}
+  \label{fig:cic-dep-fun}
+\end{marginfigure}
+These function types, however, are not exactly as expressive as one would wish for.
+Remember that we are in the realms of dependent types, so not only $t$ might mention $x$,
+but also $T$. For instance, $T$ might be something like "$x$ is even". In such a case,
+we need to record that dependency, which is the point of $\P$-types – or product types,
+shown in \cref{fig:cic-dep-fun}.
+Seen as function types, they record the fact that the codomain
+might vary depending on the argument. This is reflected in the typing rule for application:
+since the codomain $T$ might depend on $x$, the type of the application $f\ u$ is $T$
+\emph{specialized at the argument $u$} using substitution.
+Seen on the logical side, product types correspond to universal quantification
+$\operatorname{\forall} x : A.\ T(x)$.
+Indeed, if one can show that $T(x)$ holds for an unspecified $x$,
+then it must hold for all $x : A$ – this is \ruleref{rule:cic-abs}.
+Conversely if $T$ holds for all $x : A$, then one can deduce $T(u)$ for any specific
+$u : A$ – this is \ruleref{rule:cic-app}.
+
+Church-style!
+
+\begin{marginfigure}
+  \LastFloat
+
+  \caption{bloup}
+\end{marginfigure}
