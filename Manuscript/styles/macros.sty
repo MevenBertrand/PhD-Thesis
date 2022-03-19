@@ -62,10 +62,55 @@
 %% Induction rules
 
 \usepackage{mathpartir}
-\renewcommand{\TirNameStyle}{\small} %style of the induction rule name for mathpartir
+\renewcommand{\TirNameStyle}{\textsc} %style of the induction rule name for mathpartir
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%Reference to inference rules, inspired by https://tex.stackexchange.com/questions/340788/cross-referencing-inference-rules
+
+\makeatletter
+
+\NewDocumentCommand \mpr@label { m }{%
+	\def\@currentlabelname{#1}%
+  \phantomsection % Creating an anchor to get a correct hyper reference link
+}
+
+\DeclareDocumentCommand \inferdef {m m m}{%
+  \inferrule*[vcenter,Right=#1]{#2}{#3}
+  \mpr@label{\textsc{#1}}
+}%
+
+\DeclareDocumentCommand \redrule {o m m}{%
+	\IfValueTF{#1}
+	{\textsc{#1}: \; #2 \redCCIC #3 \mpr@label{\textsc{#1}}}
+	{#2 \redCCIC #3}
+}
+
+\makeatother
+
+\newcommand{\ruleref}[1]{Rule~\nameref{#1}}
+
+%mathpar hack, inspired by http://lists.seas.upenn.edu/pipermail/types-list/2019/002157.html
+
+\newcommand{\maflushleft}{\strut \and \hfill\\}
+
+\newcommand{\jform}[1]{\fbox{#1}\maflushleft}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Type theoretic stuff
+
+%% Contexts
+\newcommand{\emptycon}{\cdot}
+
+\newcommand{\subs}[3]{#1\{#2 := #3\}}
+
 %% Terms
+
+%See https://tex.stackexchange.com/questions/477662/fontspec-breaks-capital-greek-letters-in-declaremathoperator?rq=1
+\let\l\relax
+\DeclareMathOperator{\l}{λ}
+
+\let\P\relax
+\DeclareMathOperator{\P}{Π}
 
 %% Universes
 

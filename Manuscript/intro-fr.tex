@@ -258,12 +258,12 @@ documentation, etc.
   % \caption{Règles d’inférence pour l’implication et de typage des fonctions}
 
   \begin{mathpar}
-    \inferrule{A \\ B}{A \wedge B} \and
-    \inferrule{A \wedge B}{A} \and
-    \inferrule{A \wedge B}{B} \\
-    \inferrule{a : A \\ b : B}{(a,b) : A \times B} \\
-    \inferrule{p : A \times B}{p.1 : A} \and
-    \inferrule{p : A \times B}{p.2 : B}
+    \inferrule*{A \\ B}{A \wedge B} \and
+    \inferrule*{A \wedge B}{A} \and
+    \inferrule*{A \wedge B}{B} \\
+    \inferrule*{a : A \\ b : B}{(a,b) : A \times B} \\
+    \inferrule*{p : A \times B}{p.1 : A} \and
+    \inferrule*{p : A \times B}{p.2 : B}
   \end{mathpar}
   
   \caption{Règles d’inférence pour la conjonction et de typage pour les paires}

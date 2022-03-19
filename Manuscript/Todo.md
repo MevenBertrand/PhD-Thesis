@@ -1,0 +1,2 @@
+- Setup notations for terms/types
+- Check the continued figures are working as intended (the trick for references is p 22 [here](https://mirror.ibcp.fr/pub/CTAN/macros/latex/contrib/caption/caption.pdf))
