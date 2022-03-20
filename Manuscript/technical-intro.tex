@@ -25,14 +25,12 @@ Conversion is by default the reflexive, symmetric transitive closure of reductio
 so in particular it is untyped. For the others, let me now detail what I mean by this.
 
 \begin{itemize}
-  \item $\lambda$ and $\Pi$ (mention binding, de Bruijn indices?)
   \item universes (mention integers vs levels vs polymorphism)
   \item prop!
   \item inductive types (the whole variety of them?)
   \item let bindings
   \item fixpoints + match vs recursors
   \item co-inductives (briefly I guess)
-  \item substitution
   \item reduction, conversion (take 1)
   \item conversion as a judgement
 \end{itemize}
@@ -84,13 +82,13 @@ that we write $\subs{t}{x}{u}$. This replaces every occurrence of $x$ in $t$ by 
 $u$. Once again, we will treat this operation informally, assuming it never creates
 shadowing – what is sometimes called "capture-avoiding" substitution.
 
-\section{Functional core: \intro{CCω}}
+\section{Functional core: \kl{CCω}}
 \label{sec:tech-ccw}
 
 \subsection{Functions and applications}
 
 Let us now turn to the core of CIC, namely the
-\kl{Calculus of Constructions} (\kl{CCω}). Through the \kl{Curry-Howard correspondence},
+\intro{Calculus of Constructions} (\kl{CCω}). Through the \kl{Curry-Howard correspondence},
 it is both a typed form of $\l$-calculus – \ie a kind of purely functional
 programming language – and a minimal form
 of logic – only containing universal quantification and implication.
@@ -131,7 +129,7 @@ and $A$ both hold, then $T$ does as well.
   \caption{Typing for dependent functions}
   \label{fig:cic-dep-fun}
 \end{marginfigure}
-These function types, however, are not exactly as expressive as one would wish for.
+These arrow types, however, are not exactly as expressive as one would wish for.
 Remember that we are in the realms of dependent types, so not only $t$ might mention $x$,
 but also $T$. For instance, $T$ might be something like "$x$ is even". In such a case,
 we need to record that dependency, which is the point of $\P$-types – or product types,
@@ -144,10 +142,34 @@ Seen on the logical side, product types correspond to universal quantification
 $\operatorname{\forall} x : A.\ T(x)$.
 Indeed, if one can show that $T(x)$ holds for an unspecified $x$,
 then it must hold for all $x : A$ – this is \ruleref{rule:cic-abs}.
-Conversely if $T$ holds for all $x : A$, then one can deduce $T(u)$ for any specific
+Conversely, if $T$ holds for all $x : A$, then one can deduce $T(u)$ for any specific
 $u : A$ – this is \ruleref{rule:cic-app}.
+Now the rules for arrow types in \cref{fig:cic-nondep-fun} are just a special case
+of those for product types, in the case where the codomain $T$ does not depend
+on the variable $x$, and we will use this convention throughout the thesis:
+$A \to T$ is a shortcut for $\P x : A.\ T$ when $T$ does not mention $x$.
 
-Church-style!
+One last thing to note about our functions is that they record the type of their
+domain – what is called \intro{Church-style} abstraction
+\sidecite[][Section~3]{Barendregt1992}. There is an alternative – 
+the \intro{Curry-style} abstractions –, that
+does not do so, simply using $\l x.\ t$ for functions. At this point in the
+presentation, this does not make much difference,
+but it is crucial as soon as one looks at the bidirectional structure. 
+Indeed, that annotation is required if one wants to infer types for functions,
+rather than barely checking them.
+The \kl{Curry-style}
+option is definitely sensible, see for instance \sidecite[][p.~19]{Norell2007}
+– which describes the implementation of the very successful proof assistant
+\kl{Agda}, which uses the \kl{Curry-style} approach –,
+\sidecite[][Section~4.1]{Gratzer2019} or \sidecite{McBride2022}.
+In the end, this is really a design choice between being able to infer a type for any term,
+or requiring annotations that in a lot of cases are useless, and in this
+thesis we stick with the approach used in \kl{Coq}.
+
+\subsection{Universes}
+
+
 
 \begin{marginfigure}
   \LastFloat
