@@ -20,7 +20,7 @@
 
 % Load the bibliography package
 \usepackage[style=alphabetic,maxbibnames=99]{kaobook/kaobiblio}
-% \DeclareFieldFormat*{title}{\mkbibemph{#1}}
+\DefineBibliographyExtras{french}{\restorecommand\mkbibnamefamily} %To have consistent citations between French and English text
 \addbibresource{biblio.bib} % Bibliography file
 
 % Load mathematical packages for theorems and related environments
