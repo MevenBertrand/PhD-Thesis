@@ -67,7 +67,7 @@ naturel\sidenote{
 concevoir à la place une nouvelle forme de langage spécifique qui puisse servir de
 base à un système de raisonnement. Une étape importante
 de cette ligne de recherche est
-probablement \sidecite{Begriffsschrift}, qui introduit un certain nombre de
+probablement le \citetitle{Begriffsschrift}~\sidecite{Begriffsschrift}, qui introduit un certain nombre de
 caractéristiques des langages dont il sera question dans la suite de cette thèse,
 en particulier la notion de quantificateur.
 
@@ -75,17 +75,17 @@ Le second a pour but de montrer que les mathématiques dans leur entier peuvent
 effectivement être reconstruites à partir de briques élémentaires. Une étape
 importante ici a été la réduction de l’analyse à un petit nombre de propriétés
 des nombres réels, puis les constructions de ces nombres réels à partir
-de l’arithmétique, données quasiment simultanément par entre autres Dedekind
-\sidecite{Dedekind1872} et \sidecite{Cantor1872}.
-De son côté Peano \sidecite{Peano1889} propose
+de l’arithmétique, données quasiment simultanément par entre autres
+Dedekind~\sidecite{Dedekind1872} et Cantor~\sidecite{Cantor1872}.
+De son côté Peano~\sidecite{Peano1889} propose
 une axiomatisation des nombres entiers proche de celle encore utilisée aujourd’hui.
-Enfin Cantor \sidecite{Cantor1883}
+Enfin Cantor~\sidecite{Cantor1883} à nouveau
 propose la théorie des ensembles comme un formalisme permettant
 de décrire la totalité des objets mathématiques sous la forme d’ensemble
 d’éléments.
 
 \subsection{La crise des fondements}
-Hélas, le système proposé dans \sidecite{Begriffsschrift}, fortement inspiré par
+Hélas, le système proposé dans le \citetitle{Begriffsschrift}, fortement inspiré par
 les travaux de Cantor, est inconsistant\sidenote{
   C'est-à-dire qu’il permet de prouver le faux, et donc qu’il ne peut pas servir
   de base valide pour la logique.
@@ -96,15 +96,16 @@ de fonder l’entièreté des mathématiques,
 tout en évitant les inconsistances desquelles
 le système de Frege et probablement ceux de Cantor étaient victimes.
 
-Une première proposition de solution est avancée par Whitehead et Russell
-avec \sidecite{Whitehead1913}, un énorme travail qui non seulement propose un système
-logique qui évite les paradoxes conduisant à l’inconsistance de
-\sidecite{Begriffsschrift}, mais de plus réalise dans ce système une quantité importante
+Une première proposition de solution est avancée par Russel et Whitehead dans leur
+\citetitle{Whitehead1913}~\sidecite{Whitehead1913},
+un énorme travail qui non seulement propose un système
+logique qui évite les paradoxes conduisant à l’inconsistance du
+\citetitle{Begriffsschrift}, mais de plus réalise dans ce système une quantité importante
 de mathématiques, en particulier une construction des entiers, de l’arithmétique et
 finalement des nombres réels.
 
 En parallèle, dans la continuité des travaux de Cantor,
-Zermelo \sidecite{Zermelo1908} et
+Zermelo~\sidecite{Zermelo1908} et
 d’autres travaillent à fournir une description formelle de la théorie des ensemble
 qui soit consistante. Ceci aboutit à ce qu’on appelle de nos jours la
 théorie des ensembles de Zermelo-Fraenkel (ZF, ou ZFC quand on y ajoute l’axiome
@@ -113,8 +114,8 @@ mathématiques.
 
 \paragraph{L’incomplétude.}
 Un deuxième coup vient cependant frapper la recherche d’un système adéquat pour
-servir de fondation aux mathématiques : le théorème d’incomplétude de Gödel
-\sidecite{Goedel1931}. Celui-ci affirme que tout système formel
+servir de fondation aux mathématiques : le théorème d’incomplétude de
+Gödel~\sidecite{Goedel1931}. Celui-ci affirme que tout système formel
 dans lequel on peut construire des nombres entiers comme de Peano – donc
 \textit{a fortiori} tout système suffisamment riche pour faire des mathématiques –
 ne peut pas démontrer sa propre consistance. Ainsi, il n’existe pas de
@@ -140,7 +141,7 @@ Malgré les difficultés mises au jour au début du 20\textsuperscript{e}
 siècle, la communauté mathématique est globalement
 satisfaite de la situation : ZFC fournit un système raisonnable sur
 lequel baser en principe toutes les mathématiques, et même si peu de
-personnes se risquent à tenter, dans la veine de \cite{Whitehead1913},
+personnes se risquent à tenter, dans la veine des \citetitle{Whitehead1913},
 d’effectivement écrire leurs mathématiques à ce niveau de précision,
 elle est globalement convaincue que ce serait en théorie
 possible, et cela suffit amplement à la plupart.
@@ -168,14 +169,14 @@ l’avènement des ordinateurs.
 Les ordinateurs excellent là où les humains pêchent : leur spécialité est de traiter
 d’immenses volumes d’information très précise, exactement le type
 de besoins que soulève la manipulation de preuves formelles. C’est pourquoi, dès
-le début des années 70\sidenote{
-  Avec des systèmes comme Automath \cite{DeBruijn1970}, Mizar \cite{Rudnicki1992}…}
+le début des années 70, avec des systèmes comme Automath~\sidecite{DeBruijn1970}
+ou Mizar~\sidecite{Rudnicki1992}, 
 ont commencé à apparaître ce que l’on appelle \intro{assistants à la
 preuve}, des outils informatiques servant à écrire, vérifier et communiquer des
 preuves.
 Via la formalisation de ces preuves et la vérification par l’ordinateur qu’elles
 suivent bien les règles du système logique sous-jacent, les assistants à la preuve
-donnent accès à une fiabilité bien plus important que celle des preuves
+donnent accès à une fiabilité bien plus importante que celle des preuves
 traditionnelles. Des mathématiciens reconnus comme
 Voevodsky~\sidecite{Voevodsky2010},
 Hales~\sidecite[][Preface, p. xi]{Hales2012},
@@ -194,10 +195,10 @@ facilités, comme la possibilité de pouvoir visualiser la structure des
 preuves, de suivre l’utilisation des hypothèses…
 Mais l’informatique rend surtout possible l’automatisation de pans entiers
 de l’écriture de preuves,
-par exemple via l’utilisation d’un langage de tactique \sidecite{Delahaye2000}
+par exemple via l’utilisation d’un langage de tactiques~\sidecite{Delahaye2000}
 qui permettent de programmer la manière dont les preuves sont
-générées, voire en utilisant directement la recherche en preuve automatique
-\sidecite{Boehme2010,Ekici2017}.
+générées, voire en utilisant directement la recherche en
+preuve automatique~\sidecite{Boehme2010,Ekici2017}.
 \textit{In fine}, cette automatisation permet généralement d’écrire
 les preuves à haut niveau, en laissant à l’assistant à la preuve le soin
 de construire une preuve formelle.
@@ -237,7 +238,7 @@ détecter des erreurs manifestes.
 Par exemple, si une procédure attendant un objet de type "image" est
 appliquée à un objet de type "chaîne de caractères", une erreur pourra être rapportée
 à la programmeuse.\sidenote{
-  Un slogan dû à Milner~\sidecite[5em]{Milner1978} est que
+  Un slogan dû à Milner~\sidecite[4em]{Milner1978} est que
   « Les programmes bien typés ne peuvent pas  mal s’exécuter. »
 }
 Mais les utilisations des types sont très versatiles, et leurs capacités à encoder
@@ -346,9 +347,9 @@ Le \kl{noyau} est donc l’élément crucial du système, car c’est lui – et
 
 
 Cette architecture, qui isole clairement la partie critique du système
-est appelée \intro{critère de de Bruijn} \sidecite{Barendregt2001}, en 
+est appelée \intro{critère de de Bruijn}~\sidecite{Barendregt2001}, en 
 hommage à l’un des pionniers des assistants à la preuve.
-% Elle a permis de mener à bien des projets de grande ampleur, parmi lesquels CompCert \sidecite{Kaestner2017} – un compilateur optimisant pour le langage C entièrement prouvé correct –, ou les preuves du théorème des quatre couleurs \sidecite{Gonthier2007} et du théorème de l’ordre impair \sidecite{Gonthier2013}, deux théorèmes importants et difficiles respectivement de la théorie des graphes et des groupes.
+% Elle a permis de mener à bien des projets de grande ampleur, parmi lesquels CompCert~\sidecite{Kaestner2017} – un compilateur optimisant pour le langage C entièrement prouvé correct –, ou les preuves du théorème des quatre couleurs~\sidecite{Gonthier2007} et du théorème de l’ordre impair~\sidecite{Gonthier2013}, deux théorèmes importants et difficiles respectivement de la théorie des graphes et des groupes.
 Cependant, si le reste de l’écosystème s’est beaucoup plus développé que le \kl{noyau} depuis les débuts, celui-ci a également évolué, en se complexifiant graduellement.
 Et comme tout développement logiciel, il n’est pas à l’abri de bugs\sidenote{De l’ordre d'un bug détecté par an, une liste est maintenue à l’adresse suivante : \url{https://github.com/coq/coq/blob/master/dev/doc/critical-bugs}.}.
 Ceux-ci sont en général difficilement exploitables par une utilisatrice de \kl{Coq}, encore plus sans s’en rendre compte.
@@ -399,7 +400,7 @@ permet de bien diviser les difficultés entre d’un côté
 son équivalence avec la présentation
 originale, et de l’autre la partie purement liée aux questions d’implémentation.
 
-Dans le cadre spécifique des types dépendants, bien que présent depuis l’origine dans les algorithmes de vérification de type \sidecite{Huet1989},
+Dans le cadre spécifique des types dépendants, bien que présent depuis l’origine dans les algorithmes de vérification de type~\sidecite{Huet1989},
 le typage bidirectionnel a été étonnamment peu étudié. En particulier, une preuve
 de l’équivalence entre cette présentation et celle utilisée de manière standard
 dans la littérature manquait !
@@ -430,7 +431,7 @@ Dans l’approche statique\sidenote{Qui est celle sur laquelle est basée \kl{Co
 les types sont vérifiés en amont de l’exécution, alors que dans l’approche dynamique le bon typage des opérations est vérifié à la volée lors de cette même exécution.
 La discipline dynamique est plus flexible, parce qu’elle permet de vérifier exactement ce qui est nécessaire à la bonne exécution d’un programme.
 À l’inverse, la rigidité du typage statique permet de détecter des erreurs plus tôt dans le développement, et impose des invariants utiles pour optimiser la compilation ou l’exécution.
-Pourquoi choisir ? Le programme de recherche du \intro{typage graduel} \sidecite{Siek2015} vise à dépasser ce dilemme, en intégrant dans un même langage disciplines statiques et dynamiques.
+Pourquoi choisir ? Le programme de recherche du \intro{typage graduel}~\sidecite{Siek2015} vise à dépasser ce dilemme, en intégrant dans un même langage disciplines statiques et dynamiques.
 L’idée est d’avoir une première passe de vérification avant l’exécution, comme en typage statique, tout en laissant la possibilité de déférer des vérifications de type à l’exécution, comme en typage dynamique.
 On a alors accès à tout un spectre de possibilités, d’une discipline totalement statique à une discipline totalement dynamique,
 en pouvant choisir finement quelles parties d’un programme on veut vérifier à quel moment. En particulier, on peut faire évoluer la discipline au fur et à mesure d’un développement logiciel, pour bénéficier de la flexibilité du typage dynamique dans les phases précoces et des garanties du typage statique par la suite.
@@ -489,12 +490,12 @@ permet d’obtenir, sont décrites en \cref{chap:bidir-gradual-elab}.
 
 Mon travail de doctorat a débuté avec l’étude des \kl{types dépendants} \kl{graduels}.
 J’ai contribué avec Kenji Maillard, Nicolas Tabareau et Éric Tanter à
-\sidecite{LennonBertrand2020}, où nous étudions une extension graduelle
+\sidetextcite{LennonBertrand2020}, où nous étudions une extension graduelle
 pour le Calcul des Constructions Inductives. Mon travail technique s’est
 majoritairement concentré sur le contenu correspondent au \cref{chap:bidir-gradual-elab}.
 Le \cref{chap:gradual-dependent} est également tiré de cette publication.
-Un second manuscrit avec les mêmes auteurs dans la continuité de
-\cite{LennonBertrand2020} est actuellement en phase de relecture, mais il
+Un second article, avec les mêmes auteurs et dans la continuité du précédent,
+est actuellement en phase de relecture. Cependant il
 ne fait pas appel directement au typage graduel, c’est pourquoi il n’en
 sera pas question dans cette thèse.
 
@@ -502,9 +503,8 @@ Ce travail ayant montré la nécessité d’un système de types bidirectionnel
 et le manque de résultats précis sur le sujet, je l’ai
 étudié plus en détail, à la fois sur papier et par le biais d’une
 formalisation se basant sur \kl{MetaCoq},
-ce qui a donné lieu à une seconde publication
-\sidecite{LennonBertrand2021}, et correspond aux
-\cref{chap:bidir-ccw,chap:bidir-cic}, et à une partie du
+ce qui a donné lieu à une seconde publication~\sidecite{LennonBertrand2021},
+et correspond aux \cref{chap:bidir-ccw,chap:bidir-cic}, et à une partie du
 \cref{chap:kernel-correctness}.
 
 J’ai ensuite travaillé à intégrer cette formalisation à

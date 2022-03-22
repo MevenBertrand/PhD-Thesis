@@ -65,7 +65,7 @@ typing is defined as the least relation closed by those
 rules. Equivalently, a judgement such as $\Gamma \vdash t : T$
 holds as soon as we can build a tree whose nodes are instances of the inference rules,
 and whose root is the judgement in question. A general setting
-to make this kind of definitions precise can be found in \sidecite{Bauer2020},
+to make this kind of definitions precise can be found in \sidetextcite{Bauer2020},
 in our case we will restrict to the level of presentation
 until \arefpart{metacoq}.
 
@@ -73,7 +73,7 @@ As we have already introduced variables, a word on those as well. Variables are 
 to account for precisely, because of issues like shadowing – a conflict between two variables
 with the same name – or $\alpha$-equivalence – the identification between two terms
 only differing on variable names. There are multiple techniques to solve these issues
-– see the many solutions to the POPLMark Challenge \sidecite{Aydemir2005} –, 
+– see the many solutions to the POPLMark Challenge~\sidecite{Aydemir2005} –, 
 but again, we treat these issues in an informal way until \arefpart{metacoq}, assuming
 there is no shadowing whatsoever and identifying $\alpha$-equivalent terms when needed.
 
@@ -150,8 +150,8 @@ on the variable $x$, and we will use this convention throughout the thesis:
 $A \to T$ is a shortcut for $\P x : A.\ T$ when $T$ does not mention $x$.
 
 One last thing to note about our functions is that they record the type of their
-domain – what is called \intro{Church-style} abstraction
-\sidecite[][Section~3]{Barendregt1992}. There is an alternative – 
+domain – what is called \intro{Church-style}
+abstraction~\sidecite[][Section~3]{Barendregt1992}. There is an alternative – 
 the \intro{Curry-style} abstractions –, that
 does not do so, simply using $\l x.\ t$ for functions. At this point in the
 presentation, this does not make much difference,
@@ -159,10 +159,10 @@ but it is crucial as soon as one looks at the bidirectional structure.
 Indeed, that annotation is required if one wants to infer types for functions,
 rather than barely checking them.
 The \kl{Curry-style}
-option is definitely sensible, see for instance \sidecite[][p.~19]{Norell2007}
+option is definitely sensible, see for instance \sidetextcite[][p.~19]{Norell2007}
 – which describes the implementation of the very successful proof assistant
 \kl{Agda}, which uses the \kl{Curry-style} approach –,
-\sidecite[][Section~4.1]{Gratzer2019} or \sidecite{McBride2022}.
+\sidetextcite[][Section~4.1]{Gratzer2019} or \sidetextcite{McBride2022}.
 In the end, this is really a design choice between being able to infer a type for any term,
 or requiring annotations that in a lot of cases are useless, and in this
 thesis we stick with the approach used in \kl{Coq}.
@@ -188,10 +188,11 @@ This is what the universe $\uni$ are for. It is the type… of a type.
 There is however, an important caveat.
 Since the disappointments of Frege and the paradox exhibited
 by Russell in his system, logicians know that considering a set of all sets is a great
-source of inconsistencies. Type theory is not devoid of this issue: Girard
-\sidecite[][Annex~A]{Girard1972} shows how having a type with itself as type is inconsistent.
-This inconsistency directly applies to the first dependent type system proposed by Martin-Löf 
-\sidecite{MartinLoef1972}, which had a single universe $\uni$ and a rule $\uni : \uni$.
+source of inconsistencies. Type theory is not devoid of this issue:
+Girard~\sidecite[][Annex~A]{Girard1972}
+shows how having a type with itself as type is inconsistent.
+This inconsistency directly applies to the first dependent type system proposed by
+Martin-Löf~\sidecite{MartinLoef1972}, which had a single universe $\uni$ and a rule $\uni : \uni$.
 A common solution to this
 is to stratify universes into an infinite hierarchy, which gives us \ruleref{rule:cic-univ}:
 note the \intro{universe levels} $i$ and $\unext{i}$.
@@ -242,10 +243,41 @@ This way, one can collect the constraints between levels required for a
 term to type-check in a consistent system, without artificially enforcing a
 rigid interpretation of levels by fixing them to a precise integer once and for all.
 To simplify the presentation, our "standard" \kl{CCω}/\kl{CIC} will nonetheless use integers,
-but we will switch to level expressions when needed.
+but we will switch to level expressions when needed – especially in \arefpart{part:metacoq}.
 
 \section{50 Shades of Conversion}
 \label{sec:tech-conversion}
+
+\begin{marginfigure}
+  \begin{mathpar}
+  \inferdef{Conv}
+    {\Gamma \vdash t : T \\ \Gamma \vdash T \conv T' : \uni}
+    {\Gamma \vdash t : T'}
+  \label{rule:cic-conv}
+  \end{mathpar}
+\end{marginfigure}
+
+There is one big missing part in the picture so far. Remember we are working with
+dependent types, and that those can contain terms, which in turn can be arbitrary programs.
+If you recall for instance the vector type we used in the introduction (and that we are
+about to introduce formally), what happens if a function expects an argument of type
+$\Vect A\,3$, but it is given an argument of type $\Vect A\,(2+1)$, for instance the output
+of a concatenation function? Surely we must have a way to relate both, since after all
+the small program $2+1$ ought to compute to $3$! This is exactly what \intro{conversion} is
+for: in dependent type theory, there is a way to change a type to one that
+is related to it by this relation – see \ruleref{rule:cic-conv}, which wraps up our typing
+rules for \kl{CCω}.
+As usual, there are two ways to look at this relation. From the point of view of programs,
+it allows to incorporate the computational aspect of those, directly inside the type system.
+From the point of view of logics, this corresponds to things being the same "by definition"
+rather than due to some reasoning
+– which is why conversion is also called definitional, or judgmental equality. In our vector
+example, for instance, the two types will be the same by virtue of the definition of addition.
+
+Conversion is a very complex beast, arguably the most subtle part of dependent types.
+Consequently, there are very different ways to present it, which in turn serve different
+needs.
+
 
 \begin{figure*}
   \LastFloat
