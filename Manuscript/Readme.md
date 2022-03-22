@@ -19,3 +19,4 @@ Build requirements
 
 If you still want to build the document yourself, you need to have the [Libertinus](https://github.com/alerque/libertinus) (including Libertinus Math) and [FiraCode](https://github.com/tonsky/FiraCode/) fonts installed.
 Once this is done, you can compile using XeLaTeX with the `shell-espace` option, and biber as biblography backend.
+Depending on the current commit, you might need to comment the `\includeonly` line in the `main.tex` file to compile the whole file.
