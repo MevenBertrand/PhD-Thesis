@@ -1,4 +1,4 @@
-\chapter{50 Shades of the Calculus of Inductive Constructions}
+\chapter{The Calculus of Inductive Constructions}
 \label{chap:tech-intro}
 
 Most of this thesis revolves around \kl[dependent type]{dependent type systems}.
@@ -169,10 +169,117 @@ thesis we stick with the approach used in \kl{Coq}.
 
 \subsection{Universes}
 
+\begin{marginfigure}
+  \ContinuedFloat
+  \begin{mathpar}
+    \inferdef{Univ}
+    {\vdash \Gamma}
+    {\Gamma \vdash \uni[i] : \uni[\unext{i}]}
+    \label{rule:cic-univ}
+  \end{mathpar}
+  \caption{Typing for universes}
+  \label{fig:cic-univ}
+\end{marginfigure}
 
+To be able to express things like induction principles or polymorphic functions, it is
+extremely useful to be able to use functions and products quantifying over types.
+This is what the universe $\uni$ are for. It is the type… of a type.
+
+There is however, an important caveat.
+Since the disappointments of Frege and the paradox exhibited
+by Russell in his system, logicians know that considering a set of all sets is a great
+source of inconsistencies. Type theory is not devoid of this issue: Girard
+\sidecite[][Annex~A]{Girard1972} shows how having a type with itself as type is inconsistent.
+This inconsistency directly applies to the first dependent type system proposed by Martin-Löf 
+\sidecite{MartinLoef1972}, which had a single universe $\uni$ and a rule $\uni : \uni$.
+A common solution to this
+is to stratify universes into an infinite hierarchy, which gives us \ruleref{rule:cic-univ}:
+note the \intro{universe levels} $i$ and $\unext{i}$.
 
 \begin{marginfigure}
+  \ContinuedFloat
+  \begin{mathpar}
+    \inferdef{Prod}
+    {\Gamma \vdash A : \uni[i] \\ \Gamma, x : A \vdash B : \uni[j]}
+    {\Gamma \vdash \P x : A.\ B : \uni[\umax{i}{j}]}
+    \label{rule:cic-prod}
+  \end{mathpar}
+  \caption{Typing for product types}
+  \label{fig:cic-prod}
+\end{marginfigure}
+
+\begin{marginfigure}
+  \ContinuedFloat
+  \begin{mathpar}
+    \inferdef{EmptyCon}
+    { }{\vdash \cdot}
+    \label{rule:cic-empty-con} \and
+    \inferdef{ConsCon}
+    {\vdash \Gamma \\ \Gamma \vdash A : \uni}{\vdash \Gamma, x : A}
+    \label{rule:cic-cons-con}
+  \end{mathpar}
+  \caption{Product well-formedness}
+  \label{fig:cic-con}
+\end{marginfigure}
+
+Using those universes, \ruleref{rule:cic-prod} gives the typing rule for the product constructor. We can also use these universes to give a definition of the $\vdash \Gamma$
+judgement, asserting that a context is well-formed, in \cref{fig:cic-con}.
+It simply means that all its types
+are indeed types. Note that in \ruleref{rule:cic-cons-con}, we did not give an index for the
+universe, we will do so to mean the existence of some unconstrained level $i$.
+
+One last important point regarding universes is the kind of levels used. The simplest solution
+is to rely on natural number (of the meta-theory), with the $\unextsymb$
+and $\umaxsymb$ operations interpreted by the usual ones.
+This is however not strictly necessary: we need levels
+to form an order so as to ensure we avoid inconsistency, and operations $\unextsymb$ and
+$\umaxsymb$, but levels could very well be something different from natural numbers.
+In particular, the natural number approach fixes at which level a particular construction
+is done, which is usually much more rigid than what one would wish for.
+A more flexible approach, introduced under the name \intro{typical ambiguity} in
+\sidecite{Harper1991}, uses level expressions based on level variables, rather than integers.
+This way, one can collect the constraints between levels required for a
+term to type-check in a consistent system, without artificially enforcing a
+rigid interpretation of levels by fixing them to a precise integer once and for all.
+To simplify the presentation, our "standard" \kl{CCω}/\kl{CIC} will nonetheless use integers,
+but we will switch to level expressions when needed.
+
+\section{50 Shades of Conversion}
+\label{sec:tech-conversion}
+
+\begin{figure*}
   \LastFloat
 
-  \caption{bloup}
-\end{marginfigure}
+  \begin{mathpar}
+    %
+    \jform{\vdash \Gamma}
+    \inferdef{EmptyCon}
+      { }{\vdash \cdot}
+    \and
+    \inferdef{ConsCon}
+      {\vdash \Gamma \\ \Gamma \vdash A : \uni}{\vdash \Gamma, x : A}
+    \\\\
+    \jform{\Gamma \vdash t : T}
+    \inferdef{Var}{(x : A) \in \Gamma \\ \vdash \Gamma}{\Gamma \vdash x : A}
+    \and
+    \inferdef{Univ}
+      {\vdash \Gamma}
+      {\Gamma \vdash \uni[i] : \uni[\unext{i}]}
+    \and
+    \inferdef{Prod}
+      {\Gamma \vdash A : \uni[i] \\ \Gamma, x : A \vdash B : \uni[j]}
+      {\Gamma \vdash \P x : A.\ B : \uni[\umax{i}{j}]}
+    \and
+    \inferdef{Abs}{\Gamma, x : A \vdash t : T}{\Gamma \vdash \l x : A .\ t : \P x : A.\ T}
+    \and
+    \inferdef{App}
+      {\Gamma \vdash f : \P x : A.\ T \\ \Gamma \vdash u : A }
+      {\Gamma \vdash f\ u : \subs{T}{x}{u}}
+    \and
+  \inferdef{Conv}
+    {\Gamma \vdash t : T \\ \Gamma \vdash T \conv T' : \uni}
+    {\Gamma \vdash t : T'}
+  \end{mathpar}
+
+  \caption{Typing rules for \kl{CCω}, collected}
+\end{figure*}

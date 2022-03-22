@@ -75,7 +75,7 @@
 }
 
 \DeclareDocumentCommand \inferdef {m m m}{%
-  \inferrule*[vcenter,Right=#1]{#2}{#3}
+  \inferrule*[vcenter,right=#1]{#2}{#3}
   \mpr@label{\textsc{#1}}
 }%
 
@@ -91,9 +91,9 @@
 
 %mathpar hack, inspired by http://lists.seas.upenn.edu/pipermail/types-list/2019/002157.html
 
-\newcommand{\maflushleft}{\strut \and \hfill\\}
+\newcommand{\maflushleft}{\strut \and \hfill}
 
-\newcommand{\jform}[1]{\fbox{#1}\maflushleft}
+\newcommand{\jform}[1]{\boxed{#1}\maflushleft\\}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Type theoretic stuff
@@ -115,9 +115,16 @@
 %% Universes
 
 \DeclareDocumentCommand\uni{o}{\square\IfValueT{#1}{_{#1}}}
+\newcommand{\umaxsymb}{\max}
+\newcommand{\unextsymb}{+1}
+\DeclareDocumentCommand\unext{m}{#1+1}
+\DeclareDocumentCommand\umax{m m}{\max(#1,#2)}
 
 %% Inductive Types
 
 \DeclareMathOperator{\Vect}{Vect}
 
 \newcommand{\?}{\mathbb{?}}
+
+%% Conversion
+\newcommand{\conv}{\cong}
