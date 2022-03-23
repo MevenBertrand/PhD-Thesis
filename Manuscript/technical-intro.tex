@@ -351,9 +351,9 @@ bidirectional typing is the main subject of \cref{chap:bidir-conv}.
   \begin{mathpar}
     \inferrule
       {\Gamma, x : A \vdash t : B \\ \Gamma \vdash u : A}
-      {\Gamma \vdash (\l x : A.\ t)\ u \conv \subs{t}{x}{u} : \subs{B}{x}{u}}
+      {\Gamma \vdash (\l x : A.\ t)\ u \tdconv \subs{t}{x}{u} : \subs{B}{x}{u}}
     \and
-    \inferrule{ }{(\l x : A.\ t)\ u \conv \subs{t}{x}{u}}
+    \inferrule{ }{(\l x : A.\ t)\ u \udconv \subs{t}{x}{u}}
   \end{mathpar}
   \caption{Example: typed and untyped $\beta$ rule for conversion}
   \label{fig:typed-untyped-conv}
@@ -367,8 +367,8 @@ for \eg transitivity, as the one of \cref{fig:trans-conv}.
 \begin{marginfigure}
   \begin{mathpar}
     \inferrule
-      {t \conv t' \\ t' \conv t''}
-      {t \conv t''}
+      {t \udconv t' \\ t' \udconv t''}
+      {t \udconv t''}
   \end{mathpar}
   \caption{Example: transitivity rule for conversion}
   \label{fig:trans-conv}
@@ -401,7 +401,7 @@ declarative conversion thus being a bad candidate as it enforces transitivity.
 \begin{marginfigure}
   \ContinuedFloat*
   \begin{mathpar}
-    \inferdef{UConvConv}{\Gamma \vdash T' : \uni \\ T \conv T'}{\Gamma \vdash T \conv T' : \uni}
+    \inferdef{UConv}{\Gamma \vdash T' : \uni \\ T \udconv T'}{\Gamma \vdash T \conv T' : \uni}
     \label{rule:cic-conv-unty}
   \end{mathpar}
   \caption{Typing constraint on untyped conversion}
@@ -425,13 +425,13 @@ and transitive (\ruleref{rule:cic-uconv-trans}).
 \begin{figure}[h]
   \ContinuedFloat
   \begin{mathpar}
-    \inferdef{Refl}{ }{\Gamma \vdash t \conv t}
+    \inferdef{Refl}{ }{\Gamma \vdash t \udconv t}
     \label{rule:cic-uconv-refl} \and
-    \inferdef{Sym}{\Gamma \vdash t \conv t'}{\Gamma \vdash t' \conv t}
+    \inferdef{Sym}{\Gamma \vdash t \udconv t'}{\Gamma \vdash t' \udconv t}
     \label{rule:cic-uconv-sym} \and
     \inferdef{Trans}
-      {\Gamma \vdash t \conv t' \\ \Gamma \vdash t' \conv t''}
-      {\Gamma \vdash t \conv t''}
+      {\Gamma \vdash t \udconv t' \\ \Gamma \vdash t' \udconv t''}
+      {\Gamma \vdash t \udconv t''}
     \label{rule:cic-uconv-trans}
   \end{mathpar}
   \caption{Equivalence rules}
@@ -442,25 +442,25 @@ A second set of rules, collected in \cref{fig:cic-uconv-cong},
 asserts that conversion is a congruence, meaning that it is compatible
 with all term formers. As for the previous three, these correspond to properties we expect
 from the conversion relation, that we simply declare to be true. Note that we include only
-congruence rules for term formers with subterm – we \eg omit $\uni$. This is because
+congruence rules for term formers with sub-terms – we \eg omit $\uni$. This is because
 those are special cases of \ruleref{rule:cic-uconv-refl}. Conversely, we could omit 
-reflexivity alltogether and only have congruence rules, which can be seen as a generalized
+reflexivity altogether and only have congruence rules, which can be seen as a generalized
 form of reflexivity.
 
 \begin{figure}[ht]
   \ContinuedFloat
   \begin{mathpar}
     \inferdef{ProdConv}
-      {A \conv A' \\ B \conv B'}
-      {\P x : A.\ B \conv \P x : A'.\ B'}
+      {A \udconv A' \\ B \udconv B'}
+      {\P x : A.\ B \udconv \P x : A'.\ B'}
     \label{rule:cic-uconv-prod} \and
     \inferdef{AbsConv}
-      {A \conv A' \\ t \conv t'}
-      {\l x : A .\ t \conv \l x : A'.\ t'}
+      {A \udconv A' \\ t \udconv t'}
+      {\l x : A .\ t \udconv \l x : A'.\ t'}
     \label{rule:cic-uconv-abs} \and
-    \inferdef{App}
-      {f \conv f' \\ u \conv u' }
-      {f\ u \conv f'\ u'}
+    \inferdef{AppConv}
+      {f \udconv f' \\ u \udconv u' }
+      {f\ u \udconv f'\ u'}
     \label{rule:cic-uconv-app}
   \end{mathpar}
   \caption{Congruence rules}
@@ -470,7 +470,7 @@ form of reflexivity.
 \begin{marginfigure}
   \ContinuedFloat
   \begin{mathpar}
-    \inferdef{βConv}{ }{(\l x : A.\ t)\ u \conv \subs{t}{x}{u}}
+    \inferdef{βConv}{ }{(\l x : A.\ t)\ u \udconv \subs{t}{x}{u}}
     \label{rule:cic-uconv-beta}
   \end{mathpar}
   \caption{Computation rule for functions}
