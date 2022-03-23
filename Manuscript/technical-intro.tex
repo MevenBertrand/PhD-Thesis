@@ -96,9 +96,9 @@ of logic – only containing universal quantification and implication.
 \begin{marginfigure}
   \ContinuedFloat*
   \begin{mathpar}
-    \inferdef{Abs}{\Gamma, x : A \vdash t : T}{\Gamma \vdash \l x : A .\ t : A \to T}
+    \inferrule{\Gamma, x : A \vdash t : T}{\Gamma \vdash \l x : A .\ t : A \to T}
     \and
-    \inferdef{App}{\Gamma \vdash f : A \to T \\ \Gamma \vdash u : A }{ \Gamma \vdash t\ u : T}
+    \inferrule{\Gamma \vdash f : A \to T \\ \Gamma \vdash u : A }{ \Gamma \vdash t\ u : T}
   \end{mathpar}
   \caption{Typing for non-dependent functions}
   \label{fig:cic-nondep-fun}
@@ -129,15 +129,15 @@ and $A$ both hold, then $T$ does as well.
   \caption{Typing for dependent functions}
   \label{fig:cic-dep-fun}
 \end{marginfigure}
-These arrow types, however, are not exactly as expressive as one would wish for.
+These arrow types, however, are not as expressive as one would wish for.
 Remember that we are in the realms of dependent types, so not only $t$ might mention $x$,
 but also $T$. For instance, $T$ might be something like "$x$ is even". In such a case,
-we need to record that dependency, which is the point of $\P$-types – or product types,
+we need to record that dependency, which is the point of $\P$-types – or product types –,
 shown in \cref{fig:cic-dep-fun}.
 Seen as function types, they record the fact that the codomain
 might vary depending on the argument. This is reflected in the typing rule for application:
 since the codomain $T$ might depend on $x$, the type of the application $f\ u$ is $T$
-\emph{specialized at the argument $u$} using substitution.
+\emph{specialized at the argument $u$}, using substitution.
 Seen on the logical side, product types correspond to universal quantification
 $\operatorname{\forall} x : A.\ T(x)$.
 Indeed, if one can show that $T(x)$ holds for an unspecified $x$,
@@ -165,9 +165,22 @@ option is definitely sensible, see for instance \sidetextcite[][p.~19]{Norell200
 \sidetextcite[][Section~4.1]{Gratzer2019} or \sidetextcite{McBride2022}.
 In the end, this is really a design choice between being able to infer a type for any term,
 or requiring annotations that in a lot of cases are useless, and in this
-thesis we stick with the approach used in \kl{Coq}.
+thesis we stick with the approach used in \kl{Coq}, and annotate our abstractions.
 
 \subsection{Universes}
+
+To be able to express things like induction principles or polymorphic functions, it is
+extremely useful to be able to use functions and products quantifying over types.
+This is what the universe $\uni$ are for. It is the type… of a type.
+This means that the frontier between types and terms is not syntactic any more.
+Instead, types are simply terms of type $\uni$.
+Despite this, we still use upper case letters for terms which we want to think of as types.
+Such a universe is called \textit{à la} Russell~\sidecite{Palmgren1998}, by contrast with
+universes \textit{à la} Tarski, which regain the distinction between types and terms at
+the cost of a somewhat heavier treatment of types.
+The presentation \textit{à la} Tarski
+is mostly useful when building models, something we will not do here, so we keep the simpler
+of the two presentations.
 
 \begin{marginfigure}
   \ContinuedFloat
@@ -180,10 +193,6 @@ thesis we stick with the approach used in \kl{Coq}.
   \caption{Typing for universes}
   \label{fig:cic-univ}
 \end{marginfigure}
-
-To be able to express things like induction principles or polymorphic functions, it is
-extremely useful to be able to use functions and products quantifying over types.
-This is what the universe $\uni$ are for. It is the type… of a type.
 
 There is however, an important caveat.
 Since the disappointments of Frege and the paradox exhibited
@@ -311,7 +320,7 @@ example, for instance, the two types will be the same by virtue of the definitio
     {\Gamma \vdash t : T'}
   \end{mathpar}
 
-  \caption{Typing rules for \kl{CCω}, collected}
+  \caption{Collected typing rules for \kl{CCω}}
   \label{fig:ccw-typing}
 \end{figure*}
 
@@ -352,8 +361,8 @@ bidirectional typing is the main subject of \cref{chap:bidir-conv}.
 
 The second axis corresponds to how close the conversion relation is to an implementation.
 For instance, conversion should be an equivalence relation,
-but there are two approaches to that. The
-first is to simply \emph{define} conversion as an equivalence relation, by adding rules 
+but there are two approaches to that. The first – and standard – one
+is to simply \emph{define} conversion as an equivalence relation, by adding rules 
 for \eg transitivity, as the one of \cref{fig:trans-conv}.
 \begin{marginfigure}
   \begin{mathpar}
@@ -364,24 +373,110 @@ for \eg transitivity, as the one of \cref{fig:trans-conv}.
   \caption{Example: transitivity rule for conversion}
   \label{fig:trans-conv}
 \end{marginfigure}
-This ensures that it indeed has the right properties, but
+This ensures that it has the right properties, but
 makes it hard to prove it decidable, because one could have gone by
 transitivity through terms whose trace is not present in the end relation.
-The theoricians of $\l$-calculus have known this issue for a long time, and they
+The $\l$-calculus theorists have known this issue for a long time, and they
 have a solution: characterizing conversion by means of a \kl{reduction} relation $\red$, which
-corresponds to the idea of program evaluation. If this reduction has good
+corresponds to the idea of program evaluation – see \sidetextcite{Barendregt1985} for
+instance. If this reduction has good
 properties\sidenote{The main one being confluence.}, then
 two terms will be convertible when they reduce to the same third term. This much more
-operational characterization is closer to what can be implemented, which is a good point.
-Turning this around, one can define conversion through reduction, and only afterward show
+operational characterization is closer to what can be implemented.
+Turning things around, one can define conversion through reduction,
+and only show \emph{afterwards}
 that it has the good properties of the first approach – typically, that it is transitive.
 Conversion of the first kind we will call \intro{declarative conversion}, while for the second
 we will talk about \intro{algorithmic conversion}.
 
 In the rest of this section we give both presentations for \kl{untyped conversion}: the
-\kl{declarative} one we will use to define \kl{CCω}, at it is the most standard;
-the \kl{algorithmic} one will appear in \arefpart{metacoq}
+\kl{declarative} one as we define \kl{CCω} with it, since it is the most standard;
+the \kl{algorithmic} one as it will appear in \arefpart{metacoq}
 to show decidability of type-checking, and in
-\arefpart{gradual} because there we want to replace conversion by a non-transitive relation,
-and declarative conversion is thus not a good candidate
-as it – by design – enforces transitivity.
+\arefpart{gradual} where we want to replace conversion by a non-transitive relation,
+declarative conversion thus being a bad candidate as it enforces transitivity.
+
+\subsection{Untyped declarative conversion}
+
+\begin{marginfigure}
+  \ContinuedFloat*
+  \begin{mathpar}
+    \inferdef{UConvConv}{\Gamma \vdash T' : \uni \\ T \conv T'}{\Gamma \vdash T \conv T' : \uni}
+    \label{rule:cic-conv-unty}
+  \end{mathpar}
+  \caption{Typing constraint on untyped conversion}
+\end{marginfigure}
+
+Let us first go back to \ruleref{rule:cic-conv}.
+This rule was set up in such a way that typed or untyped conversion could be plugged in
+without modifying the rule.
+Actually, even if we wish to describe conversion as
+an untyped relation, we still need to enforce a typing constraint at this point,
+namely that the target type is indeed a well-formed type,
+in order to ensure that whenever $\Gamma \vdash t : T$ is derivable
+$\Gamma \vdash T : \uni$ is as well.
+This is exactly the content of \ruleref{rule:cic-conv-unty}.
+
+Regarding conversion itself, the first set of rules asserts
+that conversion forms an equivalence relation: it
+is reflexive (\ruleref{rule:cic-uconv-refl}), symmetric (\ruleref{rule:cic-uconv-sym}),
+and transitive (\ruleref{rule:cic-uconv-trans}).
+
+\begin{figure}[h]
+  \ContinuedFloat
+  \begin{mathpar}
+    \inferdef{Refl}{ }{\Gamma \vdash t \conv t}
+    \label{rule:cic-uconv-refl} \and
+    \inferdef{Sym}{\Gamma \vdash t \conv t'}{\Gamma \vdash t' \conv t}
+    \label{rule:cic-uconv-sym} \and
+    \inferdef{Trans}
+      {\Gamma \vdash t \conv t' \\ \Gamma \vdash t' \conv t''}
+      {\Gamma \vdash t \conv t''}
+    \label{rule:cic-uconv-trans}
+  \end{mathpar}
+  \caption{Equivalence rules}
+  \label{fig:cic-uconv-equiv}
+\end{figure}
+
+A second set of rules, collected in \cref{fig:cic-uconv-cong},
+asserts that conversion is a congruence, meaning that it is compatible
+with all term formers. As for the previous three, these correspond to properties we expect
+from the conversion relation, that we simply declare to be true. Note that we include only
+congruence rules for term formers with subterm – we \eg omit $\uni$. This is because
+those are special cases of \ruleref{rule:cic-uconv-refl}. Conversely, we could omit 
+reflexivity alltogether and only have congruence rules, which can be seen as a generalized
+form of reflexivity.
+
+\begin{figure}[ht]
+  \ContinuedFloat
+  \begin{mathpar}
+    \inferdef{ProdConv}
+      {A \conv A' \\ B \conv B'}
+      {\P x : A.\ B \conv \P x : A'.\ B'}
+    \label{rule:cic-uconv-prod} \and
+    \inferdef{AbsConv}
+      {A \conv A' \\ t \conv t'}
+      {\l x : A .\ t \conv \l x : A'.\ t'}
+    \label{rule:cic-uconv-abs} \and
+    \inferdef{App}
+      {f \conv f' \\ u \conv u' }
+      {f\ u \conv f'\ u'}
+    \label{rule:cic-uconv-app}
+  \end{mathpar}
+  \caption{Congruence rules}
+  \label{fig:cic-uconv-cong}
+\end{figure}
+
+\begin{marginfigure}
+  \ContinuedFloat
+  \begin{mathpar}
+    \inferdef{βConv}{ }{(\l x : A.\ t)\ u \conv \subs{t}{x}{u}}
+    \label{rule:cic-uconv-beta}
+  \end{mathpar}
+  \caption{Computation rule for functions}
+\end{marginfigure}
+The last rule, \ruleref{rule:cic-uconv-beta} is the crucial one:
+it corresponds to the computational behaviour
+of functions, replacing the variable of an applied $\l$-abstraction by its argument by
+means of substitution.
+
