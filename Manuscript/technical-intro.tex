@@ -219,7 +219,7 @@ note the \intro{universe levels} $i$ and $\unext{i}$.
     {\vdash \Gamma \\ \Gamma \vdash A : \uni}{\vdash \Gamma, x : A}
     \label{rule:cic-cons-con}
   \end{mathpar}
-  \caption{Product well-formedness}
+  \caption{Context well-formedness}
   \label{fig:cic-con}
 \end{marginfigure}
 
@@ -237,24 +237,27 @@ to form an order so as to ensure we avoid inconsistency, and operations $\unexts
 $\umaxsymb$, but levels could very well be something different from natural numbers.
 In particular, the natural number approach fixes at which level a particular construction
 is done, which is usually much more rigid than what one would wish for.
-A more flexible approach, introduced under the name \intro{typical ambiguity} in
-\sidecite{Harper1991}, uses level expressions based on level variables, rather than integers.
+A more flexible approach, introduced under the name \intro{typical ambiguity} by
+\sidetextcite{Harper1991},
+uses level expressions based on level variables, rather than integers.
 This way, one can collect the constraints between levels required for a
 term to type-check in a consistent system, without artificially enforcing a
 rigid interpretation of levels by fixing them to a precise integer once and for all.
 To simplify the presentation, our "standard" \kl{CCω}/\kl{CIC} will nonetheless use integers,
-but we will switch to level expressions when needed – especially in \arefpart{part:metacoq}.
+but we will switch to level expressions when needed – especially in \arefpart{metacoq}.
 
 \section{50 Shades of Conversion}
 \label{sec:tech-conversion}
 
 \begin{marginfigure}
+  \ContinuedFloat
   \begin{mathpar}
   \inferdef{Conv}
     {\Gamma \vdash t : T \\ \Gamma \vdash T \conv T' : \uni}
     {\Gamma \vdash t : T'}
   \label{rule:cic-conv}
   \end{mathpar}
+  \caption{Conversion rule}
 \end{marginfigure}
 
 There is one big missing part in the picture so far. Remember we are working with
@@ -266,7 +269,7 @@ of a concatenation function? Surely we must have a way to relate both, since aft
 the small program $2+1$ ought to compute to $3$! This is exactly what \intro{conversion} is
 for: in dependent type theory, there is a way to change a type to one that
 is related to it by this relation – see \ruleref{rule:cic-conv}, which wraps up our typing
-rules for \kl{CCω}.
+rules for \kl{CCω}, collected in \cref{fig:ccw-typing}.
 As usual, there are two ways to look at this relation. From the point of view of programs,
 it allows to incorporate the computational aspect of those, directly inside the type system.
 From the point of view of logics, this corresponds to things being the same "by definition"
@@ -274,12 +277,7 @@ rather than due to some reasoning
 – which is why conversion is also called definitional, or judgmental equality. In our vector
 example, for instance, the two types will be the same by virtue of the definition of addition.
 
-Conversion is a very complex beast, arguably the most subtle part of dependent types.
-Consequently, there are very different ways to present it, which in turn serve different
-needs.
-
-
-\begin{figure*}
+\begin{figure*}[h]
   \LastFloat
 
   \begin{mathpar}
@@ -314,4 +312,76 @@ needs.
   \end{mathpar}
 
   \caption{Typing rules for \kl{CCω}, collected}
+  \label{fig:ccw-typing}
 \end{figure*}
+
+Conversion is a very complex beast, arguably the most subtle part of dependent types.
+Consequently, there are very different ways to present it, which in turn serve different
+needs. There are at least two axes on which conversion can vary.
+
+The first axis is \intro[typed conversion]{typed} \vs
+\intro[untyped conversion]{untyped} conversion.
+On one side, conversion is intrinsically typed, terms are only convertible
+\emph{at a given type}. On the other, conversion is a relation between raw terms,
+that does not presuppose any form of typing. \Cref{fig:typed-untyped-conv} gives an
+example of the "same" rule – the computation rule for functions – in both systems.
+As we can see, the content of the two rules is the same, it equates $(\l x : A.\ t)\ u$
+and $\subs{t}{x}{u}$, only the side-conditions differ wildly.
+Typed conversion goes back to
+\sidetextcite{MartinLoef1972}, and is a recurring feature in its many descendants.
+Untyped conversion relates strongly to (untyped) $\l$-calculus – Barendregt
+for instance uses the name "conversion" for the equational theory of untyped $\l$-calculus
+in his reference work on the subject~\sidecite{Barendregt1985} –, via
+the Pure Type Systems (PTS)~\sidecite{Barendregt1991} literature.
+In this thesis, we will mainly consider untyped conversion, as \kl{Coq}’s meta-theory
+has been mostly studied in that tradition.
+But the relation between both in the context of
+bidirectional typing is the main subject of \cref{chap:bidir-conv}.
+
+\begin{figure}[h]
+  \begin{mathpar}
+    \inferrule
+      {\Gamma, x : A \vdash t : B \\ \Gamma \vdash u : A}
+      {\Gamma \vdash (\l x : A.\ t)\ u \conv \subs{t}{x}{u} : \subs{B}{x}{u}}
+    \and
+    \inferrule{ }{(\l x : A.\ t)\ u \conv \subs{t}{x}{u}}
+  \end{mathpar}
+  \caption{Example: typed and untyped $\beta$ rule for conversion}
+  \label{fig:typed-untyped-conv}
+\end{figure}
+
+The second axis corresponds to how close the conversion relation is to an implementation.
+For instance, conversion should be an equivalence relation,
+but there are two approaches to that. The
+first is to simply \emph{define} conversion as an equivalence relation, by adding rules 
+for \eg transitivity, as the one of \cref{fig:trans-conv}.
+\begin{marginfigure}
+  \begin{mathpar}
+    \inferrule
+      {t \conv t' \\ t' \conv t''}
+      {t \conv t''}
+  \end{mathpar}
+  \caption{Example: transitivity rule for conversion}
+  \label{fig:trans-conv}
+\end{marginfigure}
+This ensures that it indeed has the right properties, but
+makes it hard to prove it decidable, because one could have gone by
+transitivity through terms whose trace is not present in the end relation.
+The theoricians of $\l$-calculus have known this issue for a long time, and they
+have a solution: characterizing conversion by means of a \kl{reduction} relation $\red$, which
+corresponds to the idea of program evaluation. If this reduction has good
+properties\sidenote{The main one being confluence.}, then
+two terms will be convertible when they reduce to the same third term. This much more
+operational characterization is closer to what can be implemented, which is a good point.
+Turning this around, one can define conversion through reduction, and only afterward show
+that it has the good properties of the first approach – typically, that it is transitive.
+Conversion of the first kind we will call \intro{declarative conversion}, while for the second
+we will talk about \intro{algorithmic conversion}.
+
+In the rest of this section we give both presentations for \kl{untyped conversion}: the
+\kl{declarative} one we will use to define \kl{CCω}, at it is the most standard;
+the \kl{algorithmic} one will appear in \arefpart{metacoq}
+to show decidability of type-checking, and in
+\arefpart{gradual} because there we want to replace conversion by a non-transitive relation,
+and declarative conversion is thus not a good candidate
+as it – by design – enforces transitivity.
