@@ -7,41 +7,34 @@ quite complex, there is a high number of points where one can introduce slight v
 when giving a precise definition of a system to study it.
 Some of these variations are unimportant, but some introduce large differences in the
 resulting systems. Thus, in this chapter we go over in details over
-the definition of what I will refer to as the
+the definition of what we refer to as the
 \kl{Calculus of Inductive Constructions} (or simply \kl{CIC}), in the rest of this
-thesis, and which will serve as the basis for variations, theoretical study and extensions.
-While doing so, I will try to give an idea of the trade-offs involved, and of the reasons
+thesis, and which serves as the basis for variations, theoretical study and extensions.
+While doing so, I try to give an idea of the trade-offs involved, and of the reasons
 behind the choices made. Quite a few of those choices vary during the thesis,
 and this is by design: there is no single better choice, 
-something that I will try to make as clear as possible.
+something that I try to make as clear as possible.
 
 For the impatient specialists, let me say now that with \kl{CIC}, I
 mean an intentional type theory, with Curry-style abstractions,
-a predicative hierarchy of Russel universes\sidenote{And only those: by default I do \emph{not} include an impredicative sort of propositions, a feature that is sometimes associated to the name \kl{CIC}.},
+a predicative hierarchy of universes \textit{à la Russel}\sidenote{
+  And only those: by default I do \emph{not} include an impredicative sort of propositions, a feature that is sometimes associated to the name \kl{CIC}.},
 and any amount of required inductive types, presented by recursors – 
-the ones appearing most often being the empty and
+the ones appearing most often in what comes next being the empty and
 unit types, booleans, natural numbers, dependent sums, lists, vectors and the equality.
-Conversion is by default the reflexive, symmetric transitive closure of reduction, and
+Conversion is by default the reflexive, symmetric, transitive and congruent
+closure of β-reduction, and
 so in particular it is untyped. For the others, let me now detail what I mean by this.
-
-\begin{itemize}
-  \item universes (mention integers vs levels vs polymorphism)
-  \item prop!
-  \item inductive types (the whole variety of them?)
-  \item let bindings
-  \item fixpoints + match vs recursors
-  \item co-inductives (briefly I guess)
-  \item reduction, conversion (take 1)
-  \item conversion as a judgement
-\end{itemize}
 
 \section{Terms, typing and derivations}
 
-Throughout this chapter, \kl{CIC} is defined by means of a typing relation $\Gamma \vdash t : T$, which reads "in the context $\Gamma$, term $t$ has type $T$".
+Throughout this chapter, type systems are defined by means of a relation
+$\Gamma \vdash t : T$, which reads "in the context $\Gamma$, term $t$ has type $T$".
 From the logical point of view, this judgement means that $\Gamma$
 contains the hypothesis available to deduce the
 result $T$ by means of the proof $t$. On the programming side, it means that
-$t$ is a program, which uses the variables listed in $\Gamma$ together with their types,
+$t$ is a well-formed program,
+which uses the variables listed in $\Gamma$ together with their types,
 and has type $T$.
 Thus, $\Gamma$ is a list of declarations of the form $x : A$. We write $\emptycon$ for the
 empty context, and $\Gamma, x : A$ for the context $\Gamma$ extended with the new variable $x : A$, and $(x : A) \in \Gamma$ to denote that the declaration $x : A$ appears at some
@@ -58,16 +51,17 @@ This typing relation itself is defined by means of inference rules,
 such as \ruleref{rule:cic-var} opposite. The way to read this rule is that the judgement
 underneath the line follows from the one above,
 \ie from $(x : A) \in \Gamma$
-and $\vdash \Gamma$ – a judgement that will be defined soon asserting that the context
+and $\vdash \Gamma$ – a judgement that will soon be defined asserting that the context
 $\Gamma$ is well-formed – we can deduce $\Gamma \vdash x : A$.
+When objects appear in the hypothesis but not the conclusion, they are implicitely
+universally quantified.
 Once a set of such inference rules is fixed,
 typing is defined as the least relation closed by those
 rules. Equivalently, a judgement such as $\Gamma \vdash t : T$
 holds as soon as we can build a tree whose nodes are instances of the inference rules,
 and whose root is the judgement in question. A general setting
 to make this kind of definitions precise can be found in \sidetextcite{Bauer2020},
-in our case we will restrict to the level of presentation
-until \arefpart{metacoq}.
+in our case we restrict to this level of detail until \arefpart{metacoq}.
 
 As we have already introduced variables, a word on those as well. Variables are difficult
 to account for precisely, because of issues like shadowing – a conflict between two variables
@@ -79,7 +73,7 @@ there is no shadowing whatsoever and identifying $\alpha$-equivalent terms when 
 
 A final important building block that we use in all our type theories is substitution,
 that we write $\subs{t}{x}{u}$. This replaces every occurrence of $x$ in $t$ by the term
-$u$. Once again, we will treat this operation informally, assuming it never creates
+$u$. Once again, we treat this operation informally, assuming it never creates
 shadowing – what is sometimes called "capture-avoiding" substitution.
 
 \section{Functional core: \kl{CCω}}
@@ -89,7 +83,7 @@ shadowing – what is sometimes called "capture-avoiding" substitution.
 
 Let us now turn to the core of CIC, namely the
 \intro{Calculus of Constructions} (\kl{CCω}). Through the \kl{Curry-Howard correspondence},
-it is both a typed form of $\l$-calculus – \ie a kind of purely functional
+it is both a typed form of λ-calculus – \ie a kind of purely functional
 programming language – and a minimal form
 of logic – only containing universal quantification and implication.
 
@@ -104,10 +98,10 @@ of logic – only containing universal quantification and implication.
   \label{fig:cic-nondep-fun}
 \end{marginfigure}
 
-Functions, also called $\l$-abstraction are written $\l x : A .\ t$. This corresponds
+Functions, also called λ-abstraction are written $\l x : A .\ t$. This corresponds
 to the mathematical notation $x \mapsto t$: the body $t$ of the function,
 is a term that might contain the variable $x$,
-and the constructor $\l$ abstracts over that variable to build a function.
+and the constructor λ abstracts over that variable to build a function.
 Conversely, function application is written simply using juxtaposition, as in $t\ u$.
 The type of functions is written $\to$, as in ordinary mathematics.
 You can see those at work in \cref{fig:cic-nondep-fun}: an abstraction build a term of arrow
@@ -146,7 +140,7 @@ Conversely, if $T$ holds for all $x : A$, then one can deduce $T(u)$ for any spe
 $u : A$ – this is \ruleref{rule:cic-app}.
 Now the rules for arrow types in \cref{fig:cic-nondep-fun} are just a special case
 of those for product types, in the case where the codomain $T$ does not depend
-on the variable $x$, and we will use this convention throughout the thesis:
+on the variable $x$, and we use this convention throughout the thesis:
 $A \to T$ is a shortcut for $\P x : A.\ T$ when $T$ does not mention $x$.
 
 One last thing to note about our functions is that they record the type of their
@@ -179,8 +173,8 @@ Such a universe is called \textit{à la} Russell~\sidecite{Palmgren1998}, by con
 universes \textit{à la} Tarski, which regain the distinction between types and terms at
 the cost of a somewhat heavier treatment of types.
 The presentation \textit{à la} Tarski
-is mostly useful when building models, something we will not do here, so we keep the simpler
-of the two presentations.
+is mostly useful when building models. Since this is not the subject at hand in this thesis,
+we keep the simpler of the two presentations.
 
 \begin{marginfigure}
   \ContinuedFloat
@@ -236,7 +230,7 @@ Using those universes, \ruleref{rule:cic-prod} gives the typing rule for the pro
 judgement, asserting that a context is well-formed, in \cref{fig:cic-con}.
 It simply means that all its types
 are indeed types. Note that in \ruleref{rule:cic-cons-con}, we did not give an index for the
-universe, we will do so to mean the existence of some unconstrained level $i$.
+universe, we do so to mean the existence of some unconstrained level $i$.
 
 One last important point regarding universes is the kind of levels used. The simplest solution
 is to rely on natural number (of the meta-theory), with the $\unextsymb$
@@ -252,8 +246,8 @@ uses level expressions based on level variables, rather than integers.
 This way, one can collect the constraints between levels required for a
 term to type-check in a consistent system, without artificially enforcing a
 rigid interpretation of levels by fixing them to a precise integer once and for all.
-To simplify the presentation, our "standard" \kl{CCω}/\kl{CIC} will nonetheless use integers,
-but we will switch to level expressions when needed – especially in \arefpart{metacoq}.
+To simplify the presentation, our "standard" \kl{CCω}/\kl{CIC} nonetheless uses integers,
+but we switch to level expressions when needed.
 
 \section{50 Shades of Conversion}
 \label{sec:tech-conversion}
@@ -277,14 +271,14 @@ $\Vect A\,3$, but it is given an argument of type $\Vect A\,(2+1)$, for instance
 of a concatenation function? Surely we must have a way to relate both, since after all
 the small program $2+1$ ought to compute to $3$! This is exactly what \intro{conversion} is
 for: in dependent type theory, there is a way to change a type to one that
-is related to it by this relation – see \ruleref{rule:cic-conv}, which wraps up our typing
+is related to it by this relation – this is \ruleref{rule:cic-conv}, which wraps up our typing
 rules for \kl{CCω}, collected in \cref{fig:ccw-typing}.
 As usual, there are two ways to look at this relation. From the point of view of programs,
 it allows to incorporate the computational aspect of those, directly inside the type system.
 From the point of view of logics, this corresponds to things being the same "by definition"
 rather than due to some reasoning
 – which is why conversion is also called definitional, or judgmental equality. In our vector
-example, for instance, the two types will be the same by virtue of the definition of addition.
+example, for instance, the two types are the same by virtue of the definition of addition.
 
 \begin{figure*}[h]
   \LastFloat
@@ -326,9 +320,15 @@ example, for instance, the two types will be the same by virtue of the definitio
 
 Conversion is a very complex beast, arguably the most subtle part of dependent types.
 Consequently, there are very different ways to present it, which in turn serve different
-needs. There are at least two axes on which conversion can vary.
+needs.
+For this reason, we took care to setup the typing rules of
+\cref{fig:ccw-typing} so that \emph{nothing} has to
+be changed in those when one definition of conversion or another is taken. The only
+difference is in how the relation $\Gamma \vdash T \conv T' : \uni$ is defined.
+This way, we can treat it as a black box when talking about typing,
+making the design modular.
 
-The first axis is \intro[typed conversion]{typed} \vs
+A first divide is between \intro[typed conversion]{typed} and
 \intro[untyped conversion]{untyped} conversion.
 On one side, conversion is intrinsically typed, terms are only convertible
 \emph{at a given type}. On the other, conversion is a relation between raw terms,
@@ -338,11 +338,11 @@ As we can see, the content of the two rules is the same, it equates $(\l x : A.\
 and $\subs{t}{x}{u}$, only the side-conditions differ wildly.
 Typed conversion goes back to
 \sidetextcite{MartinLoef1972}, and is a recurring feature in its many descendants.
-Untyped conversion relates strongly to (untyped) $\l$-calculus – Barendregt
-for instance uses the name "conversion" for the equational theory of untyped $\l$-calculus
+Untyped conversion relates strongly to (untyped) λ-calculus – Barendregt
+for instance uses the name "conversion" for the equational theory of untyped λ-calculus
 in his reference work on the subject~\sidecite{Barendregt1985} –, via
 the Pure Type Systems (PTS)~\sidecite{Barendregt1991} literature.
-In this thesis, we will mainly consider untyped conversion, as \kl{Coq}’s meta-theory
+In this thesis, we mainly consider untyped conversion, as \kl{Coq}’s meta-theory
 has been mostly studied in that tradition.
 But the relation between both in the context of
 bidirectional typing is the main subject of \cref{chap:bidir-conv}.
@@ -355,11 +355,11 @@ bidirectional typing is the main subject of \cref{chap:bidir-conv}.
     \and
     \inferrule{ }{(\l x : A.\ t)\ u \udconv \subs{t}{x}{u}}
   \end{mathpar}
-  \caption{Example: typed and untyped $\beta$ rule for conversion}
+  \caption{Example: typed and untyped β rule for conversion}
   \label{fig:typed-untyped-conv}
 \end{figure}
 
-The second axis corresponds to how close the conversion relation is to an implementation.
+A second axis is about how close the conversion relation is to an implementation.
 For instance, conversion should be an equivalence relation,
 but there are two approaches to that. The first – and standard – one
 is to simply \emph{define} conversion as an equivalence relation, by adding rules 
@@ -373,28 +373,28 @@ for \eg transitivity, as the one of \cref{fig:trans-conv}.
   \caption{Example: transitivity rule for conversion}
   \label{fig:trans-conv}
 \end{marginfigure}
-This ensures that it has the right properties, but
-makes it hard to prove it decidable, because one could have gone by
-transitivity through terms whose trace is not present in the end relation.
-The $\l$-calculus theorists have known this issue for a long time, and they
+This ensures that conversion has the right properties, but means it does not directly correspond
+to an algorithm: the transitivity rule cannot be directly implemented, since its middle
+term is not recorded in any place.
+The λ-calculus theorists have known this issue for a long time, and they
 have a solution: characterizing conversion by means of a \kl{reduction} relation $\red$, which
 corresponds to the idea of program evaluation – see \sidetextcite{Barendregt1985} for
 instance. If this reduction has good
 properties\sidenote{The main one being confluence.}, then
-two terms will be convertible when they reduce to the same third term. This much more
-operational characterization is closer to what can be implemented.
+two terms are be convertible exactly when they reduce to the same third term.
+This much more operational characterization is closer to what can be implemented.
 Turning things around, one can define conversion through reduction,
 and only show \emph{afterwards}
 that it has the good properties of the first approach – typically, that it is transitive.
-Conversion of the first kind we will call \intro{declarative conversion}, while for the second
-we will talk about \intro{algorithmic conversion}.
+Conversion of the first kind we call \intro{declarative conversion}, while for the second
+we talk about \intro{algorithmic conversion}.
 
-In the rest of this section we give both presentations for \kl{untyped conversion}: the
-\kl{declarative} one as we define \kl{CCω} with it, since it is the most standard;
-the \kl{algorithmic} one as it will appear in \arefpart{metacoq}
-to show decidability of type-checking, and in
-\arefpart{gradual} where we want to replace conversion by a non-transitive relation,
-declarative conversion thus being a bad candidate as it enforces transitivity.
+In the rest of this section we give two presentations of \kl{untyped conversion}.
+A \kl{declarative} one, which we use to define \kl{CCω}, as is the standard.
+And an \kl{algorithmic} one, anticipating \arefpart{metacoq} where it is needed
+to show decidability of type-checking, and
+\arefpart{gradual} where we extend it into a relation that is by design not transitive, so
+that basing it on declarative conversion would be nonsensical.
 
 \subsection{Untyped declarative conversion}
 
@@ -407,36 +407,35 @@ declarative conversion thus being a bad candidate as it enforces transitivity.
   \caption{Typing constraint on untyped conversion}
 \end{marginfigure}
 
-Let us first go back to \ruleref{rule:cic-conv}.
-This rule was set up in such a way that typed or untyped conversion could be plugged in
-without modifying the rule.
-Actually, even if we wish to describe conversion as
-an untyped relation, we still need to enforce a typing constraint at this point,
-namely that the target type is indeed a well-formed type,
-in order to ensure that whenever $\Gamma \vdash t : T$ is derivable
+To start our presentation of \kl{untyped conversion},
+let us first go back to \ruleref{rule:cic-conv}.
+Even if we wish to describe conversion as
+an untyped relation, we still enforce a typing constraint in \ruleref{rule:cic-conv},
+in order to ensure that, whenever $\Gamma \vdash t : T$ is derivable,
 $\Gamma \vdash T : \uni$ is as well.
-This is exactly the content of \ruleref{rule:cic-conv-unty}.
-
-Regarding conversion itself, the first set of rules asserts
-that conversion forms an equivalence relation: it
-is reflexive (\ruleref{rule:cic-uconv-refl}), symmetric (\ruleref{rule:cic-uconv-sym}),
-and transitive (\ruleref{rule:cic-uconv-trans}).
+This is exactly the content of \ruleref{rule:cic-conv-unty}, which combines conversion
+with a check that the target type is indeed a well-formed type.
 
 \begin{figure}[h]
   \ContinuedFloat
   \begin{mathpar}
-    \inferdef{Refl}{ }{\Gamma \vdash t \udconv t}
+    \inferdef{ConvRefl}{ }{t \udconv t}
     \label{rule:cic-uconv-refl} \and
-    \inferdef{Sym}{\Gamma \vdash t \udconv t'}{\Gamma \vdash t' \udconv t}
+    \inferdef{ConvSym}{t \udconv t'}{t' \udconv t}
     \label{rule:cic-uconv-sym} \and
-    \inferdef{Trans}
-      {\Gamma \vdash t \udconv t' \\ \Gamma \vdash t' \udconv t''}
-      {\Gamma \vdash t \udconv t''}
+    \inferdef{ConvTrans}
+      {t \udconv t' \\ t' \udconv t''}
+      {t \udconv t''}
     \label{rule:cic-uconv-trans}
   \end{mathpar}
   \caption{Equivalence rules}
   \label{fig:cic-uconv-equiv}
 \end{figure}
+
+Regarding conversion itself, the first set of rules asserts
+that conversion forms an equivalence relation: it
+is reflexive (\ruleref{rule:cic-uconv-refl}), symmetric (\ruleref{rule:cic-uconv-sym}),
+and transitive (\ruleref{rule:cic-uconv-trans}).
 
 A second set of rules, collected in \cref{fig:cic-uconv-cong},
 asserts that conversion is a congruence, meaning that it is compatible
@@ -447,21 +446,26 @@ those are special cases of \ruleref{rule:cic-uconv-refl}. Conversely, we could o
 reflexivity altogether and only have congruence rules, which can be seen as a generalized
 form of reflexivity.
 
-\begin{figure}[ht]
+\begin{figure}[h]
   \ContinuedFloat
   \begin{mathpar}
-    \inferdef{ProdConv}
+    \inferrule
+    % \inferdef{ProdConv}
       {A \udconv A' \\ B \udconv B'}
       {\P x : A.\ B \udconv \P x : A'.\ B'}
-    \label{rule:cic-uconv-prod} \and
-    \inferdef{AbsConv}
+    % \label{rule:cic-uconv-prod}
+    \and
+    \inferrule
+    % \inferdef {AbsConv}
       {A \udconv A' \\ t \udconv t'}
       {\l x : A .\ t \udconv \l x : A'.\ t'}
-    \label{rule:cic-uconv-abs} \and
-    \inferdef{AppConv}
+    % \label{rule:cic-uconv-abs}
+    \and
+    % \inferdef{AppConv}
+    \inferrule
       {f \udconv f' \\ u \udconv u' }
       {f\ u \udconv f'\ u'}
-    \label{rule:cic-uconv-app}
+    % \label{rule:cic-uconv-app}
   \end{mathpar}
   \caption{Congruence rules}
   \label{fig:cic-uconv-cong}
@@ -475,8 +479,161 @@ form of reflexivity.
   \end{mathpar}
   \caption{Computation rule for functions}
 \end{marginfigure}
-The last rule, \ruleref{rule:cic-uconv-beta} is the crucial one:
+Finally \ruleref{rule:cic-uconv-beta}, is the crucial one:
 it corresponds to the computational behaviour
-of functions, replacing the variable of an applied $\l$-abstraction by its argument by
+of functions, replacing the variable of an applied λ-abstraction by its argument by
 means of substitution.
 
+\subsection{Reduction}
+
+Before we can describe \kl{algorithmic conversion}, we first need
+to give a look at \intro{reduction}. Reduction is in some way an operational variant of
+conversion. The main difference is that it is oriented, in the direction which would
+correspond to program evaluation. It itself decomposes into three components.
+
+\begin{marginfigure}
+  \ContinuedFloat*
+  \begin{mathpar}
+    \inferdef{βRed}{ }{(\l x : A.\ t)\ u \tred \subs{t}{x}{u}}
+    \label{rule:beta-red}
+  \end{mathpar}
+  \caption{Top-level reduction}
+\end{marginfigure}
+
+The first is \intro{top-level
+reduction} $\tred$, which corresponds purely to computation, without any congruent closure.
+In \kl{CCω} there is only the single \ruleref{rule:beta-red}.
+
+The second component is the congruent closure of top-level reduction,
+\intro{one-step reduction} $\ored$, which allows triggering top-level reduction exactly once,
+but at any position in a term. Its definition is given in \cref{fig:ccw-ored}.
+Note that while we talk about congruent closure both for
+\kl{conversion} and \kl{one-step reduction}, we mean it differently: in the
+case of conversion, we demand the relation to hold in all sub-terms,
+while for one-step reduction it is allowed in exactly one position.
+
+\begin{figure}[ht]
+  \ContinuedFloat
+  \begin{mathpar}
+    \inferrule
+    % \inferdef{TopRed}
+      {t \tred t'}
+      {t \ored t'}
+    % \label{rule:top-red}
+    \and
+    \inferrule
+    % \inferdef{ProdRedDom}
+      {A \ored A'}
+      {\P x : A.\ B \ored \P x : A'.\ B}
+    % \label{rule:red-prod-dom}
+    \and
+    \inferrule
+    % \inferdef{ProdRedCod}
+      {B \ored B'}
+      {\P x : A.\ B \ored \P x : A.\ B'}
+    % \label{rule:red-prod-cod}
+    \and
+    \inferrule
+    % \inferdef{AbsRedDom}
+      {A \ored A'}
+      {\l x : A .\ t \ored \l x : A'.\ t}
+    % \label{rule:red-abs-dom}
+    \and
+    \inferrule
+    % \inferdef{AbsRedBod}
+      {t \ored t'}
+      {\l x : A .\ t \ored \l x : A.\ t'}
+    % \label{rule:red-abs-bod}
+    \and
+    \inferrule
+    % \inferdef{AppRedFun}
+      {f \ored f'}
+      {f\ u \ored f'\ u}
+    % \label{rule:red-app-fun}
+    \and
+    \inferrule
+    % \inferdef{AppRedArg}
+      {u \ored u'}
+      {f\ u \ored f\ u'}
+    % \label{rule:red-app-arg}
+  \end{mathpar}
+  \caption{One-step reduction}
+  \label{fig:ccw-ored}
+\end{figure}
+
+Finally, we obtain \kl{reduction} as the reflexive
+transitive closure of one-step reduction, see \cref{fig:red}.
+
+\begin{figure}[h]
+  \begin{mathpar}
+    \inferrule
+    % \inferdef{TopRed}
+      {t \tred t'}
+      {t \ored t'} \and
+    % \label{rule:top-red}
+    \inferrule{ }{t \fred t}
+    \and
+    \inferrule
+      {t \ored t' \\ t' \fred t''}
+      {t \fred t''}
+  \end{mathpar}
+  \caption{Reduction}
+  \label{fig:red}
+\end{figure}
+
+Now, the reason we separate these three layers is that reduction as just defined is
+somewhat too unrestricted, in particular it is non-deterministic.
+In a lot of places, what we care about is exposing the head
+constructor of a term, and there is a deterministic strategy we can impose to do so, called
+\intro{weak-head reduction} $\hred$. It amounts to restricting the places in the term where
+\kl{top-level reduction} can be used, by removing some congruence rules. More precisely,
+λ-abstractions, product types and universes are not reduced, as they already are canonical
+forms of their types. Variables are not reduced either, since they simply cannot be. Thus,
+the only reduction that is allowed is in the function position of an application, with the
+hope to get an abstraction there that can be further reduced at top-level. In the end,
+we get \cref{fig:wh-red}. When we want to contrast this weak-head reduction with the
+previously defined one $\red$, we call the latter \kl{full reduction}.
+\begin{figure}[h]
+  \begin{mathpar}
+    \inferrule
+    % \inferdef{TopRed}
+      {t \tred t'}
+      {t \hored t'}
+    % \label{rule:top-red}
+    \and
+    \inferrule
+      {f \hored f'}
+      {f\ u \hored f'\ u}
+    \and
+    \inferrule{ }{t \hred t}
+    \label{rule:red-refl} \and
+    \inferrule
+      {t \hored t' \\ t' \hred t''}
+      {t \hred t''}
+    \label{rule:red-trans}
+  \end{mathpar}
+  \caption{Weak-head redution}
+  \label{fig:wh-red}
+\end{figure}
+
+
+
+\subsection{Algorithmic conversion}
+
+\section{Adding Inductive Types: \kl{CIC}}
+
+\subsection{Datatypes}
+
+\subsection{Indexed inductive types}
+
+\section{Beyond \kl{CIC}: \kl{PCUIC}}
+
+\subsection{Cumulativity}
+
+\subsection{The sort of propositions}
+
+\subsection{Local and global definitions}
+
+\subsection{Enhancing inductive types}
+
+\subsection{Co-inductive types and records}

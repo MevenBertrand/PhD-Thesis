@@ -134,7 +134,10 @@
 \newcommand{\taconv}{\conv} % Typed algorithmic conversion
 
 %% Reduction
-\newcommand{\red}{\rightsquigarrow}
-\newcommand{\fred}{\red} % Full reduction (closed by all contexts)
-\newcommand{\tred}{\red} % Top reduction (closed by no context)
-\newcommand{\hred}{\red} % Weak-head reduction (closed by head contexts)
+\newcommand{\basered}{\rightarrow}
+\newcommand{\ored}{\basered^1} % One-step full reduction (closed by all contexts)
+\newcommand{\fred}{\basered^{\star}} % Multi-step full reduction (closed by all contexts)
+\newcommand{\tred}{\rightharpoonup} % Top reduction (closed by no context, one step)
+\newcommand{\hored}{\ored_{h}} % One-step weak-head reduction (closed by head contexts)
+\newcommand{\hred}{\red_{h}} % One-step weak-head reduction (closed by head contexts)
+\newcommand{\red}{\fred} % Reduction
