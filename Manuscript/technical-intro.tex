@@ -65,11 +65,11 @@ in our case we restrict to this level of detail until \arefpart{metacoq}.
 
 As we have already introduced variables, a word on those as well. Variables are difficult
 to account for precisely, because of issues like shadowing – a conflict between two variables
-with the same name – or $\alpha$-equivalence – the identification between two terms
+with the same name – or \intro{α-equality} – the identification between two terms
 only differing on variable names. There are multiple techniques to solve these issues
 – see the many solutions to the POPLMark Challenge~\sidecite{Aydemir2005} –, 
-but again, we treat these issues in an informal way until \arefpart{metacoq}, assuming
-there is no shadowing whatsoever and identifying $\alpha$-equivalent terms when needed.
+but again we treat these issues in an informal way until \arefpart{metacoq}, assuming
+there is no shadowing whatsoever and identifying α-equal terms when needed.
 
 A final important building block that we use in all our type theories is substitution,
 that we write $\subs{t}{x}{u}$. This replaces every occurrence of $x$ in $t$ by the term
@@ -484,7 +484,7 @@ it corresponds to the computational behaviour
 of functions, replacing the variable of an applied λ-abstraction by its argument by
 means of substitution.
 
-\subsection{Reduction}
+\subsection{Algorithmic conversion}
 
 Before we can describe \kl{algorithmic conversion}, we first need
 to give a look at \intro{reduction}. Reduction is in some way an operational variant of
@@ -565,6 +565,7 @@ Finally, we obtain \kl{reduction} as the reflexive
 transitive closure of one-step reduction, see \cref{fig:red}.
 
 \begin{figure}[h]
+  \ContinuedFloat
   \begin{mathpar}
     \inferrule
     % \inferdef{TopRed}
@@ -581,17 +582,39 @@ transitive closure of one-step reduction, see \cref{fig:red}.
   \label{fig:red}
 \end{figure}
 
-Now, the reason we separate these three layers is that reduction as just defined is
-somewhat too unrestricted, in particular it is non-deterministic.
-In a lot of places, what we care about is exposing the head
-constructor of a term, and there is a deterministic strategy we can impose to do so, called
-\intro{weak-head reduction} $\hred$. It amounts to restricting the places in the term where
-\kl{top-level reduction} can be used, by removing some congruence rules. More precisely,
-λ-abstractions, product types and universes are not reduced, as they already are canonical
-forms of their types. Variables are not reduced either, since they simply cannot be. Thus,
-the only reduction that is allowed is in the function position of an application, with the
-hope to get an abstraction there that can be further reduced at top-level. In the end,
-we get \cref{fig:wh-red}. When we want to contrast this weak-head reduction with the
+With reduction out of the way, we can finally get to \intro{algorithmic conversion}: two terms
+are convertible whenever they reduce to terms that are \kl{α-equal}.
+As for declarative conversion,
+we impose a typing condition on the target type. Put all together, this leads to
+\ruleref{rule:alg-conv}. For once we make α-equality explicit to anticipate for
+its replacement by more complex relations later on.
+
+\begin{figure}[ht]
+  \ContinuedFloat
+  \begin{mathpar}
+    \inferdef{AlgConv}
+    {\Gamma \vdash T : \uni \\ T \red U \\ T' \red U' \\ U \alpheq U' }
+    {\Gamma \vdash T \conv T' : \uni}
+    \label{rule:alg-conv}
+  \end{mathpar}
+  \caption{Algorithmic conversion}
+\end{figure}
+
+To wrap up this section, let us backtrack for a moment on the reason why we separate
+the definition of reduction in two layers. The reasons is that as we defined it, reduction
+is somewhat too lax.\sidenote{In particular it is non-deterministic.}
+In what follows, a recurring need is that of a deterministic notion of reduction 
+which is able to expose the head constructor of a term. There is a way to do so, what is called
+\intro{weak-head reduction} $\hred$. It amounts to restricting the places in a term where
+\kl{top-level reduction} can be used with respect to reduction,
+by removing some congruence rules. More precisely,
+λ-abstractions, product types and universes are not reduced further,
+as they already are canonical forms of their types.
+Variables are not reduced either, since they simply cannot be.
+Thus, the only reduction that is allowed is in the function position of an application,
+with the hope to get an abstraction there that can be further reduced using top-level reduction.
+In the end, we get \cref{fig:wh-red}.
+When we want to contrast this weak-head reduction with the
 previously defined one $\red$, we call the latter \kl{full reduction}.
 \begin{figure}[h]
   \begin{mathpar}
@@ -615,10 +638,6 @@ previously defined one $\red$, we call the latter \kl{full reduction}.
   \caption{Weak-head redution}
   \label{fig:wh-red}
 \end{figure}
-
-
-
-\subsection{Algorithmic conversion}
 
 \section{Adding Inductive Types: \kl{CIC}}
 
