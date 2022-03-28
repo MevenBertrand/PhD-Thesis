@@ -92,7 +92,7 @@
 
 \makeatother
 
-\newcommand{\ruleref}[1]{Rule~\nameref{#1}}
+\newcommand{\ruleref}[1]{Rule \nameref{#1}}
 
 %mathpar hack, inspired by http://lists.seas.upenn.edu/pipermail/types-list/2019/002157.html
 
@@ -102,6 +102,15 @@
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Type theoretic stuff
+
+% To allow like breaks at points, see https://tex.stackexchange.com/questions/19094/allowing-line-break-at-in-inline-math-mode-breaks-citations
+\AtBeginDocument{%
+  \mathchardef\mathpoint\mathcode`\.
+  \mathcode`\.="8000 
+}
+{\catcode`.=\active
+  \gdef.{\mathpoint\discretionary{}{}{}}
+}
 
 %% Contexts
 \newcommand{\emptycon}{\cdot}
@@ -171,6 +180,7 @@
 
 %% Conversion
 \newcommand{\alpheq}{=_{\alpha}}
+\newcommand{\alphleq}{\leq_{\alpha}}
 \newcommand{\conv}{\cong}
 \newcommand{\udconv}{\conv} % Untyped declarative conversion
 \newcommand{\uaconv}{\conv} % Untyped algorithmic conversion
