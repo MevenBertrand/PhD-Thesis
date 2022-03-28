@@ -1,0 +1,49 @@
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{./styles/fontcd}
+
+%See https://newbedev.com/tikzcdset-arrow-style-math-font-breaks-the-rendering-of-arrows
+
+\RequirePackage{tikz-cd}
+
+\DeclareOption*{\PassOptionsToPackage{\CurrentOption}{tikz-cd}}
+
+\newcommand{\tikzcdarrowdimens}[2]{%
+    \tikzcdset{every arrow/.append style={line width=#1}}%
+    \pgfmathdeclarefunction*{axis_height}{0}{%
+        \begingroup%      
+        \pgfmathreturn#2%
+        \endgroup%
+    }%
+}
+
+\DeclareOption{Libertinus}{%
+    \tikzcdset{arrow style=math font}%
+    \tikzcdarrowdimens{0.052em}{0.257em}%
+}
+
+\DeclareOption{Pagella}{%
+    \tikzcdset{arrow style=math font}%
+    \tikzcdarrowdimens{0.060em}{0.250em}%
+}
+
+\DeclareOption{Schola}{%
+    \tikzcdset{arrow style=math font}%
+    \tikzcdarrowdimens{0.070em}{0.260em}%
+}
+
+\DeclareOption{Bonum}{%
+    \tikzcdset{arrow style=math font}%
+    \tikzcdarrowdimens{0.072em}{0.260em}%
+}
+
+\DeclareOption{STIX}{%
+    \tikzcdset{arrow style=math font}%
+    \tikzcdarrowdimens{0.068em}{0.259em}%
+}
+
+\DeclareOption{Cambria}{%
+    \tikzcdset{arrow style=math font}%
+    \tikzcdarrowdimens{0.06494140625em}{0.285888671875em}%
+}
+
+\ProcessOptions\relax
