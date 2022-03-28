@@ -122,8 +122,8 @@
 \newcommand{\emptycon}{\cdot}
 
 \newcommand{\into}{\coloneqq}
-\newcommand{\subs}[3]{#1\{#2 \into #3\}}
-\newcommand{\multisubs}[2]{#1\{#2\}}
+\newcommand{\subs}[3]{#1[#2 \into #3]}
+\newcommand{\multisubs}[2]{#1[#2]}
 
 %% Terms
 
@@ -202,3 +202,13 @@
 \newcommand{\hored}{\ored_{h}} % One-step weak-head reduction (closed by head contexts)
 \newcommand{\hred}{\red_{h}} % One-step weak-head reduction (closed by head contexts)
 \newcommand{\red}{\fred} % Reduction
+
+% Neutral/normal forms
+
+\AtBeginDocument{
+  \NewCommandCopy{\numero}{\no}
+  \renewcommand{\no}{\mathrel{\mathrm{no}}}
+
+  \NewCommandCopy{\noteq}{\ne}
+  \renewcommand{\ne}{\mathrel{\mathrm{ne}}}
+}

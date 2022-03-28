@@ -675,14 +675,317 @@ previously defined one $\red$, we call the latter \intro{full reduction}.
 \section{The Good Properties}
 \label{sec:tech-properties}
 
-\begin{itemize}
-  \item Weakening, substitution
-  \item Validity, principality
-  \item \intro{subject reduction} (confluence, injectivity of type constructors)
-  \item \intro{Normalization}
-  \item Progress, canonicity, consistency
-\end{itemize}
+Before going further into more definitions of type systems, we should stop and consider
+what makes these "good". Designing type systems is a complex endeavour,
+and many things can go wrong. What are the properties we expect from a type
+system for it to give a valid notion of programming language or logic, and be well-behaved?
+Let us go over these, and some proof techniques that can be employed to establish them.
 
+\subsection{Stability under basic operations}
+
+The most essential properties of a type system are its stability
+by basic type theoretic operations.
+The first is stability under renaming, which states that a context can be replaced by another
+one which declares at least variables with the same types:
+
+\begin{property}[Stability under renaming]
+  \label{prop:stab-renaming}
+  A type theory is said to be \intro{stable under renaming}
+  if whenever the following conditions are met
+  \begin{itemize}
+    \item $x_1 : A_1 \dots x_n : A_n \vdash t : T$
+    \item $\vdash \Delta$
+    \item for all $i$, there is a variable $y_i$ such that $(y_i : \multisubs{A}{x_1 \into y_1 \dots x_n \into y_n}) \in \Delta$
+  \end{itemize} 
+  we have $\Delta \vdash \multisubs{t}{x_1 \into y_1 \dots x_n \into y_n} : \multisubs{T}{x_1 \into y_1 \dots x_n \into y_n}$.
+\end{property}
+
+A direct consequence is the \kl{weakening} property:
+
+\begin{property}[Weakening]
+  \label{prop:weakening}
+  A type theory is said to satisfy \intro{weakening} if whenever $\Gamma \vdash t : T$
+  and $\Gamma \vdash A : \uni$ we have $\Gamma, x : A \vdash t : T$.
+\end{property}
+
+A stronger notion is that of stability under substitution, which allows replacing of
+variables by arbitrary terms:
+
+\begin{property}[Stability under substitution]
+  \label{prop:stab-subst}
+  A type theory is said to be \intro{stable under substitution}
+  if for any substitution $\sigma$ (function from variable to terms)
+  such that the following hold
+  \begin{itemize}
+    \item $x_1 : A_1 \dots x_n : A_n \vdash t : T$
+    \item for all $x_i$, $\Delta \vdash \sigma(x_i) : \multisubs{A_i}{\sigma}$
+  \end{itemize} 
+  we have $\Delta \vdash \multisubs{t}{\sigma} : \multisubs{T}{\sigma}$.
+\end{property}
+
+These two stability properties can be proven by direct induction on the typing derivations,
+replacing hypotheses on the first context by hypothesis on the second. Of course, we need to
+state and prove similar stability properties for conversion, again by induction.
+
+There is, however, a stronger form of stability under renaming. While not as crucial as the
+one above, it is still quite useful, especially to prove correctness of term manipulations,
+such as those operated by tactics.
+
+\begin{property}[Conditional stability under renaming]
+  \label{prop:strong-stab-renaming}
+  A type theory is said to satisfy \intro{conditional stability under renaming}
+  if whenever the following conditions are met
+  \begin{itemize}
+    \item $x_1 : A_1 \dots x_n : A_n \vdash t : T$
+    \item $\vdash \Delta$
+    \item for all $i$ \emph{such that $x_i$ appears in $t$}, there is a variable $y_i$ such that $(y_i : \multisubs{A}{x_1 \into y_1 \dots x_n \into y_n}) \in \Delta$
+  \end{itemize} 
+  there exists a type $T'$ such that $\Delta \vdash \multisubs{t}{x_1 \into y_1 \dots x_n \into y_n} : T'$.
+\end{property}
+
+The difference between the two is that we do not ask for all variables appearing in $\Gamma$
+to be present in $\Delta$, only those that are "relevant" for $t$.
+Thus, the important consequence is the following, which allows removing unused variables
+from a context:
+
+\begin{property}[Strengthening]
+  \label{prop:strengthening}
+  A type theory is said to satisfy \intro{strengthening} if whenever
+  $\Gamma, x : A \vdash t : T$ and $x$ does not appear in $t$,
+  there exists $T'$ such that $\Gamma \vdash t : T'$.
+\end{property}
+
+Strengthening is not as easy to obtain as \kl{weakening}, and there are some type theories
+where it fails \sidecite{Haselwarter2021}.
+In general, even if it holds – this is the case in all type theories 
+presented in this thesis – it cannot be proven by a direct induction on the typing
+derivation. This is because of \ruleref{rule:cic-conv}. Indeed, in that rule the target type
+$T'$ might very well use the variable $x$, so that we do not have in general
+$\Gamma \vdash T' : \uni$. Thus, there is a need for further reasoning to prove that such a
+variable is never actually needed. We show in \arefpart{bidir} how the bidirectional
+makes proving strengthening straightforward.
+
+\subsection{Properties of types}
+
+A second set of properties pertain to types themselves. They are less crucial than the
+previous ones, but assess that the types that can be obtained for a term are well-behaved,
+which is often useful to have in proofs of other properties of
+the system – such as those in the rest of this section.
+
+The first is \kl{validity},
+which asserts that both types and contexts are well-formed whenever they appear in a typing
+derivation.
+
+\begin{property}[Validity]
+  \label{prop:validity}
+  A type theory satisfies \intro{validity} if whenever $\Gamma \vdash t : T$, we have
+  $\vdash \Gamma$ and $\Gamma \vdash T : \uni$.
+\end{property}
+
+We set up \kl{CCω} so that it satisfies this property, but another approach – which we use
+in the bidirectional setting – is to remove pre-conditions such as $\vdash \Gamma$ in
+\ruleref{rule:cic-var} or $\Gamma \vdash T' : \uni$ in \ruleref{rule:cic-conv-unty}.
+This is possible, but in that case a lot of properties have to be prefixed with extra
+hypothesis of context/type well-formedness.
+
+The second property is \kl{uniqueness of types}, which relates the different types
+of a same term.
+
+\begin{property}[Uniqueness of types]
+  \label{prop:uniqueness}
+  A type theory satisfies \intro{uniqueness of types up to} a relation $\sqsubseteq$
+  if whenever $t$ is well-typed in $\Gamma$ (\ie whenever there exists $S$ such that $\Gamma \vdash t : S$), there exists a type $T$ such that $\Gamma \vdash t : T$
+  and for any $T'$ such that $\Gamma \vdash t : T'$, it is true that $T' \sqsubseteq T$.
+
+  We simply say \kl{uniqueness of types} for uniqueness up to \kl{conversion}.
+\end{property}
+
+Note that in the case where the relation $\sqsubseteq$ is symmetric and transitive,
+(in particular, \kl{conversion}), \kl{uniqueness of types up to} $\sqsubseteq$ simplifies
+to the fact that whenever $\Gamma \vdash t : T$ and $\Gamma \vdash t : T'$,
+we have $T \sqsubseteq T'$. However, in \kl{PCUIC} we wish to replace \kl{conversion} with
+\kl{cumulativity}, which is not symmetric – it is a pre-order –, so that the more involved
+definition is needed.
+
+\subsection{Subject reduction}
+
+We already mentioned Milner’s slogan that "Well-typed programs cannot go wrong". In our
+context, this means that if a term is well-typed, its reduction – which corresponds to
+program evaluation –, should be well-behaved. This well-behaviour is separated 
+into multiple properties, the first of which is \kl{subject reduction},
+which asserts that typing is preserved by reduction.
+
+\begin{property}[Subject reduction]
+  \label{prop:sr}
+  The \intro{subject reduction} property – also called \kl{preservation} –
+  holds for a type system if whenever
+  $\Gamma \vdash t : T$ and $t \red t'$, then also $\Gamma \vdash t' : T$.
+\end{property}
+
+To show that \kl{reduction} preserves typing, it suffices to show that \kl{one-step reduction}
+does, by a simple induction. Moreover, using \kl{stability under substitution}, this further
+reduces to \kl{top-level reduction} preserving typing. But how do we show this?
+
+Suppose we have a β-redex such that $\Gamma \vdash (\l x : A.\ t)\ u : T$.
+Analysing the typing
+derivation, we can conclude there exist $A'$, $B$ and $B'$ such that
+\begin{itemize}
+  \item $\Gamma, x : A \vdash t : B$
+  \item $\P x : A.\ B \udconv \P x : A'.\ B'$
+  \item $\Gamma \vdash u : A'$
+  \item $\subs{B'}{x}{u} \udconv T$
+\end{itemize}
+If we were able to conclude that $A \udconv A'$ and $B \udconv B'$, then we could
+deduce $\Gamma \vdash u : A$, then using \kl{stability under
+substitution} we would get $\Gamma \vdash \subs{t}{x}{u} : \subs{B}{x}{u}$,
+which would finally lead to $\Gamma \vdash \subs{t}{x}{u} : T$ using \kl{stability under
+substitution} and transitivity of conversion. Thus, the key property is the following:
+
+\begin{property}[Injectivity of product types]
+  \label{prop:prod-inj}
+  A conversion relation $\conv$ is said to have \intro{injectivity of product types}
+  if whenever $\P x : A.\ B \conv \P x : A'.\ B'$, we have $A \conv A'$ and $B \conv B'$.
+\end{property}
+
+For \kl{declarative conversion}, transitivity is trivial, but \kl{injectivity of product types}
+is not so easy. Indeed, by transitivity we could have $\P x : A.\ B \conv T \conv \P x : A'.\ B'$ for an arbitrary $T$, and so it is not clear how to relate $A$ and $A'$.
+Conversely, for \kl{algorithmic conversion}, \kl{injectivity of product types} is rather
+straightforward by induction on \kl{reduction} and \kl{α-equality}, but transitivity is
+hard to show. Thus, in both cases \kl{subject reduction} is not direct.
+The main missing property, which allows proving equivalence of both notions
+of \kl{conversion}, and consequently subject reduction for either one of
+the corresponding notions of typing, is \kl{confluence} of reduction.
+
+\begin{marginfigure}
+  \[\begin{tikzcd}
+    & t \arrow[dl] \arrow[dr] & \\
+    t_1 \arrow[dr, dashed] && t_2 \arrow[dl, dashed] \\
+    & t'' &
+  \end{tikzcd}\]
+  \caption{Confluence, as a diagram}
+\end{marginfigure}
+
+\begin{property}[Confluence]
+  \label{prop:confluence}
+  The \intro{confluence} property of reduction says that whenever
+  $t \red t_1$ and $t \red t_2$, there exists $t''$ such that
+  $t_1 \red t''$ and $t_2 \red t''$.
+\end{property}
+
+This is a very widely studied property in the context of rewriting systems. A nice
+proof technique relies on the definition of a notion of parallel reduction, see
+\sidetextcite{Takahashi1989}.
+
+\subsection{Progress}
+
+\begin{marginfigure}
+  \begin{mathpar}
+    \jform{\no t}
+    \inferrule{ }{\no \uni}
+    \and
+    \inferrule{\no A \\ \no B}{\no \P x : A.\ B}
+    \and
+    \inferrule{\no A \\ \no t}{\no \l x : A .\ t} \and
+    \inferrule{\ne t}{\no t}
+    \\
+    \jform{\ne t}
+    \inferrule{\ne f \\ \no u}{\ne f\ u}
+    \and
+  \inferrule{ }{\ne x}
+  \end{mathpar}
+  \caption{Normal and neutral forms}
+  \label{fig:ccw-norm-neu}
+\end{marginfigure}
+
+\kl{Subject reduction} ensures that when a term reduces, this reduction is type-preserving.
+The second important property linked to reduction characterizes which terms reduce.
+To state it, we first need to define the $\no$ and $\ne$ predicates,
+characterizing respectively \intro{normal forms} $\no$ and \intro{neutral forms} $\ne$.
+The inductive rules for those are given in \cref{fig:ccw-norm-neu}.
+The idea is that neutral forms are those terms which are stuck on a variable, which blocks
+further computation because it is not an λ-abstraction. Normal forms are either neutrals,
+or \intro{canonical forms}, which have finished computing. For instance, a λ-abstraction is
+the canonical form for a function. What \kl{progress} says is that these forms accurately
+characterize well-typed normal terms.
+
+\begin{property}[Progress]
+  A type system is said to satisfy \intro{progress} – given a notion of \kl{normal forms} –
+  if for every well-typed term $t$, either $\no t$ holds, or there is $t'$ such that
+  $t \red t'$.
+\end{property}
+
+One way to understand \kl{progress} – and, indeed, the origin of the name – is that well-typed
+terms do not get stuck: either they have finished computing, and thus satisfy $\no$, or
+they should be able to make progress by reducing further.
+Put together with \kl{preservation}, progress can be iterated. Indeed,
+if a term is well-typed, it is either is a normal form, or reduces to a term, which is itself
+well-typed, so is either a normal form or reduces, and so on. This decomposition of
+program safety into progress and preservation
+has been standard since \sidetextcite{Wright1994}.
+
+To prove progress, one can again resort to induction on the typing derivation. The key point
+is to characterize the \kl{normal forms} at a given type,
+by proving that they are either \kl{neutral forms}, or \kl{canonical form} of a right kind.
+For instance, if $t$ is a normal form and has a product type, then it must be
+either a neutral or a λ-abstraction.
+
+\subsection{Normalization}
+
+The last important property, and one which is specific to type systems in the context of
+programming languages, is \kl{normalization}. It ensures that progress cannot be applied
+forever, but that instead \kl{reduction} eventually terminates.
+We carefully phrase this is a constructive manner, as follows:
+
+\begin{property}[Normalization]
+  \label{prop:normalization}
+  A term is called \kl{normalizing} if it is accessible%
+  \sidenote{An object $a : A$ is \intro{accessible} for a relation $R$ if all $a'$
+  such that $a \mathrel{R} a'$ are themselves accessible.} 
+  for \kl{reduction}.
+  A type system has the \intro{normalization} property if every well-typed term is
+  normalizing.
+\end{property}
+
+Normalization is a crucial building block towards decidability of typing,
+as it entails that one can rely on normal forms of
+terms to decide conversion. Thus, it is a property of prime important if we wish to
+implement a type-checker.
+
+Another key consequence, of normalization is that,
+combined with \kl{progress} and \kl{preservation}, it entails that any well-typed term
+eventually reduces to a normal form, which is unique by \kl{confluence}.
+It follows that there are some uninhabited types in the empty context,
+for instance $\P A : \uni.\ A$.
+Indeed, there are no normal forms at that type – suppose there is one,
+and reason by induction on it $\no$ derivation. This is one way to phrase
+\kl{logical consistency}, which has the advantage that it does not put forward one particular
+"false" type.
+
+\begin{property}[Logical consistency]
+  \label{prop:log-cons}
+  A type system is \intro{logically consistent} if there is a type which is uninhabited
+  in the empty context.
+\end{property}
+
+Thus, normalization ensures our type systems are meaningful as logics,
+which we of course care about! More generally, it entails the \kl{canonicity} property:
+
+\begin{property}[Canonicity]
+  \label{prop:canonicity}
+  A type system has the \intro{canonicity} property
+  if every term $t$ that is well-typed in the empty
+  context reduces to a canonical form.
+\end{property}
+
+The issue is that, since normalization entails logical consistency, it is a hard
+property to prove. In particular, due to Gödel’s incompleteness theorem, one cannot hope
+to prove normalization of a type system in the logic given by that system itself…
+Still, there are multiple approaches to proving normalization, from the venerable
+reducibility method \sidecite{Tait1967} to the recent normalization by evaluation 
+techniques \sidecite{Abel2013a}. However, due to their complex character, 
+we do not tackle such proofs of normalization directly in this thesis. Instead, we
+either suppose normalization when it is unavoidable,
+or prove it relatively to that of another, simpler theory.
 
 \section{Adding Inductive Types: \kl{CIC}}
 \label{sec:tech-cic}
