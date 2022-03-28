@@ -112,10 +112,16 @@
   \gdef.{\mathpoint\discretionary{}{}{}}
 }
 
+% For better spacing of :, see https://tex.stackexchange.com/questions/64423/exchange-meaning-of-and-colon
+
+\AtBeginDocument{\DeclareMathSymbol{:}{\mathpunct}{operators}{"3A}}
+\def\colon{\mathrel{:}}
+
+
 %% Contexts
 \newcommand{\emptycon}{\cdot}
 
-\newcommand{\into}{:=}
+\newcommand{\into}{\coloneqq}
 \newcommand{\subs}[3]{#1\{#2 \into #3\}}
 \newcommand{\multisubs}[2]{#1\{#2\}}
 
@@ -129,7 +135,7 @@
 \DeclareMathOperator{\P}{Π}
 
 \DeclareDocumentCommand\letin{m m m m}
-  {\operatorname{let} #1 : #2 := #3 \operatorname{in} #4}
+  {\operatorname{let} #1 : #2 \coloneqq #3 \operatorname{in} #4}
 
 %% Universes
 

@@ -45,21 +45,21 @@ kernel of \kl{Coq}.
 \label{sec:tech-typing}
 
 Throughout this chapter, type systems are defined by means of a relation
-$\Gamma \vdash t \colon T$, which reads "in the context $\Gamma$, the term $t$ has type $T$".
+$\Gamma \vdash t : T$, which reads "in the context $\Gamma$, the term $t$ has type $T$".
 From the logical point of view, this judgement means that $\Gamma$
 contains the hypothesis available to deduce the
 conclusion $T$ by means of the proof $t$.
 On the programming side, it means that $t$ is a well-formed program of type $T$,
 which uses the variables listed together with their types in $\Gamma$.
-Hence, $\Gamma$ is a list of declarations, of the form $x \colon A$.
+Hence, $\Gamma$ is a list of declarations, of the form $x : A$.
 We write $\emptycon$ for the
-empty context, $\Gamma, x \colon A$ for the extension of context $\Gamma$ with the new variable $x \colon A$, and $(x \colon A) \in \Gamma$ to denote that the declaration $x \colon A$ appears at some
+empty context, $\Gamma, x : A$ for the extension of context $\Gamma$ with the new variable $x : A$, and $(x : A) \in \Gamma$ to denote that the declaration $x : A$ appears at some
 point in the context $\Gamma$.
 
 \begin{marginfigure}
   \ContinuedFloat*
   \begin{mathpar}
-  \inferdef{Var}{(x \colon A) \in \Gamma \\ \vdash \Gamma}{\Gamma \vdash x \colon A}
+  \inferdef{Var}{(x : A) \in \Gamma \\ \vdash \Gamma}{\Gamma \vdash x : A}
   \label{rule:cic-var}
   \end{mathpar}
   \caption{Typing rule for a variable}
@@ -69,14 +69,14 @@ point in the context $\Gamma$.
 This typing relation itself is defined by means of inference rules,
 such as \ruleref{rule:cic-var} opposite. The way to read this rule is that the judgement
 underneath the line follows from the one above,
-\ie from $(x \colon A) \in \Gamma$
+\ie from $(x : A) \in \Gamma$
 and $\vdash \Gamma$ – a judgement that will soon be defined asserting that the context
-$\Gamma$ is well-formed – we can deduce $\Gamma \vdash x \colon A$.
+$\Gamma$ is well-formed – we can deduce $\Gamma \vdash x : A$.
 When objects appear in the hypothesis but not the conclusion, they are implicitly
 universally quantified.
 Once a set of such inference rules is fixed,
 typing is defined as the least relation closed by those
-rules. Equivalently, a judgement such as $\Gamma \vdash t \colon T$
+rules. Equivalently, a judgement such as $\Gamma \vdash t : T$
 holds whenever we can build a tree whose nodes are instances of the inference rules,
 and whose root is the judgement in question. A general setting
 for this kind of definitions of type systems can be found in \sidetextcite{Bauer2020},
@@ -119,15 +119,15 @@ Let us start with the basic terms: functions and applications.
 
 \begin{marginfigure}
   \begin{mathpar}
-    \inferrule{\Gamma, x \colon A \vdash t \colon T}{\Gamma \vdash \l x \colon A .\ t \colon A \to T}
+    \inferrule{\Gamma, x : A \vdash t : T}{\Gamma \vdash \l x : A .\ t : A \to T}
     \and
-    \inferrule{\Gamma \vdash f \colon A \to T \\ \Gamma \vdash u \colon A }{ \Gamma \vdash t\ u \colon T}
+    \inferrule{\Gamma \vdash f : A \to T \\ \Gamma \vdash u : A }{ \Gamma \vdash t\ u : T}
   \end{mathpar}
   \caption{Typing for non-dependent functions}
   \label{fig:cic-nondep-fun}
 \end{marginfigure}
 
-Functions, also called λ-abstractions, are written $\l x \colon A .\ t$. This corresponds
+Functions, also called λ-abstractions, are written $\l x : A .\ t$. This corresponds
 to the mathematical notation $x \mapsto t$: the body $t$ of the function
 is a term that might contain the variable $x$,
 and the constructor λ abstracts over that variable to build a function.
@@ -143,10 +143,10 @@ and $A$ both hold, then $T$ does as well.
 \begin{marginfigure}
   \ContinuedFloat*
   \begin{mathpar}
-    \inferdef{Abs}{\Gamma, x \colon A \vdash t \colon T}{\Gamma \vdash \l x \colon A .\ t \colon \P x \colon A.\ T}
+    \inferdef{Abs}{\Gamma, x : A \vdash t : T}{\Gamma \vdash \l x : A .\ t : \P x : A.\ T}
     \label{rule:cic-abs}
     \and
-    \inferdef{App}{\Gamma \vdash f \colon \P x \colon A.\ T \\ \Gamma \vdash u \colon A }{ \Gamma \vdash f\ u \colon \subs{T}{x}{u}}
+    \inferdef{App}{\Gamma \vdash f : \P x : A.\ T \\ \Gamma \vdash u : A }{ \Gamma \vdash f\ u : \subs{T}{x}{u}}
     \label{rule:cic-app}
   \end{mathpar}
   \caption{Typing for dependent functions}
@@ -162,15 +162,15 @@ might vary depending on the argument. This is reflected in the typing rule for a
 since the codomain $T$ might depend on $x$, the type of the application $f\ u$ is $T$
 \emph{specialized at the argument $u$}, using substitution.
 Seen on the logical side, Π-types correspond to universal quantification
-$\operatorname{\forall} x \colon A.\ T(x)$.
+$\operatorname{\forall} x : A.\ T(x)$.
 Indeed, if one can show that $T(x)$ holds for an unspecified $x$,
-then it must hold for all $x \colon A$ – this is \ruleref{rule:cic-abs}.
-Conversely, if $T$ holds for all $x \colon A$, then one can deduce $T(u)$ for any specific
-$u \colon A$ – this is \ruleref{rule:cic-app}.
+then it must hold for all $x : A$ – this is \ruleref{rule:cic-abs}.
+Conversely, if $T$ holds for all $x : A$, then one can deduce $T(u)$ for any specific
+$u : A$ – this is \ruleref{rule:cic-app}.
 The rules of \cref{fig:cic-nondep-fun} are just a special case
 of those, in the case where the codomain $T$ does not depend
 on the variable $x$, and we use this convention throughout the thesis:
-$A \to T$ is shorthand for $\P x \colon A.\ T$ when $T$ does not mention $x$.
+$A \to T$ is shorthand for $\P x : A.\ T$ when $T$ does not mention $x$.
 
 \AP One last thing to note about our functions is that they record the type of their
 domain – what is called \intro{Church-style}
@@ -205,7 +205,7 @@ we use the simpler one.
   \begin{mathpar}
     \inferdef{Univ}
     {\vdash \Gamma}
-    {\Gamma \vdash \uni[i] \colon \uni[\unext{i}]}
+    {\Gamma \vdash \uni[i] : \uni[\unext{i}]}
     \label{rule:cic-univ}
   \end{mathpar}
   \caption{Typing for universes}
@@ -219,7 +219,7 @@ source of inconsistencies. Type theory is not devoid of this issue:
 Girard~\sidecite[][Annex~A]{Girard1972}
 shows how having a type with itself as type is inconsistent.
 This inconsistency directly applies to the first dependent type system proposed by
-Martin-Löf~\sidecite{MartinLoef1972}, which has a single universe $\uni$ and a rule $\uni \colon \uni$.
+Martin-Löf~\sidecite{MartinLoef1972}, which has a single universe $\uni$ and a rule $\uni : \uni$.
 A common solution to this issue
 is to stratify universes into an infinite hierarchy, which gives us \ruleref{rule:cic-univ}.
 Note how $\uni$ is indexed by the \intro{universe levels} $i$ and $\unext{i}$.
@@ -228,8 +228,8 @@ Note how $\uni$ is indexed by the \intro{universe levels} $i$ and $\unext{i}$.
   \ContinuedFloat
   \begin{mathpar}
     \inferdef{Prod}
-    {\Gamma \vdash A \colon \uni[i] \\ \Gamma, x \colon A \vdash B \colon \uni[j]}
-    {\Gamma \vdash \P x \colon A.\ B \colon \uni[\umax{i}{j}]}
+    {\Gamma \vdash A : \uni[i] \\ \Gamma, x : A \vdash B : \uni[j]}
+    {\Gamma \vdash \P x : A.\ B : \uni[\umax{i}{j}]}
     \label{rule:cic-prod}
   \end{mathpar}
   \caption{Typing for product types}
@@ -243,7 +243,7 @@ Note how $\uni$ is indexed by the \intro{universe levels} $i$ and $\unext{i}$.
     { }{\vdash \cdot}
     \label{rule:cic-empty-con} \and
     \inferdef{ConsCon}
-    {\vdash \Gamma \\ \Gamma \vdash A \colon \uni}{\vdash \Gamma, x \colon A}
+    {\vdash \Gamma \\ \Gamma \vdash A : \uni}{\vdash \Gamma, x : A}
     \label{rule:cic-cons-con}
   \end{mathpar}
   \caption{Context well-formedness}
@@ -281,8 +281,8 @@ but \kl{typical ambiguity} appears at multiple points in this thesis.
   \ContinuedFloat
   \begin{mathpar}
   \inferdef{Conv}
-    {\Gamma \vdash t \colon T \\ \Gamma \vdash T \conv T' \colon \uni}
-    {\Gamma \vdash t \colon T'}
+    {\Gamma \vdash t : T \\ \Gamma \vdash T \conv T' : \uni}
+    {\Gamma \vdash t : T'}
   \label{rule:cic-conv}
   \end{mathpar}
   \caption{Conversion rule}
@@ -318,28 +318,28 @@ In our vector example, for instance, the two types are the same by the definitio
       { }{\vdash \cdot}
     \and
     \inferdef{ConsCon}
-      {\vdash \Gamma \\ \Gamma \vdash A \colon \uni}{\vdash \Gamma, x \colon A}
+      {\vdash \Gamma \\ \Gamma \vdash A : \uni}{\vdash \Gamma, x : A}
     \\\\
-    \jform{\Gamma \vdash t \colon T}
-    \inferdef{Var}{(x \colon A) \in \Gamma \\ \vdash \Gamma}{\Gamma \vdash x \colon A}
+    \jform{\Gamma \vdash t : T}
+    \inferdef{Var}{(x : A) \in \Gamma \\ \vdash \Gamma}{\Gamma \vdash x : A}
     \and
     \inferdef{Univ}
       {\vdash \Gamma}
-      {\Gamma \vdash \uni[i] \colon \uni[\unext{i}]}
+      {\Gamma \vdash \uni[i] : \uni[\unext{i}]}
     \and
     \inferdef{Prod}
-      {\Gamma \vdash A \colon \uni[i] \\ \Gamma, x \colon A \vdash B \colon \uni[j]}
-      {\Gamma \vdash \P x \colon A.\ B \colon \uni[\umax{i}{j}]}
+      {\Gamma \vdash A : \uni[i] \\ \Gamma, x : A \vdash B : \uni[j]}
+      {\Gamma \vdash \P x : A.\ B : \uni[\umax{i}{j}]}
     \and
-    \inferdef{Abs}{\Gamma, x \colon A \vdash t \colon T}{\Gamma \vdash \l x \colon A .\ t \colon \P x \colon A.\ T}
+    \inferdef{Abs}{\Gamma, x : A \vdash t : T}{\Gamma \vdash \l x : A .\ t : \P x : A.\ T}
     \and
     \inferdef{App}
-      {\Gamma \vdash f \colon \P x \colon A.\ T \\ \Gamma \vdash u \colon A }
-      {\Gamma \vdash f\ u \colon \subs{T}{x}{u}}
+      {\Gamma \vdash f : \P x : A.\ T \\ \Gamma \vdash u : A }
+      {\Gamma \vdash f\ u : \subs{T}{x}{u}}
     \and
   \inferdef{Conv}
-    {\Gamma \vdash t \colon T \\ \Gamma \vdash T \conv T' \colon \uni}
-    {\Gamma \vdash t \colon T'}
+    {\Gamma \vdash t : T \\ \Gamma \vdash T \conv T' : \uni}
+    {\Gamma \vdash t : T'}
   \end{mathpar}
 
   \caption{Collected typing rules for \kl{CCω}}
@@ -352,7 +352,7 @@ needs.
 For this reason, we took care to set the typing rules of
 \cref{fig:ccw-typing} up so that nothing has to
 be changed in those when one definition of conversion or another is taken. The only
-difference is in how the relation $\Gamma \vdash T \conv T' \colon \uni$ is defined.
+difference is in how the relation $\Gamma \vdash T \conv T' : \uni$ is defined.
 This way, we can treat conversion as a black box when talking about typing,
 making the theory modular.
 
@@ -362,7 +362,7 @@ On one side, conversion is seen as an intrinsically typed relation: terms are on
 \emph{at a given type}. On the other, conversion is a relation between raw terms,
 that does not presuppose any form of typing. \Cref{fig:typed-untyped-conv} gives an
 example of the computation rule for functions in both systems.
-The "content" of the two rules is the same – they equate $(\l x \colon A.\ t)\ u$
+The "content" of the two rules is the same – they equate $(\l x : A.\ t)\ u$
 and $\subs{t}{x}{u}$ – only the side-conditions differ wildly.
 \kl{Typed conversion} goes back to the type theory of
 \sidetextcite{MartinLoef1972}, and is a recurring feature in its many descendants.
@@ -378,10 +378,10 @@ bidirectional typing is the main subject of \cref{chap:bidir-conv}.
 \begin{figure}[ht]
   \begin{mathpar}
     \inferrule
-      {\Gamma, x \colon A \vdash t \colon B \\ \Gamma \vdash u \colon A}
-      {\Gamma \vdash (\l x \colon A.\ t)\ u \tdconv \subs{t}{x}{u} \colon \subs{B}{x}{u}}
+      {\Gamma, x : A \vdash t : B \\ \Gamma \vdash u : A}
+      {\Gamma \vdash (\l x : A.\ t)\ u \tdconv \subs{t}{x}{u} : \subs{B}{x}{u}}
     \and
-    \inferrule{ }{(\l x \colon A.\ t)\ u \udconv \subs{t}{x}{u}}
+    \inferrule{ }{(\l x : A.\ t)\ u \udconv \subs{t}{x}{u}}
   \end{mathpar}
   \caption{Example: typed and untyped β rule for conversion}
   \label{fig:typed-untyped-conv}
@@ -430,7 +430,7 @@ in \arefpart{metacoq} and \arefpart{gradual}.
 \begin{marginfigure}
   \ContinuedFloat*
   \begin{mathpar}
-    \inferdef{UConv}{\Gamma \vdash T' \colon \uni \\ T \udconv T'}{\Gamma \vdash T \conv T' \colon \uni}
+    \inferdef{UConv}{\Gamma \vdash T' : \uni \\ T \udconv T'}{\Gamma \vdash T \conv T' : \uni}
     \label{rule:cic-conv-unty}
   \end{mathpar}
   \caption{Typing constraint on untyped conversion}
@@ -440,15 +440,15 @@ To start our presentation of \kl{untyped conversion},
 let us first go back to \ruleref{rule:cic-conv}.
 Even if we wish to describe conversion as
 an untyped relation, we still enforce a typing constraint in \ruleref{rule:cic-conv},
-in order to ensure that, whenever $\Gamma \vdash t \colon T$ is derivable,
-$\Gamma \vdash T \colon \uni$ is as well.
+in order to ensure that, whenever $\Gamma \vdash t : T$ is derivable,
+$\Gamma \vdash T : \uni$ is as well.
 This is exactly the content of \ruleref{rule:cic-conv-unty}, which combines conversion
 with a check that the target type is indeed a well-formed type.
 
 \begin{marginfigure}
   \ContinuedFloat
   \begin{mathpar}
-    \inferdef{βConv}{ }{(\l x \colon A.\ t)\ u \udconv \subs{t}{x}{u}}
+    \inferdef{βConv}{ }{(\l x : A.\ t)\ u \udconv \subs{t}{x}{u}}
     \label{rule:cic-uconv-beta}
   \end{mathpar}
   \caption{Computation rule for functions}
@@ -497,13 +497,13 @@ which can be seen as a generalized form of reflexivity.
     \inferrule
     % \inferdef{ProdConv}
       {A \udconv A' \\ B \udconv B'}
-      {\P x \colon A.\ B \udconv \P x \colon A'.\ B'}
+      {\P x : A.\ B \udconv \P x : A'.\ B'}
     % \label{rule:cic-uconv-prod}
     \and
     \inferrule
     % \inferdef {AbsConv}
       {A \udconv A' \\ t \udconv t'}
-      {\l x \colon A .\ t \udconv \l x \colon A'.\ t'}
+      {\l x : A .\ t \udconv \l x : A'.\ t'}
     % \label{rule:cic-uconv-abs}
     \and
     % \inferdef{AppConv}
@@ -526,7 +526,7 @@ correspond to program evaluation. It itself decomposes into three components.
 \begin{marginfigure}
   \ContinuedFloat*
   \begin{mathpar}
-    \inferdef{βRed}{ }{(\l x \colon A.\ t)\ u \tred \subs{t}{x}{u}}
+    \inferdef{βRed}{ }{(\l x : A.\ t)\ u \tred \subs{t}{x}{u}}
     \label{rule:beta-red}
   \end{mathpar}
   \caption{Top-level reduction}
@@ -558,25 +558,25 @@ while for one-step reduction it is allowed in exactly one sub-term.
     \inferrule
     % \inferdef{ProdRedDom}
       {A \ored A'}
-      {\P x \colon A.\ B \ored \P x \colon A'.\ B}
+      {\P x : A.\ B \ored \P x : A'.\ B}
     % \label{rule:red-prod-dom}
     \and
     \inferrule
     % \inferdef{ProdRedCod}
       {B \ored B'}
-      {\P x \colon A.\ B \ored \P x \colon A.\ B'}
+      {\P x : A.\ B \ored \P x : A.\ B'}
     % \label{rule:red-prod-cod}
     \and
     \inferrule
     % \inferdef{AbsRedDom}
       {A \ored A'}
-      {\l x \colon A .\ t \ored \l x \colon A'.\ t}
+      {\l x : A .\ t \ored \l x : A'.\ t}
     % \label{rule:red-abs-dom}
     \and
     \inferrule
     % \inferdef{AbsRedBod}
       {t \ored t'}
-      {\l x \colon A .\ t \ored \l x \colon A.\ t'}
+      {\l x : A .\ t \ored \l x : A.\ t'}
     % \label{rule:red-abs-bod}
     \and
     \inferrule
@@ -627,8 +627,8 @@ its replacement by more complex relations later on.
   \ContinuedFloat
   \begin{mathpar}
     \inferdef{AlgConv}
-    {\Gamma \vdash T \colon \uni \\ T \red U \\ T' \red U' \\ U \alpheq U' }
-    {\Gamma \vdash T \conv T' \colon \uni}
+    {\Gamma \vdash T : \uni \\ T \red U \\ T' \red U' \\ U \alpheq U' }
+    {\Gamma \vdash T \conv T' : \uni}
     \label{rule:alg-conv}
   \end{mathpar}
   \caption{Algorithmic conversion}
@@ -703,7 +703,7 @@ the \kl{Calculus of Inductive Constructions}.
 \begin{marginfigure}
   \ContinuedFloat*
   \begin{mathpar}
-    \inferdef{BoolTy}{\vdash \Gamma}{\Gamma \vdash \Bool \colon \uni[0]}
+    \inferdef{BoolTy}{\vdash \Gamma}{\Gamma \vdash \Bool : \uni[0]}
     \label{rule:bool-type}
   \end{mathpar}
   \caption{The type of booleans}
@@ -713,9 +713,9 @@ the \kl{Calculus of Inductive Constructions}.
 \begin{marginfigure}
   \ContinuedFloat
   \begin{mathpar}
-    \inferdef{False}{\vdash \Gamma}{\Gamma \vdash \false \colon \Bool} \and
+    \inferdef{False}{\vdash \Gamma}{\Gamma \vdash \false : \Bool} \and
     \label{rule:false}
-    \inferdef{True}{\vdash \Gamma}{\Gamma \vdash \true \colon \Bool}
+    \inferdef{True}{\vdash \Gamma}{\Gamma \vdash \true : \Bool}
     \label{rule:true}
   \end{mathpar}
   \caption{Boolean constructors}
@@ -752,11 +752,11 @@ but especially when we want to emphasize the programming point of view.
   \ContinuedFloat
   \begin{mathpar}
     \inferdef{BoolInd}
-      {\Gamma \vdash s \colon \Bool \\
-      \Gamma, z \colon \Bool \vdash P \colon \uni \\
-      \Gamma \vdash b_{\false} \colon \subs{P}{z}{\false} \\
-      \Gamma \vdash b_{\true} \colon \subs{P}{z}{\true}}
-      {\Gamma \vdash \ind{\Bool}{s}{z.P}{b_{\false},b_{\true}} \colon \subs{P}{z}{s}}
+      {\Gamma \vdash s : \Bool \\
+      \Gamma, z : \Bool \vdash P : \uni \\
+      \Gamma \vdash b_{\false} : \subs{P}{z}{\false} \\
+      \Gamma \vdash b_{\true} : \subs{P}{z}{\true}}
+      {\Gamma \vdash \ind{\Bool}{s}{z.P}{b_{\false},b_{\true}} : \subs{P}{z}{s}}
       \label{rule:bool-ind}
   \end{mathpar}
   \caption{Induction principle for booleans}
@@ -844,18 +844,18 @@ rules for the term former $\Sop$, since it has a sub-term.
 
 \begin{figure}[h]
   \begin{mathpar}
-    \inferdef{Nat}{\vdash \Gamma}{\Gamma \vdash \Nat \colon \uni[0]}
+    \inferdef{Nat}{\vdash \Gamma}{\Gamma \vdash \Nat : \uni[0]}
     \label{rule:nat-type} \and
-    \inferdef{Zero}{\vdash \Gamma}{\Gamma \vdash \z \colon \Nat}
+    \inferdef{Zero}{\vdash \Gamma}{\Gamma \vdash \z : \Nat}
     \label{rule:zero-type} \and
-    \inferdef{Succ}{\Gamma \vdash n \colon \Nat}{\Gamma \vdash \S{n} \colon \Nat}
+    \inferdef{Succ}{\Gamma \vdash n : \Nat}{\Gamma \vdash \S{n} : \Nat}
     \label{rule:succ-type} \and
     \inferdef{NatInd}
-      {\Gamma \vdash s \colon \Nat \\
-      \Gamma, z \colon \Nat \vdash P \colon \uni \\
-      \Gamma \vdash b_{\z} \colon \subs{P}{z}{\z} \\
-      \Gamma, y \colon \Nat, p_{y} \colon \subs{P}{z}{y} \vdash b_{\Sop} \colon \subs{P}{z}{\S{y}}}
-      {\Gamma \vdash \ind{\Nat}{s}{z.P}{b_{\z},y.p_{y}.b_{\Sop}} \colon \subs{P}{z}{s}}
+      {\Gamma \vdash s : \Nat \\
+      \Gamma, z : \Nat \vdash P : \uni \\
+      \Gamma \vdash b_{\z} : \subs{P}{z}{\z} \\
+      \Gamma, y : \Nat, p_{y} : \subs{P}{z}{y} \vdash b_{\Sop} : \subs{P}{z}{\S{y}}}
+      {\Gamma \vdash \ind{\Nat}{s}{z.P}{b_{\z},y.p_{y}.b_{\Sop}} : \subs{P}{z}{s}}
     \label{rule:nat-ind} \and
     \inferdef{ιZero}
     { }
@@ -873,8 +873,8 @@ rules for the term former $\Sop$, since it has a sub-term.
 
 At this point, it might be good to add a note on the way we represent constructors:
 we enforce them to be \intro{fully applied}, meaning $\Sop$ does not make sense on its own
-as a term. \kl{Coq} is slightly more permissive, and allows $\Sop \colon \Nat \to \Nat$.
-We forbid this – but one can always consider $\l x \colon \Nat.\ \S{x}$ instead if needed.
+as a term. \kl{Coq} is slightly more permissive, and allows $\Sop : \Nat \to \Nat$.
+We forbid this – but one can always consider $\l x : \Nat.\ \S{x}$ instead if needed.
 Likewise, inductive types are also enforced to be fully applied.
 We also avoid using the $\P$ and $\l$ term formers to represent binding in the predicate
 and branches of constructors, rather using contexts directly.
@@ -892,7 +892,7 @@ A second direction for enhancement is the ability to have inductive types with p
 The main use of this is for type constructors, for instance the pair type $A \times B$
 that appears in \cref{chap:intro-fr,chap:intro-en}. As is probably not very surprising by
 now, this type is a restricted instance of a more general type, the
-dependent pair type $\Sb x \colon A.\ B$. Logically, its dependency on $A$ means
+dependent pair type $\Sb x : A.\ B$. Logically, its dependency on $A$ means
 that if we see $B$ as a property,
 the whole pair type describes a subset of $A$ – those elements
 which validate $B$. The rules are given in \cref{fig:sig}.
@@ -905,19 +905,19 @@ $\Sb$ get their congruence rules, since both have sub-terms.
 \begin{figure}
   \begin{mathpar}
     \inferdef{PairTy}
-      {\vdash A \colon \uni[i] \\ \Gamma, x \colon A \vdash B \colon \uni[j]}
-      {\Gamma \vdash \Sb x \colon A.\ B \colon \uni[\umax{i}{j}]}
+      {\vdash A : \uni[i] \\ \Gamma, x : A \vdash B : \uni[j]}
+      {\Gamma \vdash \Sb x : A.\ B : \uni[\umax{i}{j}]}
     \label{rule:sig-type} \and
     \inferdef{Pair}
-    {\Gamma \vdash A \colon \uni \\ \Gamma, x \colon A \vdash B \colon \uni \\
-    \Gamma \vdash t \colon A \\ \Gamma \vdash u \colon \subs{B}{x}{t}}
-    {\Gamma \vdash \pair[A][B]{t}{u} \colon \Sb x \colon A.\ B}
+    {\Gamma \vdash A : \uni \\ \Gamma, x : A \vdash B : \uni \\
+    \Gamma \vdash t : A \\ \Gamma \vdash u : \subs{B}{x}{t}}
+    {\Gamma \vdash \pair[A][B]{t}{u} : \Sb x : A.\ B}
     \label{rule:pair-type} \and
     \inferdef{PairInd}
-      {\Gamma \vdash s \colon \Sb x \colon A.\ B \\
-      \Gamma, z \colon \Sb x \colon A.\ B \vdash P \colon \uni \\
-      \Gamma, y_1 \colon A, y_2 \colon \subs{B}{x}{y_1} \vdash b \colon \subs{P}{z}{\pair[A][B]{y_1}{y_2}}}
-      {\Gamma \vdash \ind{\Sb}{s}{z.P}{y_1.y_2.b} \colon \subs{P}{z}{s}}
+      {\Gamma \vdash s : \Sb x : A.\ B \\
+      \Gamma, z : \Sb x : A.\ B \vdash P : \uni \\
+      \Gamma, y_1 : A, y_2 : \subs{B}{x}{y_1} \vdash b : \subs{P}{z}{\pair[A][B]{y_1}{y_2}}}
+      {\Gamma \vdash \ind{\Sb}{s}{z.P}{y_1.y_2.b} : \subs{P}{z}{s}}
       \label{rule:sig-ind} \and
     \inferdef{ιPair}
     { }
@@ -936,26 +936,26 @@ given in \cref{fig:list}.
 \begin{figure}
 \begin{mathpar}
   \inferdef{ListTy}
-    {\vdash A \colon \uni[i]}
-    {\Gamma \vdash \List(A) \colon \uni[i]}
+    {\vdash A : \uni[i]}
+    {\Gamma \vdash \List(A) : \uni[i]}
   \label{rule:list-type} \and
   \inferdef{Nil}
-    {\Gamma \vdash A \colon \uni}
-    {\Gamma \vdash \lnil[A] \colon \List(A)}
+    {\Gamma \vdash A : \uni}
+    {\Gamma \vdash \lnil[A] : \List(A)}
   \label{rule:nil-type} \and
   \inferdef{Cons}
-    {\Gamma \vdash A \colon \uni \\ 
-    \Gamma \vdash a \colon A \\ \Gamma \vdash l \colon \List(A)}
-    {\Gamma \vdash \lcons[A]{a}{l} \colon \List(A)}
+    {\Gamma \vdash A : \uni \\ 
+    \Gamma \vdash a : A \\ \Gamma \vdash l : \List(A)}
+    {\Gamma \vdash \lcons[A]{a}{l} : \List(A)}
   \label{rule:cons-type} \and
   \inferdef{ListInd}
-    {\Gamma \vdash s \colon \List(A) \\
-    \Gamma, z \colon \List(A) \vdash P \colon \uni \\
-    \Gamma \vdash b_{\lnil} \colon \subs{P}{z}{\lnil} \\
-    \Gamma, y_1 \colon A, y_2 \colon \List(A), p_{y_2} \colon \subs{P}{z}{y_2}
-      \vdash b_{\lconsop} \colon \subs{P}{z}{\lcons[A]{y_1}{y_2}}}
+    {\Gamma \vdash s : \List(A) \\
+    \Gamma, z : \List(A) \vdash P : \uni \\
+    \Gamma \vdash b_{\lnil} : \subs{P}{z}{\lnil} \\
+    \Gamma, y_1 : A, y_2 : \List(A), p_{y_2} : \subs{P}{z}{y_2}
+      \vdash b_{\lconsop} : \subs{P}{z}{\lcons[A]{y_1}{y_2}}}
     {\Gamma \vdash \ind{\List}{s}{z.P}{b_{\lnil},y_1.y_2.p_{y_2}.b_{\lconsop}}
-      \colon \subs{P}{z}{s}}
+      : \subs{P}{z}{s}}
   \label{rule:list-ind} \and
   \inferdef{ιNil}
     { }
@@ -986,20 +986,20 @@ to specify that they inhabit a type at some specific value? This is exactly the 
 \begin{figure}
   \begin{mathpar}
   \inferdef{EqType}
-    {\Gamma \vdash A \colon \uni[i] \\ \Gamma \vdash a \colon A \\ \Gamma \vdash a' \colon A}
-    {\Gamma \vdash \eqty[A]{a}{a'} \colon \uni[i]}
+    {\Gamma \vdash A : \uni[i] \\ \Gamma \vdash a : A \\ \Gamma \vdash a' : A}
+    {\Gamma \vdash \eqty[A]{a}{a'} : \uni[i]}
   \label{rule:eq-type}
   \and
   \inferdef{EqRefl}
-    {\Gamma \vdash A \colon \uni[i] \\ \Gamma \vdash a \colon A}
-    {\Gamma \vdash \refl[A][a] \colon \eqty[A]{a}{a}}
+    {\Gamma \vdash A : \uni[i] \\ \Gamma \vdash a : A}
+    {\Gamma \vdash \refl[A][a] : \eqty[A]{a}{a}}
   \label{rule:eq-refl}
   \and
   \inferdef{EqInd}
-    {\Gamma \vdash s \colon \eqty[A]{a}{a'} \\
-    \Gamma, y \colon A, z \colon \eqty[A]{a}{y} \vdash P \colon \uni \\
-    \Gamma \vdash b \colon \multisubs{P}{y \into a, z \into \refl[A][a]}}
-    {\Gamma \vdash \ind{\eqtyop}{s}{y.z.P}{b} \colon \multisubs{P}{y \into a', z \into s}}
+    {\Gamma \vdash s : \eqty[A]{a}{a'} \\
+    \Gamma, y : A, z : \eqty[A]{a}{y} \vdash P : \uni \\
+    \Gamma \vdash b : \multisubs{P}{y \into a, z \into \refl[A][a]}}
+    {\Gamma \vdash \ind{\eqtyop}{s}{y.z.P}{b} : \multisubs{P}{y \into a', z \into s}}
   \label{rule:eq-ind} \and
   \inferdef{ιEq}
     { }
@@ -1048,26 +1048,26 @@ by mere virtue of typing.
 \begin{figure*}
   \begin{mathpar}
     \inferdef{VectType}
-      {\vdash A \colon \uni[i] \\ \vdash n \colon \Nat}
-      {\Gamma \vdash \Vect(A,n) \colon \uni[i]}
+      {\vdash A : \uni[i] \\ \vdash n : \Nat}
+      {\Gamma \vdash \Vect(A,n) : \uni[i]}
     \label{rule:vect-type} \and
     \inferdef{Vnil}
-      {\Gamma \vdash A \colon \uni}
-      {\Gamma \vdash \vnil[A] \colon \Vect(A,\z)}
+      {\Gamma \vdash A : \uni}
+      {\Gamma \vdash \vnil[A] : \Vect(A,\z)}
     \label{rule:vnil-type} \and
     \inferdef{Vcons}
-      {\Gamma \vdash A \colon \uni \\ \Gamma \vdash n \colon \Nat \\
-      \Gamma \vdash a \colon A \\ \Gamma \vdash l \colon \Vect(A,n)}
-      {\Gamma \vdash \vcons[A][n]{a}{l} \colon \Vect(A,\S n)}
+      {\Gamma \vdash A : \uni \\ \Gamma \vdash n : \Nat \\
+      \Gamma \vdash a : A \\ \Gamma \vdash l : \Vect(A,n)}
+      {\Gamma \vdash \vcons[A][n]{a}{l} : \Vect(A,\S n)}
     \label{rule:vcons-type} \and
     \inferdef{VectInd}
-      {\Gamma \vdash s \colon \Vect(A,n) \\
-      \Gamma, y \colon \Nat, z \colon \Vect(A,y) \vdash P \colon \uni \\
-      \Gamma \vdash b_{\vnil} \colon \multisubs{P}{y \into 0, z \into \vnil} \\
-      \Gamma, y_1 \colon \Nat, y_2 \colon A, y_3 \colon \Vect(A,y_1), p_{y_3} \colon \multisubs{P}{y \into y_1, z \into y_3} \vdash
-        b_{\vconsop} \colon \multisubs{P}{y \into \S{y_1}, z \into \vcons[A][y_1]{y_2}{y_3}}}
+      {\Gamma \vdash s : \Vect(A,n) \\
+      \Gamma, y : \Nat, z : \Vect(A,y) \vdash P : \uni \\
+      \Gamma \vdash b_{\vnil} : \multisubs{P}{y \into 0, z \into \vnil} \\
+      \Gamma, y_1 : \Nat, y_2 : A, y_3 : \Vect(A,y_1), p_{y_3} : \multisubs{P}{y \into y_1, z \into y_3} \vdash
+        b_{\vconsop} : \multisubs{P}{y \into \S{y_1}, z \into \vcons[A][y_1]{y_2}{y_3}}}
       {\Gamma \vdash \ind{\Vect}{s}{y.z.P}{b_{\vnil},y_1.y_2.y_3.p_{y_3}.b_{\vconsop}}
-        \colon \multisubs{P}{y \into n, z \into s}}
+        : \multisubs{P}{y \into n, z \into s}}
     \label{rule:vect-ind} \and
     \inferdef{ιVnil}
       { }
@@ -1125,7 +1125,7 @@ while reserving the fully precise technical details for \arefpart{metacoq}.
 The first addition of \kl{PCUIC} is \kl{cumulativity}, which allows some extra flexibility
 with universe levels. 
 To see why this is useful, consider the polymorphic identity function
-$\l (A \colon \uni[i]) (x \colon A).\ x$, of type $\P A \colon \uni[i] .\ A \to A$.
+$\l (A : \uni[i]) (x : A).\ x$, of type $\P A : \uni[i] .\ A \to A$.
 If we want to use it at type $\Nat$, we must force $i$ to be $0$. But this means that we
 cannot use it later on at type $\uni[0]$! In a concrete system, where a huge number of
 universe levels appear under the hood, this would quickly become unhandy.
@@ -1136,7 +1136,7 @@ corresponding to inclusion of a universe $\uni[i]$ in any larger universe $\uni[
 This means that while $\uni[i] \conv \uni[j]$ is true only if $i = j$, cumulativity
 allows for $\uni[i] \cum \uni[j]$ as soon as $i \leq j$.
 This subtyping can be extended to function types,
-by allowing $\P x \colon A.\ B \cum \P x \colon A'.\ B$ whenever $A \conv A'$ and $B \cum B'$.
+by allowing $\P x : A.\ B \cum \P x : A'.\ B$ whenever $A \conv A'$ and $B \cum B'$.
 Note that contrarily to other forms of subtyping, this does not allow for contravariant
 subtyping on the domain – that would correspond to $A' \cum A$ –, only for equivariant
 one – the domains should be convertible. This is because cumulativity is usually modelled
@@ -1146,15 +1146,15 @@ subtyping, but not so easily to contravariant subtyping.
 \begin{marginfigure}
   \begin{mathpar}
     \inferdef{UnivCum}{i \leq j}{\uni[i] \cum \uni[j]} \label{rule:univ-cum} \and
-    \inferdef{ΠCum}{A \conv A' \\ B \cum B'}{\P x \colon A.\ B \cum \P x \colon A'.\ B'}
+    \inferdef{ΠCum}{A \conv A' \\ B \cum B'}{\P x : A.\ B \cum \P x : A'.\ B'}
       \label{rule:prod-cum} \and
     \inferdef{ConvCum}{A \conv A'}{A \cum A'} \label{rule:conv-cum} \and
     \inferdef{Refl}{ }{A \cum A} \label{rule:cum-refl} \and
     \inferdef{Trans}{A \cum A' \\ A' \cum A''}{A \cum A''} \label{rule:cum-trans} \and
-    \inferdef{UCum}{\Gamma \vdash T' \colon \uni \\ T \cum T'}{\Gamma \vdash T \cum T' \colon \uni}
+    \inferdef{UCum}{\Gamma \vdash T' : \uni \\ T \cum T'}{\Gamma \vdash T \cum T' : \uni}
       \label{rule:cic-ucum} \and
-    \inferdef{Cum}{\Gamma \vdash t \colon T \\ \Gamma \vdash T \cum T' \colon \uni}
-    {\Gamma \vdash t \colon T'}
+    \inferdef{Cum}{\Gamma \vdash t : T \\ \Gamma \vdash T \cum T' : \uni}
+    {\Gamma \vdash t : T'}
       \label{rule:cic-cum}
   \end{mathpar}
   \caption{Rules for declarative cumulativity}
@@ -1189,13 +1189,13 @@ be a type for propositions – hence the name. It has two main distinctive chara
 
 \begin{marginfigure}
   \begin{mathpar}
-    \inferdef{Prop}{\vdash \Gamma}{\Gamma \vdash \Prop \colon \uni[0]}
+    \inferdef{Prop}{\vdash \Gamma}{\Gamma \vdash \Prop : \uni[0]}
     \label{rule:cic-prop} \and
-    \inferdef{ΠTyProp}{\Gamma \vdash A \colon \uni \\ \Gamma, x \colon A \vdash P \colon \Prop}
-    {\Gamma \vdash \P x \colon A.\ P \colon \Prop}
+    \inferdef{ΠTyProp}{\Gamma \vdash A : \uni \\ \Gamma, x : A \vdash P : \Prop}
+    {\Gamma \vdash \P x : A.\ P : \Prop}
     \label{rule:prop-prod} \and
-    \inferdef{ΠPropProp}{\Gamma \vdash A \colon \Prop \\ \Gamma, x \colon A \vdash P \colon \Prop}
-    {\Gamma \vdash \P x \colon A.\ P \colon \Prop}
+    \inferdef{ΠPropProp}{\Gamma \vdash A : \Prop \\ \Gamma, x : A \vdash P : \Prop}
+    {\Gamma \vdash \P x : A.\ P : \Prop}
     \label{rule:prop-prop-prod}
   \end{mathpar}
   \caption{Typing rules for propositions}
@@ -1218,8 +1218,8 @@ we refrain from including one in our reference \kl{CIC}.
 This means that \kl{PCUIC} has a criterion, called singleton elimination, which maintains
 a form of segregation between terms inhabiting types in $\uni$ and
 those inhabiting types in $\Prop$, ensuring that the second cannot depend in a relevant
-way on the first. For instance, if $P \colon \Prop$, it ensures that it is impossible
-to build a function $f \colon P \to \Bool$ and two terms $p_1 \colon P$ and $p_2 \colon P$ such that
+way on the first. For instance, if $P : \Prop$, it ensures that it is impossible
+to build a function $f : P \to \Bool$ and two terms $p_1 : P$ and $p_2 : P$ such that
 $f\ p_1 \conv \false$ and $f\ p_2 \conv \true$. This segregation aims at allowing separation
 between the part of the system that should be seen as programs and that which should be
 seen as proofs, so that it is possible to write programs decorated with
@@ -1237,17 +1237,17 @@ illustrates, when typing $u$, not only the type of the definition is recorded, b
 also its value $t$. This is again due to dependency, because the value of the definition,
 and not only its type, might be needed for $u$ to be well-typed.
 As an example, suppose we have a function
-$\operatorname{head} \colon \P (A \colon \uni) (x \colon \Nat).\ \Vect(A,\S x) \to A$, and consider
-\[\letin{x}{\Nat}{1}{\l v \colon \Vect(\Bool,x).\ \operatorname{head}\ \Bool\ 0\ v} \]
+$\operatorname{head} : \P (A : \uni) (x : \Nat).\ \Vect(A,\S x) \to A$, and consider
+\[\letin{x}{\Nat}{1}{\l v : \Vect(\Bool,x).\ \operatorname{head}\ \Bool\ 0\ v} \]
 This term is well-typed only if the fact that $x$ has value $1$ is available in the
 right-hand side.
 
 \begin{figure}
   \ContinuedFloat*
   \begin{mathpar}
-    \inferdef{LetIn}{\Gamma \vdash A \colon \uni \\ \Gamma \vdash t \colon A \\
-    \Gamma, x := t \colon A \vdash u \colon B}
-    {\Gamma \vdash \letin{x}{A}{t}{u} \colon \letin{x}{A}{t}{B}}
+    \inferdef{LetIn}{\Gamma \vdash A : \uni \\ \Gamma \vdash t : A \\
+    \Gamma, x \coloneqq t : A \vdash u : B}
+    {\Gamma \vdash \letin{x}{A}{t}{u} : \letin{x}{A}{t}{B}}
     \label{rule:pcuic-letin}
   \end{mathpar}
   \caption{Typing for local definitions}
@@ -1259,7 +1259,7 @@ right-hand side.
   \begin{mathpar}
     \inferdef{ζRed}{ }{\Gamma \vdash \letin{x}{A}{t}{u} \\ \tred \subs{u}{x}{t}}
     \label{rule:zeta-red} \and
-    \inferdef{δRed}{(x := t \colon A) \in \Gamma}{\Gamma \vdash x \tred t}
+    \inferdef{δRed}{(x \coloneqq t : A) \in \Gamma}{\Gamma \vdash x \tred t}
     \label{rule:delta-red}
   \end{mathpar}
   \caption{Top-level reduction for local definitions}
@@ -1289,7 +1289,7 @@ The (global) environment, on the contrary, can become huge –
 corresponding to a whole library with thousands of components — but changes less often, and
 usually in a monotone way – new definitions are added, but not removed.
 Therefore, typing in \kl{PCUIC} actually has an extra parameter: it is of the form
-$\Sigma ;;; \Gamma \vdash t \colon T$, with $\Sigma$ corresponding to the \kl{environment}.
+$\Sigma ;;; \Gamma \vdash t : T$, with $\Sigma$ corresponding to the \kl{environment}.
 
 This environment is not only used for definitions and assumptions,
 but also to keep track of inductive types.
@@ -1329,7 +1329,7 @@ very general, as it allows mutually defined and nested inductive types.
 The former are multiple inductive types defined at the same time,
 where a constructor of one type can take a recursive argument of another. For instance,
 an inductive oddness/evenness predicate with constructors
-$\operatorname{oddS} \colon \P x \colon \Nat.\ \operatorname{even} x \to \operatorname{odd} \S x$ and $\operatorname{evenS} \colon \P x \colon \Nat.\ \operatorname{odd} x \to \operatorname{even} \S x$.
+$\operatorname{oddS} : \P x : \Nat.\ \operatorname{even} x \to \operatorname{odd} \S x$ and $\operatorname{evenS} : \P x : \Nat.\ \operatorname{odd} x \to \operatorname{even} \S x$.
 The latter are types where a constructor can take a recursive argument mentioning the type
 being defined as a parameter to and inductive type –
 for instance, a type of tree where a node takes a list of trees as arguments.
