@@ -38,7 +38,7 @@
 
 \makeindex[columns=3, title=Alphabetical Index, intoc] % Make LaTeX produce the files required to compile the index
 
-\includeonly{technical-intro}
+\includeonly{bidir-intro,bidir-ccw,bidir-pcuic}
 
 \input{knowledge_declarations.tex}
 
@@ -70,15 +70,9 @@
 \label{part:bidir}
 \pagelayout{margin} % Restore margins
 
-\chapter{Warmup: CCω}
-\label{chap:bidir-ccw}
-
-This could probably be taken quite literally from ITP21?
-
-\chapter{The real thing: extension to fancy CIC}
-\label{chap:bidir-cic}
-
-Same, all hail ITP21
+\include{bidir-intro}
+\include{bidir-ccw}
+\include{bidir-pcuic}
 
 \chapter{Bidirectional conversion, Abel style}
 \label{chap:bidir-conv}
