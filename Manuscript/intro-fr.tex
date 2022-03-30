@@ -96,7 +96,7 @@ de fonder l’entièreté des mathématiques,
 tout en évitant les inconsistances desquelles
 le système de Frege et probablement ceux de Cantor étaient victimes.
 
-Une première proposition de solution est avancée par Russel et Whitehead dans leur
+Une première proposition de solution est avancée par Russell et Whitehead dans leur
 \citetitle{Whitehead1913}~\sidecite{Whitehead1913},
 un énorme travail qui non seulement propose un système
 logique qui évite les paradoxes conduisant à l’inconsistance du
@@ -178,9 +178,9 @@ Via la formalisation de ces preuves et la vérification par l’ordinateur qu’
 suivent bien les règles du système logique sous-jacent, les assistants à la preuve
 donnent accès à une fiabilité bien plus importante que celle des preuves
 traditionnelles. Des mathématiciens reconnus comme
-Voevodsky~\sidecite{Voevodsky2010},
-Hales~\sidecite[][Preface, p. xi]{Hales2012},
-ou Scholze~\sidecite{Scholze2021}
+\sidetextcite{Voevodsky2010},
+\sidetextcite[][Preface, p. xi]{Hales2012},
+ou \sidetextcite{Scholze2021}
 se sont déjà emparés des assistants à la preuve,
 notamment dans le but de lever les incertitudes
 sur la solidité de leur propre travail.
@@ -238,7 +238,7 @@ détecter des erreurs manifestes.
 Par exemple, si une procédure attendant un objet de type "image" est
 appliquée à un objet de type "chaîne de caractères", une erreur pourra être rapportée
 à la programmeuse.\sidenote{
-  Un slogan dû à Milner~\sidecite[4em]{Milner1978} est que
+  Un slogan dû à \sidetextcite[4em]{Milner1978} est que
   « Les programmes bien typés ne peuvent pas  mal s’exécuter. »
 }
 Mais les utilisations des types sont très versatiles, et leurs capacités à encoder
@@ -293,8 +293,8 @@ Si on efface les termes\sidenote{
 } des règles du bas, on obtient \emph{exactement} les règles du haut !
 
 Ceci s’étend bien au-delà du cas de la conjonction,
-en une correspondance générale entre d’une part les énoncés de la logique et les types des langages de programmation , et d’autre part les preuves d’un énoncé et les programmes ayant le type correspondant\sidenote{
-  Le slogan en anglais est \textit{propositions as types, proofs as programs}.}.
+en une correspondance générale entre d’une part les énoncés de la logique et les types des langages de programmation, et d’autre part les preuves d’un énoncé et les programmes ayant le type correspondant.\sidenote{
+  Le slogan en anglais est \textit{propositions as types, proofs as programs}.}
 Au-delà de la simple analogie entre formalismes d’origines différentes, cette correspondance est un outil puissant pour faire dialoguer deux mondes.
 En particulier, elle permet de relier deux problèmes \textit{a priori} éloignés :
 la vérification de la correction d’une preuve et l’analyse du type d’un terme.
@@ -406,8 +406,8 @@ de l’équivalence entre cette présentation et celle utilisée de manière sta
 dans la littérature manquait !
 Pourtant, cette approche présente également
 des avantages théoriques : elle permet,
-par sa structure plus contrainte que la présentation standars,
-d’obtenir des propriétés difficiles à démontrer dans ce cadre standard.
+par sa structure plus contrainte que la présentation standard,
+d’obtenir des propriétés difficiles à démontrer dans ce cadre.
 
 \subsection{Un peu de flexibilité dans un monde désespérément statique}
 \label{sec:intro-graduel}
@@ -451,7 +451,7 @@ preuve de l’équivalence entre la présentation standard de la littérature et
 bidirectionnelle.
 Le \cref{chap:bidir-ccw} présente les idées générales qui guident ce travail
 dans un cadre relativement simple, afin de faciliter leur exposition. 
-Le \cref{chap:bidir-cic} montre comment étendre ces idées à un
+Le \cref{chap:bidir-pcuic} montre comment étendre ces idées à un
 cadre plus réaliste, proche de la théorie des types utilisée en pratique dans \kl{Coq}.
 Enfin le \cref{chap:bidir-conv} traite du statut particulier de la
 conversion\sidenote{Cette notion cruciale permet d’intégrer dans la
@@ -495,7 +495,7 @@ pour le Calcul des Constructions Inductives. Mon travail technique s’est
 majoritairement concentré sur le contenu correspondent au \cref{chap:bidir-gradual-elab}.
 Le \cref{chap:gradual-dependent} est également tiré de cette publication.
 Un second article, avec les mêmes auteurs et dans la continuité du précédent,
-est actuellement en phase de relecture. Cependant il
+est actuellement en phase de relecture. Cependant, il
 ne fait pas appel directement au typage graduel, c’est pourquoi il n’en
 sera pas question dans cette thèse.
 
@@ -504,7 +504,7 @@ et le manque de résultats précis sur le sujet, je l’ai
 étudié plus en détail, à la fois sur papier et par le biais d’une
 formalisation se basant sur \kl{MetaCoq},
 ce qui a donné lieu à une seconde publication~\sidecite{LennonBertrand2021},
-et correspond aux \cref{chap:bidir-ccw,chap:bidir-cic}, et à une partie du
+et correspond aux \cref{chap:bidir-ccw,chap:bidir-pcuic}, et à une partie du
 \cref{chap:kernel-correctness}.
 
 J’ai ensuite travaillé à intégrer cette formalisation à

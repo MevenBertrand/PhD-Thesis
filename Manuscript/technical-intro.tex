@@ -234,7 +234,7 @@ Note how $\uni$ is indexed by the \intro{universe levels} $i$ and $\unext{i}$.
 \begin{marginfigure}
   \ContinuedFloat
   \begin{mathpar}
-    \inferdef{Prod}
+    \inferdef{ΠTy}
     {\Gamma \vdash A : \uni[i] \\ \Gamma, x : A \vdash B : \uni[j]}
     {\Gamma \vdash \P x : A.\ B : \uni[\umax{i}{j}]}
     \label{rule:cic-prod}
@@ -334,7 +334,7 @@ In our vector example, for instance, the two types are the same by the definitio
       {\vdash \Gamma}
       {\Gamma \vdash \uni[i] : \uni[\unext{i}]}
     \and
-    \inferdef{Prod}
+    \inferdef{ΠTy}
       {\Gamma \vdash A : \uni[i] \\ \Gamma, x : A \vdash B : \uni[j]}
       {\Gamma \vdash \P x : A.\ B : \uni[\umax{i}{j}]}
     \and
@@ -854,6 +854,9 @@ substitution} and transitivity of conversion. Thus, the key property is the foll
   A conversion relation $\conv$ is said to have \intro{injectivity of product types}
   if whenever $\P x : A.\ B \conv \P x : A'.\ B'$, we have $A \conv A'$ and $B \conv B'$.
 \end{property}
+
+In the more general setting of \kl{CIC} or \kl{PCUIC}, we do not have only Π-types.
+Thus, we more generally talk about \kl{injectivity of type constructors}.
 
 For \kl{declarative conversion}, transitivity is trivial, but \kl{injectivity of product types}
 is not so easy. Indeed, by transitivity we could have $\P x : A.\ B \conv T \conv \P x : A'.\ B'$ for an arbitrary $T$, and so it is not clear how to relate $A$ and $A'$.

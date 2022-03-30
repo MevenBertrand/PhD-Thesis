@@ -1,1 +1,3 @@
 - define a reusefigure/reuserule command
+- check for usage of product
+- beautify theorem boxes (new line!)

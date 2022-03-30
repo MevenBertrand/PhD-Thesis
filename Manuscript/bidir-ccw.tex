@@ -89,24 +89,24 @@ If a term in a premise appears as input in the conclusion or output of a previou
     \inferdef{Var}
       {(x : T) \in \Gamma}
       {\inferty{\Gamma}{x}{T}}
-    \label{rule:inf-ccw-var} \and
-    \inferdef{Sort}
+    \label{rule:bd-var} \and
+    \inferdef{Univ}
       { }
       {\inferty{\Gamma}{\uni[i]}{\uni[i+1]}}
-    \label{rule:inf-ccw-sort} \and
-    \inferdef{Prod}
+    \label{rule:bd-univ} \and
+    \inferdef{ΠTy}
       {\pinferty{\uni}{\Gamma}{A}{\uni[i]} \\
         \pinferty{\uni}{\Gamma, x : A}{B}{\uni[j]}}
       {\inferty{\Gamma}{\P x : A .\ B}{\uni[\umax{i}{j}]}}
-    \label{rule:inf-ccw-prod} \and 
+    \label{rule:bd-prod} \and 
     \inferdef{Abs}
       {\pinferty{\uni}{\Gamma}{A}{\uni[i]} \\ \inferty{\Gamma, x : A}{t}{B}}
       {\inferty{\Gamma}{\l x : A .\ t}{\P x : A .\ B}}
-    \label{rule:inf-ccw-abs} \and
+    \label{rule:bd-abs} \and
     \inferdef{App}
       {\pinferty{\Pi}{\Gamma}{t}{\P x : A .\ B} \\ \checkty{\Gamma}{u}{A}}
       {\inferty{\Gamma}{t\ u}{\subs{B}{x}{u}}}
-    \label{rule:inf-ccw-app} \\
+    \label{rule:bd-app} \\
   \end{mathpar}
   \caption{Rules for inference in bidirectional \kl{CCω}}
   \label{fig:ccw-bidir-infer}
@@ -139,11 +139,12 @@ bidirectional structure we present here only is equivalent to the undirected one
 in semi-full \kl{PTS} – a slight generalization of the full ones.
 In a full \kl{PTS}, the opposite approach of simply removing the first premise altogether
 can also be taken, relying on \kl{validity} to ensure that $\vdash \Gamma, x \ty A$ and thus
-$\Gamma \vdash A : \uni$. But again, in a bidirectional setting, this is not valid, because
-it does not respect McBride’s discipline.
+$\Gamma \vdash A : \uni$. But again, in a bidirectional setting,
+this does not respect McBride’s discipline.
 
 The main difference between the bidirectional and undirected rules is that we dropped
-hypotheses of context well-formedness in Rules~\nameref{rule:inf-ccw-sort} and \nameref{rule:inf-ccw-var}. Indeed, as the context is always supposed to be well-formed
+hypotheses of context well-formedness in Rules~\nameref{rule:bd-univ} and
+\nameref{rule:bd-var}. Indeed, as the context is always supposed to be well-formed
 as an input to the conclusion, it is not useful to re-check it. This is also in line with implementations, where the context is not re-checked at leaves of a derivation tree, with performance issues in mind. The well-formedness invariants then ensure that any derivation starting with the (well-formed) empty context will only ever encounter well-formed contexts.
 
 \subsection{Computation rules}
@@ -154,17 +155,17 @@ as an input to the conclusion, it is not useful to re-check it. This is also in 
   \inferdef{Check}
     {\inferty{\Gamma}{t}{T'} \\ T' \conv T}
     {\checkty{\Gamma}{t}{T}}
-  \label{rule:ccw-bidir-check} \and
-  \inferdef{Sort-Inf}
+  \label{rule:bd-check} \and
+  \inferdef{Univ-Inf}
     {\inferty{\Gamma}{t}{T} \\ T \fred \uni[i]}
     {\pinferty{\uni}{\Gamma}{t}{\uni[i]}}
-    \label{rule:ccw-sort-inf} \and
-  \inferdef{Prod-Inf}
+    \label{rule:bd-pinf-univ} \and
+  \inferdef{Π-Inf}
     {\inferty{\Gamma}{t}{T} \\ T \fred \P x : A. B}
     {\pinferty{\P}{\Gamma}{t}{\P x : A . B}}
-    \label{rule:ccw-prod-inf}
+    \label{rule:bd-pinf-prod}
 \end{mathpar}
-\caption{Computation rules}
+\caption{Computation rules for bidirectional \kl{CCω}}
 \end{marginfigure}
 
 We are left with the only non-structural rule, \ruleref{rule:cic-conv}.
@@ -175,8 +176,11 @@ If the target type is an input, it can be compared to the inferred one using \kl
 But if it is unknown (constrained inference) we must resort to \kl{reduction},
 and obtain it from the inferred one.
 This eventually leads to the decomposition of \ruleref{rule:cic-conv} into
-\ruleref{rule:ccw-bidir-check} in the first case, while
-\nameref{rule:ccw-prod-inf} and \nameref{rule:ccw-sort-inf} correspond to the second case.
+\ruleref{rule:bd-check} in the first case, while
+\nameref{rule:bd-pinf-univ} and \nameref{rule:bd-pinf-prod} correspond to the second case.
+
+Note that while the use of conversion and reduction have changed, those relations themselves
+remain untouched. We only refined them by giving them an explicit mode.
 
 \subsection{Constrained inference in disguise}
 
@@ -219,14 +223,14 @@ a type such as $\{f : \Nat \to \Nat \mid f\ 0 = 0 \}$
 should be usable as a function of type $\Nat \to \Nat$.
 An erasure procedure is therefore required on top of reduction to remove subset types in the places where we use constrained inference.
 
-Analogous ideas can also be found in Matita's elaboration algorithms 
-\sidecite{Asperti2012}.
+Analogous ideas can also be found in \kl{Matita}'s elaboration algorithm, as described in 
+\sidetextcite{Asperti2012}.
 Indeed, the presence of unification meta-variables on top of coercions makes it
 even clearer that specific treatment of what we identified as constrained inference is
 required.
 \citeauthor{Asperti2012} introduce a special judgement they call
 type-level enforcing, which corresponds to our $\pity{\uni}$ judgement.
-As for $\pity{\P}$, they have two rules to apply a function, one where its inferred type reduces to a product, corresponding to \ruleref{rule:ccw-prod-inf}.
+As for $\pity{\P}$, they have two rules to apply a function, one where its inferred type reduces to a Π-type, corresponding to \ruleref{rule:bd-pinf-prod}.
 and another one to handle the case when the inferred type instead reduces to a meta-variable.
 As \citeauthor{Saibi1997} and \citeauthor{Sozeau2007}, they also
 need to handle coercions for terms in function position. However, their solution is different:
@@ -243,9 +247,148 @@ and a second one to handle the wildcard $\?$, characteristic of gradual type sys
 \section{Properties of the Bidirectional System}
 \label{sec:bidir-prop}
 
-\begin{itemize}
-  \item Correctness
-  \item Completeness
-  \item Reduction strategies and uniqueness
-  \item Strengthening
-\end{itemize}
+Let us now state and prove the main properties of the bidirectional system.
+The first two relate the bidirectional system to the
+undirected one: it is both \kl(bidir){correct} – terms typeable in the bidirectional system are typeable in the undirected system – and \kl(bidir){complete} – all terms typeable in the undirected system are also typeable in the bidirectional system.
+Next, we investigate uniqueness of typing, and its relation to the choice of a strategy for reduction.
+Finally, we show how strengthening can be shown for undirected \kl{CCω} by proving it on the
+directed side.
+
+\subsection{Correctness and completeness}
+
+A bidirectional derivation can be seen as a refinement of an undirected derivation.
+Indeed, the bidirectional structure can be erased
+– replacing each bidirectional rule with the corresponding undirected rule – to obtain an undirected derivation. This is missing some sub-derivations of context well-formedness at
+leaves of a derivation, or that of the target type for \ruleref{rule:cic-conv}.
+These can nevertheless be retrieved by using the invariants
+on well-formedness of inputs and outputs.
+Thus, we get the following correctness theorem – note how McBride’s discipline manifests as well-formedness hypothesis on inputs.
+
+\begin{theorem}[\intro{Correctness} of bidirectional typing for \kl{CCω}]
+  \label{thm:corr-ccomega}
+  If $\Gamma$ is well-formed and $\inferty{\Gamma}{t}{T}$ or $\pinferty{h}{\Gamma}{t}{T}$,
+  then $\Gamma \vdash t \ty T$.
+  If both $\Gamma$ and $T$ are well-formed and
+  $\checkty{\Gamma}{t}{T}$, then $\Gamma \vdash t \ty T$. 
+\end{theorem}
+  
+\begin{proof}
+  The proof is by mutual induction on the bidirectional typing derivation.
+
+  Each rule of the bidirectional system can be replaced by the corresponding rule of the
+  undirected system, with all three Rules \nameref{rule:bd-check}, \nameref{rule:bd-pinf-univ} and \nameref{rule:bd-pinf-prod} replaced by
+  \nameref{rule:cic-conv}. In all cases, the induction hypothesis can be used on sub-derivations of the bidirectional judgement, because context extensions and checking are
+  done with types that are known to be well-formed,
+  either by induction hypothesis on previous premises and \kl{validity}.%
+  \sidenote{This is the point where following McBride’s discipline is crucial!}
+
+  Some sub-derivations of the undirected rules that have no counterpart
+  in the bidirectional ones are however missing.
+  In Rules \nameref{rule:cic-univ} and \nameref{fig:cic-var},
+  the hypothesis that $\Gamma$ is well-formed is enough to get the required premise.
+  For \ruleref{rule:bd-check},
+  the well-formedness hypothesis on the type is needed to get the typing premise of
+  \nameref{rule:cic-conv-unty}.
+  As for Rules \nameref{rule:bd-pinf-univ} and \nameref{rule:bd-pinf-prod},
+  that typing premise is obtained by combining the induction hypothesis,
+  validity and \kl{subject reduction}.
+
+  Alternatively, usage of validity could be handled by
+  strengthening the theorem to incorporate the well-formedness of outputs on top of that of
+  the subject. But we follow the proofs in \kl{MetaCoq}, which establish
+  meta-theoretical properties of the undirected system – including validity –,
+  rather than those of the bidirectional one – such as stability by substitution.
+
+\end{proof}
+
+Contrarily to correctness, which keeps the structure of a derivation,
+completeness is of a different nature.
+Because in bidirectional derivations the computation rules are much less liberal than in
+undirected derivations,
+the crux of the proof is to ensure that all uses of \ruleref{rule:cic-conv}
+can be permuted down through the other, structural, rules,
+in order to concentrate them in the places where they are authorized in the bidirectional
+derivation.
+In a way, composing completeness with correctness gives a kind of normalization procedure
+which produces a canonical undirected derivation by pushing conversion
+down as much as possible.
+
+The proof crucially relies on the following lemma,
+which can be seen as a form of \kl{injectivity of type constructors} – which is a direct
+consequence of it.
+
+\begin{lemma}[Conversion implies reduction for type constructors]
+  \label{lem:conv-red-tycons}
+  If $T \conv \uni[i]$, then $T \red \uni[i]$.
+
+  If $T \conv \P x : A.\ B$, then there exist $A'$ and $B'$ such that:
+  \begin{itemize}
+    \item $T \red \P x : A'.\ B'$
+    \item $A' \conv A$
+    \item $B' \conv B$
+  \end{itemize}
+\end{lemma}
+
+\begin{proof}
+  Let us spell out the proof on Π-types – the case of $\uni$ is similar, but easier.
+
+  For \kl{algorithmic conversion}, by definition there must exist $T'$ and $T''$
+  such that $T \red T'$, $\P x : A.\ B \red T''$, $T' \alpheq T''$.
+  But there can be no \kl{top-level} reduction step in $\P x : A.\ B \red T''$, so actually
+  $T''$ is some $\P x : A''.\ B''$ and $A \red A''$, $B \red B''$.
+  Similarly, $T'$ must be some $\P x : A'.\ B'$
+  such that $A' \alpheq A''$ and $B' \alpheq B''$.
+  Combining these, we obtain that $A' \conv A$ and $B' \conv B$, as expected.
+
+  For \kl{declarative conversion}, one can use the previous proof of
+  equivalence with algorithmic conversion – and thus \kl{confluence}.
+\end{proof}
+
+\begin{theorem}[\intro{Completeness} of bidirectional typing for \kl{CCω}]
+  \label{thm:compl-ccomega}
+  If $\Gamma \vdash t \ty T$, then there exists $T'$ such that $\inferty{\Gamma}{t}{T'}$
+  and $T' \conv T$.
+\end{theorem}
+
+\begin{proof}
+  The proof is by induction on the undirected typing derivation.
+  
+  Rules \nameref{rule:cic-var} and \nameref{rule:cic-univ} are base cases,
+  and can be simply replaced by the corresponding bidirectional rules.
+  In the case of \ruleref{rule:cic-conv}, the property is a direct consequence of the induction hypothesis together with transitivity of conversion: we simply conflate two conversions
+  together.
+  
+  As for \ruleref{rule:cic-prod}, the induction hypothesis on the domain $A$
+  gives the existence of $T_A$
+  such that $\inferty{\Gamma}{A}{T_A}$ and $T_A \conv \uni[i]$. Using
+  \cref{lem:conv-red-tycons}, we can derive $\pinferty{\uni}{\Gamma}{A}{\uni[i]}$.
+  Applying a similar reasoning on the codomain and combining both is enough to conclude.
+
+
+  In \ruleref{rule:cic-abs}, we do the same reasoning again on the type annotation.
+  Combined with the induction hypothesis on the body $t$,
+  we get $\inferty{\Gamma}{\l x : A.\ t}{\P x : A .\ B'}$ for some $B'$ such that $B \conv B'$, and thus $\P x : A . B \conv \P x : A . B'$ as desired.
+
+  We are finally left with \ruleref{rule:cic-app}.
+  Again, the key is \cref{lem:conv-red-tycons}, which can be combined with the induction
+  hypothesis on the function $f$ to get $\pinferty{\P}{\Gamma}{f}{\P x : A' .\ B'}$
+  for some $A'$ and $B'$ such that $A \conv A'$ and $B \conv B'$ – where $\P x : A. B$ is
+  the type for $f$ in the undirected derivation.
+  The induction hypothesis on the argument $u$ gives
+  $\inferty{\Gamma}{u}{A''}$ with $A'' \conv A$. Thus, by transitivity of conversion
+  $\inferty{\Gamma}{u}{A'}$, and we can apply \ruleref{rule:bd-app} to conclude.
+
+\end{proof}
+
+Interestingly, the proof of correctness relies on \kl{subject reduction}, which itself
+needs \kl{injectivity of type constructors} and \kl{transitivity} of conversion.
+Similarly, completeness relies both on the injectivity as given by \cref{lem:conv-red-tycons},
+and transitivity of conversion. Be it for algorithmic or declarative conversion, one at
+least of those is not directly provable – we need \kl{confluence}.
+We already hit this same tension with \kl{subject reduction}, and
+must draw the same conclusion: there is no free lunch!
+
+\subsection{Uniqueness and reduction strategies}
+
+
+\subsection{Strengthening}
