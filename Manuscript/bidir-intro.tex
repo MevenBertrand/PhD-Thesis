@@ -18,13 +18,13 @@ The bidirectional approach makes this difference between modes explicit,
 by decomposing \intro{undirected typing}%
 \sidenote{We call anything related to the $\Gamma \vdash t \ty T$ judgement undirected,
 by contrast with the bidirectional typing.}
-$\Gamma \vdash t \ty T$ into two separate judgements $\Gamma \vdash t \inferty T$
-(\kl{inference}) and $\Gamma \vdash t \checkty T$ (\kl{checking})%
-\sidenote{We use the $\inferty$ and $\checkty$ symbols rather than the more usual
+$\Gamma \vdash t \ty T$ into two separate judgements $\inferty{\Gamma}{t}{T}$
+(\kl{inference}) and $\checkty{\Gamma}{t}{T}$ (\kl{checking})%
+\sidenote{We use the $\ity$ and $\cty$ symbols rather than the more usual
 $\Rightarrow$ and $\Leftarrow$ to avoid confusion with implication and with the
 \kl{Coq} notation for functions.},
 that differ only by modes of the type. It is an output in inference, but an output in checking.
-Following this decomposition, pionereed by \sidetextcite{Pierce2000}, gives rise to type
+Following this decomposition, pioneered by \sidetextcite{Pierce2000}, gives rise to type
 systems that are more structured, directly amenable to implementations,
 and leads to algorithms which are often of good quality.%
 \sidenote{\citeauthor{Pierce2000} for instance stress good error reporting as an important 

@@ -54,14 +54,15 @@ conclusion $T$ by means of the proof $t$.
 On the programming side, it means that $t$ is a well-formed program of type $T$,
 which uses the variables listed together with their types in $\Gamma$.
 Hence, $\Gamma$ is a list of declarations, of the form $x : A$.
-We write $\emptycon$ for the
-empty context, $\Gamma, x : A$ for the extension of context $\Gamma$ with the new variable $x : A$, and $(x : A) \in \Gamma$ to denote that the declaration $x : A$ appears at some
+We write $\emptycon$ for the empty context,
+$\Gamma, x : A$ for the extension of context $\Gamma$ with the new variable $x : A$,
+and $(x : A) \in \Gamma$ to denote that the declaration $x : A$ appears at some
 point in the context $\Gamma$.
 
 \begin{marginfigure}
   \ContinuedFloat*
   \begin{mathpar}
-  \inferdef{Var}{(x : A) \in \Gamma \\ \vdash \Gamma}{\Gamma \vdash x : A}
+  \inferdef{Var}{\vdash \Gamma \\ (x : A) \in \Gamma}{\Gamma \vdash x : A}
   \label{rule:cic-var}
   \end{mathpar}
   \caption{Typing rule for a variable}
@@ -121,7 +122,8 @@ Let us start with the basic terms: functions and applications.
 
 \begin{marginfigure}
   \begin{mathpar}
-    \inferrule{\Gamma, x : A \vdash t : T}{\Gamma \vdash \l x : A .\ t : A \to T}
+    \inferrule{\Gamma \vdash A : \uni \\ \Gamma, x : A \vdash t : T}
+    {\Gamma \vdash \l x : A .\ t : A \to T}
     \and
     \inferrule{\Gamma \vdash f : A \to T \\ \Gamma \vdash u : A }{ \Gamma \vdash t\ u : T}
   \end{mathpar}
@@ -137,7 +139,9 @@ Conversely, function application is denoted by simple juxtaposition, as in $t\ u
 The type of functions is written $\to$, as in ordinary mathematics.
 You can see those at work in \cref{fig:cic-nondep-fun}: an abstraction builds a term of arrow
 type, and application needs its function to be of an arrow type,
-whose domain must moreover correspond to that of the argument for it to be well-typed.
+whose domain must moreover correspond to that of the argument.
+The side-condition $\Gamma \vdash A : \uni$ ensures that the annotation is a valid type,
+we will introduce it shortly.
 Logically, those rules make sense if $\to$ is read as implication:
 if from a hypothesis $A$ one can deduce $T$, then $A \to T$ holds; conversely if $A \to T$
 and $A$ both hold, then $T$ does as well.
@@ -145,10 +149,11 @@ and $A$ both hold, then $T$ does as well.
 \begin{marginfigure}
   \ContinuedFloat*
   \begin{mathpar}
-    \inferdef{Abs}{\Gamma, x : A \vdash t : T}{\Gamma \vdash \l x : A .\ t : \P x : A.\ T}
+    \inferdef{Abs}{\Gamma \vdash A : \uni \\ \Gamma, x : A \vdash t : T}
+    {\Gamma \vdash \l x : A .\ t : \P x : A.\ T}
     \label{rule:cic-abs}
     \and
-    \inferdef{App}{\Gamma \vdash f : \P x : A.\ T \\ \Gamma \vdash u : A }{ \Gamma \vdash f\ u : \subs{T}{x}{u}}
+    \inferdef{App}{\Gamma \vdash f : \P x : A.\ T \\ \Gamma \vdash u : A}{ \Gamma \vdash f\ u : \subs{T}{x}{u}}
     \label{rule:cic-app}
   \end{mathpar}
   \caption{Typing for dependent functions}
@@ -241,10 +246,10 @@ Note how $\uni$ is indexed by the \intro{universe levels} $i$ and $\unext{i}$.
 \begin{marginfigure}
   \ContinuedFloat
   \begin{mathpar}
-    \inferdef{EmptyCon}
+    \inferdef{Empty}
     { }{\vdash \cdot}
     \label{rule:cic-empty-con} \and
-    \inferdef{ConsCon}
+    \inferdef{Ext}
     {\vdash \Gamma \\ \Gamma \vdash A : \uni}{\vdash \Gamma, x : A}
     \label{rule:cic-cons-con}
   \end{mathpar}
@@ -316,10 +321,10 @@ In our vector example, for instance, the two types are the same by the definitio
   \begin{mathpar}
     %
     \jform{\vdash \Gamma}
-    \inferdef{EmptyCon}
+    \inferdef{Empty}
       { }{\vdash \cdot}
     \and
-    \inferdef{ConsCon}
+    \inferdef{Ext}
       {\vdash \Gamma \\ \Gamma \vdash A : \uni}{\vdash \Gamma, x : A}
     \\\\
     \jform{\Gamma \vdash t : T}
@@ -333,7 +338,8 @@ In our vector example, for instance, the two types are the same by the definitio
       {\Gamma \vdash A : \uni[i] \\ \Gamma, x : A \vdash B : \uni[j]}
       {\Gamma \vdash \P x : A.\ B : \uni[\umax{i}{j}]}
     \and
-    \inferdef{Abs}{\Gamma, x : A \vdash t : T}{\Gamma \vdash \l x : A .\ t : \P x : A.\ T}
+    \inferdef{Abs}{\Gamma \vdash A : \uni \\ \Gamma, x : A \vdash t : T}
+    {\Gamma \vdash \l x : A .\ t : \P x : A.\ T}
     \and
     \inferdef{App}
       {\Gamma \vdash f : \P x : A.\ T \\ \Gamma \vdash u : A }

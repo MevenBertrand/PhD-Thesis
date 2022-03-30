@@ -120,10 +120,13 @@
 % Typing
 
 \DeclareMathOperator{\ty}{:}
-\DeclareMathOperator{\checkty}{\triangleleft}
-\newcommand{\pinferty}[1]{\mathop{\triangleright_{#1}}}
-\DeclareMathOperator{\inferty}{\triangleright}
+\DeclareMathOperator{\cty}{\triangleleft}
+\newcommand{\pity}[1]{\mathop{\triangleright_{#1}}}
+\DeclareMathOperator{\ity}{\triangleright}
 
+\newcommand{\inferty}[3]{#1 \vdash #2 \ity #3}
+\newcommand{\pinferty}[4]{#2 \vdash #3 \pity{#1} #4}
+\newcommand{\checkty}[3]{#1 \vdash #2 \cty #3}
 
 %% Contexts
 \newcommand{\emptycon}{\cdot}
