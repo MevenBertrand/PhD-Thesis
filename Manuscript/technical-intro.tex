@@ -746,7 +746,7 @@ such as those operated by tactics.
   \begin{itemize}
     \item $x_1 : A_1 \dots x_n : A_n \vdash t : T$
     \item $\vdash \Delta$
-    \item for all $i$ \emph{such that $x_i$ appears in $t$}, there is a variable $y_i$ such that $(y_i : \multisubs{A}{x_1 \into y_1 \dots x_n \into y_n}) \in \Delta$
+    \item for all $i$ \emph{such that $x_i$ appears in $t$}, there is a variable $y_i$ such that $(y_i : \multisubs{A_i}{x_1 \into y_1 \dots x_n \into y_n}) \in \Delta$
   \end{itemize} 
   there exists a type $T'$ such that $\Delta \vdash \multisubs{t}{x_1 \into y_1 \dots x_n \into y_n} : T'$.
 \end{property}
@@ -814,6 +814,12 @@ to the fact that whenever $\Gamma \vdash t : T$ and $\Gamma \vdash t : T'$,
 we have $T \sqsubseteq T'$. However, in \kl{PCUIC} we wish to replace \kl{conversion} with
 \kl{cumulativity}, which is not symmetric – it is a pre-order –, so that the more involved
 definition is needed.
+
+This property is not so easy to establish%
+\sidenote{For instance, in \kl{MetaCoq}, for some time only a weak notion of uniqueness was
+proven.},
+but as for \kl{strengthening} the bidirectional setting gives a straightforward proof approach,
+see \arefpart{bidir}.
 
 \subsection{Subject reduction}
 

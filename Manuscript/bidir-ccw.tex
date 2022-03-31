@@ -15,7 +15,7 @@
 \subsection{McBride’s discipline}
 
 To design our bidirectional type system, we follow a discipline exposed by McBride
-\sidecite{McBride2018,McBride2019}.
+\sidecite[3em]{McBride2018,McBride2019}.
 The central point is to distinguish in a judgement between the \intro{subject},
 whose well-formedness is under scrutiny, \intro{inputs},
 whose well-formedness is a condition for it to be meaningful,
@@ -58,6 +58,15 @@ For reduction $T \red T'$, on the contrary, $T$ is an input,
 but $T'$ is an output. Hence, only $T$ needs to be well-formed \textit{a priori},
 and we rely on the \kl{subject reduction} property to ensure
 that the output $T'$ also is.
+
+A somewhat similar discipline has appeared independently in \sidetextcite{Bauer2020}.
+The author introduce the notions of a (weakly) presuppositive type theory
+\cite[Def.~5.6]{Bauer2020} and of well-presented premise-family and rule-boundary
+\cite[Def.~6.16 and 6.17]{Bauer2020}, using what they call the \intro{boundary} of a judgement
+as the analogue of our inputs and outputs.
+Due to their setting being undirected, this is however somewhat more restrictive,
+because they are not able to distinguish inputs from outputs and thus cannot relax the
+condition to only demand inputs to be well-formed but not outputs.
 
 \subsection{Constrained inference}
 
@@ -156,11 +165,11 @@ as an input to the conclusion, it is not useful to re-check it. This is also in 
     {\inferty{\Gamma}{t}{T'} \\ T' \conv T}
     {\checkty{\Gamma}{t}{T}}
   \label{rule:bd-check} \and
-  \inferdef{Univ-Inf}
+  \inferdef{UnivInf}
     {\inferty{\Gamma}{t}{T} \\ T \fred \uni[i]}
     {\pinferty{\uni}{\Gamma}{t}{\uni[i]}}
     \label{rule:bd-pinf-univ} \and
-  \inferdef{Π-Inf}
+  \inferdef{ΠInf}
     {\inferty{\Gamma}{t}{T} \\ T \fred \P x : A. B}
     {\pinferty{\P}{\Gamma}{t}{\P x : A . B}}
     \label{rule:bd-pinf-prod}
@@ -254,7 +263,7 @@ Next, we investigate uniqueness of typing, and its relation to the choice of a s
 Finally, we show how strengthening can be shown for undirected \kl{CCω} by proving it on the
 directed side.
 
-\subsection{Correctness and completeness}
+\subsection{Correctness}
 
 A bidirectional derivation can be seen as a refinement of an undirected derivation.
 Indeed, the bidirectional structure can be erased
@@ -300,6 +309,8 @@ Thus, we get the following correctness theorem – note how McBride’s discipli
   rather than those of the bidirectional one – such as stability by substitution.
 
 \end{proof}
+
+\subsection{Completeness}
 
 Contrarily to correctness, which keeps the structure of a derivation,
 completeness is of a different nature.
@@ -388,7 +399,164 @@ least of those is not directly provable – we need \kl{confluence}.
 We already hit this same tension with \kl{subject reduction}, and
 must draw the same conclusion: there is no free lunch!
 
-\subsection{Uniqueness and reduction strategies}
+\Cref{thm:compl-ccomega} is quite specific to our \kl{Church-style} design.
+Instead, an important portion of the research on bidirectional typing in the context
+of dependent types adopts a \kl{Curry-style} approach.
+This is the case of \eg \sidetextcite{Coquand1996}, the type system of \kl{Agda} as described
+by \sidetextcite{Norell2007}, and most of the work by Abel
+\sidecite{Abel2007,Abel2008,Abel2011,Abel2017},
+and McBride \sidecite{McBride2016,McBride2018,McBride2019}.
+In such systems, λ-abstractions can only be checked against a given type, but cannot infer one,
+so that only terms with no β-redexes are typeable. \textcite{Norell2007} argues that such
+β-redexes are uncommon in real-life programs, so that being unable to type them is not a strong
+limitation in practice. Another solution, taken by \textcite{McBride2018}, is to add
+type annotations so as to retain the typeability of a term during reduction.
+In all cases, however, the fact that all terms well-typed in the declarative system infer
+a type is irremediably lost. Weaker forms of completeness should still hold for such systems –
+see \eg \sidetextcite[][Theorem~7.3]{Gratzer2019} for one restricted to normal forms.
 
+\begin{marginfigure}
+  \begin{mathpar} 
+    \inferrule
+    {T \hred \P x : A' . B \\ \pinferty{\uni}{\Gamma}{A}{\uni[i]} \\
+    A \conv A' \\ \checkty{\Gamma, x : A}{t}{B}}
+    {\checkty{\Gamma}{\l x : A.\ t}{T}}
+  \end{mathpar}  
+\end{marginfigure}
+
+In a setting with \kl{Church-style} abstraction,
+if one wishes to give the possibility for seemingly untyped abstraction,
+another mechanism has to be resorted to, typically elaboration using meta-variables.
+This is described in \eg \textcite{Asperti2012},
+which combines a rule similar to \ruleref{rule:bd-abs}
+– where the type of an abstraction is inferred – with another one,
+similar to the \kl{Curry-style} one – where abstraction is checked, see opposite.
+
+While such a rule would make a system such as that we have just described “over-complete”,
+it is a useful addition to enable the propagation of checking information
+upwards in the derivation, which is crucial in elaboration phases, even in \kl{Church-style}.
+
+\subsection{Uniqueness}
+
+All the bidirectional judgements of \cref{fig:ccw-bidir-infer} are syntax-directed,
+in the sense that there is always at most one rule that applies to derive a certain typing judgement, given a fixed subject.
+But with the rules as given there is still some indeterminacy.
+Indeed, in rules involving reduction no strategy is fixed, thus two different reducts can give different uses of the same rule, resulting in different inferred types.
+However, inferred types are still related:
+
+\begin{theorem}[\kl{Uniqueness of inferred type}]
+  \label{thm:unique-inf}
+  If $\Gamma$ is well-formed,
+  $\inferty{\Gamma}{t}{T}$ and $\inferty{\Gamma}{t}{T'}$ then $T$ and $T'$ both reduce to a
+  common $T''$ – \eg $T \red T''$ and $T \red T''$. In particular, $T \conv T'$.
+\end{theorem}
+
+\begin{proof}
+  Proven by mutual induction on the first derivation, together with the same property for
+  constrained inference.
+
+  The main idea is to use \kl{confluence} to relate different reduction paths.
+\end{proof}
+
+Combining this with \kl(bidir){correctness} and \kl(bidir){completeness},
+we get \kl{uniqueness of types} for the undirected system.
+
+\begin{theorem}[Uniqueness of types]
+  \label{prop:uniq-infer-types}
+  If $\Gamma \vdash t \ty T$ and $\Gamma \vdash t \ty S$ then $T \conv S$.
+\end{theorem}
+
+\begin{proof}
+  Since $\Gamma \vdash t \ty T'$, then by correctness
+  there exists some $T'$ such that $\inferty{\Gamma}{t}{T'}$ and moreover $T' \conv T$.
+  Similarly there exists some $S'$ such that $\inferty{\Gamma}{t}{S'}$
+  and moreover $S' \conv S$.
+  But by uniqueness $T' \conv S'$, and thus $T \conv S$.
+\end{proof}
+
+\begin{marginfigure}
+\begin{mathpar}
+  \inferdef{UnivWhInf}
+    {\inferty{\Gamma}{t}{T} \\ T \hred \uni[i]}
+    {\pinferty{\uni}{\Gamma}{t}{\uni[i]}}
+    \label{rule:bd-pinf-wh-univ} \and
+  \inferdef{ΠWhInf}
+    {\inferty{\Gamma}{t}{T} \\ T \hred \P x : A. B}
+    {\pinferty{\P}{\Gamma}{t}{\P x : A . B}}
+    \label{rule:bd-pinf-wh-prod}
+\end{mathpar}
+\caption{Constrained inference with a weak-head strategy}
+\label{fig:wh-pinf}
+\end{marginfigure}
+
+Instead, a reduction strategy can be imposed to completely eliminate indeterminacy.
+This amounts to replacing \kl{full reduction} with \kl{weak-head reduction}, see
+\cref{fig:wh-pinf}.
+This is still correct and complete: correctness follows exactly the same proof as
+\cref{thm:corr-ccomega}, and as for completeness, the main point is to show an analoguous
+to \cref{lem:conv-red-tycons} for weak-head reduction. But this is pretty much the content
+of \kl{standardization}.
+  
+\begin{proposition}[Reduction strategy]
+  \label{prop:red-strat}
+
+  If Rules \nameref{rule:bd-pinf-univ} and \nameref{rule:bd-pinf-prod} are replaced by
+  Rules \nameref{rule:bd-pinf-wh-univ} and \nameref{rule:bd-pinf-wh-prod},
+  then given a well-formed context $\Gamma$ and a term $t$ there is at most one $T$
+  such that $\inferty{\Gamma}{t}{T}$, and at most one $T'$ such that
+  $\pinferty{h}{\Gamma}{t}{T'}$.
+\end{proposition}
+
+\begin{proof}
+  Once again, the proof is by mutual induction.
+
+  For inference, given a fixed term $t$ there is always at most one rule which applies to
+  derive $\inferty{\Gamma}{t}{T}$, since there is exactly one rule per term former.
+  Combining this with the uniqueness of types inferred in the premises by induction
+  hypothesis is enough to conclude.
+
+  For the constrained inference judgement, once again there is only one rule that applies.
+  Since weak-head reduction is deterministic – given $T$, there is at most one $T'$ such that
+  $T \hored T'$ –, there is at most one weak-head normal form $\uni$ or $\P x : A.\ B$ for
+  a type. Hence, the type obtained by constrained inference is unique.
+\end{proof}
 
 \subsection{Strengthening}
+
+Reasoning on the bidirectional derivation makes proofs easier,
+while the correctness and completeness properties ensure they can be carried
+to the undirected system.
+One way to understand this is that seeing completeness followed by correction as a
+normalization procedure on derivations, the produced canonical derivation is more structure,
+and thus more amenable to proofs.
+
+An example of this is the \kl{strengthening} property, which is a consequence of
+\kl{conditional stability under renaming}. We explained in \cref{sec:tech-properties}
+why proving these in the undirected system is not straightforward: the idea is that 
+computation is too unconstrained in it, so that derivations might make use of variables that
+are not needed.
+Bidirectional typing, however, does not have this defect, since no type is ever "invented".
+Rather, they are obtained either by reduction of previously inferred types, or as inputs.
+This means that types in a bidirectional derivation never mention useless variables, and thus
+that we have:
+
+\begin{theorem}[Conditional stability under renaming – bidirectional]
+  \label{thm:strong-stab-renaming-bidir}
+  Inference is \kl{stable under conditional renaming}. That is, whenever we have 
+  \begin{itemize}
+    \item $\inferty{x_1 : A_1 \dots x_n : A_n}{t}{T}$
+    \item $\vdash \Delta$
+    \item for all $i$ such that $x_i$ appears in $t$,
+      there is a variable $y_i$ such that $(y_i : \multisubs{A_i}{x_1 \into y_1 \dots x_n \into y_n}) \in \Delta$
+  \end{itemize} 
+  it also holds that $\Delta \vdash \multisubs{t}{x_1 \into y_1 \dots x_n \into y_n} : \multisubs{T}{x_1 \into y_1 \dots x_n \into y_n}$.
+\end{theorem}
+
+And as a special case, \kl{strengthening} follows.
+
+\begin{theorem}[Strengthening – bidirectional]
+  \label{thm:strengthening-bidir}
+  Whenever $\inferty{\Gamma, x : A}{t}{T}$ and $x$ does not appear in $t$,
+  $\inferty{\Gamma}{t}{T}$ is derivable.
+\end{theorem}
+
