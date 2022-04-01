@@ -1,5 +1,5 @@
 - define a reusefigure/reuserule command
 - check for usage of product
 - beautify theorem boxes (new line!)
-- talk about prinicipal types in cumulativity
+- talk about princicipal types in cumulativity
 - talk about standardization

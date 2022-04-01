@@ -410,7 +410,7 @@ In such systems, λ-abstractions can only be checked against a given type, but c
 so that only terms with no β-redexes are typeable. \textcite{Norell2007} argues that such
 β-redexes are uncommon in real-life programs, so that being unable to type them is not a strong
 limitation in practice. Another solution, taken by \textcite{McBride2018}, is to add
-type annotations so as to retain the typeability of a term during reduction.
+type annotations so as to retain the typability of a term during reduction.
 In all cases, however, the fact that all terms well-typed in the declarative system infer
 a type is irremediably lost. Weaker forms of completeness should still hold for such systems –
 see \eg \sidetextcite[][Theorem~7.3]{Gratzer2019} for one restricted to normal forms.
@@ -462,14 +462,14 @@ Combining this with \kl(bidir){correctness} and \kl(bidir){completeness},
 we get \kl{uniqueness of types} for the undirected system.
 
 \begin{theorem}[Uniqueness of types]
-  \label{prop:uniq-infer-types}
+  \label{thm:unique-undir}
   If $\Gamma \vdash t \ty T$ and $\Gamma \vdash t \ty S$ then $T \conv S$.
 \end{theorem}
 
 \begin{proof}
   Since $\Gamma \vdash t \ty T'$, then by correctness
   there exists some $T'$ such that $\inferty{\Gamma}{t}{T'}$ and moreover $T' \conv T$.
-  Similarly there exists some $S'$ such that $\inferty{\Gamma}{t}{S'}$
+  Similarly, there exists some $S'$ such that $\inferty{\Gamma}{t}{S'}$
   and moreover $S' \conv S$.
   But by uniqueness $T' \conv S'$, and thus $T \conv S$.
 \end{proof}

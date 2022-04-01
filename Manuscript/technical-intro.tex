@@ -197,9 +197,9 @@ thesis we stick with the approach used in \kl{Coq}, and annotate our abstraction
 
 To be able to express ideas like induction principles or polymorphic functions, it is
 extremely useful to use functions and products quantifying over types.
-This is what the universe $\uni$ are for. It is the type… of a type.
-This means that the border between types and terms is not syntactic any more.
-Instead, types are simply terms of type $\uni$.
+This is what the universe $\uni$ – read "Type" — is for. It is the type… of a type.
+This also means that the border between types and terms is not syntactic any more, because
+\eg functions can abstract over a type. Instead, types are simply terms of type $\uni$.
 Despite this, we still use upper case letters for terms which we want to think of as types.
 Such a universe is called \textit{à la} Russell~\sidecite{Palmgren1998}, by contrast with
 universes \textit{à la} Tarski, which regain the distinction between types and terms at
@@ -1231,17 +1231,17 @@ $\Sb$ get their congruence rules, since both have sub-terms.
     \inferdef{Pair}
     {\Gamma \vdash A : \uni \\ \Gamma, x : A \vdash B : \uni \\
     \Gamma \vdash t : A \\ \Gamma \vdash u : \subs{B}{x}{t}}
-    {\Gamma \vdash \pair[A][B]{t}{u} : \Sb x : A.\ B}
+    {\Gamma \vdash \pair[A][x.B]{t}{u} : \Sb x : A.\ B}
     \label{rule:pair-type} \and
     \inferdef{PairInd}
       {\Gamma \vdash s : \Sb x : A.\ B \\
       \Gamma, z : \Sb x : A.\ B \vdash P : \uni \\
-      \Gamma, y_1 : A, y_2 : \subs{B}{x}{y_1} \vdash b : \subs{P}{z}{\pair[A][B]{y_1}{y_2}}}
+      \Gamma, y_1 : A, y_2 : \subs{B}{x}{y_1} \vdash b : \subs{P}{z}{\pair[A][x.B]{y_1}{y_2}}}
       {\Gamma \vdash \ind{\Sb}{s}{z.P}{y_1.y_2.b} : \subs{P}{z}{s}}
       \label{rule:sig-ind} \and
     \inferdef{ιPair}
     { }
-    {\ind{\Sb}{\pair[A][B]{t}{u}}{z.P}{y_1.y_2.b} \tred \multisubs{b}{y_1 \into t, y_2 \into u}} 
+    {\ind{\Sb}{\pair[A][x.B]{t}{u}}{z.P}{y_1.y_2.b} \tred \multisubs{b}{y_1 \into t, y_2 \into u}} 
     \label{rule:iota-sig}
   \end{mathpar}
   \caption{Inductive dependent pair type}
