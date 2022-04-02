@@ -12,26 +12,27 @@ usually both the term $t$ under inspection and the context $\Gamma$ are inputs �
 although some depart from this, see \sidetextcite{Jim1996}.
 The mode of the type $T$, however, is much less clear: should it be inferred based upon
 $\Gamma$ and $t$, or do we merely want to check whether $t$ conforms to a given $T$?
-Both are sensible approaches, and in fact typing algorithms for complex type systems usually 
+Both are sensible questions, and in fact typing algorithms for complex type systems usually 
 alternate between them during the inspection of a single term/program.
-The bidirectional approach makes this difference between modes explicit,
+\AP The bidirectional approach makes this difference between modes explicit,
 by decomposing \intro{undirected typing}%
-\sidenote{We call anything related to the $\Gamma \vdash t \ty T$ judgement undirected,
-by contrast with the bidirectional typing.}
+\sidenote{We call anything related to the $\Gamma \vdash t \ty T$ judgement
+\kl(typ){undirected}, by contrast with bidirectional typing.}
 $\Gamma \vdash t \ty T$ into two separate judgements $\inferty{\Gamma}{t}{T}$
 (\kl{inference}) and $\checkty{\Gamma}{t}{T}$ (\kl{checking})%
 \sidenote{We use the $\ity$ and $\cty$ symbols rather than the more usual
 $\Rightarrow$ and $\Leftarrow$ to avoid confusion with implication and with the
 \kl{Coq} notation for functions.},
-that differ only by modes of the type. It is an output in inference, but an output in checking.
-Following this decomposition, pioneered by \sidetextcite{Pierce2000}, gives rise to type
-systems that are more structured, directly amenable to implementations,
-and leads to algorithms which are often of good quality.%
-\sidenote{\citeauthor{Pierce2000} for instance stress good error reporting as an important 
-attribute of their approach.}
+that differ only by their \kl{modes}. The type is an
+\kl{input} in inference, but an \kl{output} in checking.
+Following this decomposition – pioneered by \sidetextcite{Pierce2000} – leads to type
+systems that are more structured and directly amenable to implementations,
+and to good quality algorithms.%
+\sidenote{\textcite{Pierce2000} for instance stress good error reporting as an important 
+property of their approach.}
 
-Although this seems appealing, and despite advocacy by \eg
-\sidetextcite{McBride2018,McBride2019} to explicitly adopt this approach during
+This is appealing, but despite advocacy by \eg
+\sidetextcite{McBride2018,McBride2019} to adopt this approach during
 the design of type systems on paper rather than in their implementations only,
 most of the theoretical work on dependent typing to this day remains undirected.
 Bidirectionality appears mostly
@@ -44,38 +45,41 @@ as a way to remedy for the lack of annotations on their \kl{Curry-style} λ-abst
 This is sensible when looking for lightness of the input syntax, but poses an inherent completeness problem: a term such as $(\l x . x)~0$ is not typeable in those systems.%
 \sidenote{They are actually only able to give types to normal forms.}
 In the context of \kl{Church-style} abstraction, the closest there is to a description of
-bidirectional typing for \kl{CIC} is probably that by the
-\kl{Mattia} team \sidecite{Asperti2012},
+bidirectional typing for \kl{CIC} is probably the one given by the
+\kl{Matita} team \sidecite{Asperti2012},
 who however again concentrate on the challenges posed by the
 elaboration and unification algorithms.
 They also do not consider the problem of completeness with respect to a given undirected system, as it would fail in their setting due to the undecidability of higher order unification.
 
-In this part we therefore wish to fill this gap in the literature,
-by describing a bidirectional type system that is complete with respect to the (undirected)
-\kl{Calculus of Inductive Constructions}, as presented in \cref{chap:tech-intro}.
+In this part (\nameref{part:bidir}), we wish to fill this gap in the literature,
+by describing a bidirectional type system that is complete with respect to (undirected)
+\kl{CIC}, as presented in \cref{chap:tech-intro}.
 By completeness, we mean that any term that is typeable in the undirected system should also
 infer a type in the bidirectional one.
 This feature is very desirable when implementing kernels for proof assistants,
-whose algorithms should correspond to their undirected specification,
-never missing any typeable term – even those not in normal forms.
+whose algorithms should correspond to their undirected specification –
+even on terms not in normal forms. Indeed, reduction is only normalizing
+on well-typed terms, so it should not be called on a term that is not known to be
+well-typed. So if a developer wishes to generate a term using tactics, they cannot use
+reduction before knowing that it is well-typed, but might no be able to type-check it
+because it is not a normal form… And ensuring that a tactic only returns normal forms
+might be a complex feat.
 
 The bidirectional system we present naturally forms an intermediate
 step between actual algorithms and undirected type systems, something we exploit
 in \arefpart{metacoq}.
-But the interest of having a bidirectional type system equivalent
-to the undirected one is not limited to the relation to algorithms.
+But its interest is not limited to the relation with implementations.
 Indeed, the structure of a bidirectional derivation is more constrained than that of
 an undirected one, especially restraining the uses of computation.
 This finer structure can make proofs easier,
 while the equivalence ensures that they can be transported to the undirected world.
-We show this by providing straightforward proofs of \kl{uniqueness of types}
-up to cumulativity, and of \kl{strengthening}.
+We show this by providing straightforward proofs of \kl{uniqueness of types up to}
+\kl{cumulativity}, and of \kl{strengthening}.
 
 % The bidirectional structure also provides a better base for new type systems. This was actually the starting point for this investigation: in \cite{LennonBertrand2020}, we quickly describe a bidirectional variant of CIC, as the usual undirected CIC is unfit for the gradual extension we envision due to the too high flexibility of a free-standing conversion rule. This is the system we wish to thoroughly describe and investigate here.
  
 % This step has proven useful in an ongoing completeness proof of MetaCoq's \cite{Sozeau2020a} type-checking algorithm\footnote{A completeness bug in that algorithm – also present in the Coq kernel – has already been found, see \cref{sec:to-pcuic} for details.}: rather than proving the algorithm complete directly, the idea is to prove it equivalent to the bidirectional type system, separating the implementation problems from the ones regarding the bidirectional structure.
 
-This part is separated into three chapters.
 As we did in \cref{chap:tech-intro}, we start by exposing the main ideas in the
 simpler setting of \kl{CCω} in \cref{chap:bidir-ccw}.
 With those set clear, we go on with their adaptation to \kl{PCUIC}, and the subtle

@@ -5,19 +5,20 @@
 
 As we have seen in \cref{sec:tech-pcuic}, there is much more to the real \kl{Coq} than
 \kl{CCω}.
-The ideas from \cref{chap:bidir-ccw} scales very well to the extensions listed there.
+The ideas exposed in the previous chapter nevertheless
+scale very well to these extensions.
 There are two areas, though, where some care needs to be taken.
 The first is cumulativity, which in particular forces us to reconsider the statement
 of the completeness and uniqueness properties, see \cref{sec:bidir-pcuic-cumulativity}.
 But the main is the introduction of inductive types. In particular, there is a subtle
-interplay with cumulativity in the treatment of pattern-matching,
-and while working on the formalized proof of completeness in \kl{MetaCoq}, we uncovered
-an incompleteness bug in the kernel of Coq at that point.
-We try and give an intuition of the origin of the issue in \cref{sec:bidir-pcuic-inductives}.
+interplay with cumulativity in the treatment of pattern-matching.
+Working on the formalized proof of completeness in \kl{MetaCoq} led to the discovery of
+an incompleteness bug in the kernel of Coq linked to this.
+In \cref{sec:bidir-pcuic-inductives} we show how the bidirectional setting adapts to
+inductive types, and try and give an intuition of the origin of the completeness issue.
 
-We avoid detailed proofs at this point,
-instead relying on the formalisation in \kl{MetaCoq} as described in \arefpart{metacoq}
-for those.
+We do not give precise proofs in this chapter,
+instead relying on the formalisation in \kl{MetaCoq} as described in \arefpart{metacoq}.
 
   % The first area of difference are the universes. While on paper those are simply integer, to handle typical ambiguity and polymorphic (co)-inductive types, PCUIC uses algebraic universes, containing level variables, algebraic $\vee$ and $+1$ operators, and a special level for the sort Prop. Moreover, those universes are cumulative, that is they behave as if smaller universes were included in larger ones. The precise handling of the algebraic universes is abstracted away in MetaCoq, and quite similar in the directed and undirected systems, so it did not prove too difficult to handle. Cumulativity, however, introduces some not-so-small differences with the previous presentation, so we spend some time on it in \cref{sec:pcuic-cumul}.
 
@@ -38,14 +39,14 @@ The introduction of the more liberal cumulativity rules in the undirected system
 of course calls for an update to the computation rules.
 The change to \ruleref{rule:bd-check} is direct: simply replace conversion with cumulativity,
 as done in \ruleref{rule:bd-check-cum} opposite.
-As for the constrained inference rules, there is no need to modify them.
-Intuitively, this is because there is no reason to degrade a type to a larger one when it is not needed. We only resort to cumulativity when it is forced by a given target type.
-
+As for the constrained inference rules, they do not even need any modification.
+Intuitively, this is because there is no reason to degrade a type to a larger one,
+unless it is forced by a given target type in the checking judgment.
 
 The statement of completeness also needs to account for cumulativity,
 and becomes the following:
 
-\begin{theorem}[Completeness with cumulativity]
+\begin{theorem}[Completeness, with cumulativity]
   \label{thm:comp-cumul}
   If $\Gamma \vdash t \ty T$, then $\inferty{\Gamma}{t}{T'}$ is derivable
   for some $T'$ such that $T' \cum T$.
@@ -58,18 +59,18 @@ the type $\uni[1]$ still has a special property: it is minimal amongst all types
 we call a \kl{principal type}.
 
 \begin{definition}[Principal type]
-  The type $T$ is called a \intro{principal type} for term $t$ – in a context $\Gamma$ –
+  The type $T$ is a \intro{principal type} for term $t$ – in a context $\Gamma$ –
   if $\Gamma \vdash t \ty T$ and for any $T'$ such that $\Gamma \vdash t \ty T'$,
   we have $T \cum T'$.
 \end{definition}
 
-Of course, the existence of such principal type is the same as \kl{uniqueness of types} 
+The existence of such a principal type is the same as \kl{uniqueness of types} 
 up to cumulativity. Moreover, even in the cumulative setting, \cref{thm:unique-inf}
 stays true – intuitively, because it only relies on properties of reduction, but not of
-conversion. Thus, following the proof of \cref{thm:unique-undir}, we get obtain
-the following:
+conversion. Thus, following the same proof as that of \cref{thm:unique-undir},
+we obtain the following:
 
-\begin{theorem}[Principal type]
+\begin{theorem}[Inferred types are principal]
   \label{thm:princ-types}
   If $\Gamma$ is well-formed and $\inferty{\Gamma}{t}{T}$,
   then $T$ is a \kl{principal type} for $t$ in $\Gamma$.
@@ -83,7 +84,8 @@ the following:
 
 The existence of such principal types is not so easy to prove directly, as it more or less
 amounts to showing correctness and completeness of the bidirectional system at once.
-Nevertheless, it is useful, because it in particular means that for any well-typed term $t$ there is an unambiguous smallest universe for $t$, which can be obtained as the principal
+Nevertheless, it is useful, because it in particular means that any well-typed term $t$
+has an unambiguous smallest universe, which can be obtained as the principal
 type of its principal type. This means that there is a good separation between irrelevant 
 propositions – those terms whose smallest universe is $\Prop$ – and relevant terms
 – those whose smallest universe is some $\uni[i]$ –, and that this stays true even in
@@ -129,9 +131,10 @@ would not make sense.
   \label{fig:bidir-pair}
 \end{figure}
 
-To set ideas straight, let us look at a simple inductive type: dependent sums – see \cref{fig:bidir-pair}. To obtain these rules from those of \cref{fig:sig},
-first notice that all undirected rules are structural and must thus become inference rules if
-we want the resulting system to be complete.
+To set ideas straight, let us look at how we can adapt the dependent pair type of
+\cref{fig:sig} to the bidirectional setting: see \cref{fig:bidir-pair}.
+To obtain these rules, first notice that all rules of \cref{fig:sig}
+must become inference rules if we want the resulting system to be complete.
 The question therefore is once again to choose modes for the premises.
 Rules \nameref{rule:pair-type-bd} and \nameref{rule:sig-inf} are
 very similar to the rule for Π-types, there is not much surprise there.
@@ -164,7 +167,7 @@ the one we just gave. The reason for this is that giving a general account of ru
 which infer type levels like our \ruleref{rule:pair-type-bd} is not easy.
 Indeed, the parameters of an inductive type can
 be of a type much more complex than simply $\uni$, and in that general setting deciding which
-type variable can be inferred is a simple problem.
+type variable can be inferred is a non-trivial problem.
 Instead, the polymorphic inductive types as implemented in \kl{Coq} store explicit universe
 levels on inductive types and constructors. The  pair type of \cref{fig:bidir-pair},
 for instance, would contain explicit universe levels $i,j$, so that both $A$ and $B$
@@ -179,14 +182,15 @@ The rule for the type constructor in that context is given opposite.
 This makes the treatment of complex inductive types possible by using checking uniformly –
 rather than relying on constrained inference to infer universe levels –
 at the cost of possibly needless annotations, as here with Σ-types.
-This is anyway invisible for the end user, as she does very seldom write universe
-levels thanks to \kl{typical ambiguity}.
+This is mostly invisible for the end user hough, as she does very seldom write universe
+levels thanks to \kl{typical ambiguity} anyway.
 
-In the same spirit, pattern-matchings in \kl{Coq} – and their counterpart in \kl{PCUIC} –
-also store enough information to easily reconstruct the context extension
-in which the predicate and branches are typed, consisting in universe levels
+In the same spirit, pattern-matching in \kl{Coq} – and its counterpart in \kl{PCUIC} –
+also stores enough information to easily reconstruct the context
+in which the predicate and branches are typed. This information consists in universe levels
 – for polymorphic inductive types – and parameters of the inductive type.
-Thus, the actual rule in the case of Σ-types is close to the following:
+Thus, the actual typing rule for pattern-matching in the case of Σ-types
+is close to the following:
 
 \begin{mathpar}
   \inferrule{
@@ -200,10 +204,10 @@ Thus, the actual rule in the case of Σ-types is close to the following:
 
 Note that the domain and codomain are compared using \kl{cumulativity}. This is crucial
 to retain \kl{subject reduction}. Indeed, reduction of the scrutinee might make its inferred
-type decrease, for instance
+type decrease. For instance in
   \[ \left( \l y : (\uni[1] \times \uni[1]) \right)\ \pair[\uni[0]][\uni[0]]{\Nat}{\Nat}
     \red \pair[\uni[0]][\uni[0]]{\Nat}{\Nat} \]
-but the redex infers type $\uni[1] \times \uni[1]$ while the reduct infers $\uni[0] \times \uni[0]$. Thus, if such a term is plugged as scrutinee in the previous pattern-matching with
+the redex infers type $\uni[1] \times \uni[1]$ while the reduct infers $\uni[0] \times \uni[0]$. Thus, if such a term is plugged as scrutinee in the previous pattern-matching with
 parameters $\uni[1]$ and $\uni[1]$, the whole term still is typeable after the reduction of
 the scrutinee precisely because $\uni[0] \cum \uni[1]$.
 
@@ -222,10 +226,12 @@ remove the use of Π- and λ-abstractions completely from pattern-matching%
 following ideas that had been laid down earlier by Hugo Herbelin in the Coq enhancement
 proposal \href{https://github.com/coq/ceps/blob/master/text/inductive-branch-predicate-representation-and-reduction.md}{\#34}.},
 making both the implementation less ad-hoc, and the theory cleaner.
-A detailed summary has been given by Matthieu Sozeau \sidetextcite{Sozeau2022}.
+A detailed summary has been given by Matthieu Sozeau \sidecite{Sozeau2022}.
 
 Further investigations in that area might still be valuable though, in particular in order
 to determine what kind of annotations are actually needed for pattern-matching, both
-in theory and in practise. The bidirectional presentation is very useful there, because now
-it is clear what the specification of a more lightweight implementation should be:
-it must be complete, in the sense of \cref{thm:comp-cumul}.
+in theory and in practise. Can we give a presentation of polymorphic inductive types
+that is as lightweight as pair types in \cref{fig:bidir-pair}?
+The bidirectional presentation is valuable there, because now
+it is clear what the specification of an alternative syntax:
+it should stay be complete, in the sense of \cref{thm:comp-cumul}.
