@@ -12,52 +12,75 @@
 \selectlanguage{french}
 
 Cette thèse se situe dans le domaine de la \kl[type dépendant]{théorie des
-types (dépendants)}, lui-même au croisement entre informatique et logique mathématique.
-L’objectif principal est de participer aux fondements théoriques et pratiques des outils
-que l’on appelle \kl{assistants à la preuve}, des logiciels qui, comme leur nom
-l’indique, ont pour but d’assister des êtres humains dans la construction
-et la vérification de preuves – au sens mathématique du terme. Il sera dans cette thèse
-en particulier beaucoup question de l’assistant à la preuve \kl{Coq}, qui est celui
-sur lequel mon travail s’est principalement concentré.
+types}, lui-même au croisement entre informatique et logique mathématique.
+Son objectif principal est de participer aux fondements théoriques et pratiques
+d’outils informatiques pour assister les humains dans la construction
+et la vérification de preuves – au sens mathématique du terme.
+De tels outils sont appelés \kl{assistants à la preuve}, et il sera dans cette thèse
+en particulier beaucoup question de l’un d’entre eux, celui
+sur lequel mon travail s’est principalement concentré : \kl{Coq}.
 
-Pour replacer ce travail dans son contexte large, cette introduction commence par une histoire très parcellaire (et orientée) de la logique mathématique
-(\cref{sec:logique-histoire}),
-puis une présentation des assistants à la preuve,
-notamment ceux qui, comme \kl{Coq}, se basent sur la théorie des types (\cref{sec:assistants-preuve}). Enfin la \cref{sec:cette-these} présente
-mes contributions personnelles cette thèse.
+Pour replacer ce travail dans son contexte large, cette introduction
+commence par une histoire très courte de l’histoire logique mathématique
+(\cref{sec:logique-histoire}), qui présente les principales problématiques de ce domaine.
+Suit une présentation des liens entre logique et informatique, par
+l’intermédiaire des \kl{assistants à la preuve} (\cref{sec:assistants-preuve}).
+La \cref{sec:intro-coq} présente plus particulièrement les idées et problématiques
+de recherche sur lesquelles j’ai travaillé.
+Enfin la \cref{sec:cette-these} résume les contributions présentées dans la suite de cette
+thèse.
 
 \section{Une (très courte) histoire de la logique}
 \label{sec:logique-histoire}
 
 \subsection{Les syllogismes}
-Dans la tradition occidentale, on peut faire remonter l’étude de
-la logique à Aristote, dans son \textit{Organon}.
-L’un des apports de ce travail est d’introduire les syllogismes.\sidenote{
-  Le syllogisme le plus connu est probablement Barbara, dont un exemple est :
+
+La question principale à laquelle la logique cherche à répondre
+est celle de trouver des critères afin de déterminer si un raisonnement est valide.
+Dans la tradition occidentale, on peut faire remonter l’étude de cette problématique
+à l’Antiquité, et notamment à Aristote, avec son \textit{Organon}.
+L’apport majeur de ce travail est d’introduire la notion de syllogisme.
+Il s’agit de fragments simples de raisonnement, dont la validité tient au fait qu’ils
+suivent une structure fixée, et non à un contenu particulier.%
+\sidenote{
+  Le plus connu est probablement le syllogisme Barbara, dont un exemple est :
   \emph{tous les humains sont mortels ; Socrate est humain ; donc Socrate est mortel.}
 }
-Il s’agit de raisonnements dont la validité tient seulement au fait qu’ils
-suivent une structure générale, et non à son contenu particulier.
-Si un raisonnement est construit en assemblant ces syllogismes,
-le raisonnement dans son entier doit nécessairement l’être également, puisque
-chaque pas de raisonnement est valide.
-L’idée importante ici est celle de décomposition en composantes élémentaires. À
-partir d’un système de règles de raisonnement qu’on a identifiées comme valides 
-\textit{a priori},\sidenote{
-  Il peut s’agir de syllogismes, mais de bien d’autres systèmes… On en rencontra
-  un certain nombre dans cette thèse !
-}
-on a un moyen de s’assurer de la validité de raisonnements potentiellement
-très complexes.
-Il suffit de vérifier qu’ils peuvent être décomposés à partir
-des règles de base – et, bien entendu, que celles-ci soient correctes.
+Si un raisonnement complexe est construit en assemblant ces syllogismes,
+celui-ci pris dans son entier doit nécessairement être valide, puisque
+chacun des fragments assemblés l’est. Il y a ici deux idées importantes.
+
+La première, c’est celle qu’un raisonnement peut être
+valide ou non indépendamment de son contenu, mais seulement du simple fait de sa structure.
+En effet, toute la suite de la logique en tant que discipline va se concentrer sur l’étude
+de cette structure qui sous-tend le raisonnement.
+Il peut s’agir de syllogismes, mais de bien d’autres systèmes… On en rencontrera
+un certain nombre au cours cette thèse !
+
+La seconde, c’est celle de la décomposition en composantes élémentaires. À
+partir d’un système de règles de base qu’on a identifiées comme valides 
+\textit{a priori}, on a un moyen de s’assurer de la validité
+de raisonnements potentiellement très complexes.
+Il suffit pour cela de vérifier qu’ils peuvent être décomposés en
+les règles de base.
+
+Dès cette époque, la logique est également pensée comme un outil de communication.
+Il s’agit bien sûr de vérifier la validité de son propre raisonnement,
+mais surtout de se donner le moyen d’échanger ceux-ci,
+en fixant un système logique formel%
+\sidenote{Les règles structurelles à respecter, comme celles des syllogismes.}.
+Une personne voulant que ses conclusions soient acceptées par d’autres n’a plus qu’à
+rendre son raisonnement parfaitement précis dans le cadre d’un tel système formel.
 
 \subsection{Les débuts de la logique mathématique}
-À la suite d’Aristote, les mathématicien·ne·s se sont emparé·e·s de la question
-de la logique, en cherchant comment il était possible de fonder les mathématiques
-rigoureusement. Bien qu’il s’agisse d’une question ancienne, de véritables
-progrès concrets sur sa résolution ont commencé à voir le jour dans la deuxième
-moitié du 19\textsuperscript{e} siècle, sur deux fronts principaux.
+
+À la suite d’Aristote, les mathématiciens et mathématiciennes se sont emparé·e·s
+de la logique, en cherchant à l’utiliser afin de fonder rigoureusement les mathématiques,
+c’est-à-dire de trouver un système formel permettant de donner un sens précis à ce
+qui constitue une preuve mathématique valide.
+Bien que les liens entre logique et mathématiques remontent à l’Antiquité grecque,
+d’importants progrès ont eu lieu au cours
+du 19\textsuperscript{e} siècle, sur deux fronts principaux.
 
 Le premier a consisté à se dégager du langage dit
 naturel\sidenote{
@@ -65,185 +88,201 @@ naturel\sidenote{
   en mathématiques, informatique, etc.
 }, inadapté pour la description formellement précise de la déduction, et à
 concevoir à la place une nouvelle forme de langage spécifique qui puisse servir de
-base à un système de raisonnement. Une étape importante
-de cette ligne de recherche est
-probablement le \citetitle{Begriffsschrift}~\sidecite{Begriffsschrift}, qui introduit un certain nombre de
-caractéristiques des langages dont il sera question dans la suite de cette thèse,
-en particulier la notion de quantificateur.
+base au raisonnement mathématique.
+Une étape importante ici est le \citetitle{Begriffsschrift} de
+\citeauthor{Begriffsschrift}~\sidecite{Begriffsschrift},
+qui le premier introduit un langage suffisamment riche pour exprimer les mathématiques
+de manière satisfaisante. Son addition majeure est l’introduction
+de la notion de quantificateur, essentielle au langage mathématique.
 
-Le second a pour but de montrer que les mathématiques dans leur entier peuvent
-effectivement être reconstruites à partir de briques élémentaires. Une étape
-importante ici a été la réduction de l’analyse à un petit nombre de propriétés
-des nombres réels, puis les constructions de ces nombres réels à partir
-de l’arithmétique, données quasiment simultanément par entre autres
+Le second a eu pour but de montrer que les mathématiques dans leur entier peuvent
+être reconstruites à partir d’un petit nombre de propriétés simples. Une étape
+importante a été la réduction de l’analyse aux propriétés
+des nombres réels, puis les constructions de ceux-ci à partir
+de l’arithmétique données quasiment simultanément en 1872 par entre autres
 Dedekind~\sidecite{Dedekind1872} et Cantor~\sidecite{Cantor1872}.
 De son côté Peano~\sidecite{Peano1889} propose
 une axiomatisation des nombres entiers proche de celle encore utilisée aujourd’hui.
-Enfin Cantor~\sidecite{Cantor1883} à nouveau
-propose la théorie des ensembles comme un formalisme permettant
-de décrire la totalité des objets mathématiques sous la forme d’ensemble
-d’éléments.
+Enfin Cantor à nouveau propose la théorie des ensembles~\sidecite{Cantor1883}
+comme un formalisme permettant de décrire tous
+les objets mathématiques sous la forme d’ensemble d’éléments.
 
 \subsection{La crise des fondements}
 Hélas, le système proposé dans le \citetitle{Begriffsschrift}, fortement inspiré par
-les travaux de Cantor, est inconsistant\sidenote{
-  C'est-à-dire qu’il permet de prouver le faux, et donc qu’il ne peut pas servir
-  de base valide pour la logique.
-} !
-Ce constat, dû à Russell \sidecite[][Nachwort p.~253]{Frege1903},
-ouvre une période de crise, où la problématique de décrire un système qui permette
-de fonder l’entièreté des mathématiques,
-tout en évitant les inconsistances desquelles
-le système de Frege et probablement ceux de Cantor étaient victimes.
+les travaux de Cantor, est inconsistant !%
+\sidenote{
+  C’est-à-dire qu’il permet de prouver le faux, et donc qu’il ne peut servir
+  de fondement satisfaisant aux mathématiques.
+}
+Ce constat, fait par Russell en 1903%
+\sidenote{
+  Dans une lettre à Frege dont ce dernier rend les résultats
+  publics~\sidecite[1.5em][Nachwort p.~253]{Frege1903}.}
+ouvre une période de crise, en remettant en doute les systèmes qui avaient commencé à
+s’imposer comme de bons candidats pour servir de fondements aux mathématiques –
+celui de Frege mais surtout ceux de Cantor, affecté par les mêmes difficultés.
 
-Une première proposition de solution est avancée par Russell et Whitehead dans leur
-\citetitle{Whitehead1913}~\sidecite{Whitehead1913},
+Une possible solution est avancée dix ans plus tard
+par Russell et Whitehead dans leur \citetitle{Whitehead1913}~\sidecite[1em]{Whitehead1913},
 un énorme travail qui non seulement propose un système
-logique qui évite les paradoxes conduisant à l’inconsistance du
-\citetitle{Begriffsschrift}, mais de plus réalise dans ce système une quantité importante
+formel qui évite les paradoxes conduisant à l’inconsistance du
+\citetitle{Begriffsschrift}, mais de plus construit dans ce système une quantité importante
 de mathématiques, en particulier une construction des entiers, de l’arithmétique et
 finalement des nombres réels.
 
 En parallèle, dans la continuité des travaux de Cantor,
 Zermelo~\sidecite{Zermelo1908} et
-d’autres travaillent à fournir une description formelle de la théorie des ensemble
-qui soit consistante. Ceci aboutit à ce qu’on appelle de nos jours la
+d’autres travaillent à fournir une version de la théorie des ensembles de Cantor
+qui soit consistante. Ceci aboutit à ce qu’on appelle actuellement la
 théorie des ensembles de Zermelo-Fraenkel (ZF, ou ZFC quand on y ajoute l’axiome
-du choix), qui semble également à même de fournir une base solide pour les
+du choix), qui semble également à même de fournir une base solide pour fonder les
 mathématiques.
 
-\paragraph{L’incomplétude.}
-Un deuxième coup vient cependant frapper la recherche d’un système adéquat pour
-servir de fondation aux mathématiques : le théorème d’incomplétude de
+\subsection{L’incomplétude}
+
+La recherche d’un système formel adéquat pour servir de fondement aux mathématiques 
+se heurte cependant à une seconde difficulté majeure : le théorème d’incomplétude de
 Gödel~\sidecite{Goedel1931}. Celui-ci affirme que tout système formel
-dans lequel on peut construire des nombres entiers comme de Peano – donc
-\textit{a fortiori} tout système suffisamment riche pour faire des mathématiques –
-ne peut pas démontrer sa propre consistance. Ainsi, il n’existe pas de
-système sur lequel on puisse fonder les mathématiques en ayant la certitude
-formelle que ce système est adéquat : puisqu’on ne peut prouver la consistance du
+dans lequel on peut construire des nombres entiers comme ceux de Peano – donc
+\textit{a fortiori} tout système suffisamment riche pour fonder les mathématiques –
+ne peut pas démontrer sa propre consistance. De ce fait, il n’existe pas de
+système qui puisse servir de base aux mathématiques
+avec une certitude formelle sur son adéquation.
+En effet, puisqu’on ne peut pas prouver la consistance du
 système dans lui-même, il pourrait finalement s’avérer inconsistant, ruinant les
 efforts fournis.
 
 Une conséquence de ce théorème est qu’un système suffisamment riche
-pour faire des mathématiques est nécessairement incomplet.\sidenote{
+pour fonder les mathématiques est nécessairement incomplet.%
+\sidenote{
   Cela signifie qu’il
   existe des énoncés indépendants, à savoir des assertions qu’on ne peut
   ni démontrer, ni réfuter – c’est-à-dire montrer la négation. La consistance du
   système considéré en est un exemple.
 }
-Ainsi, dans la suite il ne sera jamais question de vérité absolue –
+Ainsi, dans la suite, il ne sera jamais question de vérité dans un sens absolu –
 ce qui n’aurait de sens que dans un système complet
 où tout énoncé est vrai ou faux –, mais
-uniquement de prouvabilité \emph{dans un système donné}.
+uniquement de prouvabilité \emph{relativement à un système donné}.
 
-\subsection{Une première conclusion}
-Malgré les difficultés mises au jour au début du 20\textsuperscript{e}
-siècle, la communauté mathématique est globalement
-satisfaite de la situation : ZFC fournit un système raisonnable sur
-lequel baser en principe toutes les mathématiques, et même si peu de
+\subsection{Une situation plutôt satisfaisante}
+
+Malgré les difficultés mises à jour au début du 20\textsuperscript{e}
+siècle, les recherches en logique mathématique ont abouti à une situation
+globalement assez satisfaisante. D’abord, ZFC fournit un système formel raisonnable sur
+pour fonder les mathématiques. Ensuite, même si peu de
 personnes se risquent à tenter, dans la veine des \citetitle{Whitehead1913},
-d’effectivement écrire leurs mathématiques à ce niveau de précision,
-elle est globalement convaincue que ce serait en théorie
-possible, et cela suffit amplement à la plupart.
+d’écrire leurs mathématiques dans un système formel,
+la communauté mathématique est dans son ensemble convaincue que ce serait théoriquement
+possible, ce qui suffit amplement à la plupart de ses membres.
 
-De plus, le développement et la vérification humaine de mathématiques véritablement
-formalisées semble essentiellement impossible et inutile.
-D’un côté, cela demanderait un effort considérable,
-tant de la part de l’autrice que de celle de la lectrice, tout en étant
-extrêmement laborieux et désagréable.
+De plus, le développement et la vérification humaine de mathématiques
+formalisées%
+\sidenote{C’est-à-dire effectivement exprimées dans un système formel fixé.}
+semble à la fois impossible et inutile.
+D’un côté, cela demanderait un effort considérable, car de telles mathématiques
+demandent un niveau de précision extrêmement élevée, tant de la part de l’autrice
+de la preuve formelle que de sa lectrice.
 Dans le même temps, cela ne permettrait pas de réduire de manière importante
-les risques d’erreurs, puisqu’il est
-humainement très difficile de détecter une petite erreur au milieu de centaines de pages de raisonnement.
-Enfin, décrire les mathématiques à ce niveau obscurcirait
+les risques d’erreurs, puisqu’il serait
+humainement très difficile de vérifier qu’un raisonnement suit bien les règles du
+système : une minuscule erreur peut facilement se cacher au milieu de
+milliers de pages de raisonnement formel.
+Enfin, décrire les mathématiques de cette façon obscurcirait
 considérablement les intuitions mathématiques importantes,
 rendant la communication stérile.
 
 \section{Les ordinateurs entrent en scène}
 \label{sec:assistants-preuve}
 
-Un nouvel élément vient cependant changer fondamentalement cette situation :
-l’avènement des ordinateurs.
+Un nouvel élément vient cependant modifier radicalement cette situation :
+l’avènement des ordinateurs. En effet, l’informatique donne accès à de nouveaux outils,
+qui permettent de rendre à la fois possible et attrayante la possibilité de formaliser
+les mathématiques.
 
-\subsection{Pourquoi les ordinateurs ?}
+\subsection{Les assistants à la preuve}
 
 Les ordinateurs excellent là où les humains pêchent : leur spécialité est de traiter
-d’immenses volumes d’information très précise, exactement le type
-de besoins que soulève la manipulation de preuves formelles. C’est pourquoi, dès
-le début des années 70, avec des systèmes comme Automath~\sidecite{DeBruijn1970}
-ou Mizar~\sidecite{Rudnicki1992}, 
-ont commencé à apparaître ce que l’on appelle \intro{assistants à la
-preuve}, des outils informatiques servant à écrire, vérifier et communiquer des
-preuves.
-Via la formalisation de ces preuves et la vérification par l’ordinateur qu’elles
+d’immenses volumes d’informations de façon très précise, exactement le type
+de besoins que soulève la manipulation de mathématiques formalisées. C’est pourquoi, dès
+le début des années 70%
+\sidenote{Avec des systèmes comme Automath~\sidecite[1.5em]{DeBruijn1970}
+ou Mizar~\sidecite[5.5em]{Rudnicki1992}.}
+ont commencé à apparaître des outils informatiques servant à écrire et vérifier ces
+preuves formelles, que l’on appelle collectivement des \intro{assistants à la preuve}.
+Via la formalisation des preuves et la vérification par l’ordinateur qu’elles
 suivent bien les règles du système logique sous-jacent, les assistants à la preuve
-donnent accès à une fiabilité bien plus importante que celle des preuves
-traditionnelles. Des mathématiciens reconnus comme
-\sidetextcite{Voevodsky2010},
-\sidetextcite[][Preface, p. xi]{Hales2012},
-ou \sidetextcite{Scholze2021}
+donnent accès à une fiabilité bien plus élevée que celle permise par les preuves
+“informelles”.
+Des mathématiciens reconnus, comme \sidetextcite{Voevodsky2010},
+\sidetextcite[][Preface, p. xi]{Hales2012}, ou \sidetextcite{Scholze2021}
 se sont déjà emparés des assistants à la preuve,
 notamment dans le but de lever les incertitudes
 sur la solidité de leur propre travail.
 
 Mais le terme d’\emph{assistant} à la preuve n’a pas été choisi par hasard : au-delà
-de la simple vérification, les assistants à la preuve ouvrent la porte à un large
-éventail d’outils mis à la disposition de la programmeuse, souvent de façon
-interactive. La preuve est ainsi construite comme le produit d’un échange entre 
-la programmeuse et l’outil, plutôt que fournie d’un seul bloc.
-Il peut s’agir de simples
-facilités, comme la possibilité de pouvoir visualiser la structure des
+de la simple vérification, les assistants à la preuve mettent à la disposition des 
+utilisatrices un large éventail de techniques pour faciliter la conception de preuves formelles.
+Ces techniques permettent généralement d’écrire
+les preuves à haut niveau et de manière interactive%
+\sidenote{Dans la plupart des assistants à la preuve, la preuve finale est
+  construite comme le résultat d’un échange entre la programmeuse et l’outil,
+  plutôt qu’écrite d’un seul bloc.}
+, en laissant à l’assistant à la preuve le soin de construire les preuves formelles.
+Il peut s’agir de simples facilités
+comme la possibilité de pouvoir visualiser la structure des
 preuves, de suivre l’utilisation des hypothèses…
-Mais l’informatique rend surtout possible l’automatisation de pans entiers
-de l’écriture de preuves,
-par exemple via l’utilisation d’un langage de tactiques~\sidecite{Delahaye2000}
-qui permettent de programmer la manière dont les preuves sont
-générées, voire en utilisant directement la recherche en
-preuve automatique~\sidecite{Boehme2010,Ekici2017}.
-\textit{In fine}, cette automatisation permet généralement d’écrire
-les preuves à haut niveau, en laissant à l’assistant à la preuve le soin
-de construire une preuve formelle.
-Un autre axe important, bien qu’encore relativement peu développé, concerne
-les interactions entres les outils informatiques dédiés au calcul mathématique
-(systèmes de calcul formel, analyse numérique) et les assistants à la
-preuve sont une piste très prometteuse.
+Mais l’informatique est bien plus puissante, elle rend possible
+l’automatisation de pans entiers de l’écriture de preuves,
+par exemple via l’utilisation d’un langage de tactiques~\sidecite{Delahaye2000} –
+qui permettent de programmer la génération de preuves.
+La recherche automatique de preuve est d’ailleurs un domaine de recherche à part entière,
+et leur intégration dans les assistants à la
+preuve est un domaine de recherche active~\sidecite{Boehme2010,Ekici2017}.
+Un autre domaine où l’informatique a fait ses preuves est le calcul mathématique
+(calcul formel, analyse numérique) et là encore des interactions prometteuses
+commencent à voir le jour pour combiner ces domaines de recherche aux assistants de preuve
+\sidecite{Lewis2022,Melquiond2012}.
 
-Enfin, si l’utilisation de programmes de toutes sortes permet de grandement augmenter
-les possibilités offertes par les assistants à la preuve,
-la présence au même endroit – l’ordinateur –
-de preuves et de programmes est également parfaite pour… la preuve de programmes.
-Ils offrent en effet un cadre naturel dans lequel décrire au même endroit
+Enfin, si l’utilisation de programmes informatiques permet de grandement augmenter
+les possibilités offertes par les assistants à la preuve, ceux-ci ouvrent inversement
+de nouvelles possibilités pour la programmation.
+En effet, les assistants à la preuve
+offrent en effet un cadre naturel dans lequel décrire au même endroit
 le code source d’un programme, sa spécification et la preuve formelle que le
-programme s’exécute correctement,
-remplissant sa spécification sans rencontrer de bug.
+programme s’exécute correctement, remplissant sa spécification sans rencontrer de bug.
+
 
 \subsection{Logique, programmation et théorie des types}
 
-Pour fonctionner, les assistants à la preuve ont besoin d’une
-description formelle des "règles du jeu" mathématiques qu’ils sont censés imposer.
-En clair, ils demandent une étude renouvelée de la logique, mais dans le but
+Pour fonctionner, les assistants à la preuve ont besoin comme base d’un système
+formel, correspondant aux “règles du jeu” mathématique qu’ils sont censés imposer.
+Ainsi, ils demandent une étude renouvelée de la logique, mais dans le but
 pratique de construire des outils à la fois fonctionnels,
 puissants et faciles à utiliser.
-Il existe plusieurs familles d’assistants à la preuve, basées sur des fondements
-logique relativement différents. La famille qui m’intéresse dans cette thèse, est
-celle à laquelle appartient \kl{Coq}, celle basée sur la
-\kl{correspondance de Curry-Howard} et la \kl[type dépendant]{théorie des types dépendants}.
+Il existe plusieurs familles d’assistants à la preuve, basées sur des
+systèmes formels relativement différents. La famille qui m’intéresse dans cette thèse
+est basée sur la \kl{correspondance de Curry-Howard}
+et la \kl[type dépendant]{théorie des types dépendants}.
+C’est à elle qu’appartient l’assistant à la preuve \kl{Coq} qui est au cœur de mon
+travail.
 
 Si on compare un programme informatique à un texte dans une langue naturelle,
-les types sont une sorte d’équivalent des catégories grammaticales.
-Contrairement aux langues naturelles, cependant, ces règles de typage sont conçues
-en même temps que le langage de programmation, en général
-de telle sorte à refléter des propriétés
-des objets manipulés par le programme. Cela permet en premier lieu de
-détecter des erreurs manifestes.
-Par exemple, si une procédure attendant un objet de type "image" est
-appliquée à un objet de type "chaîne de caractères", une erreur pourra être rapportée
+les \intro{types} sont une sorte d’équivalent des catégories grammaticales.
+Cependant, contrairement aux langues naturelles, ces types sont conçus
+en même temps que le langage de programmation,
+de telle sorte à refléter des propriétés des objets manipulés par le programme.
+Cela permet en premier lieu de détecter des erreurs manifestes.
+Par exemple, si une procédure attendant un objet de type “image” est
+appliquée à un objet de type “chaîne de caractères”, une erreur pourra être rapportée
 à la programmeuse.\sidenote{
   Un slogan dû à \sidetextcite[4em]{Milner1978} est que
   « Les programmes bien typés ne peuvent pas  mal s’exécuter. »
 }
-Mais les utilisations des types sont très versatiles, et leurs capacités à encoder
+Mais les types sont très versatiles, et leur capacité à encoder
 des propriétés des programmes sous-jacents peuvent servir à la compilation, la
-documentation, etc.
+documentation, etc. Dans notre cadre, les types correspondent à la
+validité d’un raisonnement logique.
 
 \begin{marginfigure}[2em]
 
@@ -258,35 +297,34 @@ documentation, etc.
   % \caption{Règles d’inférence pour l’implication et de typage des fonctions}
 
   \begin{mathpar}
-    \inferrule*{A \\ B}{A \wedge B} \and
-    \inferrule*{A \wedge B}{A} \and
-    \inferrule*{A \wedge B}{B} \\
-    \inferrule*{a : A \\ b : B}{(a,b) : A \times B} \\
-    \inferrule*{p : A \times B}{p.1 : A} \and
-    \inferrule*{p : A \times B}{p.2 : B}
+    \inferrule{A \\ B}{A \wedge B} \and
+    \inferrule{A \wedge B}{A} \and
+    \inferrule{A \wedge B}{B} \\
+    \inferrule{a : A \\ b : B}{(a,b) : A \times B} \\
+    \inferrule{p : A \times B}{p.1 : A} \and
+    \inferrule{p : A \times B}{p.2 : B}
   \end{mathpar}
   
   \caption{Règles d’inférence pour la conjonction et de typage pour les paires}
   \label{fig:curry-howard-exemple}
 \end{marginfigure}
 
-Plutôt qu’un théorème précis, la \intro{correspondance de Curry-Howard} est une
-idée très générale,
+Cette idée est celle de la \intro{correspondance de Curry-Howard}.
+Plutôt qu’un théorème précis, il s’agit d’un concept très général,
 selon lequel il existe une ressemblance forte entre d’un côté le monde de la
 logique et des preuves, et de l’autre celui des programmes et de leurs types.
 Un exemple valant mieux qu’un discours abstrait, on peut voir la correspondance à l’œuvre dans la \cref{fig:curry-howard-exemple}, sous la forme de règles d’inférence
 ou de typage : chaque bloc présente une règle, avec au-dessus de la barre les
 hypothèses, et en dessous la conclusion.
-Les trois premières règles gouvernent la conjonction logique $\wedge$.
-La première signifie que pour déduire la proposition $A \wedge B$,
+Les trois premières règles gouvernent la conjonction logique “et”, notée $\wedge$.
+La première signifie que pour déduire la proposition $A \wedge B$ (“$A$ et $B$”),
 il suffit de déduire $A$ et $B$ individuellement.
-À l’inverse si a comme hypothèse $A \wedge B$, alors on peut déduire $A$ et $B$
-individuellement.
+À l’inverse si a comme hypothèse $A \wedge B$, alors on peut déduire à la fois $A$, et $B$.
 Les trois dernières règles gouvernent le typage du type des paires $A \times B$.
-Une paire $(a,b)$ a le type $A \times B$ si $a$ est de type $A$ et $b$
-est de type $B$.
-À l’inverse si $p$ est de type $A \times B$, alors sa première projection $p.1$
-est de type $A$ et sa seconde projection $p.2$ est de type $B$.
+Une paire $(a,b)$ construite à partir d’un premier objet $a$ de type $A$ et d’un second $b$
+de type $B$ a le type $A \times B$.
+À l’inverse si $p$ est de type $A \times B$, alors on peut en récupérer la première composante
+$p.1$, qui est de type $A$ et sa seconde $p.2$, de type $B$.
 Si on efface les termes\sidenote{
   Dans ce contexte, on parle souvent de \emph{termes} plutôt que de programmes,
   mais les deux sont synonymes.
@@ -297,26 +335,33 @@ en une correspondance générale entre d’une part les énoncés de la logique 
   Le slogan en anglais est \textit{propositions as types, proofs as programs}.}
 Au-delà de la simple analogie entre formalismes d’origines différentes, cette correspondance est un outil puissant pour faire dialoguer deux mondes.
 En particulier, elle permet de relier deux problèmes \textit{a priori} éloignés :
-la vérification de la correction d’une preuve et l’analyse du type d’un terme.
+vérifier qu’une preuve est correcte, et vérifier qu’un terme est bien typé.
+Dans les deux cas, il s’agit de vérifier qu’une construction – programme d’un côté,
+preuve de l’autre – respecte un ensemble de règles formelles exprimant qu’elle est
+bien formée.
 
 La \kl{correspondance de Curry-Howard} est donc idéale pour servir de fondements aux
-assistants à la preuve, puisqu’elle permet de voir un système
-comme une logique, tout en autorisant l’utilisation d’idées venant de
+assistants à la preuve, puisqu’elle permet de voir un système formel
+comme une logique, tout en permettant l’utilisation d’idées venant de
 la large littérature sur les langages de programmation, notamment
 la théorie et l’implémentation des systèmes de types.
-Dans ce cadre, les \intro[type dépendant]{systèmes de types dépendants} sont une famille dont
-la caractéristique principale, comme leur nom l’indique, est d’autoriser les
-types à dépendre de termes. L’exemple archétypique du point de vue de la 
-programmation est le type
+Dans ce cadre, les \intro[type dépendant]{systèmes de types dépendants} 
+forment une famille particulières de systèmes de types, dont la
+caractéristique principale est d’autoriser les types à dépendre de termes.
+L’exemple archétypique du point de vue de la  programmation est le type
 $\Vect(A,n)$ des listes contenant exactement $n$ éléments
 de type $A$ – avec $n$ un entier.
 Du point de vue de la logique, cette
 dépendance correspond aux quantificateurs, nécessaires pour exprimer des
-propriétés universelles – pour tout entier $n$, la propriété $P(n)$ est
-vérifiée — et existentielles – il existe un entier $n$ tel que $P(n)$ tient –,
+propriétés universelles%
+\sidenote{Pour tout entier $n$, la propriété $P(n)$ est
+vérifiée.} et existentielles.%
+\sidenote{Il existe un entier $n$ tel que $P(n)$ tient.},
 sans lesquelles il est tout bonnement impossible d’exprimer la plupart des
-mathématiques. En revanche les systèmes à types dépendants, eux, sont suffisamment
-riches et puissant pour espérer y développer la plupart des mathématiques.
+mathématiques.
+Grâce à cette possibilité d’exprimer la quantification,
+les types dépendants sont suffisamment riches et puissants pour
+servir de fondement aux mathématiques.
 
 \section{Coq et son noyau}
 \label{sec:intro-coq}
@@ -324,7 +369,7 @@ riches et puissant pour espérer y développer la plupart des mathématiques.
 Intéressons-nous maintenant un peu plus précisément à l’assistant à la
 preuve dont il sera le plus question dans cette thèse : \intro{Coq}.
 
-\subsection{La clé de voûte du système}
+\subsection[Le noyau]{Le noyau, clé de voûte du système}
 
 \begin{figure}[h]
 
@@ -339,102 +384,111 @@ Coq est basé sur la \kl{correspondance de Curry-Howard} : les preuves sont vues
 et leur vérification est effectuée par un algorithme proche
 de ceux utilisés pour les types des langages conventionnels.
 Cependant, si dans les premières versions des années 80 \kl{Coq} ressemblait à un langage de programmation un peu étrange, ce n’est actuellement plus du tout le cas.
-La raison, comme on l’a expliqué plus haut, est que \kl{Coq} est un \emph{assistant} à la preuve.
-C’est pourquoi la majeure partie de \kl{Coq} dans ses versions actuelles a pour but d’aider l’utilisatrice à générer une preuve correcte sans avoir à l’écrire directement.
+La raison, comme on l’a expliqué dans la partie précédente,
+est qu’il s’agit un \kl[assistant à la preuve]{\emph{assistant} à la preuve}.
+C’est pourquoi la majeure partie de l’outil dans ses versions actuelles a pour but d’aider l’utilisatrice à générer une preuve correcte.
 Ce fonctionnement est illustré en \cref{fig-coq} : l’utilisatrice échange interactivement avec \kl{Coq}, qui utilise cette interaction pour générer un terme de preuve. Celui-ci est ensuite envoyé à une partie bien spécifique du système, appelée \intro{noyau}.
 C’est lui qui implémente l’algorithme de vérification de type, et s’assure ainsi de la correction des termes de preuve construits interactivement.
 Le \kl{noyau} est donc l’élément crucial du système, car c’est lui – et lui seul – qui est responsable en dernier recours de la validation des preuves.
 
-
 Cette architecture, qui isole clairement la partie critique du système
-est appelée \intro{critère de de Bruijn}~\sidecite{Barendregt2001}, en 
+est appelée \intro{critère de De Bruijn}~\sidecite{Barendregt2001}, en 
 hommage à l’un des pionniers des assistants à la preuve.
 % Elle a permis de mener à bien des projets de grande ampleur, parmi lesquels CompCert~\sidecite{Kaestner2017} – un compilateur optimisant pour le langage C entièrement prouvé correct –, ou les preuves du théorème des quatre couleurs~\sidecite{Gonthier2007} et du théorème de l’ordre impair~\sidecite{Gonthier2013}, deux théorèmes importants et difficiles respectivement de la théorie des graphes et des groupes.
-Cependant, si le reste de l’écosystème s’est beaucoup plus développé que le \kl{noyau} depuis les débuts, celui-ci a également évolué, en se complexifiant graduellement.
-Et comme tout développement logiciel, il n’est pas à l’abri de bugs\sidenote{De l’ordre d'un bug détecté par an, une liste est maintenue à l’adresse suivante : \url{https://github.com/coq/coq/blob/master/dev/doc/critical-bugs}.}.
-Ceux-ci sont en général difficilement exploitables par une utilisatrice de \kl{Coq}, encore plus sans s’en rendre compte.
-Néanmoins, ils existent, et la tendance à la complexification du \kl{noyau} ne risque pas de s’arrêter de si tôt.
+Si le reste de l’écosystème s’est beaucoup plus développé que le \kl{noyau} depuis les débuts, celui-ci a également évolué, en se complexifiant graduellement.
+Et comme tout développement logiciel, il n’est pas à l’abri de bugs\sidenote{De l’ordre d’un bug détecté par an, une liste est maintenue à l’adresse suivante : \url{https://github.com/coq/coq/blob/master/dev/doc/critical-bugs}.}.
+Ceux-ci sont en général difficilement exploitables par une utilisatrice,
+encore plus sans s’en rendre compte.
+Néanmoins, ils existent,
+et la tendance à la complexification du \kl{noyau} ne risque pas de s’arrêter de si tôt.
 
-\subsection{MetaCoq, une formalisation par Coq, pour Coq}
+\subsection[MetaCoq]{MetaCoq, une formalisation par Coq, pour Coq}
 \label{sec:intro-metacoq}
 
 
 Si on veut garantir un niveau de fiabilité le plus élevé possible, il faut donc de nouvelles idées.
 Le projet \intro{MetaCoq}, a pour but de répondre à cette problématique.
-L’idée est simple : il s’agit d’utiliser \kl{Coq} lui-même pour certifier la correction de son \kl{noyau}.
+L’approche est simple : il s’agit d’utiliser \kl{Coq} lui-même pour certifier la correction de son \kl{noyau}.
 
-Plus précisément, la première étape est de décrire à haut niveau le système de type sur lequel est basé le \kl{noyau}, puis de démontrer ses propriétés théoriques.
+Plus précisément, la première étape est de décrire le système de type sur lequel est basé le \kl{noyau}, puis de démontrer ses propriétés théoriques.
 % , comme la confluence de la réduction, la préservation du typage par cette même réduction, etc.
-Une fois ces propriétés établies, la deuxième étape consiste à programmer un algorithme de vérification de type ressemblant au maximum à celui du \kl{noyau}, directement en \kl{Gallina},\sidenote{
-  En effet, grâce à la \kl{correspondance de Curry-Howard}, \kl{Gallina} est certes un langage pour décrire des preuves, mais aussi un véritable langage de programmation fonctionnel !}
+Une fois ces propriétés établies, la deuxième étape consiste à programmer un algorithme de vérification de type ressemblant au maximum à celui du \kl{noyau}, directement en \kl{Gallina}\sidenote{
+  En effet, grâce à la \kl{correspondance de Curry-Howard}, \kl{Gallina} est certes un langage
+  de preuve, mais aussi un véritable langage de programmation !},
 tout en démontrant qu’il est bien correct\sidenote{
   Si l’algorithme prétend qu’un terme est bien typé, alors c’est bien le cas.}
 et complet\sidenote{
   L’algorithme répond bien affirmativement sur tous les termes bien typés.}.
 Enfin, une troisième étape extrait de ce programme \kl{Gallina} certifié
-un programme efficace qui puisse être utilisé en lieu et place du \kl{noyau} actuel.
-Cette extraction est elle-même complexe, car pour obtenir ce programme efficace il
+un autre programme plus efficace,
+qui puisse être utilisé en lieu et place du \kl{noyau} actuel.
+Cette extraction est complexe, car pour obtenir ce programme efficace il
 faut effacer le contenu lié à la preuve de correction
 pour ne garder que le contenu algorithmiquement intéressant.
 C’est pourquoi là encore on prouve que l’extraction est correcte\sidenote{
-  C'est-à-dire qu’elle préserve la sémantique des programmes.},
+  C’est-à-dire qu’elle préserve la sémantique des programmes.},
 à nouveau en la programmant en \kl{Gallina}.
 
-\subsection{Vérification et inférence}
+\subsection[Typage bidirectionnel]{Vérification, inférence et typage bidirectionnel}
 
 Pour prouver la complétude de l’algorithme de typage, il est très utile de
 passer par une spécification intermédiaire plus structurée que la description
 théorique du système de type utilisée dans la première étape.
-En particulier, il est important de séparer deux problèmes proches, mais
-différents :
-d'une part, la vérification, où on cherche à \emph{vérifier}
+En particulier, il est important de séparer deux questions proches, mais
+différentes :
+d’une part, la vérification, où on cherche à \emph{vérifier}
 qu’un terme a bien un type
 donné ; de l’autre, l’inférence, où on cherche à \emph{trouver}
-un type pour un terme, s'il existe.
-L’algorithme de typage du \kl{noyau} de \kl{Coq} est bidirectionnel,
-c'est-à-dire qu’il alterne en permanence entre ces deux problèmes
+un type pour un terme, s’il existe.
+L’algorithme de typage du \kl{noyau} de \kl{Coq} est \intro{bidirectionnel},
+c’est-à-dire qu’il alterne en permanence entre ces deux questions
 lorsqu’il vérifie qu’un terme est bien typé.
 % Par exemple, dans le cas d’une application $f~u$, il commence par inférer un type pour $f$, vérifie qu’il s’agit d’un type produit $\P x : A . B$ (une généralisation du type fonctionnel $A \to B$), puis vérifie que $u$ a le type $A$.
 Décrire formellement cette structure bidirectionnelle plus proche de l’algorithme
 permet de bien diviser les difficultés entre d’un côté
 son équivalence avec la présentation
-originale, et de l’autre la partie purement liée aux questions d’implémentation.
+d’origine, et de l’autre la partie purement liée aux questions d’implémentation.
 
 Dans le cadre spécifique des types dépendants, bien que présent depuis l’origine dans les algorithmes de vérification de type~\sidecite{Huet1989},
-le typage bidirectionnel a été étonnamment peu étudié. En particulier, une preuve
-de l’équivalence entre cette présentation et celle utilisée de manière standard
-dans la littérature manquait !
-Pourtant, cette approche présente également
-des avantages théoriques : elle permet,
+le typage bidirectionnel a été relativement peu étudié.
+Pourtant, au-delà de son lien fort avec les algorithmes,
+cette approche présente également des avantages théoriques : elle permet,
 par sa structure plus contrainte que la présentation standard,
 d’obtenir des propriétés difficiles à démontrer dans ce cadre.
 
-\subsection{Un peu de flexibilité dans un monde désespérément statique}
+\subsection[Typage graduel]
+  {Typage graduel : un peu de flexibilité dans un monde désespérément statique}
 \label{sec:intro-graduel}
-
-Comme le cas de \kl{MetaCoq} l’illustre, \kl{Coq} peut être utilisé comme un véritable langage
-de programmation. Mieux : son système de type, grâce à son extrême expressivité, 
-permet d’exprimer des propriétés très complexes des programmes, et de vérifier
-avant même d’exécuter les programmes que celles-ci sont bien respectées par le code.
-Cependant, cette impossibilité d’écrire du code imparfait peut aussi se retourner contre l’utilisatrice, en complexifiant la phase de développement.
-En effet, personne n’écrit du code parfait au premier essai. Les garanties très
-fortes sur le code une fois finalisé compliquent donc 
-fortement la phase de développement.
-Une solution pour faciliter cette phase de développement
-est de s’inspirer d’une proposition issue de la théorie des langages de
-programmation : le \kl{typage graduel}. Ici encore, la \kl{correspondance de Curry-Howard}
-est à l’œuvre, puisqu’on adapte des concepts venant du monde de la programmation
-au cadre de la logique.
 
 Il existe deux grandes approches de la vérification du type des programmes.
 Dans l’approche statique\sidenote{Qui est celle sur laquelle est basée \kl{Coq}.},
 les types sont vérifiés en amont de l’exécution, alors que dans l’approche dynamique le bon typage des opérations est vérifié à la volée lors de cette même exécution.
 La discipline dynamique est plus flexible, parce qu’elle permet de vérifier exactement ce qui est nécessaire à la bonne exécution d’un programme.
-À l’inverse, la rigidité du typage statique permet de détecter des erreurs plus tôt dans le développement, et impose des invariants utiles pour optimiser la compilation ou l’exécution.
-Pourquoi choisir ? Le programme de recherche du \intro{typage graduel}~\sidecite{Siek2015} vise à dépasser ce dilemme, en intégrant dans un même langage disciplines statiques et dynamiques.
-L’idée est d’avoir une première passe de vérification avant l’exécution, comme en typage statique, tout en laissant la possibilité de déférer des vérifications de type à l’exécution, comme en typage dynamique.
-On a alors accès à tout un spectre de possibilités, d’une discipline totalement statique à une discipline totalement dynamique,
-en pouvant choisir finement quelles parties d’un programme on veut vérifier à quel moment. En particulier, on peut faire évoluer la discipline au fur et à mesure d’un développement logiciel, pour bénéficier de la flexibilité du typage dynamique dans les phases précoces et des garanties du typage statique par la suite.
+La rigidité du typage statique permet, elle, de détecter des erreurs plus tôt dans le développement, et impose des invariants utiles pour optimiser la compilation ou l’exécution.
+Plutôt que de devoir choisir une approche plutôt que l’autre,
+le \intro{typage graduel}~\sidecite{Siek2015} vise à intégrer
+dans un même langage disciplines statiques et dynamiques.
+L’idée est d’avoir une première passe de vérification avant l’exécution, comme en typage statique, tout en laissant la possibilité de déférer une partie de la Vérification à l’exécution, comme en typage dynamique.
+On a alors accès à tout un spectre de possibilités,
+d’une discipline totalement statique à une discipline totalement dynamique,
+en pouvant choisir finement quelles parties d’un programme on veut vérifier à quel moment.
+En particulier, on peut faire évoluer la discipline au fur et à mesure d’un développement
+logiciel, pour bénéficier de la flexibilité du typage dynamique dans les phases précoces et des
+garanties du typage statique par la suite.
+
+Comme le cas de \kl{MetaCoq} l’illustre, \kl{Coq} peut être utilisé comme un véritable langage
+de programmation. Mieux : son système de type 
+permet d’exprimer des propriétés très complexes des programmes, et ainsi de vérifier
+avant même leur exécution que celles-ci sont bien respectées par le code.
+Hélas, cette impossibilité d’écrire du code imparfait peut
+se retourner contre l’utilisatrice, en complexifiant la phase de développement.
+En effet, personne n’écrit du code parfait au premier essai, et il serait parfois bon de
+pouvoir lever temporairement les garanties très fortes du typage afin de pouvoir
+expérimenter.
+L’idée serait alors de s’inspirer des idées du typage graduel, pour permettre un développement
+logiciel ou logique plus flexible. Ici encore, la \kl{correspondance de Curry-Howard}
+est à l’œuvre, puisqu’on adapte des concepts venant du monde de la programmation
+au cadre de la logique.
 
 \section{Et cette thèse, alors ?}
 \label{sec:cette-these}
@@ -445,10 +499,11 @@ trois aspects, correspondant aux trois parties de cette thèse.
 
 \subsection{Théorie du typage bidirectionnel}
 
-La première partie (\nameref{part:bidir}) répare (une partie du) manque d'étude
-théorique dans la littérature du typage bidirectionnel pour les types dépendant. Elle contient en particulier la
-preuve de l’équivalence entre la présentation standard de la littérature et celle
-bidirectionnelle.
+La première partie (\nameref{part:bidir}) propose de combler une partie du
+manque de travail théorique autour du typage bidirectionnel pour les types dépendant.
+Elle contient en particulier une
+preuve d’équivalence entre la présentation standard de la littérature
+et une présentation bidirectionnelle.
 Le \cref{chap:bidir-ccw} présente les idées générales qui guident ce travail
 dans un cadre relativement simple, afin de faciliter leur exposition. 
 Le \cref{chap:bidir-pcuic} montre comment étendre ces idées à un
@@ -462,8 +517,8 @@ et des liens du typage bidirectionnel avec certains travaux récents
 \subsection{Typage bidirectionnel dans MetaCoq}
 
 La seconde partie de cette thèse (\nameref{part:metacoq})
-concerne le projet \kl{MetaCoq}
-et en particulier sur la formalisation, en \kl{Coq}, des idées présentées dans la
+concerne le projet \kl{MetaCoq},
+et en particulier la formalisation en \kl{Coq} des idées présentées dans la
 première partie. Le \cref{chap:metacoq-general} donne une présentation générale du
 projet, tandis que le \cref{chap:kernel-correctness} se concentre spécifiquement
 sur la preuve que le \kl{noyau} implémenté par \kl{MetaCoq} respecte sa spécification.
@@ -471,22 +526,21 @@ sur la preuve que le \kl{noyau} implémenté par \kl{MetaCoq} respecte sa spéci
 \subsection{Élaboration bidirectionnelle pour le typage graduel}
 
 Enfin la troisième et dernière partie (\nameref{part:gradual})
-présente mon travail
-dans le domaine des \kl{types graduels}. Les types dépendants formant déjà des systèmes
+présente mon travail dans le domaine des \kl{types graduels}.
+Les types dépendants formant déjà des systèmes
 complexes, l’adaptation de ceux-ci à l’approche graduelle est particulièrement
 délicate. Un résumé des possibilités et problématiques associées est présentée
 en \cref{chap:gradual-dependent}.
 Un point intéressant est que la présentation habituelle
-des types dépendants est inadaptée,
-car elle est trop flexible. La structure additionnelle apportée
-par le typage bidirectionnel est donc encore une fois cruciale.
-De plus, celle-ci s’est avérée très agréable pour présenter
+des types dépendants est inadaptée, car trop flexible.
+La structure additionnelle apportée par le typage bidirectionnel est donc importante.
+Elle s’est de plus avérée très adaptée pour présenter
 l’élaboration de termes depuis un langage source dans un langage cible, une
 caractéristique importante des \kl[graduel]{langages graduels}.
 L’utilisation d’une élaboration bidirectionnelle, et les propriétés qu’elle
 permet d’obtenir, sont décrites en \cref{chap:bidir-gradual-elab}.
 
-\subsection{Contributions personnelles}
+\subsection{Contributions techniques}
 
 Mon travail de doctorat a débuté avec l’étude des \kl{types dépendants} \kl{graduels}.
 J’ai contribué avec Kenji Maillard, Nicolas Tabareau et Éric Tanter à
@@ -499,8 +553,8 @@ est actuellement en phase de relecture. Cependant, il
 ne fait pas appel directement au typage graduel, c’est pourquoi il n’en
 sera pas question dans cette thèse.
 
-Ce travail ayant montré la nécessité d’un système de types bidirectionnel
-et le manque de résultats précis sur le sujet, je l’ai
+Comme ce travail a montré la nécessité d’un système de types bidirectionnel
+que des résultats exploitables sur le sujet manquaient, je l’ai
 étudié plus en détail, à la fois sur papier et par le biais d’une
 formalisation se basant sur \kl{MetaCoq},
 ce qui a donné lieu à une seconde publication~\sidecite{LennonBertrand2021},

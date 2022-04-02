@@ -1,5 +1,7 @@
 - define a reusefigure/reuserule command
 - check for usage of product
 - beautify theorem boxes (new line!)
-- talk about princicipal types in cumulativity
+- talk about principal types in cumulativity
 - talk about standardization
+- references for numerical analysis/CAS
+- references for proof of program correctness
