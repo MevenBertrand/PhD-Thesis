@@ -146,7 +146,7 @@ Logically, those rules make sense if $\to$ is read as implication:
 if from a hypothesis $A$ one can deduce $T$, then $A \to T$ holds; conversely if $A \to T$
 and $A$ both hold, then $T$ does as well.
 
-\begin{marginfigure}
+\begin{marginfigure}[-4em]
   \ContinuedFloat*
   \begin{mathpar}
     \inferdef{Abs}{\Gamma \vdash A : \uni \\ \Gamma, x : A \vdash t : T}
@@ -196,7 +196,7 @@ thesis we stick with the approach used in \kl{Coq}, and annotate our abstraction
 \subsection{Universes}
 
 To be able to express ideas like induction principles or polymorphic functions, it is
-extremely useful to use functions and products quantifying over types.
+extremely useful to use functions and Π-types quantifying over types.
 This is what the universe $\uni$ – read "Type" — is for. It is the type… of a type.
 This also means that the border between types and terms is not syntactic any more, because
 \eg functions can abstract over a type. Instead, types are simply terms of type $\uni$.
@@ -239,9 +239,16 @@ Note how $\uni$ is indexed by the \intro{universe levels} $i$ and $\unext{i}$.
     {\Gamma \vdash \P x : A.\ B : \uni[\umax{i}{j}]}
     \label{rule:cic-prod}
   \end{mathpar}
-  \caption{Typing for product types}
+  \caption{Typing for dependent function types}
   \label{fig:cic-prod}
 \end{marginfigure}
+
+Using those universes, \ruleref{rule:cic-prod} gives the typing rule for
+Π-types. We can also now give a definition of the $\vdash \Gamma$
+judgement, asserting that a context is well-formed, in \cref{fig:cic-con}.
+It simply means that all its types
+are indeed types. Note that in \ruleref{rule:cic-cons-con}, we did not write down a
+\kl{level} for the universe, we do so to mean the existence of some unconstrained one.
 
 \begin{marginfigure}
   \ContinuedFloat
@@ -256,12 +263,6 @@ Note how $\uni$ is indexed by the \intro{universe levels} $i$ and $\unext{i}$.
   \caption{Context well-formedness}
   \label{fig:cic-con}
 \end{marginfigure}
-
-Using those universes, \ruleref{rule:cic-prod} gives the typing rule for the product constructor. We can also now give a definition of the $\vdash \Gamma$
-judgement, asserting that a context is well-formed, in \cref{fig:cic-con}.
-It simply means that all its types
-are indeed types. Note that in \ruleref{rule:cic-cons-con}, we did not write down a
-\kl{level} for the universe, we do so to mean the existence of some unconstrained one.
 
 \AP One last important point regarding universes is the kind of \kl{levels} used.
 The simplest solution is to rely on natural number (of the meta-theory), with the $\unextsymb$
@@ -649,7 +650,7 @@ In what follows, a recurring need is that of a deterministic notion of reduction
 which is able to expose a canonical term former, if it exists.
 \AP There is a way to do so, what is called
 \intro{weak-head reduction} $\hred$. It amounts to restricting the place in a term where
-\kl{top-level reduction} can be used, by removing some congruence rules compared to reduction. More precisely, λ-abstractions, product types and universes are not reduced further,
+\kl{top-level reduction} can be used, by removing some congruence rules compared to reduction. More precisely, λ-abstractions, Π-types and universes are not reduced further,
 as they already are canonical forms of their types.
 Variables are not reduced either, since they simply cannot be.
 Thus, the only reduction that is allowed is in the function position of an application,
@@ -855,18 +856,18 @@ substitution} we would get $\Gamma \vdash \subs{t}{x}{u} : \subs{B}{x}{u}$,
 which would finally lead to $\Gamma \vdash \subs{t}{x}{u} : T$ using \kl{stability under
 substitution} and transitivity of conversion. Thus, the key property is the following:
 
-\begin{property}[Injectivity of product types]
+\begin{property}[Injectivity of function types]
   \label{prop:prod-inj}
-  A conversion relation $\conv$ is said to have \intro{injectivity of product types}
+  A conversion relation $\conv$ is said to have \intro{injectivity of function types}
   if whenever $\P x : A.\ B \conv \P x : A'.\ B'$, we have $A \conv A'$ and $B \conv B'$.
 \end{property}
 
 In the more general setting of \kl{CIC} or \kl{PCUIC}, we do not have only Π-types.
 Thus, we more generally talk about \kl{injectivity of type constructors}.
 
-For \kl{declarative conversion}, transitivity is trivial, but \kl{injectivity of product types}
+For \kl{declarative conversion}, transitivity is trivial, but \kl{injectivity of function types}
 is not so easy. Indeed, by transitivity we could have $\P x : A.\ B \conv T \conv \P x : A'.\ B'$ for an arbitrary $T$, and so it is not clear how to relate $A$ and $A'$.
-Conversely, for \kl{algorithmic conversion}, \kl{injectivity of product types} is rather
+Conversely, for \kl{algorithmic conversion}, \kl{injectivity of function types} is rather
 straightforward by induction on \kl{reduction} and \kl{α-equality}, but transitivity is
 hard to show. Thus, in both cases \kl{subject reduction} is not direct.
 The main missing property, which allows proving equivalence of both notions
@@ -943,7 +944,7 @@ has been standard since \sidetextcite{Wright1994}.
 To prove progress, one can again resort to induction on the typing derivation. The key point
 is to characterize the \kl{normal forms} at a given type,
 by proving that they are either \kl{neutral forms}, or \kl{canonical form} of a right kind.
-For instance, if $t$ is a normal form and has a product type, then it must be
+For instance, if $t$ is a normal form and has a function type, then it must be
 either a neutral or a λ-abstraction.
 
 \subsection{Normalization}
@@ -1463,7 +1464,7 @@ one – the domains should be convertible. This is because cumulativity is usual
 using set inclusion \sidecite{Lee2011}, which extends straightforwardly to equivariant
 subtyping, but not so easily to contravariant subtyping.
 
-\begin{marginfigure}
+\begin{figure}
   \begin{mathpar}
     \inferdef{UnivCum}{i \leq j}{\uni[i] \cum \uni[j]} \label{rule:univ-cum} \and
     \inferdef{ΠCum}{A \conv A' \\ B \cum B'}{\P x : A.\ B \cum \P x : A'.\ B'}
@@ -1479,12 +1480,12 @@ subtyping, but not so easily to contravariant subtyping.
   \end{mathpar}
   \caption{Rules for declarative cumulativity}
   \label{fig:tech-cumul}
-\end{marginfigure}
+\end{figure}
 
 To adapt the definitions of \kl{declarative conversion} to cumulativity,
 the three important rules are given in \cref{fig:tech-cumul}.
 The first two rules are the ones we already defined: \ruleref{rule:univ-cum} is the base case for cumulativity, and \ruleref{rule:prod-cum}
-is the relaxed congruence rule for products. The next one, \ruleref{rule:conv-cum}, allows
+is the relaxed congruence rule for Π-types. The next one, \ruleref{rule:conv-cum}, allows
 to turn any proof of conversion in a cumulativity one, effectively describing how cumulativity
 behaves outside the fragment formed by Π-types and universes. 
 Next come Rules \nameref{rule:cum-refl} and \nameref{rule:cum-trans}, which assert that cumulativity
@@ -1574,17 +1575,6 @@ right-hand side.
   \label{fig:local-def}
 \end{figure}
 
-\begin{marginfigure}
-  \ContinuedFloat
-  \begin{mathpar}
-    \inferdef{ζRed}{ }{\Gamma \vdash \letin{x}{A}{t}{u} \\ \tred \subs{u}{x}{t}}
-    \label{rule:zeta-red} \and
-    \inferdef{δRed}{(x \coloneqq t : A) \in \Gamma}{\Gamma \vdash x \tred t}
-    \label{rule:delta-red}
-  \end{mathpar}
-  \caption{Top-level reduction for local definitions}
-\end{marginfigure}
-
 This also means that contexts now should be recorded in
 \kl{conversion} and \kl{cumulativity}, because those need to access the value of a
 variable bound by a definition if we want to enable the behaviour just described.
@@ -1595,6 +1585,17 @@ of the syntax of terms, while substitution is a meta-level operation. While the 
 encodes the latter in the syntax, they are very different!},
 or recorded into the context and simplified only later on
 using \ruleref{rule:delta-red}.
+
+\begin{marginfigure}
+  \ContinuedFloat
+  \begin{mathpar}
+    \inferdef{ζRed}{ }{\Gamma \vdash \letin{x}{A}{t}{u} \\ \tred \subs{u}{x}{t}}
+    \label{rule:zeta-red} \and
+    \inferdef{δRed}{(x \coloneqq t : A) \in \Gamma}{\Gamma \vdash x \tred t}
+    \label{rule:delta-red}
+  \end{mathpar}
+  \caption{Top-level reduction for local definitions}
+\end{marginfigure}
 
 \subsection{Global environments}
 
