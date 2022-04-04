@@ -38,7 +38,7 @@
 
 \makeindex[columns=3, title=Alphabetical Index, intoc] % Make LaTeX produce the files required to compile the index
 
-%\includeonly{technical-intro}
+\includeonly{technical-intro}
 
 \input{knowledge_declarations.tex}
 
@@ -80,19 +80,12 @@ It would make little sense to come back to this after formalisation + gradual ty
 but at the same time having it so early is a bit odd.
 
 \pagelayout{wide} % No margins
-\addpart{Formalizing a kernel for Coq}
+\addpart{A Certified Kernel for Coq, in Coq}
 \label{part:metacoq}
 \pagelayout{margin} % Restore margins
 
-\chapter{The MetaCoq project}
-\label{chap:metacoq-general}
-
-Probably have to write something new, a form of digest of JACM/CoqCoqCorrect/… maybe?
-
-\chapter{Proving the kernel correct}
-\label{chap:kernel-correctness}
-
-Longer description of what I did there, mixup between ITP and JACM.
+\include{metacoq-tour.tex}
+\include{metacoq-kernel.tex}
 
 \pagelayout{wide} % No margins
 \addpart{Bidirectional Elaboration for Gradual Typing}
