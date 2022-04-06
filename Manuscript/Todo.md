@@ -1,4 +1,3 @@
 - define a reusefigure/reuserule command
-- beautify theorem boxes (new line!)
 - references for numerical analysis/CAS
 - references for proof of program correctness

@@ -60,9 +60,30 @@
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% Linking
+
 \newcommand{\coqPR}[1]{\href{https://github.com/coq/coq/pull/#1}{\##1}}
 \newcommand{\coqIssue}[1]{\href{https://github.com/coq/coq/issues/#1}{\##1}}
 \newcommand{\CEP}[1]{\href{https://github.com/coq/coq/issues/#1}{\##1}}
+
+% First optional argument: subfolder
+% Second optional argument: prefix (usually PCUIC)
+% Mandatory argument: name of the file
+\NewDocumentCommand{\pcuicfile}{o O{PCUIC} m}{%
+  {\hypersetup{allcolors=MidnightBlue}%
+  \href{https://github.com/MetaCoq/metacoq/blob/coq-8.14/pcuic/theories/%
+    \IfValueT{#1}{#1/}#2#3.v}{#2#3}}%
+}
+
+% First optional argument: subfolder
+% Second optional argument: prefix (usually PCUIC)
+% First mandatory argument: name of the file
+% Second mandatory argument: name of the definition/lemma/whatever
+% Third mandatory argument: line
+\NewDocumentCommand{\pcuicline}{o O{PCUIC} m m m}{%
+  {\hypersetup{allcolors=MidnightBlue}%
+  \href{https://github.com/MetaCoq/metacoq/blob/coq-8.14/pcuic/theories/%
+    \IfValueT{#1}{#1/}#2#3.v\#L#5}{#4}}%
+}
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

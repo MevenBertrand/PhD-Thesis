@@ -38,7 +38,7 @@
 
 \makeindex[columns=3, title=Alphabetical Index, intoc] % Make LaTeX produce the files required to compile the index
 
-\includeonly{technical-intro}
+\includeonly{metacoq-intro,metacoq-tour,metacoq-kernel}
 
 \input{knowledge_declarations.tex}
 
@@ -71,21 +71,16 @@
 \include{bidir-intro}
 \include{bidir-ccw}
 \include{bidir-pcuic}
-
-\chapter{Bidirectional conversion, Abel style}
-\label{chap:bidir-conv}
-
-Does this belong in this part, or in a self-standing part at the end?
-It would make little sense to come back to this after formalisation + gradual typing,
-but at the same time having it so early is a bit odd.
+\include{typed-untyped-algo}
 
 \pagelayout{wide} % No margins
 \addpart{A Certified Kernel for Coq, in Coq}
 \label{part:metacoq}
 \pagelayout{margin} % Restore margins
 
-\include{metacoq-tour.tex}
-\include{metacoq-kernel.tex}
+\include{metacoq-intro}
+\include{metacoq-tour}
+\include{metacoq-kernel}
 
 \pagelayout{wide} % No margins
 \addpart{Bidirectional Elaboration for Gradual Typing}

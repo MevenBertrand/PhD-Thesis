@@ -1,14 +1,53 @@
-\chapter{The MetaCoq Project}
+% \pagelayout{fullwidth}
+% \includegraphics{./figures/test.pdf}
+% \pagelayout{margin}
+
+\chapter{Formalized Meta-Theory of \kl{PCUIC}}
 \label{chap:metacoq-general}
 
 \margintoc
 
-\section[Terms, conversion and types]{Setting up the definitions: terms, conversion and types}
+Before we can attempt to build a certified kernel, we need a thorough meta-theoretical study
+of the type system. This is necessary in order to show that the
+kernel preserves invariants – typically, well-typedness of the objects it manipulates.
+The use of these invariants goes beyond correctness:
+the conversion check performs evaluation of terms, and, since all functions in \kl{Coq}
+must be terminating,
+this evaluation is defined by well-founded induction on the normalization of well-typed terms.
+Since evaluation is not normalizing on ill-typed terms, the mere \emph{definition} of the
+conversion check relies on \kl{preservation} to be able to iterate reduction steps.
 
-\section[Stabilities]{The easy properties: stabilities}
+The properties under scrutinee here are not new,
+and neither are the basic strategy of most proofs.
+Indeed, the development roughly follows the architecture we already exposed in
+\cref{sec:tech-properties}. The main difficulty is the scale of the proofs: due to the
+complexity of \kl{PCUIC}, even well-understood techniques are challenging to apply.
+Moreover, subtleties that do not appear in a simpler setting become apparent –
+typically pertaining to universe levels or general inductive types –,
+demanding original ideas. Thus, rather than getting lost in
+the gory details of the formalisation which are best understood by looking at
+– and maybe replaying – it, we try and focus on these interesting subtleties.
 
-\section[Confluence]{Things get serious: confluence}
+In more details, we start with the main definitions : the syntax, and conversion and typing
+judgments (\cref{sec:pcuic-defs}). We follow (\cref{sec:pcuic-stabilities}) by the basic
+stability properties: renaming, substitution, environment extension, etc.
+Next comes the first important proof, that of confluence, and its multiple consequences
+(\cref{sec:pcuic-confluence}). This leads to the properties pertaining to typing, culminating
+with subject reduction (\cref{sec:pcuic-typing-prop}).
+Finally, we discuss the place of normalization.
 
-\section[Properties of typing]{Reaping the fruits: properties of typing}
+\section[Terms, Conversion and Types]{Setting up the Definitions: Terms, Conversion and Types}
+\label{sec:pcuic-defs}
 
-\section[Normalization]{Gödel’s thorn in the side: normalization}
+
+\section[Stabilities]{The Easy Properties: Stabilities}
+\label{sec:pcuic-stabilities}
+
+\section[Confluence]{Things Get Serious: Confluence}
+\label{sec:pcuic-confluence}
+
+\section[Properties of Typing]{Reaping the Fruits: Properties of Typing}
+\label{sec:pcuic-typing-prop}
+
+\section[Normalization]{Gödel’s Thorn in the Side: Normalization}
+\label{sec:pcuic-normalization}
