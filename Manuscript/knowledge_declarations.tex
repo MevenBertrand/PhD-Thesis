@@ -1,13 +1,13 @@
 % \knowledgestyle*{notion}{style={color=black!80!},intro style={color=black!80!,emphasize}}
 
-\knowledgestyle{notion}{color=black!70!}
-\knowledgestyle{notion intro}{color=black!70!,emphasize}
+\knowledgestyle{notion}{color=black}
+\knowledgestyle{notion intro}{color=LightOrange,emphasize}
 \knowledgedirective*{notion}{autoref,style=notion,intro style=notion intro}
 
-
-
-\knowledgestyle{ignore intro}{emphasize}
+\knowledgestyle{ignore intro}{color=LightOrange,emphasize}
 \knowledgedirective*{ignore}{intro style=ignore intro}
+
+\knowledgedirective*{title}{}
 
 
 %Chapter 1
@@ -21,6 +21,7 @@
   | types dépendants
   | théorie des types dépendants
   | dépendant@typ
+  | dépendants@typ
 
 \knowledge{notion}
   | assistant à la preuve
@@ -66,6 +67,15 @@
 \knowledge{notion}
   | Curry-Howard correspondence
 
+\knowledge{notion}
+  | kernel
+
+\knowledge{notion}
+  | De Bruijn’s criterion
+
+\knowledge{notion}
+  | proof assistant
+
 % Chapter 3
 
 % Section 3.2
@@ -73,13 +83,24 @@
   | Calculus of Constructions
   | CCω
 
+\knowledge{title}
+  | CCω@tit
+  | Calculus of Constructions@tit
+
 \knowledge{notion}
-  | Calculus of Inductive Constructions
   | CIC
+  | Calculus of Inductive Constructions
+
+\knowledge{title}
+  | CIC@tit
+  | Calculus of Inductive Constructions@tit
 
 \knowledge{notion}
   | Polymorphic, Cumulative Calculus of Inductive Constructions
   | PCUIC
+
+\knowledge{title}
+  | PCUIC@tit
 
 \knowledge{notion}
   | α-equality
@@ -91,7 +112,7 @@
 \knowledge{notion}
   | Curry-style
 
-\knowledge{ignore}
+\knowledge{notion}
   | universe level
   | universe levels
   | level
@@ -153,28 +174,36 @@
 % Section 3.4
 \knowledge{notion}
   | stability under renaming
+  | Stability under renaming
   | stable under renaming
 
 \knowledge{notion}
   | weakening
+  | Weakening
 
 \knowledge{notion}
   | stability under substitution
+  | Stability under substitution
   | stable under substitution
 
 \knowledge{notion}
   | conditional stability under renaming
+  | Conditional stability under renaming
+
 
 \knowledge{notion}
   | strengthening
+  | Strengthening
 
 \knowledge{notion}
   | uniqueness of types up to
   | uniqueness of types
+  | Uniqueness of types
   | uniqueness@typ
 
 \knowledge{notion}
   | validity
+  | Validity
 
 \knowledge{notion}
   | Subject reduction
@@ -183,10 +212,12 @@
 
 \knowledge{notion}
   | injectivity of function types
+  | Injectivity of function types
   | injectivity of type constructors
 
 \knowledge{notion}
   | confluence
+  | Confluence
 
 \knowledge{notion}
   | normal form
@@ -204,9 +235,11 @@
 
 \knowledge{notion}
   | progress
+  | Progress
 
-\knowledge{ignore}
+\knowledge{notion}
   | accessible
+  | Accessibility
 
 \knowledge{notion}
   | Normalization
@@ -216,36 +249,39 @@
 \knowledge{notion}
   | logical consistency
   | logically consistent
+  | Logical consistency
 
 \knowledge{notion}
   | canonicity
-
+  | Canonicity
 
 % Section 3.5 
 \knowledge{notion}
   | inductive type
   | inductive types
 
-\knowledge{ignore}
+\knowledge{notion}
   | boolean
   | booleans
 
-\knowledge{ignore}
+\knowledge{notion}
   | constructor
   | constructors
+
+\knowledge{notion}
   | recursor
   | recursors
   | induction principle
 
-\knowledge{ignore}
+\knowledge{notion}
   | scrutinee
   | predicate
   | branches
 
-\knowledge{ignore}
+\knowledge{notion}
   | fully applied
 
-\knowledge{ignore}
+\knowledge{notion}
   | indexed@ind
   | indexed inductive type
   | indexed inductive types
@@ -261,26 +297,28 @@
 \knowledge{notion}
   | α-pre-order
 
-\knowledge{ignore}
+\knowledge{notion}
   | impredicativity
+
+\knowledge{notion}
   | proof irrelevance
 
-\knowledge{ignore}
+\knowledge{notion}
   | local definitions
   | local definition
 
-\knowledge{ignore}
+\knowledge{notion}
   | environment
 
-\knowledge{ignore}
+\knowledge{notion}
   | guard condition
 
-\knowledge{ignore}
+\knowledge{notion}
   | record type
   | record types
   | record@type
 
-\knowledge{ignore}
+\knowledge{notion}
   | projection
   | projections
 
@@ -318,16 +356,16 @@
 \knowledge{notion}
   | Matita
 
-\knowledge{ignore}
+\knowledge{notion}
   | boundary
 
 \knowledge{notion}
   | constrained inference
 
-\knowledge{ignore}
+\knowledge{notion}
   | full
 
-\knowledge{ignore}
+\knowledge{notion}
   | type-level enforcing
 
 \knowledge{notion}
@@ -345,3 +383,8 @@
 \knowledge{notion}
   | principal type
   | principal@type
+
+% MetaCoq
+
+\knowledge{notion}
+  | GitHub

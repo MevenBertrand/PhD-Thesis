@@ -9,7 +9,7 @@
 % so either \kl(conv){declarative} or \kl(conv){algorithmic} conversion can be used without
 % much impact.
 
-\section{Turning \kl{CCω} Bidirectional}
+\section{Turning \kl(tit){CCω} Bidirectional}
 \label{sec:bidir-ccw}
 
 \subsection{McBride’s discipline}
@@ -17,10 +17,10 @@
 \AP To design our bidirectional type system, we follow a discipline exposed by McBride
 \sidecite[3em]{McBride2018,McBride2019}.
 The central point is to distinguish in a judgement between three \intro{modes}:
-the \intro{subject},
-whose well-formedness is under scrutiny, \intro{inputs},
+the \reintro{subject},
+whose well-formedness is under scrutiny, \reintro{inputs},
 whose well-formedness is a condition for it to be meaningful,
-and \intro{outputs}, whose well-formedness is a consequence of it.
+and \reintro{outputs}, whose well-formedness is a consequence of it.
 By \intro{well-formed}, which we use indistinctly for contexts, terms and types,
 we mean:
 \begin{itemize}
@@ -28,7 +28,7 @@ we mean:
   \item $\Gamma \vdash T : \uni$ in the case of a type $T$,
   \item the existence of some $T$ such that $\Gamma \vdash t \ty T$ in the case of a term $t$.
 \end{itemize}
-We also use \intro{well-typed} for a term, with the same meaning as \kl{well-formed}.
+We also use \reintro{well-typed} for a term, with the same meaning as \kl{well-formed}.
 
 \AP In the case of \intro{inference} $\inferty{\Gamma}{t}{T}$, the subject is $t$,
 $\Gamma$ is an input and $T$ is an output.

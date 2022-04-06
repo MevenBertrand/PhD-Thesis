@@ -104,7 +104,7 @@ shadowing – what is sometimes called "capture-avoiding" substitution.
 It is sometimes useful to substitute multiple variable at once in parallel,
 which we write $\multisubs{t}{x_1 \into u_1, \dots, x_n \into u_n}$.
 
-\section{Functional core: \kl{CCω}}
+\section{Functional core: \kl(tit){CCω}}
 \label{sec:tech-ccw}
 
 \AP Let us now turn to the core of CIC, namely the
@@ -375,10 +375,10 @@ The "content" of the two rules is the same – they equate $(\l x : A.\ t)\ u$
 and $\subs{t}{x}{u}$ – only the side-conditions differ wildly.
 \kl{Typed conversion} goes back to the type theory of
 \sidetextcite{MartinLoef1972}, and is a recurring feature in its many descendants.
-\kl{Untyped conversion} relates strongly to (untyped) λ-calculus – Barendregt
+\AP \kl{Untyped conversion} relates strongly to (untyped) λ-calculus – Barendregt
 for instance uses the name "conversion" for the equational theory of untyped λ-calculus
 in his reference work on the subject~\sidecite{Barendregt1985} –, via
-the \kl{Pure Type Systems} (\intro{PTS})~\sidecite{Barendregt1991} literature.
+the \intro{Pure Type Systems} (\kl{PTS})~\sidecite{Barendregt1991} literature.
 In this thesis, we mainly consider untyped conversion, as \kl{Coq}’s meta-theory
 has been mostly studied in that tradition.
 But the relation between both in the context of
@@ -697,39 +697,37 @@ by basic type theoretic operations.
 The first is stability under renaming, which states that a context can be replaced by another
 one which declares at least variables with the same types:
 
-\begin{property}[Stability under renaming]
+\begin{property}[\intro{Stability under renaming}]
   \label{prop:stab-renaming}
-  A type theory is said to be \intro{stable under renaming}
-  if whenever the following conditions are met
+  Whenever the following conditions are met
   \begin{itemize}
     \item $x_1 : A_1 \dots x_n : A_n \vdash t \ty T$
     \item $\vdash \Delta$
     \item for all $i$, there is a variable $y_i$ such that $(y_i : \multisubs{A}{x_1 \into y_1 \dots x_n \into y_n}) \in \Delta$
   \end{itemize} 
-  we have $\Delta \vdash \multisubs{t}{x_1 \into y_1 \dots x_n \into y_n} \ty \multisubs{T}{x_1 \into y_1 \dots x_n \into y_n}$.
+  we have that $\Delta \vdash \multisubs{t}{x_1 \into y_1 \dots x_n \into y_n} \ty \multisubs{T}{x_1 \into y_1 \dots x_n \into y_n}$.
 \end{property}
 
 A direct consequence is the \kl{weakening} property:
 
-\begin{property}[Weakening]
+\begin{property}[\intro{Weakening}]
   \label{prop:weakening}
-  A type theory is said to satisfy \intro{weakening} if whenever $\Gamma \vdash t \ty T$
-  and $\Gamma \vdash A \ty \uni$ we have $\Gamma, x : A \vdash t \ty T$.
+  Whenever $\Gamma \vdash t \ty T$
+  and $\Gamma \vdash A \ty \uni$, it holds that $\Gamma, x : A \vdash t \ty T$.
 \end{property}
 
 A stronger notion is that of stability under substitution, which allows replacing of
 variables by arbitrary terms:
 
-\begin{property}[Stability under substitution]
+\begin{property}[\intro{Stability under substitution}]
   \label{prop:stab-subst}
-  A type theory is said to be \intro{stable under substitution}
-  if for any substitution $\sigma$ (function from variable to terms)
+  For any substitution $\sigma$ (function from variable to terms)
   such that the following hold
   \begin{itemize}
     \item $x_1 : A_1 \dots x_n : A_n \vdash t \ty T$
     \item for all $x_i$, $\Delta \vdash \sigma(x_i) \ty \multisubs{A_i}{\sigma}$
   \end{itemize} 
-  we have $\Delta \vdash \multisubs{t}{\sigma} \ty \multisubs{T}{\sigma}$.
+  it is also the case that $\Delta \vdash \multisubs{t}{\sigma} \ty \multisubs{T}{\sigma}$.
 \end{property}
 
 These two stability properties can be proven by direct induction on the typing derivations,
@@ -740,10 +738,9 @@ There is, however, a stronger form of stability under renaming. While not as cru
 one above, it is still quite useful, especially to prove correctness of term manipulations,
 such as those operated by tactics.
 
-\begin{property}[Conditional stability under renaming]
+\begin{property}[\intro{Conditional stability under renaming}]
   \label{prop:strong-stab-renaming}
-  A type theory is said to satisfy \intro{conditional stability under renaming}
-  if whenever the following conditions are met
+  Whenever the following conditions are met
   \begin{itemize}
     \item $x_1 : A_1 \dots x_n : A_n \vdash t \ty T$
     \item $\vdash \Delta$
@@ -757,10 +754,9 @@ to be present in $\Delta$, only those that are "relevant" for $t$.
 Thus, the important consequence is the following, which allows removing unused variables
 from a context:
 
-\begin{property}[Strengthening]
+\begin{property}[\intro{Strengthening}]
   \label{prop:strengthening}
-  A type theory is said to satisfy \intro{strengthening} if whenever
-  $\Gamma, x : A \vdash t \ty T$ and $x$ does not appear in $t$,
+  If $\Gamma, x : A \vdash t \ty T$ holds and $x$ does not appear in $t$,
   there exists $T'$ such that $\Gamma \vdash t \ty T'$.
 \end{property}
 
@@ -785,10 +781,9 @@ The first is \kl{validity},
 which asserts that both types and contexts are well-formed whenever they appear in a typing
 derivation.
 
-\begin{property}[Validity]
+\begin{property}[\intro{Validity}]
   \label{prop:validity}
-  A type theory satisfies \intro{validity} if whenever $\Gamma \vdash t \ty T$, we have
-  $\vdash \Gamma$ and $\Gamma \vdash T \ty \uni$.
+  Whenever $\Gamma \vdash t \ty T$, we have $\vdash \Gamma$ and $\Gamma \vdash T \ty \uni$.
 \end{property}
 
 We set up \kl{CCω} so that it satisfies this property, but another approach – which we use
@@ -800,9 +795,9 @@ hypothesis of context/type well-formedness.
 The second property is \kl{uniqueness of types}, which relates the different types
 of a same term.
 
-\begin{property}[Uniqueness of types]
+\begin{property}[\intro{Uniqueness of types}]
   \label{prop:uniqueness}
-  A type theory satisfies \intro{uniqueness of types up to} a relation $\sqsubseteq$
+  A type theory satisfies \reintro{uniqueness of types up to} a relation $\sqsubseteq$
   if whenever $t$ is well-typed in $\Gamma$ (\ie whenever there exists $S$ such that $\Gamma \vdash t \ty S$), there exists a type $T$ such that $\Gamma \vdash t \ty T$
   and for any $T'$ such that $\Gamma \vdash t \ty T'$, it is true that $T' \sqsubseteq T$.
 
@@ -830,11 +825,10 @@ program evaluation –, should be well-behaved. This well-behaviour is separated
 into multiple properties, the first of which is \kl{subject reduction},
 which asserts that typing is preserved by reduction.
 
-\begin{property}[Subject reduction]
+\begin{property}[\intro{Subject reduction}]
   \label{prop:sr}
-  The \intro{subject reduction} property – also called \kl{preservation} –
-  holds for a type system if whenever
-  $\Gamma \vdash t \ty T$ and $t \red t'$, then also $\Gamma \vdash t' \ty T$.
+  If $\Gamma \vdash t \ty T$ and $t \red t'$, then also $\Gamma \vdash t' \ty T$.
+  This property is also called \reintro{preservation}.
 \end{property}
 
 To show that \kl{reduction} preserves typing, it suffices to show that \kl{one-step reduction}
@@ -856,10 +850,9 @@ substitution} we would get $\Gamma \vdash \subs{t}{x}{u} \ty \subs{B}{x}{u}$,
 which would finally lead to $\Gamma \vdash \subs{t}{x}{u} \ty T$ using \kl{stability under
 substitution} and transitivity of conversion. Thus, the key property is the following:
 
-\begin{property}[Injectivity of function types]
+\begin{property}[\intro{Injectivity of function types}]
   \label{prop:prod-inj}
-  A conversion relation $\conv$ is said to have \intro{injectivity of function types}
-  if whenever $\P x : A.\ B \conv \P x : A'.\ B'$, we have $A \conv A'$ and $B \conv B'$.
+  Whenever $\P x : A.\ B \conv \P x : A'.\ B'$, we have $A \conv A'$ and $B \conv B'$.
 \end{property}
 
 In the more general setting of \kl{CIC} or \kl{PCUIC}, we do not have only Π-types.
@@ -883,10 +876,10 @@ the corresponding notions of typing, is \kl{confluence} of reduction.
   \caption{Confluence, as a diagram}
 \end{marginfigure}
 
-\begin{property}[Confluence]
+\begin{property}[\intro{Confluence}]
   \label{prop:confluence}
-  The \intro{confluence} property of reduction says that whenever
-  $t \red t_1$ and $t \red t_2$, there exists $t''$ such that
+  If it holds that
+  $t \red t_1$ and $t \red t_2$, then there exists $t''$ such that
   $t_1 \red t''$ and $t_2 \red t''$.
 \end{property}
 
@@ -926,10 +919,9 @@ or \intro{canonical forms}, which have finished computing. For instance, a λ-ab
 the canonical form for a function. What \kl{progress} says is that these forms accurately
 characterize well-typed normal terms.
 
-\begin{property}[Progress]
-  A type system is said to satisfy \intro{progress} – given a notion of \kl{normal forms} –
-  if for every well-typed term $t$, either $\no t$ holds, or there is $t'$ such that
-  $t \ored t'$.
+\begin{property}[\intro{Progress}]
+  Given a notion of \kl{normal forms} $\no$, if for every well-typed term $t$,
+  either $\no t$ holds, or there is $t'$ such that $t \ored t'$.
 \end{property}
 
 One way to understand \kl{progress} – and, indeed, the origin of the name – is that well-typed
@@ -957,8 +949,8 @@ starting from a well-typed term. This formulation, however, is constructively to
 so we instead use a more adequate – but classically equivalent – definition,
 using the following accessibility predicate.
 
-\begin{definition}[Accessibility]
-  Let $R$ be a relation on $A$. An inhabitant $a$ of $A$ is \intro{accessible} if all $a'$
+\begin{definition}[\intro{Accessibility}]
+  Let $R$ be a relation on $A$. An inhabitant $a$ of $A$ is accessible if all $a'$
   such that $a \mathop{R} a'$ are.
 \end{definition}
 
@@ -967,11 +959,10 @@ is much better behaved because it does not appeal to negation. In particular,
 we can do constructions on all accessible terms of a given relation by means of well-founded
 induction, something we exploit in \kl{MetaCoq}.
 
-\begin{property}[Normalization]
+\begin{property}[\intro{Normalization}]
   \label{prop:normalization}
-  A type system has the \intro{normalization} property if every
-  well-typed term is \kl{accessible} for one-step co-reduction $\ocored$, the
-  inverse relation of \kl{one-step reduction} $\ored$.
+  Every well-typed term is \kl{accessible} for one-step co-reduction $\ocored$,
+  the inverse relation of \kl{one-step reduction} $\ored$.
 \end{property}
 
 Normalization is a crucial building block towards decidability of typing,
@@ -989,20 +980,17 @@ and reason by induction on it $\no$ derivation. This is one way to phrase
 \kl{logical consistency}, which has the advantage that it does not put forward one particular
 "false" type.
 
-\begin{property}[Logical consistency]
+\begin{property}[\intro{Logical consistency}]
   \label{prop:log-cons}
-  A type system is \intro{logically consistent} if there is a type which is uninhabited
-  in the empty context.
+  There is a type which is uninhabited in the empty context.
 \end{property}
 
 Thus, normalization ensures our type systems are meaningful as logics,
 which we of course care about! More generally, it entails the \kl{canonicity} property:
 
-\begin{property}[Canonicity]
+\begin{property}[\intro{Canonicity}]
   \label{prop:canonicity}
-  A type system has the \intro{canonicity} property
-  if every term $t$ that is well-typed in the empty
-  context reduces to a canonical form.
+  Every term $t$ that is well-typed in the empty context reduces to a \kl{canonical form}.
 \end{property}
 
 The issue is that, since normalization entails logical consistency, it is a hard
@@ -1015,7 +1003,7 @@ we do not tackle such proofs of normalization directly in this thesis. Instead, 
 either suppose normalization when it is unavoidable,
 or prove it relatively to that of another, simpler theory.
 
-\section{Adding Inductive Types: \kl{CIC}}
+\section{Adding Inductive Types: \kl(tit){CIC}}
 \label{sec:tech-cic}
 
 \AP Of course, not everything in mathematics or programming is a function.
@@ -1062,8 +1050,8 @@ The last one is a way to use those canonical inhabitants.
 For booleans, this corresponds to a conditional,
 taking one branch or another depending on the value of the term being used,
 whose typing rule is given in \ruleref{rule:bool-ind}.%
-\sidenote{We call $s$ the \intro{scrutinee}, $P$ the \intro{predicate}
-and $b_{\false}$, $b_{\true}$ the \intro{branches}.}
+\sidenote{We call $s$ the \intro{scrutinee}, $P$ the \reintro{predicate}
+and $b_{\false}$, $b_{\true}$ the \reintro{branches}.}
 As was the case for dependent functions, here also there is a generalization with respect to
 conditionals in usual programming languages: the return type itself can depend on the scrutinee.
 The usual if-then-else conditional with the same type in both branches is a special case,
@@ -1076,7 +1064,7 @@ $\subs{P}{z}{\false}$ and $\subs{P}{z}{\true}$ do – these are respectively pro
 $b_{\false}$ and $b_{\true}$. The name induction is not really
 suitable here because we only have base cases and no induction step, but we get those
 as soon as the inductive type itself is recursive.
-We also use the name \intro{recursor} interchangeably with induction principle,
+We also use the name \reintro{recursor} interchangeably with induction principle,
 but especially when we want to emphasize the programming point of view.
 
 \begin{figure}
@@ -1415,7 +1403,7 @@ by mere virtue of typing.
   \label{fig:vect}
   \end{figure*}
 
-\subsection{The \kl{Calculus of Constructions}}
+\subsection{The \kl(tit){Calculus of Constructions}}
 
 So far we only gave examples of the inductive types one could wish for.
 A description of how to generally define inductive types and construct induction principles
@@ -1439,7 +1427,7 @@ the restriction of \kl{CIC} excluding \kl{indexed inductive types}.
 
 
 
-\section{Beyond \kl{CIC}: \kl{PCUIC}}
+\section{Beyond \kl(tit){CIC}: \kl(tit){PCUIC}}
 \label{sec:tech-pcuic}
 
 \kl{CIC} as described in the previous section is already very expressive and powerful.

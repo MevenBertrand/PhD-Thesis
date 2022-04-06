@@ -5,7 +5,7 @@
 	twoside=true, % Use different layouts for even and odd pages (in particular, if twoside=true, the margin column will be always on the outside)
 	open=any, % If twoside=true, uncomment this to force new chapters to start on any page, not only on right (odd) pages
 	secnumdepth=1, % How deep to number headings. Defaults to 1 (sections)
-  numbers=noenddot,
+  numbers=enddot,
 ]{kaobook/kaobook}
 
 \setcounter{tocdepth}{\sectiontocdepth}
@@ -24,21 +24,22 @@
 \DefineBibliographyExtras{french}{\restorecommand\mkbibnamefamily} %To have consistent citations between French and English text
 \addbibresource{biblio.bib} % Bibliography file
 
+% Load my own packages
+\usepackage{styles/layout}
+\usepackage{styles/macros}
+
 % Load mathematical packages for theorems and related environments
-\usepackage[framed]{kaobook/kaotheorems}
+\usepackage[boxed,background=black!5]{kaobook/kaotheorems}
 
 % Load the package for hyperreferences
 \usepackage{kaobook/kaorefs}
 
-% Load my own packages
-\usepackage{styles/layout}
-\usepackage{styles/macros}
 
 \graphicspath{{./figures/}} % Paths where images are looked for
 
 \makeindex[columns=3, title=Alphabetical Index, intoc] % Make LaTeX produce the files required to compile the index
 
-\includeonly{metacoq-intro,metacoq-tour,metacoq-kernel}
+%\includeonly{metacoq-intro,metacoq-tour,metacoq-kernel}
 
 \input{knowledge_declarations.tex}
 
