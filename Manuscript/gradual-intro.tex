@@ -1,0 +1,71 @@
+We have already seen in \arefpart{metacoq} how the structure of bidirectional typing can
+help with proofs on \kl{CIC}/\kl{PCUIC}. But this is far from being the only advantage of
+the approach. Indeed, the extra control provided on the conversion rule can be instrumental.
+In this part, we go over one situation where this is the case: the extension of \kl{CIC} to
+incorporate \kl(typ){gradual} features.
+
+\kl{Gradual typing} arose as an approach to selectively and soundly relax static type
+checking by endowing programmers with imprecise static
+types \sidecite{Siek2006,Siek2015}. Optimistically well-typed
+programs are safeguarded by runtime checks that detect violations of
+statically-expressed assumptions. A gradual version of the simply-typed lambda
+calculus enjoys such flexibility that it can embed the untyped lambda
+calculus \cite{Siek2015}.
+This means that gradually-typed languages tend to accommodate at least
+two kinds of effects, non-termination and runtime errors.
+% The smoothness of the static-to-dynamic checking spectrum afforded by gradual languages
+% is usually captured by (static and dynamic) gradual
+% guarantees
+% which stipulate that typing and reduction are monotone with respect
+% to precision~\cite{siekAl:snapl2015}.
+
+Originally formulated in terms of simple types, the extension of \kl{gradual typing}
+to a wide variety of typing disciplines has been an extremely active topic of
+research, both in theory and in practice. As part of this quest towards more
+sophisticated type disciplines, gradual typing was bound to meet with full-blown
+dependent types. This encounter saw various premises in a variety of approaches
+to integrate (some form of) dynamic checking with (some form of) dependent
+types \sidecite{Ou2004,Wadler2009,Knowles2010,Tanter2015,Lehmann2017,Dagand2018}.
+Naturally, the highly-expressive setting of dependent types, in which terms and
+types are not distinct and computation happens as part of typing, raises a lot
+of subtle challenges for gradualization.
+
+Of those challenges, one of the first is the place of computation.
+In the gradual setting, in order to optimistically compare types,
+\kl{conversion} is replaced by \kl(grad){consistency}, a relation
+akin to unification. This relation is naturally
+non-transitive, meaning that the usual, \kl(typ){undirected} setting is not adapted to
+gradualization.%
+\sidenote{
+  This is because \ruleref{rule:cic-conv} can be applied any number of times, which is sensible
+  only if these successive application amount to just one.
+}
+Moreover, the semantics of \kl(typ){gradual} languages is usually explained
+through an elaboration phase to a second language, responsible for the runtime checks ensuring
+safety of evaluation. This elaboration is naturally described in a bidirectional
+system, which moreover provides enough constraints on the typing derivation so that replacing
+\kl{conversion} with \kl(grad){consistency} is reasonable. Finally, the identification of
+the role of \kl{reduction} for \kl{constrained inference} clarifies
+how the latter should be extended to incorporate imprecise types.
+In fact, I told the story upside down: it is the need for bidirectional typing in the context
+of \kl{gradual typing} that led me to its investigation!
+
+In this part, we go over a collaboration with Kenji Maillard, Éric Tanter and Nicolas
+Tabareau on the subject to gradualize \kl{CIC} \sidetextcite{LennonBertrand2022}.
+\cref{chap:gradual-dependent} gives a general overview of the challenges and trade-offs
+involved in \kl(typ){gradual} \kl(typ){dependent} types, culminating with the
+\kl{Fire Triangle of Graduality}, which identifies an irreconcilable tension between
+the properties one should demand of such a type system. It ends with a proposed solution
+to those challenges, the \kl{Gradual Calculus of Inductive Constructions} (\kl{GCIC}).
+Next, \cref{chap:bidir-gradual-elab} describes precisely this \kl{GCIC},
+via a relation representing type-based, bidirectional elaboration.
+This represents my main technical contribution to \textcite{LennonBertrand2022}.
+Finally, \cref{chap:beyond-gcic} gives an overview of the rest of our work in the area:
+a model used to establish properties of the target language of the elaboration procedure,
+and the thorny question of indexed inductive types and consistent reasoning about gradual
+programs.
+Due to their absence of direct relation to bidirectional typing and my lower
+involvement in their technical development, we do not go into full details.
+The interested reader can of course consult the appropriate publications for those –
+the former appears in \textcite{LennonBertrand2022}, while the latter is the subject
+of \textcite{Maillard2022}.

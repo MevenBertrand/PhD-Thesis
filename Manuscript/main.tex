@@ -39,7 +39,7 @@
 
 \makeindex[columns=3, title=Alphabetical Index, intoc] % Make LaTeX produce the files required to compile the index
 
-%\includeonly{metacoq-intro,metacoq-tour,metacoq-kernel}
+\includeonly{gradual-intro,gradual-dependent,gradual-elab,beyond-gcic}
 
 \input{knowledge_declarations.tex}
 
@@ -88,16 +88,10 @@
 \label{part:gradual}
 \pagelayout{margin} % Restore margins
 
-\chapter{Gradual Typing Meet Dependent Types}
-\label{chap:gradual-dependent}
-
-Take inspiration from first sections of TOPLAS paper here.
-
-\chapter{From GCIC to CastCIC: Bidirectional Elaboration}
-\label{chap:bidir-gradual-elab}
-
-Again, should be an adaptation from TOPLAS. Maybe I can do a bit more, especially if
-I concentrate on the bidirectional way of things. For instance, I could try and give a better algorithm for deciding conversion than the crappy one from the paper.
+\include{gradual-intro}
+\include{gradual-dependent}
+\include{gradual-elab}
+\include{beyond-gcic}
 
 % \appendix % From here onwards, chapters are numbered with letters, as is the appendix convention
 
