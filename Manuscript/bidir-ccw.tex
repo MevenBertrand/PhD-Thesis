@@ -279,7 +279,7 @@ Indeed, the bidirectional structure can be erased
 which can nevertheless be retrieved by using well-formedness invariants.
 Thus, we get the following correctness theorem – note how McBride’s discipline manifests as well-formedness hypothesis on inputs.
 
-\begin{theorem}[\intro(bidir){Correctness} of bidirectional typing for \kl{CCω}]
+\begin{theorem}[\intro{Correctness} of bidirectional typing for \kl{CCω}]
   \label{thm:corr-ccomega}
   If $\Gamma$ is well-formed and $\inferty{\Gamma}{t}{T}$ or $\pinferty{h}{\Gamma}{t}{T}$,
   then $\Gamma \vdash t \ty T$.
@@ -308,7 +308,7 @@ Thus, we get the following correctness theorem – note how McBride’s discipli
   that typing premise is obtained by combining the induction hypothesis,
   validity and \kl{subject reduction}.
 
-  Alternatively, appeal validity could be removed by
+  Alternatively, the appeal validity could be removed by
   strengthening the theorem to incorporate the well-formedness of outputs on top of that of
   the subject. Here we follow the proofs in \kl{MetaCoq}, which establishes
   meta-theoretical properties of the undirected system – including validity –,
@@ -362,7 +362,7 @@ consequence of it.
   equivalence with algorithmic conversion – and thus use \kl{confluence}.
 \end{proof}
 
-\begin{theorem}[\intro(bidir){Completeness} of bidirectional typing for \kl{CCω}]
+\begin{theorem}[\intro{Completeness} of bidirectional typing for \kl{CCω}]
   \label{thm:compl-ccomega}
   If $\Gamma \vdash t \ty T$, then there exists $T'$ such that $\inferty{\Gamma}{t}{T'}$
   and $T' \conv T$.
