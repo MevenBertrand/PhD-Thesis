@@ -1,0 +1,38 @@
+\ProvidesPackage{styles/alectryon-minted}
+
+\RequirePackage{minted}
+
+% For code
+% See https://tex.stackexchange.com/questions/515641/minted-error-when-using-customized-fontfamily
+\newfontfamily\firacode{Fira Code}
+  [BoldFont={Fira Code Medium},Contextuals={Alternate},
+  NFSSFamily=FiraCode,Scale=MatchLowercase]%
+\RequirePackage{lstfiracode}
+\ActivateVerbatimLigatures
+
+\setminted{autogobble,fontfamily=FiraCode,style=alectryon}
+
+\newminted[coqcode]
+  {/home/meven/.local/lib/python3.8/site-packages/alectryon/pygments_lexer.py:CoqLexer -x}
+  {}
+
+\newmintinline[coqe]
+  {/home/meven/.local/lib/python3.8/site-packages/alectryon/pygments_lexer.py:CoqLexer -x}
+  {}
+
+\ExplSyntaxOn
+\NewDocumentCommand{\mintedstring}{mv}
+ {
+  \tl_clear_new:c { l_minted_string_#1_tl }
+  \tl_set:cn { l_minted_string_#1_tl } { #2 }
+ }
+\NewDocumentCommand{\mintinlinestring}{mm}
+ {
+  \minted_inline_string:nv { #1 } { l_minted_string_#2_tl }
+ }
+\cs_new_protected:Nn \minted_inline_string:nn
+ {
+  \mintinline{#1}{#2}
+ }
+\cs_generate_variant:Nn \minted_inline_string:nn { nv }
+\ExplSyntaxOff
