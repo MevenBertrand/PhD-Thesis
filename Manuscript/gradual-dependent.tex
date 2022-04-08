@@ -1,4 +1,175 @@
 \chapter{Gradual Typing Meet Dependent Types}
 \label{chap:gradual-dependent}
 
-Take inspiration from first sections of TOPLAS paper here.
+\margintoc
+
+Before diving into what \kl{GCIC} is about, let us first say what it is not about.
+The aim is not to put forth a unique design or solution,
+but rather to explore the space of possibilities.
+Nor is it about a concrete implementation of gradual \kl{CIC} and an evaluation of its
+applicability; these are challenging perspectives of their own,
+which first require the theoretical landscape to be unveiled.
+Rather, we believe that studying the gradualization of a full-blown dependent type theory
+like \kl{CIC} is in and of itself an important scientific endeavor,
+which is very likely to inform the gradual typing research community in its drive towards
+supporting ever more challenging typing disciplines.
+This being said, we can still highlight some practical motivating scenarios
+for gradualizing \kl{CIC},
+anticipating what could be achieved in a hypothetical gradual version of \eg \kl{Coq}.
+
+\paragraph{Smoother development with indexed types.}
+  \label{ex:indices}
+  
+\kl{CIC}, which underpins languages and proof assistants such as \kl{Coq},
+\kl{Agda} and \kl{Idris}, among others, is a very powerful system to program in,
+but at the same time extremely demanding.
+Mixing programs and their specifications is attractive but challenging.
+
+Consider the example of the vector type $\Vect(A,n)$ as defined in \cref{sec:tech-cic}.
+In \kl{Coq}, its definition is the following:
+
+\begin{coqcode}
+Inductive vec (A : Type) : ℕ -> Type :=
+| nil  : vec A 0
+| cons : A -> forall n : ℕ, vec A n -> vec A (S n).
+\end{coqcode}
+
+Indexing the inductive type by its length allows us to define a \emph{total}
+\coqe{head} function, which can only be applied to non-empty lists:
+\begin{coqcode}
+  head : forall A n, vec A (S n) -> A
+\end{coqcode}
+  
+Developing functions over such structures can be tricky. For instance, what type should the \coqe{filter} function be given?
+\begin{coqcode}
+  filter : forall A n (p : A -> 𝔹), vec A n -> vec A …
+\end{coqcode}
+The size of the resulting list depends on how many elements in the list actually match the given predicate \coqe{p}!
+Dealing with this level of intricate specification can (and does) scare programmers away from mixing programs and specifications. The truth is that many libraries, such as the Mathematical
+Components library \sidecite{Mahboubi2021},
+give up on mixing programs and specifications even for simple structures such as these, which are instead dealt with as ML-like lists with extrinsically-established properties. This
+tells a lot about the current intricacies of dependently-typed programming.
+  
+Instead of avoiding the obstacle altogether, gradual dependent types provide a uniform and flexible mechanism to a tailored adoption of dependencies. For instance, one could give \coqe{filter} the following gradual type, which makes use of the \emph{unknown term} $\?$
+in an index position:
+\begin{coqcode}
+  filter : forall A n (f : A -> 𝔹), vec A n -> vec A ?
+\end{coqcode}
+This imprecise type means that uses of \coqe{filter} will be optimistically accepted by the type-checker, although subject to associated checks during reduction. For instance
+\begin{coqcode}
+head ℕ ? (filter ℕ 4 even [ 0 ; 1 ; 2 ; 3 ])
+\end{coqcode}
+type-checks, and successfully evaluates to \coqe{0}, while
+\begin{coqcode}
+head ℕ ? (filter ℕ 2 even [ 1 ; 3 ])
+\end{coqcode}
+type-checks but fails during reduction, upon the discovery that the assumption
+that the argument to head is non-empty is in fact incorrect.
+
+\paragraph{Defining general recursive functions.}
+\label{ex:rec}
+
+Another challenge of working in \kl{CIC} is to convince the type-checker that recursive
+definitions are well-founded.
+This can either require tight syntactic restrictions, or sophisticated arguments involving
+accessibility predicates. At any given stage of a development,
+one might not be in a position to follow any of these.
+In such cases, a workaround is to adopt the “fuel” pattern, \ie parametrize a function with
+a clearly syntactically decreasing argument in order to please the termination checker,
+and to use an arbitrary initial fuel value.
+In practice, one sometimes requires a simpler way to unplug termination checking,
+and for that purpose, many proof assistants support external commands or parameters to deactivate termination checking.%
+\mintedstring{terminating}{{-# TERMINATING #-}}%
+\sidenote{For instance \mintinlinestring{agda}{terminating} in \kl{Agda}
+or \coqe{Unset Guard Checking.} in \kl{Coq}.}
+
+Because the use of the unknown type allows the definition of fixed point combinators
+\sidecite{Siek2006,Eremondi2019},
+one can use this added expressiveness to bypass termination checking locally.
+This just means that the external facilities provided by specific proof assistant implementations now become internalized in the language.
+
+\paragraph{Large elimination, gradually.}
+\label{ex:elim}
+
+One of the argued benefit of dynamically-typed languages, which is accommodated by gradual typing, is the ability to define functions that can return values of different types depending on their inputs, such as the following%
+\sidenote{With \coqe{?>} a boolean comparison operator.}:
+\begin{coqcode}
+  Definition foo n m := if (n ?> m) then m + 1 else m ?> 0.
+\end{coqcode}
+
+In a gradually-typed language, one can give such a function the type \coqe{?},
+or even \coqe{ℕ -> ℕ -> ?} in order to enforce proper argument types,
+and remain flexible in the treatment of the returned value.
+Of course, one knows very well that in a dependently-typed language, using large elimination, we can simply give \coqe{foo} the dependent type:
+\begin{coqcode}
+  foo : forall (n m : ℕ), if (n ?> m) then ℕ else 𝔹
+\end{coqcode}
+
+Lifting the term-level comparison \coqe{n ?> m} to the type level is extremely expressive, but hard to work with as well, both for the implementer of the function and its clients.
+In a dependently-typed setting, one can explore the whole spectrum of type-level precision for such a function, starting from the least precise to the most precise, for instance:
+\begin{coqcode}
+    foo : ?
+    foo : ℕ -> ℕ -> ?
+    foo : ℕ -> ℕ -> if ? then ℕ else ?
+    foo : forall (n m : ℕ), if (n ?> m) then ℕ else ?
+    foo : forall (n m : ℕ), if (n ?> m) then ℕ else 𝔹
+\end{coqcode}
+
+At each stage from top to bottom, there is less flexibility (but more guarantees!) for both the implementer of \coqe{foo} and its clients. The \kl{gradual guarantee}%
+\sidenote{One of the important properties we seek in our \kl{GCIC}.}
+ensures that if the function is actually faithful to the most precise type
+then giving it any of the less precise types above does not introduce any new failure
+\sidecite{Siek2015}.
+
+\paragraph{Gradually refining specifications.}
+\label{ex:specif}
+  
+Let us come back to the \coqe{filter} function from the first example.
+Its fully-precise type requires appealing to a type-level function that counts the number of
+elements in the list satisfying the predicate
+(notice the dependency to the input vector \coqe{v}):
+\begin{coqcode}
+  filter : forall A n (p : A -> 𝔹) (v : vec A n),
+            vec A (count_if A n p v)
+\end{coqcode}
+
+Anticipating the need for this function, a gradual specification could adopt the above
+signature for \coqe{filter} but leave \coqe{count_if} unspecified:
+\begin{coqcode}
+Definition count_if A n (p : A -> 𝔹) (v: vec A n) : ℕ := ?.
+\end{coqcode}
+
+This situation does not affect the behavior of the program compared to leaving the return type index unknown. More interestingly, one could immediately define the base case, which trivially specifies that there are no matching elements in an empty vector:
+\begin{coqcode}
+Definition count_if A n (p : A -> 𝔹) (v : vec A n) : ℕ :=
+  match v with
+  | nil _ _ => 0
+  | cons _ _ _ => ?
+  end.
+\end{coqcode}
+
+This slight increment in precision provides a little more static checking, for instance:
+\begin{coqcode}
+  head ℕ ? (filter ℕ 4 even [])
+\end{coqcode}
+does not even type-check, instead of failing during reduction.
+
+Again, the gradual guarantee ensures that such incremental refinements in precision towards the proper fully-precise version do not introduce spurious errors.
+Note that this is in stark contrast with the use of axioms (which will be discussed in more depth in \cref{sec:tradeoffs}). Indeed, replacing correct code with an axiom can simply break typing! For instance, with the following definitions:
+\begin{coqcode}
+Axiom to_be_done : ℕ.
+Definition count_if A n (p : A -> 𝔹) (v: vec A n) : ℕ :=
+  to_be_done.
+\end{coqcode}
+the definition of \coqe{filter} does not typecheck anymore,
+as the axiom at the type-level is not convertible to any given value.
+
+\paragraph{Gradual programs or proofs?}
+
+When adapting the ideas of gradual typing to a dependent type theory, one might
+expect to deal with programs rather than proofs.
+This observation is however misleading: from the point of view of the Curry-Howard correspondence, proofs and programs are intrinsically related, so that gradualizing the latter begs for a gradualization of the former. The examples above illustrate mixed programs and specifications, which naturally also appeal to proofs: dealing with indexed types typically requires exhibiting equality proofs to rewrite terms.
+Moreover, there are settings in which one must consider computationally-relevant proofs, such as constructive algebra and analysis, homotopy type theory, etc. In such settings, using axioms to bypass unwanted proofs breaks reduction, and because typing requires reduction, the use of axioms can simply prevent typing, as illustrated in the last example.
+
+\section{Fundamental Tradeoffs in Gradual Dependent Type Theory}[Fundamental Trade-offs]
+\label{sec:tradeoffs}

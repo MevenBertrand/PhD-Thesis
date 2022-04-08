@@ -51,17 +51,19 @@ In fact, I told the story upside down: it is the need for bidirectional typing i
 of \kl{gradual typing} that led me to its investigation!
 
 In this part, we go over a collaboration with Kenji Maillard, Éric Tanter and Nicolas
-Tabareau on the subject to gradualize \kl{CIC} \sidetextcite{LennonBertrand2022}.
+Tabareau to address the challeng of gradualizing a full-blown dependently-typed language:
+\kl{CIC} \sidetextcite{LennonBertrand2022}.
 \cref{chap:gradual-dependent} gives a general overview of the challenges and trade-offs
 involved in \kl(typ){gradual} \kl(typ){dependent} types, culminating with the
 \kl{Fire Triangle of Graduality}, which identifies an irreconcilable tension between
-the properties one should demand of such a type system. It ends with a proposed solution
-to those challenges, the \kl{Gradual Calculus of Inductive Constructions} (\kl{GCIC}).
+the properties one should demand of such a type system. It ends with a broad picture
+of our proposed solution to those difficulties,
+the \kl{Gradual Calculus of Inductive Constructions} (\kl{GCIC}).
 Next, \cref{chap:bidir-gradual-elab} describes precisely this \kl{GCIC},
-via a relation representing type-based, bidirectional elaboration.
-This represents my main technical contribution to \textcite{LennonBertrand2022}.
+via a relation representing type-based, bidirectional elaboration,
+which represents my main technical contribution to \textcite{LennonBertrand2022}.
 Finally, \cref{chap:beyond-gcic} gives an overview of the rest of our work in the area:
-a model used to establish properties of the target language of the elaboration procedure,
+models used to establish properties of the target language of the elaboration procedure,
 and the thorny question of indexed inductive types and consistent reasoning about gradual
 programs.
 Due to their absence of direct relation to bidirectional typing and my lower
