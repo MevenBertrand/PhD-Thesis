@@ -156,7 +156,7 @@
 \newcommand{\subs}[3]{#1[#2 \into #3]}
 \newcommand{\multisubs}[2]{#1[#2]}
 
-%% Terms
+% Terms
 
 %See https://tex.stackexchange.com/questions/477662/fontspec-breaks-capital-greek-letters-in-declaremathoperator?rq=1
 \let\l\relax
@@ -191,6 +191,7 @@
   % First the type, then the scrutinee, the predicate and finally the branches
 {\operatorname{match}_{#1;#2;#3}(#4 ; #5 ; #6)}
 
+\DeclareMathOperator{\Empty}{\bot}
 
 \DeclareMathOperator{\Bool}{\symbf{B}}
 \DeclareMathOperator{\true}{tt}
@@ -207,7 +208,7 @@
 
 \DeclareMathOperator{\List}{\symbf{Li}}
 \NewDocumentCommand\lnil{o}{[]\IfValueT{#1}{_{#1}}}
-\DeclareMathOperator{\lconsop}{::}
+\DeclareMathOperator{\lconsop}{:\hspace{-1.5pt}:}
 \NewDocumentCommand\lcons{o m m}{#2 \lconsop\IfValueT{#1}{_{#1}} #3}
 
 \DeclareMathOperator{\eqtyop}{=}
@@ -217,12 +218,10 @@
 
 \DeclareMathOperator{\Vect}{Ve}
 \NewDocumentCommand\vnil{o}{[]\IfValueT{#1}{_{#1}}}
-\DeclareMathOperator{\vconsop}{::}
+\DeclareMathOperator{\vconsop}{:\hspace{-1.5pt}:}
 \NewDocumentCommand\vcons{o o m m}{#3 \lconsop\IfValueT{#1}{_{#1,#2}} #4}
 
-\newcommand{\?}{\mathbb{?}}
-
-%% Conversion
+% Conversion
 \newcommand{\alpheq}{=_{\alpha}}
 \newcommand{\alphleq}{\leq_{\alpha}}
 \newcommand{\conv}{\cong}
@@ -232,7 +231,7 @@
 \newcommand{\taconv}{\conv} % Typed algorithmic conversion
 \newcommand{\cum}{\preceq} % Cumulativity
 
-%% Reduction
+% Reduction
 \newcommand{\basered}{\rightarrow}
 \newcommand{\ored}{\basered^1} % One-step full reduction (closed by all contexts)
 \newcommand{\fred}{\basered^{\star}} % Multi-step full reduction (closed by all contexts)
@@ -252,3 +251,16 @@
   \NewCommandCopy{\noteq}{\ne}
   \renewcommand{\ne}{\mathrel{\mathrm{ne}}}
 }
+
+% Gradual stuff
+
+\DeclareMathOperator{\axiom}{ax}
+
+\newcommand{\?}{\mathbb{?}}
+\DeclareMathOperator{\ascop}{:\hspace{-1.5pt}:}
+\DeclareDocumentCommand{\asc}{m m}{#1 \ascop #2}
+
+
+% Errors
+
+\DeclareDocumentCommand{\err}{o}{\operatorname{err}\IfValueT{#1}{_{#1}}}

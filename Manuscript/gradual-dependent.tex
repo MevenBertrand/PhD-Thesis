@@ -10,9 +10,10 @@ Nor is it about a concrete implementation of gradual \kl{CIC} and an evaluation 
 applicability; these are challenging perspectives of their own,
 which first require the theoretical landscape to be unveiled.
 Rather, we believe that studying the gradualization of a full-blown dependent type theory
-like \kl{CIC} is in and of itself an important scientific endeavor,
+like \kl{CIC} is in and of itself an important scientific endeavour,
 which is very likely to inform the gradual typing research community in its drive towards
 supporting ever more challenging typing disciplines.
+
 This being said, we can still highlight some practical motivating scenarios
 for gradualizing \kl{CIC},
 anticipating what could be achieved in a hypothetical gradual version of \eg \kl{Coq}.
@@ -50,12 +51,12 @@ Components library \sidecite{Mahboubi2021},
 give up on mixing programs and specifications even for simple structures such as these, which are instead dealt with as ML-like lists with extrinsically-established properties. This
 tells a lot about the current intricacies of dependently-typed programming.
   
-Instead of avoiding the obstacle altogether, gradual dependent types provide a uniform and flexible mechanism to a tailored adoption of dependencies. For instance, one could give \coqe{filter} the following gradual type, which makes use of the \emph{unknown term} $\?$
+Instead of avoiding the obstacle altogether, gradual dependent types provide a uniform and flexible mechanism to a tailored adoption of dependencies. For instance, one could give \coqe{filter} the following gradual type, which makes use of the \reintro{unknown term} $\?$
 in an index position:
 \begin{coqcode}
   filter : forall A n (f : A -> 𝔹), vec A n -> vec A ?
 \end{coqcode}
-This imprecise type means that uses of \coqe{filter} will be optimistically accepted by the type-checker, although subject to associated checks during reduction. For instance
+This imprecise type means that uses of \coqe{filter} will be optimistically accepted by the type-checker, although subject to associated checks during reduction. For instance,
 \begin{coqcode}
 head ℕ ? (filter ℕ 4 even [ 0 ; 1 ; 2 ; 3 ])
 \end{coqcode}
@@ -64,7 +65,7 @@ type-checks, and successfully evaluates to \coqe{0}, while
 head ℕ ? (filter ℕ 2 even [ 1 ; 3 ])
 \end{coqcode}
 type-checks but fails during reduction, upon the discovery that the assumption
-that the argument to head is non-empty is in fact incorrect.
+of non-emptiness of the argument to head is in fact incorrect.
 
 \paragraph{Defining general recursive functions.}
 \label{ex:rec}
@@ -83,8 +84,8 @@ and for that purpose, many proof assistants support external commands or paramet
 \sidenote{For instance \mintinlinestring{agda}{terminating} in \kl{Agda}
 or \coqe{Unset Guard Checking.} in \kl{Coq}.}
 
-Because the use of the unknown type allows the definition of fixed point combinators
-\sidecite{Siek2006,Eremondi2019},
+Because the use of the \reintro{unknown type} $\?$
+allows the definition of fixed point combinators \sidecite{Siek2006,Eremondi2019},
 one can use this added expressiveness to bypass termination checking locally.
 This just means that the external facilities provided by specific proof assistant implementations now become internalized in the language.
 
@@ -130,18 +131,18 @@ elements in the list satisfying the predicate
 (notice the dependency to the input vector \coqe{v}):
 \begin{coqcode}
   filter : forall A n (p : A -> 𝔹) (v : vec A n),
-            vec A (count_if A n p v)
+            vec A (count A n p v)
 \end{coqcode}
 
 Anticipating the need for this function, a gradual specification could adopt the above
-signature for \coqe{filter} but leave \coqe{count_if} unspecified:
+signature for \coqe{filter} but leave \coqe{count} unspecified:
 \begin{coqcode}
-Definition count_if A n (p : A -> 𝔹) (v: vec A n) : ℕ := ?.
+Definition count A n (p : A -> 𝔹) (v: vec A n) : ℕ := ?.
 \end{coqcode}
 
 This situation does not affect the behavior of the program compared to leaving the return type index unknown. More interestingly, one could immediately define the base case, which trivially specifies that there are no matching elements in an empty vector:
 \begin{coqcode}
-Definition count_if A n (p : A -> 𝔹) (v : vec A n) : ℕ :=
+Definition count A n (p : A -> 𝔹) (v : vec A n) : ℕ :=
   match v with
   | nil _ _ => 0
   | cons _ _ _ => ?
@@ -149,19 +150,17 @@ Definition count_if A n (p : A -> 𝔹) (v : vec A n) : ℕ :=
 \end{coqcode}
 
 This slight increment in precision provides a little more static checking, for instance:
-\begin{coqcode}
-  head ℕ ? (filter ℕ 4 even [])
-\end{coqcode}
+\coqe{head ℕ ? (filter ℕ 4 even [])}
 does not even type-check, instead of failing during reduction.
 
 Again, the gradual guarantee ensures that such incremental refinements in precision towards the proper fully-precise version do not introduce spurious errors.
-Note that this is in stark contrast with the use of axioms (which will be discussed in more depth in \cref{sec:tradeoffs}). Indeed, replacing correct code with an axiom can simply break typing! For instance, with the following definitions:
+Note that this is in stark contrast with the use of axioms – which will be discussed in more depth in \cref{sec:axiom}. Indeed, replacing correct code with an axiom can simply break typing! For instance, with the following definitions:
 \begin{coqcode}
 Axiom to_be_done : ℕ.
-Definition count_if A n (p : A -> 𝔹) (v: vec A n) : ℕ :=
+Definition count A n (p : A -> 𝔹) (v: vec A n) : ℕ :=
   to_be_done.
 \end{coqcode}
-the definition of \coqe{filter} does not typecheck anymore,
+the definition of \coqe{filter} does not type-check anymore,
 as the axiom at the type-level is not convertible to any given value.
 
 \paragraph{Gradual programs or proofs?}
@@ -171,5 +170,238 @@ expect to deal with programs rather than proofs.
 This observation is however misleading: from the point of view of the Curry-Howard correspondence, proofs and programs are intrinsically related, so that gradualizing the latter begs for a gradualization of the former. The examples above illustrate mixed programs and specifications, which naturally also appeal to proofs: dealing with indexed types typically requires exhibiting equality proofs to rewrite terms.
 Moreover, there are settings in which one must consider computationally-relevant proofs, such as constructive algebra and analysis, homotopy type theory, etc. In such settings, using axioms to bypass unwanted proofs breaks reduction, and because typing requires reduction, the use of axioms can simply prevent typing, as illustrated in the last example.
 
-\section{Fundamental Tradeoffs in Gradual Dependent Type Theory}[Fundamental Trade-offs]
-\label{sec:tradeoffs}
+\paragraph{Fundamental Trade-offs in Gradual Dependent Type Theory}
+
+Before exposing a specific approach to gradualizing \kl{CIC},
+there is a need for a general analysis of the properties at stake and tensions
+that arise when gradualizing a dependent type theory.
+
+Thus, in what follows
+we start by recalling the two cornerstones properties of progress and normalization,
+and explain to the need to reconsider them carefully in a gradual setting
+(\cref{sec:norm-canon-endang}).
+Next, we show why the obvious approach based on axioms is unsatisfying (\cref{sec:axiom}),
+as well as why simply using a type theory with exceptions \sidecite{Pedrot2018} is not enough
+either (\cref{sec:extt}).
+We then turn to the gradual approach, recalling its essential properties in the simply-typed
+setting (\cref{sec:grad-simple}),
+and revisiting them in the context of a dependent type theory (\cref{sec:graduality}).
+This finally leads us to establish a fundamental impossibility in the gradualization
+of \kl{CIC}, which means that at least one of the desired properties has to be sacrificed (\cref{sec:fire-triangle}).
+
+Once this is done, we are in a better position to present our \kl{gradual},
+\kl{dependently} typed system, \kl{GCIC} and its main characteristics.
+
+\section{Safety and Normalization, Endangered}[Safety and Normalization]
+\label{sec:norm-canon-endang}
+
+% As a well-behaved typed programming language, \kl{CIC} enjoys
+% (type) \intro{safety}%
+% %  \sidenote{That we abbreviate as \psafe in this part.}
+% – the combination of \kl{progress} and \kl{preservation} –,
+% meaning that well-typed closed terms cannot get stuck,
+% \ie that normal, closed terms of a given type are exactly the \kl{canonical forms} of that type.
+% %
+% % In \kl{CIC}, a closed canonical form is a term whose typing derivation ends
+% % with an introduction rule, \ie a $\lambda$-abstraction for a function
+% % type, and a constructor for an inductive type.
+% %
+% % For instance, any closed term of type \coqe{bool} is convertible (and
+% % reduces) to either \coqe{true} or \coqe{false}.
+% Note that a normal open term, on the contrary, must not be \kl{canonical form}.
+% Instead, it can also be a \kl{neutral form}.
+
+% As a logically consistent type theory, \kl{CIC} also enjoys \kl{normalization},
+% %(\pnorm)
+% meaning that any term reduces to its (unique) normal form.
+% \kl{Normalization}, together with \kl{safety}, imply \kl{canonicity}:
+% any closed term of a given type \emph{must} reduce to a \kl{canonical form} of that type.
+% %
+% When applied to the empty type $\Empty$, canonicity ensures \kl{logical consistency}:
+% because there is no canonical form for $\Empty$, there is no
+% closed proof of $\Empty$.
+% %
+% Note that \kl{normalization} also has an important consequence in \kl{CIC}. Indeed, in
+% this system, conversion---which coarsely means syntactic equality
+% up-to reduction---is used in the type-checking algorithm.
+
+
+In the gradual setting, the two cornerstone properties of \kl{CIC} exposed in
+\cref{sec:tech-properties}, \kl{safety}%
+\sidenote{The combination of \kl{progress} and \kl{preservation}.}
+and \kl{normalization} must be considered with care.
+%
+First, any closed term can be ascribed the unknown type $\?$
+and then any other type: for instance, $0 \ascop \? \ascop \Bool$ is a
+well-typed closed term of type $\Bool$.%
+\sidenote{\label{ftn:ascription}
+  We write $a \ascop A$ for a type \intro{ascription}, which we define as syntactic sugar
+  for $(\l x:A.\ x)\ a$ \sidecite[3em]{Siek2006}; in
+  other systems, it is taken as a primitive notion \sidecite[5em]{Garcia2016}.}
+However, such a term
+cannot possibly reduce to either $\true$ or $\false$, so some
+concessions must be made with respect to \kl{safety} – at the very least, the notion
+of canonical forms must be extended.
+%
+
+Second, \kl{normalization} is endangered.
+The quintessential example of non-termination in the untyped lambda calculus is the
+term $\Omega$, defined as $\delta~\delta$
+where $\delta$ is $\l x.\ x\ x)$.
+In the \kl{simply-typed lambda calculus}%
+  \sidenote[][2em]{Hereafter abbreviated as \intro{STLC}.},
+as in \kl{CIC}, \emph{self-applications} like $\delta\ \delta$ and $x\ x$ are ill-typed.
+However, when introducing gradual types, one usually expects to accommodate such idioms,
+and therefore in a standard gradually-typed calculus such as
+\intro{GTLC}%
+\sidenote{The gradual counterpart to \kl{STLC}.}
+\cite{Siek2006}, a variant of $\Omega$ that uses
+$(\l x : \?.\ x\ x)$ as $\delta$ is well-typed and diverges – \ie reduces indefinitely.
+The reason is that the domain type of $\delta$, the \kl{unknown type} $\?$,
+is \reintro{consistent} with the type of $\delta$ itself,
+$\? \to \?$, meaning that we wish to optimistically accept the application as
+plausibly valid. But at runtime, nothing prevents reduction from going on forever.
+Therefore, if one aims at ensuring \kl{normalization} in a gradual setting,
+some care must be taken to restrict expressiveness.
+
+
+\section{The Axiomatic Approach}
+\label{sec:axiom}
+
+Let us first address the elephant in the room:
+why would one want to gradualize \kl{CIC} instead of simply postulating
+an axiom for any term (be it a program or a proof) that one does not feel like providing (yet)?
+
+Indeed, we can augment \kl{CIC} with a wildcard axiom $\axiom \ty \P A : \uni.\ A$.
+The resulting system, called \intro{CICax}, has an obvious practical benefit: we can use
+$\axiom A$%
+%\sidenote{Hereafter written $\axiom[A]$.}
+as a wildcard whenever we are
+asked to exhibit an inhabitant of some type $A$ and we do not (yet) want to.
+This is exactly what admitted definitions are in \kl{Coq}, for instance,
+and they do play an important practical role during any \kl{Coq} development.
+
+However, we cannot use the axiom $\axiom A$ in any meaningful way \emph{at the
+  type level}.
+%
+For instance, going back to \cref{ex:indices},
+one might be tempted to give to the\coqe{filter} function on vectors the type
+\begin{coqcode}
+  forall A n (p : A -> 𝔹), vec A n -> vec A (ax ℕ)
+\end{coqcode}
+%
+in order to avoid the complications related to specifying the
+size of the vector produced by \coqe{filter}.
+%
+The problem is that the term:
+\begin{coqcode}
+  head ℕ (ax ℕ) (filter ℕ 4 even [ 0 ; 1 ; 2 ; 3 ])
+\end{coqcode}
+does not type-check since the type of the filtering expression, \coqe{vec A (ax ℕ)},
+is not convertible to \coqe{vec A (S (ax ℕ))}, as required by the domain type of
+\coqe{head ℕ (ax ℕ)}.
+
+Thus, the axiomatic approach is not useful for making dependently-typed programming
+any more pleasing.
+%
+That is, using axioms goes in total opposition to the \kl{gradual guarantee}
+– characteristic of gradual languages \sidecite{Siek2015} –
+when it comes to the smoothness of
+the static-to-dynamic checking spectrum: given a well-typed term,
+making it “less precise” by using axioms for some sub-terms actually
+results in programs that do not type-check or reduce any more.
+
+%
+Because \kl{CICax} amounts to working in \kl{CIC}
+with an initial context extended with $\axiom$, this theory
+satisfies \kl{normalization} as much as \kl{CIC}, so conversion remains decidable.
+However, \kl{CICax} lacks a satisfying notion of \kl{safety}, because 
+there is an \emph{infinite} number \emph{stuck} terms
+that inhabit any type \coqe{A}.
+%
+For instance, in $\Bool$, we not only have the normal forms $\true$,
+$\false$, and $\axiom \Bool$, but also plenty of terms stuck on an
+eliminations of $\axiom$, such as $\axiom (\Nat \to \Bool)\ 1$ or
+$\ind{\Nat}{\axiom \Nat}{P}{b_{\z},b_{\Sop}}$.
+
+\section{The Exceptional Approach}
+\label{sec:extt}
+
+\sidetextcite{Pedrot2018} present the exceptional type theory \intro{ExTT},
+demonstrating that it is possible to extend a
+type theory with a wildcard term while enjoying a satisfying notion of safety,
+which coincides with that of programming languages with exceptions.
+
+\kl{ExTT} is essentially \kl{CICerr}, that is, it
+extends \kl{CIC} with an indexed error term $\err[A]$ that can inhabit any type $A$.
+But instead of being treated as a computational black box like $\axiom A$,
+$\err[A]$ is endowed with computational content
+emulating exceptions in programming languages, which propagate instead of being stuck.
+%
+For instance, in \kl{ExTT} the following conversion holds:
+\[\ind{\Bool}{\err[\Bool]}{\Nat}{0,1} \conv \err[\Nat]\]
+
+Notably, such exceptions are \intro{call-by-name} exceptions, so one can only
+discriminate exceptions on positive types – \ie inductive types –, not on negative
+types – \ie function types. In particular, in \kl{ExTT}, $\err[A \to B]$ reduces to
+$\l x : A.\ \err[B]$ are \kl{convertible}.
+So $\err[A]$ is a normal form of $A$ only if $A$ is a positive type.
+
+\kl{ExTT} has a number of interesting properties. It is
+\kl{normalizing} and \kl{safe}, taking $\err[A]$
+into account as usual in programming languages,
+where exceptions are possible outcomes of computation: the canonical forms
+of a positive type – \eg $\Bool$ – are either the
+constructors of that type – \eg $\true$ and $\false$ –, or
+$\err$ at that type – \eg $\err[\Bool]$.
+%
+As a consequence, \kl{ExTT} does not satisfy full \kl{canonicity}, but it
+a weaker form of it. In particular, it enjoys
+(weak) \kl{logical consistency}: any closed proof of $\Empty$ is \kl{convertible}
+to $\err[\Empty]$, which is discriminable at $\Empty$.
+%
+It has been shown that we can still reason soundly in an
+exceptional type theory, either using a parametricity
+requirement \sidecite{Pedrot2018}, or, more flexibly, a
+different universe hierarchies \sidecite{Pedrot2019}.
+
+It is also important to highlight that this weak form of logical
+consistency is the \emph{most} one can expect in
+a theory with effects. Indeed, \sidetextcite{Pedrot2020} have
+shown that it is not possible to define a type theory with full
+dependent elimination%
+\sidenote{That is, a constructor such as $\indop$.}
+that has observable effects – of which
+exceptions are a particular case – and at the same time validates
+traditional \kl{canonicity}.
+%
+Settling for less, as explained in \cref{sec:axiom} for the axiomatic
+approach, leads to an infinite number of stuck terms, even in the
+case of booleans, which contradicts the type safety criterion of gradual languages,
+which only allows for runtime type errors.
+
+Unfortunately, while \kl{ExTT} solves the safety issue of the axiomatic approach, it still suffers from the same limitation as the axiomatic approach regarding type-level comparison.
+Indeed, even though we can use $\err$ to inhabit any type,
+we cannot use it in any meaningful way at the type level.
+In such a system, the following term
+\begin{coqcode}
+  head ℕ (err ℕ) (filter ℕ 4 even [ 0 ; 1 ; 2 ; 3 ])
+\end{coqcode}
+does not type-check, because \coqe{vec A (err ℕ)} is still not convertible to
+\coqe{vec A (S (err ℕ))}.
+The reason is that \coqe{err ℕ} behaves like an extra constructor to \coqe{ℕ}, so
+\coqe{S (err ℕ)} is itself a normal form,
+and normal forms with different head constructors
+– \coqe{S} and \coqe{err} – are not convertible.
+
+\section{The Gradual Approach: Simple Types}[Simple Gradual Types]
+\label{sec:grad-simple}
+
+\section{The Gradual Approach: Dependent Types}[Dependent Gradual Types]
+\label{sec:graduality}
+
+\section{The Fire Triangle of Graduality}[Fire Triangle of Graduality]
+\label{sec:fire-triangle}
+
+\section{GCIC: Overall Approach, Main Challenges and Results}
+\label{sec:gcic-overview}

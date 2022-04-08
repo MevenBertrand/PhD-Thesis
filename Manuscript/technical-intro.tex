@@ -924,6 +924,12 @@ characterize well-typed normal terms.
   either $\no t$ holds, or there is $t'$ such that $t \ored t'$.
 \end{property}
 
+To prove progress, one can again resort to induction on the typing derivation. The key point
+is to characterize the \kl{normal forms} at a given type,
+by proving that they are either \kl{neutral forms}, or \kl{canonical form} of a right kind.
+For instance, if $t$ is a normal form and has a function type, then it must be
+either a neutral or a λ-abstraction.
+
 One way to understand \kl{progress} – and, indeed, the origin of the name – is that well-typed
 terms do not get stuck: either they have finished computing, and thus satisfy $\no$, or
 they should be able to make progress by reducing further.
@@ -933,11 +939,13 @@ well-typed, so is either a normal form or reduces, and so on. This decomposition
 program safety into progress and preservation
 has been standard since \sidetextcite{Wright1994}.
 
-To prove progress, one can again resort to induction on the typing derivation. The key point
-is to characterize the \kl{normal forms} at a given type,
-by proving that they are either \kl{neutral forms}, or \kl{canonical form} of a right kind.
-For instance, if $t$ is a normal form and has a function type, then it must be
-either a neutral or a λ-abstraction.
+\begin{property}[\intro{Safety}]
+  \kl{Safety} is the combination of \kl{progress} and \kl{preservation}.
+  It implies that if $\vdash t : T$ and $t \red v \not \ored$, then $v$ must be a
+  canonical form.
+\end{property}
+
+
 
 \subsection{Normalization}
 
