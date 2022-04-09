@@ -18,7 +18,7 @@ This being said, we can still highlight some practical motivating scenarios
 for gradualizing \kl{CIC},
 anticipating what could be achieved in a hypothetical gradual version of \eg \kl{Coq}.
 
-\paragraph{Smoother development with indexed types.}
+\subsection{Smoother development with indexed types}
   \label{ex:indices}
   
 \kl{CIC}, which underpins languages and proof assistants such as \kl{Coq},
@@ -67,7 +67,7 @@ head ℕ ? (filter ℕ 2 even [ 1 ; 3 ])
 type-checks but fails during reduction, upon the discovery that the assumption
 of non-emptiness of the argument to head is in fact incorrect.
 
-\paragraph{Defining general recursive functions.}
+\subsection{Defining general recursive functions}
 \label{ex:rec}
 
 Another challenge of working in \kl{CIC} is to convince the type-checker that recursive
@@ -89,7 +89,7 @@ allows the definition of fixed point combinators \sidecite{Siek2006,Eremondi2019
 one can use this added expressiveness to bypass termination checking locally.
 This just means that the external facilities provided by specific proof assistant implementations now become internalized in the language.
 
-\paragraph{Large elimination, gradually.}
+\subsection{Large elimination, gradually}
 \label{ex:elim}
 
 One of the argued benefit of dynamically-typed languages, which is accommodated by gradual typing, is the ability to define functions that can return values of different types depending on their inputs, such as the following%
@@ -122,7 +122,7 @@ ensures that if the function is actually faithful to the most precise type
 then giving it any of the less precise types above does not introduce any new failure
 \sidecite{Siek2015}.
 
-\paragraph{Gradually refining specifications.}
+\subsection{Gradually refining specifications}
 \label{ex:specif}
   
 Let us come back to the \coqe{filter} function from the first example.
@@ -163,14 +163,14 @@ Definition count A n (p : A -> 𝔹) (v: vec A n) : ℕ :=
 the definition of \coqe{filter} does not type-check anymore,
 as the axiom at the type-level is not convertible to any given value.
 
-\paragraph{Gradual programs or proofs?}
+\subsection{Gradual programs or proofs?}
 
 When adapting the ideas of gradual typing to a dependent type theory, one might
 expect to deal with programs rather than proofs.
 This observation is however misleading: from the point of view of the Curry-Howard correspondence, proofs and programs are intrinsically related, so that gradualizing the latter begs for a gradualization of the former. The examples above illustrate mixed programs and specifications, which naturally also appeal to proofs: dealing with indexed types typically requires exhibiting equality proofs to rewrite terms.
 Moreover, there are settings in which one must consider computationally-relevant proofs, such as constructive algebra and analysis, homotopy type theory, etc. In such settings, using axioms to bypass unwanted proofs breaks reduction, and because typing requires reduction, the use of axioms can simply prevent typing, as illustrated in the last example.
 
-\paragraph{Fundamental Trade-offs in Gradual Dependent Type Theory}
+\subsection{Fundamental Trade-Offs}
 
 Before exposing a specific approach to gradualizing \kl{CIC},
 there is a need for a general analysis of the properties at stake and tensions
@@ -180,17 +180,16 @@ Thus, in what follows
 we start by recalling the two cornerstones properties of progress and normalization,
 and explain to the need to reconsider them carefully in a gradual setting
 (\cref{sec:norm-canon-endang}).
-Next, we show why the obvious approach based on axioms is unsatisfying (\cref{sec:axiom}),
-as well as why simply using a type theory with exceptions \sidecite{Pedrot2018} is not enough
-either (\cref{sec:extt}).
+Next, we show why two obvious approaches based respectively on axioms (\cref{sec:axiom}),
+and exceptions (\cref{sec:extt}) are unsatisfying.
 We then turn to the gradual approach, recalling its essential properties in the simply-typed
 setting (\cref{sec:grad-simple}),
 and revisiting them in the context of a dependent type theory (\cref{sec:graduality}).
 This finally leads us to establish a fundamental impossibility in the gradualization
 of \kl{CIC}, which means that at least one of the desired properties has to be sacrificed (\cref{sec:fire-triangle}).
-
-Once this is done, we are in a better position to present our \kl{gradual},
-\kl{dependently} typed system, \kl{GCIC} and its main characteristics.
+With all set up, we can finally present our \kl{gradual},
+\kl{dependently} typed system, \kl{GCIC}, and its main characteristics
+(\cref{sec:gcic-overview}).
 
 \section{Safety and Normalization, Endangered}[Safety and Normalization]
 \label{sec:norm-canon-endang}
@@ -225,16 +224,16 @@ Once this is done, we are in a better position to present our \kl{gradual},
 % this system, conversion---which coarsely means syntactic equality
 % up-to reduction---is used in the type-checking algorithm.
 
-
 In the gradual setting, the two cornerstone properties of \kl{CIC} exposed in
 \cref{sec:tech-properties}, \kl{safety}%
 \sidenote{The combination of \kl{progress} and \kl{preservation}.}
-and \kl{normalization} must be considered with care.
+and \kl{normalization}, must be considered with care.
 %
-First, any closed term can be ascribed the unknown type $\?$
+
+First, any \kl{closed term} can be ascribed the unknown type $\?$
 and then any other type: for instance, $0 \ascop \? \ascop \Bool$ is a
 well-typed closed term of type $\Bool$.%
-\sidenote{\label{ftn:ascription}
+\sidenote{
   We write $a \ascop A$ for a type \intro{ascription}, which we define as syntactic sugar
   for $(\l x:A.\ x)\ a$ \sidecite[3em]{Siek2006}; in
   other systems, it is taken as a primitive notion \sidecite[5em]{Garcia2016}.}
@@ -258,14 +257,15 @@ and therefore in a standard gradually-typed calculus such as
 \cite{Siek2006}, a variant of $\Omega$ that uses
 $(\l x : \?.\ x\ x)$ as $\delta$ is well-typed and diverges – \ie reduces indefinitely.
 The reason is that the domain type of $\delta$, the \kl{unknown type} $\?$,
-is \reintro{consistent} with the type of $\delta$ itself,
+is \reintro(grad){consistent} with the type of $\delta$ itself,
 $\? \to \?$, meaning that we wish to optimistically accept the application as
 plausibly valid. But at runtime, nothing prevents reduction from going on forever.
 Therefore, if one aims at ensuring \kl{normalization} in a gradual setting,
 some care must be taken to restrict expressiveness.
 
+\section{The Non-Gradual Approaches}
 
-\section{The Axiomatic Approach}
+\subsection{Axioms}
 \label{sec:axiom}
 
 Let us first address the elephant in the room:
@@ -285,7 +285,7 @@ However, we cannot use the axiom $\axiom A$ in any meaningful way \emph{at the
   type level}.
 %
 For instance, going back to \cref{ex:indices},
-one might be tempted to give to the\coqe{filter} function on vectors the type
+one might be tempted to give to the \coqe{filter} function on vectors the type
 \begin{coqcode}
   forall A n (p : A -> 𝔹), vec A n -> vec A (ax ℕ)
 \end{coqcode}
@@ -324,41 +324,41 @@ $\false$, and $\axiom \Bool$, but also plenty of terms stuck on an
 eliminations of $\axiom$, such as $\axiom (\Nat \to \Bool)\ 1$ or
 $\ind{\Nat}{\axiom \Nat}{P}{b_{\z},b_{\Sop}}$.
 
-\section{The Exceptional Approach}
+\subsection{Exceptions}
 \label{sec:extt}
 
-\sidetextcite{Pedrot2018} present the exceptional type theory \intro{ExTT},
+\sidetextcite[0em]{Pedrot2018} present the exceptional type theory \intro{ExTT},
 demonstrating that it is possible to extend a
 type theory with a wildcard term while enjoying a satisfying notion of safety,
 which coincides with that of programming languages with exceptions.
 
-\kl{ExTT} is essentially \kl{CICerr}, that is, it
-extends \kl{CIC} with an indexed error term $\err[A]$ that can inhabit any type $A$.
+\kl{ExTT} is essentially \kl{CICrai}, that is, it
+extends \kl{CIC} with an indexed exceptional term $\rai[A]$ that can inhabit any type $A$.
 But instead of being treated as a computational black box like $\axiom A$,
-$\err[A]$ is endowed with computational content
+$\rai[A]$ is endowed with computational content
 emulating exceptions in programming languages, which propagate instead of being stuck.
 %
 For instance, in \kl{ExTT} the following conversion holds:
-\[\ind{\Bool}{\err[\Bool]}{\Nat}{0,1} \conv \err[\Nat]\]
+\[\ind{\Bool}{\rai[\Bool]}{\Nat}{0,1} \conv \rai[\Nat]\]
 
 Notably, such exceptions are \intro{call-by-name} exceptions, so one can only
 discriminate exceptions on positive types – \ie inductive types –, not on negative
-types – \ie function types. In particular, in \kl{ExTT}, $\err[A \to B]$ reduces to
-$\l x : A.\ \err[B]$ are \kl{convertible}.
-So $\err[A]$ is a normal form of $A$ only if $A$ is a positive type.
+types – \ie function types. In particular, in \kl{ExTT}, $\rai[A \to B]$ reduces to
+$\l x : A.\ \rai[B]$ are \kl{convertible}.
+So $\rai[A]$ is a normal form of $A$ only if $A$ is a positive type.
 
 \kl{ExTT} has a number of interesting properties. It is
-\kl{normalizing} and \kl{safe}, taking $\err[A]$
+\kl{normalizing} and \kl{safe}, taking $\rai[A]$
 into account as usual in programming languages,
 where exceptions are possible outcomes of computation: the canonical forms
 of a positive type – \eg $\Bool$ – are either the
 constructors of that type – \eg $\true$ and $\false$ –, or
-$\err$ at that type – \eg $\err[\Bool]$.
+$\rai$ at that type – \eg $\rai[\Bool]$.
 %
 As a consequence, \kl{ExTT} does not satisfy full \kl{canonicity}, but it
 a weaker form of it. In particular, it enjoys
 (weak) \kl{logical consistency}: any closed proof of $\Empty$ is \kl{convertible}
-to $\err[\Empty]$, which is discriminable at $\Empty$.
+to $\rai[\Empty]$, which is discriminable at $\Empty$.
 %
 It has been shown that we can still reason soundly in an
 exceptional type theory, either using a parametricity
@@ -381,27 +381,620 @@ case of booleans, which contradicts the type safety criterion of gradual languag
 which only allows for runtime type errors.
 
 Unfortunately, while \kl{ExTT} solves the safety issue of the axiomatic approach, it still suffers from the same limitation as the axiomatic approach regarding type-level comparison.
-Indeed, even though we can use $\err$ to inhabit any type,
+Indeed, even though we can use $\rai$ to inhabit any type,
 we cannot use it in any meaningful way at the type level.
 In such a system, the following term
 \begin{coqcode}
-  head ℕ (err ℕ) (filter ℕ 4 even [ 0 ; 1 ; 2 ; 3 ])
+  head ℕ (raise ℕ) (filter ℕ 4 even [ 0 ; 1 ; 2 ; 3 ])
 \end{coqcode}
-does not type-check, because \coqe{vec A (err ℕ)} is still not convertible to
-\coqe{vec A (S (err ℕ))}.
-The reason is that \coqe{err ℕ} behaves like an extra constructor to \coqe{ℕ}, so
-\coqe{S (err ℕ)} is itself a normal form,
+does not type-check, because \coqe{vec A (raise ℕ)} is still not convertible to
+\coqe{vec A (S (raise ℕ))}.
+The reason is that \coqe{raise ℕ} behaves like an extra constructor to \coqe{ℕ}, so
+\coqe{S (raise ℕ)} is itself a normal form,
 and normal forms with different head constructors
-– \coqe{S} and \coqe{err} – are not convertible.
+– \coqe{S} and \coqe{raise} – are not convertible.
 
-\section{The Gradual Approach: Simple Types}[Simple Gradual Types]
-\label{sec:grad-simple}
+\section{Gradual Simple Types}
+\label{sec:grad-simpl}
 
-\section{The Gradual Approach: Dependent Types}[Dependent Gradual Types]
+Before going on with our exploration of the fundamental challenges in gradual dependent type
+theory, let us go over some key concepts and expected properties,
+in the context of simple types.
+
+\subsection{Static semantics}
+
+\intro[gradual]{Gradually typed} languages introduce the \intro{unknown type}, written $\?$,
+which is used to indicate the lack of static typing information \sidecite{Siek2006}.
+One can understand such an unknown type as an abstraction of the
+set of possible types that it stands for \sidecite{Garcia2016}.
+This interpretation provides a naive but natural understanding of the meaning of
+partially-specified types. For instance $\Bool \to \?$ denotes the set of all function types
+with $\Bool$ as domain.
+Given imprecise types, a gradual type system relaxes all type predicates and functions in order
+to optimistically account for occurrences of $\?$.
+In a simple type system, the main predicate on types is equality, whose relaxed counterpart is called \intro(grad){consistency}%
+\sidenote{Not to be confused with \kl{logical consistency}!},
+usually written $\cons$.
+For instance, given a function $f$ of type $\Bool \to \?$, the expression $(f \true) + 1$
+should be well-typed, because $f$ could \emph{plausibly} return a number,
+given that its codomain is $\?$, which is \kl(grad){consistent} with $\Nat$.
+
+Note that there are other ways to consider imprecise types, for instance by restricting the
+unknown type to denote base types – in which case $\?$ would not be \kl(grad){consistent} with any
+function type –, or by only allowing imprecision in certain parts of the syntax of types,
+such as effects \sidecite{BanadosSchwerter2016}, security labels
+\sidecite{Fennell2013,Toro2018}, annotations \sidecite{Thiemann2014},
+or only at the top-level \sidecite{Bierman2010}.
+Here, we do not consider these specialized approaches, which have benefits and challenges
+of their own, and stick to the mainstream setting of gradual typing
+in which the unknown type is \kl(grad){consistent} with any type and can occur
+anywhere in the syntax of types.
+
+\subsection{Dynamic semantics}
+
+Having optimistically relaxed typing based on \kl(grad){consistency},
+a gradual language must detect inconsistencies at runtime if it is to satisfy \kl{safety},
+which therefore has to be formulated in a way that encompasses runtime errors.
+
+For instance, if the function $f$ above returns $\false$,
+then an \kl{error} must be raised to avoid reducing to $\false + 1$ – a closed stuck term,
+corresponding to a violation of safety.
+The traditional approach to do so is to avoid giving a direct reduction semantics to gradual
+programs, and, instead, to elaborate them to an intermediate language with runtime \kl{casts},
+in which casts between inconsistent types raise \intro{errors}%
+\sidenote{We write those $\err$.}
+\sidecite{Siek2006}.
+
+In such a language, the notion of \kl{canonical form} used to phrase \kl{progress} – and,
+thus, \kl{safety} – has to account for these newly introduced errors. Indeed, $\err[A]$
+is now a valid \kl{canonical form} at type $A$ – at least for some types such as $\Bool$,
+since as we explained in \cref{sec:extt} \kl{call-by-name} errors are not normal forms of
+function types.
+
+Alternatively – and equivalently from a semantics point of view – one can define \kl{reduction}
+of gradual programs directly on gradual typing derivations augmented with evidence about
+consistency judgments, and report errors when transitivity of such judgments is
+unjustified \sidecite{Garcia2016}.
+There are many ways to realize each of these approaches,
+which vary in terms of efficiency and eagerness of checking \sidecite{Herman2010,TobinHochstadt2008,Siek2010,Siek2009,Toro2020,BanadosSchwerter2021}.
+
+\subsection{Conservativity} A first important property of a gradual language is that it is a
+\intro{conservative extension} of a related static typing discipline:
+the gradual and static systems should coincide on static terms.
+This property is hereafter called \reintro{Conservativity},
+with respect to a given static system.
+%For instance, we write that \GTLC satisfies \pconst{\STLC}.
+Technically, \sidetextcite{Siek2006} prove that typing and reduction of \kl{GTLC} and
+\kl{STLC} coincide on their common set of terms – \ie those which are fully precise.
+An important aspect of \kl{conservativity} is that the type formation rules and typing
+rules themselves are also preserved, up to the presence of $\?$ as a new type and the
+adequate lifting of predicates and functions \sidecite{Garcia2016}.
+While this aspect is often left implicit, it ensures that the gradual type system does not
+behave in ad hoc ways on imprecise terms.
+
+Note that, despite its many issues, \kl{CICax} (\cref{sec:axiom}) satisfies
+\kl{conservativity} (with respect to \kl{CIC}):
+all pure – \ie axiom-free – \kl{CIC} terms behave as they would in \kl{CIC}.
+More precisely, two \kl{CIC} terms are convertible in \kl{CICax}
+if and only if they are convertible in \kl{CIC}.
+Importantly, this does not mean that \kl{CICax} is a conservative extension of
+\kl{CIC} \emph{as a logic} – which it clearly is not!
+
+\subsection{Gradual guarantees}
+The early accounts of gradual typing emphasized \kl(grad){consistency} as the central idea.
+However, \sidetextcite{Siek2015} observed that this characterization left too many
+possibilities for the impact of type information on program behavior,
+compared to what was originally intended \sidecite{Siek2006}.
+%
+Consequently, \textcite{Siek2015} brought forth type \intro{precision} – denoted $\pre$ –
+as the key notion, from which consistency can be derived: two types $A$ and $B$
+are consistent if and only if there exists $T$ such that $T \pre A$ and $T \pre B$.
+The \kl{unknown type} $\?$ is the most imprecise type of all,
+\ie $T \pre \?$ for any $T$.
+%
+Precision is a pre-order that can be used to capture the intended \emph{monotonicity} of
+the static-to-dynamic spectrum afforded by gradual typing.
+The static and dynamic \intro{gradual guarantees} specify that typing
+and reduction should be \emph{monotone with respect to precision}:
+losing precision should not introduce new static or dynamic errors.
+%
+These properties require precision to be extended from types to terms.
+\textcite{Siek2015} present a natural extension that is purely syntactic:
+a term is more precise than another if they are \kl{α-equal}, except
+for their type annotations, which can be more precise in the former.
+
+\AP The \kl{static gradual guarantee} (\reintro{SGG})
+ensures that imprecision does not break typeability:
+\begin{property}[\intro{Static Gradual Guarantee}]
+If $t \pre u$ and $\vdash t \ty T$, then $\vdash u \ty U$
+for some $U$ such that $T \pre U$.
+\end{property}
+%
+This \kl{SGG} captures the intuition that “sprinkling $\?$ over a term“
+maintains its typeability. As such, the notion of \kl{precision} $\pre$ used to
+formulate the \kl{SGG} is inherently syntactic,
+over as-yet-untyped terms: typeability is the \emph{consequence} of the \kl{SGG} theorem.
+
+\AP The \kl{dynamic gradual guarantee} (\reintro{DGG}) is the key result that
+links the syntactic notion of precision to reduction:
+if $t \pre t'$ and $t$ reduces to some value $v$, then
+$t'$ reduces to some value $v'$ such that $v precise v'$;
+and if $t$ diverges, then so does $t'$.
+This  entails that $t \pre t'$ means that $t$ may \kl{error} more than $t'$,
+but otherwise they should behave the same.
+%
+Instead of the original formulation of the DGG by
+\textcite{Siek2015}, \sidetextcite{New2018} appeal to the
+semantic notion of \kl{observational error-approximation} to capture
+the relation between two terms that are contextually equivalent, except
+that one may fail more:%
+\sidenote{\kl{Observational error-approximation}
+  does not mention the case where $\mathcal{C}[t]$
+  reduces to $\true$ or $\false$ but the quantification
+  over all contexts ensures that, in that case,
+  $\mathcal{C}[t']$ must reduce to the same value.}
+
+\begin{definition}[\intro{Observational error-approximation}]
+\label{def:obsapprox}
+  A term $\Gamma \vdash t \ty T$ \kl{observationally error-approximates}
+  a term $\Gamma \vdash t' \ty T'$, noted $ t
+  \obsApprox t'$, if for all boolean-valued observation contexts
+  $\mathcal{C} : (\Gamma \vdash T) \Rightarrow (\vdash \Bool)$
+  closing over all free variables, either
+  \begin{itemize}
+  \item $\mathcal{C}[t]$ and $\mathcal{C}[t']$ both diverge; 
+  \item otherwise if $\mathcal{C}[t'] \red \err[\Bool]$, then $\mathcal{C}[t] \red \err[\Bool]$.
+  \end{itemize}
+
+  Two terms $t$ and $t'$ are \intro{observationally equivalent}, written $t \obsEquiv t'$,
+  if they are related by \kl{observational error-approximation} in both directions.
+\end{definition}
+
+Using this semantic notion, the \kl{DGG} simply states that term 
+precision implies \kl{observational error-approximation}:
+
+\begin{property}[\intro{Dynamic Gradual Guarantee}]
+If $t \pre t'$ then $t \obsApprox t'$.
+\end{property}
+
+While often implicit, it is important to highlight that the \kl{DGG} is relative to
+both the notion of \kl{precision} $\pre$ and the notion of observations $\obsApprox$.
+Indeed, it is possible to study alternative notions of precisions beyond the natural definition
+stated by \sidetextcite{Siek2015}.
+For instance, following the Abstracting Gradual Typing methodology \sidecite{Garcia2016},
+\kl{precision} follows from the definition of gradual types through a concretization to sets
+of static types. This opens the door to justifying alternative precisions,
+\eg by considering that the unknown type only stands for specific static types, such as base types.
+Additionally, variants of precision have been studied in more challenging typing disciplines where
+the natural definition seems incompatible with the \kl{DGG}, see \eg \sidetextcite{Igarashi2017}.
+As we will soon see, it can also be necessary in certain situations to consider another notion of observations.
+
+\subsection{Graduality}
+
+As we have seen, the \kl{DGG} is relative to a notion of \kl{precision},
+but what should this relation be?
+To go beyond a syntactic axiomatic definition of \kl{precision}, \sidetextcite{New2018}
+characterize the good dynamic behavior of a gradual language:
+the runtime checking mechanism used to define it, such as casting,
+should only perform type-checking, and not otherwise affect behavior.
+%
+Specifically, they mandate that precision gives rise
+to \intro{embedding-projection pairs} (\reintro{ep-pairs}):
+the cast induced by two types related by precision forms an adjunction,
+which induces a retraction.
+In particular, going to a less precise type and back is the identity:  
+for any term $a$ of type $A$, and assuming $A \pre B$,
+$\asc{\asc{a}{B}}{A}$%
+\sidenote{Recall that $\ascop$ is a type \kl{ascription}.}
+should be observationally equivalent to $a$.
+For instance, $\asc{\asc{1}{\?}}{\Nat}$ should be equivalent to $1$. 
+Dually, when gaining precision, there is the potential for \kl{errors}:
+given a term $b$ of type $B$, $\asc{\asc{b}{A}}{B}$ may fail. 
+By considering \kl{error} as the most precise term, this can be stated as 
+$\asc{\asc{b}{A}}{B} \pre b$.
+For instance, with the imprecise successor function $f$ of type $\? \to \?$,
+defined as $\l n : \?.\ \asc{\S n}{\?}$,
+we have $\asc{\asc{f}{\Nat \to \Bool}}{\? \to \?} \pre f$,
+because the ascribed function will fail when applied.
+
+Technically, the adjunction part states that if we have $A \pre B$, a term $a$ of type $A$,
+and a term $b$ of type $B$, then $a \pre \asc{b}{A}$ if and only if $\asc{a}{B} \pre b$.
+%
+\AP The retraction part further states that $a$ is not only more \kl{precise}
+than$\asc{\asc{a}{B}}{A}$ – which is given by the unit of the adjunction –
+but is \intro{equi-precise} to it – noted $t \equiprecise \asc{\asc{t}{B}}{A}$.
+Because the \kl{DGG} dictates that precision implies \kl{observational error-approximation},
+\kl{equi-precision} implies \kl{observational equivalence},
+and so losing and recovering precision must produce a term that is \kl{observationally
+equivalent} to the original one.
+
+% A couple of additional observations need to be made here, as they will play a major role in the development that follows.
+\AP These two approaches to characterizing gradual typing highlight the need to distinguish
+\intro(pre){syntactic} from \intro(pre){semantic} notions of precision.
+Indeed, with the usual \kl{syntactic precision} from \sidetextcite{Siek2015},
+one cannot derive the \kl{ep-pair} property, in particular the \kl{equi-precision} stated above.
+This is why \sidetextcite{New2018} introduce a \kl{semantic precision},
+defined on well-typed terms. This \kl{semantic precision} serves
+as a proxy between \kl{syntactic precision} and the desired
+\kl{observational error-approximation}.
+%
+However, a type-based \kl{semantic precision} cannot be used for the \kl{SGG}.
+Indeed, this theorem%
+\sidenote{Not addressed by \textcite{New2018}.}
+requires a notion of \kl{precision} that \emph{predates} typing:
+well-typedness of the less precise term is the \emph{consequence} of the theorem. 
+Therefore, a full study of a gradual language that covers \kl{SGG}, \kl{DGG}, and
+\kl{embedding-projection pairs} needs to consider both \kl(pre){syntactic} and \kl(pre){semantic}
+notions of precision.
+
+Note also that the \kl{embedding-projection} property does not
+\textit{per se} imply the \kl{DGG}: one could pick \kl{precision} to be the universal relation,
+which trivially induces \kl{ep-pairs}, but does not imply \kl{observational error-approximation}.
+Conversely, it appears that, in the simply-typed setting considered in prior work,
+the \kl{DGG} implies the \kl{embedding-projection} property.
+In fact, \textcite{New2018} essentially advocate \kl{ep-pairs} as an elegant and compositional
+proof technique to establish the \kl{DGG}.
+But as we uncover later on, it turns out that in certain settings – and in particular dependent types – the \kl{embedding-projection} property imposes \emph{more}
+desirable constraints on the behavior of casts than the \kl{DGG} alone.
+
+In regard of these two remarks, in what follows we use the term \intro{graduality}
+for the \kl{DGG} established with respect to a notion of \kl{precision} which also
+induces \kl{embedding-projection pairs}.
+
+\section{Graduality and Dependent Types}
 \label{sec:graduality}
+
+Extending the gradual approach to a setting with full \kl(typ){dependent} types
+requires reconsidering several aspects.
+
+\subsection{Newcomers: the unknown term and the error type}
+%
+In the simply-typed setting, there is a clear stratification: $\?$ is at the type level,
+$\err$ is at the term level. Likewise, type \kl{precision}, with $\?$ as greatest element,
+is separate from term \kl{precision}, with $\err$ as least element.
+In the absence of a type/term syntactic distinction as in \kl{CIC},
+this stratification is untenable.
+
+Because types permeate terms, $\?$ is no longer only the \kl{unknown} \emph{type},
+but it also acts as an “unknown term”.
+In particular, this makes it possible to consider unknown indices for types,
+as in \cref{ex:indices}.
+More precisely, there is a family of unknown terms $\?[A]$, indexed by their type $A$.
+The traditional unknown type is just $\?[\uni]$, the unknown of the universe $\uni$.
+
+Dually, because terms permeate types, we also have the “\kl{error} type”, $\err[\uni]$.
+We have to deal with \kl{errors} in types.
+
+Finally, \kl{precision} must be unified as a single pre-order, with $\?$ at the top
+and $\err$ at the bottom.
+The most imprecise term of all%
+\sidenote{More exactly, there is one such term per universe.}
+is $\?[\?[\uni]]$ – $\?$ for short. At the bottom, $\err[A]$
+is the most precise term of type $A$.
+
+\subsection{Revisiting safety}
+
+The notion of \kl{canonical forms} used for \kl{safety} needs to be extended not
+only with errors as in the simply-typed setting, but also with \kl{unknown terms}.
+Indeed, as there is an \kl{unknown term} $\?[A]$ inhabiting any type
+$A$, we have one new canonical form for each type $A$. In particular,
+$\?[\Bool]$ cannot possibly reduce to either $\true$, $\false$, or $\err[\Bool]$,
+because doing so would collapse the precision order.
+%
+Therefore, $\?[\Bool]$ should propagate computationally, exactly
+like $\rai[\Bool]$ in \cref{sec:extt} and $\err[\Bool]$.
+%
+
+The difference between \kl{errors} and \kl{unknown terms} is not on their dynamic behaviour,
+but rather on their static interpretation.
+%
+In essence, the unknown term $\?[A]$ is a dual form of exceptions: it
+propagates, but is optimistically comparable – \ie \kl(grad){consistent}
+with – any other term of type $A$. Conversely, $\err[A]$ should not be consistent
+with any term of type $A$.
+%
+Going back to the issues we identified with the axiomatic (\cref{sec:axiom})
+and exceptional (\cref{sec:extt}) approaches when dealing with type-level comparison,
+the term
+\begin{coqcode}
+  head ℕ (? ℕ) (filter ℕ 4 even [ 0 ; 1 ; 2 ; 3 ])
+\end{coqcode}
+now type-checks: since \coqe{S (? ℕ)} is \kl(grad){consistent} with \coqe{? ℕ},
+\coqe{vec A (? ℕ)} can be deemed \kl(grad){consistent} with
+\coqe{vec A (S (? ℕ))}.
+This newly-brought flexibility is the key to support the different scenarios from the introduction.
+%
+So let us now turn to the question of how to integrate \kl(grad){consistency} in
+a dependently-typed setting.
+
+\subsection{Relaxing conversion}
+
+In the simply-typed setting, \kl(grad){consistency} is a relaxing of syntactic type equality
+to account for imprecision.
+In a dependent type theory, there is a more powerful notion than syntactic equality to compare types, namely \kl{conversion}.
+The proper notion to relax in the gradual dependently-typed setting is therefore \kl{conversion},
+not syntactic equality.
+
+\sidetextcite{Garcia2016} give a general framework for gradual typing that explains how to relax any type predicate to account for imprecision:
+for a binary type predicate $P$, its \intro{consistent lifting} $\mathop{\tilde{P}}(A,B)$ holds
+if there exist static types $A'$ and $B'$ in the denotation%
+\sidenote{Concretization, in abstract interpretation parlance.}
+of $A$ and $B$, respectively, such that $\mathop{P}(A,B)$.
+As observed by \sidecite{Castagna2019}, when applied to equality,
+this defines \kl(grad){consistency} as a unification problem.
+Therefore, the \kl{consistent lifting} of \kl{conversion} ought to be that two terms
+$t$ and $u$ are consistently convertible if they denote some static terms $t'$ and $u'$ such that $t' \conv u'$. This is essentially \kl{higher-order unification},
+which is an undecidable problem.
+
+It is therefore necessary to adopt some approximation of this relation
+in order to be able to implement a gradual dependent type theory.
+There lies an important challenge: because of the dependency of typing on \kl{conversion},
+the \kl{static gradual guarantee} already demands monotonicity of the approximation
+one chooses. But if this approximation is defined using reduction, this demand is
+very close to that of the \kl{dynamic gradual guarantee}.%
+\sidenote{In a dependently-typed programming language with separate typing and execution phases, this demand is called the normalization gradual guarantee \sidecite[2em]{Eremondi2019}.}
+In practice, this means that the \kl{SGG} essentiallly depends on the \kl{DGG}!
+
+\subsection{Dealing with neutrals}
+Prior work on gradual typing usually only considers reduction on \kl{closed} terms in order to establish results about the dynamic semantic, such as the \kl{DGG}.
+%
+But in dependent type theory, conversion must operate on \kl{open} terms,
+and in particular \kl{neutral} terms such as $\asc{\asc{1}{X}}{\Nat}$,
+where $X$ is a type variable, or $x + 1$ where $x$ is of type $\Nat$ or $\?[\uni]$.
+%
+Such \kl{neutral} terms cannot reduce further, and can occur in both terms and types.
+Depending on the upcoming substitution, neutrals can fail, or not. For instance, in $\asc{\asc{1}{X}}{\Nat}$, if $\?[\uni]$ is substituted for $X$, the term should reduce to $1$,
+but it should fail if $\Bool$ is substituted instead.
+
+Importantly, less precise variants of \kl{neutrals} can reduce \emph{more}.
+For instance, $\asc{\asc{1}{\?[\uni]}}{\Nat}$ and $\?[\Nat] + 1$ are respectively
+less precise than the neutrals above, but do evaluate further – respectively to $1$
+and to $\?[\Nat]$. This interaction between \kl{neutrals}, \kl{reduction}, and \kl{precision}
+spices up the goal of establishing \kl{DGG} and \kl{graduality}.
+In particular, this re-enforces the need to consider \kl{semantic precision}, because a
+too \kl(pre){syntactic} notion of precision is likely not to be stable by reduction:
+$\asc{\asc{1}{X}}{\Nat} \pre \asc{\asc{1}{\?}}{\Nat}$ is obvious syntactically,
+but $\asc{\asc{1}{X}}{\Nat} \pre 1$ is not.
+
+\subsection{Dynamic Gradual Guarantee \vs Graduality}
+In a dependently-typed setting, it is possible to satisfy the \kl{DGG} while not satisfying the \kl{embedding-projection pairs} requirement of \kl{graduality}.
+
+To see why, consider a system in which any term of type $A$ that is not
+fully-precise immediately reduces to $\?[A]$.
+This system would satisfy \kl{conservativity}, \kl{safety}, \kl{normalization}…
+and the \kl{DGG}. Indeed, recall that the \kl{DGG} only requires \kl{reduction}
+to be monotone with respect to \kl{precision}, so using the most imprecise term
+$\?$ as a universal redux is surely valid. This collapse of the \kl{DGG}
+is impossible in the simply-typed setting because there is no \kl{unknown term}:
+it is only possible when $\?[A]$ exists \emph{as a term}.
+It is therefore possible to satisfy the \kl{DGG} while being useless when
+\emph{computing} with imprecise terms.
+
+On the contrary, the degenerate system breaks the \kl{embedding-projection} requirement of graduality stated by \sidetextcite{New2018}.
+For instance, $\asc{\asc{1}{\?[\uni]}}{\Nat}$ would be convertible to $\?[\Nat]$,
+which is \emph{not} \kl{observationally equivalent} to $1$.
+Therefore, the \kl{embedding-projection} requirement of graduality goes beyond the
+\kl{DGG} in a way that is critical in a dependent type theory,
+where it captures both the smoothness of the static-to-dynamic checking spectrum,
+and the proper computational content of valid uses of imprecision.
+
+\subsection{Observational refinement}
+
+Let us come back to the notion of \kl{observational
+error-approximation} used in the simply-typed setting to state the
+\kl{DGG}.
+\textcite{New2018} justify this notion because in
+”gradual typing we are not particularly interested in
+when one program diverges more than another, but rather when it
+produces more type errors.”
+
+%
+This point of view is adequate in the simply-typed setting because
+the addition of ascriptions may only produce more type errors; in particular, 
+adding ascriptions can never lead to divergence
+when the original term does not diverge itself.
+%
+Thus, in that setting, the definition of \kl{observational error-approximation}
+includes equi-divergence.
+%
+
+The situation in the dependent setting is however more
+complicated if the theory admits divergence.%
+\sidenote{
+  There exist non-gradual dependently-typed programming languages that admit divergence, \eg Dependent Haskell \sidecite[3em]{Eisenberg2016}, \kl{Idris} \sidecite[6em]{Brady2013}. We will also present one such theory in this article. 
+}
+In a gradual dependent type theory that admits divergence,
+a diverging term is more precise than the
+\kl{unknown term} $\?$. Because the unknown term does not diverge, this
+breaks the left-to-right implication of
+equi-divergence. Note that this argument does not rely on any specific definition of precision, 
+just on the fact that the unknown is a term, and not just a type.
+
+Additionally, an error at a diverging type $X$ may be ascribed to $\?[\uni]$,
+then back to $X$. Evaluating this
+roundtrip requires evaluating $X$ itself, which makes the less
+precise term diverge. This breaks the right-to-left implication of
+equi-divergence.
+
+To summarize,
+the way to understand these counterexamples is that 
+in a dependent and non-terminating setting, 
+the motto of graduality ought to be adjusted: more precise programs produce
+more type errors \emph{or diverge more}. This leads to the following definition
+of \kl{observational refinement}.
+
+\begin{definition}[\intro{Observational refinement}]
+%\label{def:obsref}
+  A term $\Gamma \vdash t \ty A$ \kl{observationally refines} a term
+  $\Gamma \vdash u \ty A$, noted $t \obsRef u$, if for all boolean-valued observation context
+  $\mathcal{C} \ty (\Gamma \vdash A) \Rightarrow (\vdash \Bool)$ closing over all
+  free variables, if $\mathcal{C}[u] \red \err[\Bool]$ or diverges,
+  then either $\mathcal{C}[t] \red \err[\Bool]$ or $\mathcal{C}[t]$ diverges.
+\end{definition}
+
+The main difference with \kl{observational error-approximation} is that
+in this definition, errors and divergence are collapsed.
+In particular, equi-refinement does \emph{not} imply \kl{observational equivalence},
+because one term might diverge while the other reduces to an error.
+Happily, if the gradual dependent theory is strongly normalizing, both notions
+\kl{observational error-approximation} $\obsApprox$ and \kl{observational refinement} $\obsRef$
+coincide.
 
 \section{The Fire Triangle of Graduality}[Fire Triangle of Graduality]
 \label{sec:fire-triangle}
+
+To sum up, we have so far seen four important properties that can be expected from a
+gradual type theory:
+\kl{safety}, \kl{conservativity} with respect to a given static system, \kl{graduality},
+and \kl{normalization}. Any type theory ought to satisfy at least \kl{safety}.
+Unfortunately, we now show that mixing the three other properties is impossible for \kl{STLC},
+and \textit{a fortiori} for \kl{CIC}.
+
+\subsection{Preliminary: regular reduction}
+To derive this general impossibility result by relying only on the properties
+and without committing to a specific language or theory,
+we need to assume that the reduction system used to decide conversion is "regular".
+This means that it only looks at the \kl(red){weak-head} normal forms of
+subterms for reduction rules,
+and does not magically shortcut reduction,
+for instance based on the specific syntax of inner terms.
+As an example, β-reduction is not allowed to look into the body of
+the lambda term to decide how to proceed.
+
+This property is satisfied in all actual systems we know of,
+but formally stating it in full generality, in particular without devoting
+to a particular syntax, is beyond our current scope.
+Fortunately, in the following, we rely only on a much weaker hypothesis,
+which is a slight strengthening of the retraction hypothesis of \kl{embedding-projection pairs}.
+Recall that retraction says that when $A \pre B$, any term $t$ of type $A$
+is equi-precise to $\asc{\asc{t}{B}}{A}$.
+
+We additionally require that for any context $\mathcal{C}$, if $\mathcal{C}[t]$
+reduces at least $k$ steps, then $\mathcal{C}[\asc{\asc{t}{B}}{A}]$ also reduces at
+least $k$ steps.
+Intuitively, this means that the reduction of $\mathcal{C}[\asc{\asc{t}{B}}{A}]$,
+while free to decide when to get rid of the embedding-to-$B$-projection-to-$A$,
+cannot use it to avoid reducing $t$.
+This property is true in all gradual languages,
+where type information at runtime is used only as a monitor.
+
+\subsection{Gradualizing \kl{STLC}}
+Let us first consider the case of \kl{STLC}.
+We show that $\Omega$ is \emph{necessarily} a well-typed, diverging term in any
+gradualization of \kl{STLC} that satisfies the other properties.
+
+\begin{marginfigure}
+  \includegraphics{Fire_triangle.pdf}
+  \caption{The Fire Triangle of Graduality}
+\end{marginfigure}
+
+\begin{theorem}[\reintro{Fire Triangle of Graduality} for \kl{STLC}]
+  \label{thm:triangle-STLC}
+
+Suppose a gradual type theory that satisfies both \kl{conservativity} with respect to
+\kl{STLC} and \kl{graduality}. Then it cannot be \kl{normalizing}.
+
+\end{theorem}
+
+
+\begin{proof}
+  We pose $\Omega \coloneqq \delta\ (\asc{\delta}{\?})$ with
+  $\delta \coloneqq \l x : \?.\ (\asc{x}{\? \to \?})~x$
+  and show that it must necessarily be a well-typed, diverging term.
+  %
+  Because the unknown type $\?$ is consistent with any type (\cref{sec:grad-simple}) and
+  $\? \to \?$ is a valid type (by \kl{conservativity}),
+  the self-applications in $\Omega$ are well-typed,
+  $\delta$ has type $\? \to \?$, and $\Omega$ has type $\?$.
+  %
+  Now, we remark that $\Omega = \mathcal{C}[\delta]$ with
+  $\mathcal{C}[\cdot] \coloneqq [\cdot]~(\asc{\delta}{\?})$.
+  %
+
+  We show by induction on $k$ that $\Omega$ reduces at least $k$
+  steps, the initial case being trivial.
+  %
+  Suppose that $\Omega$ reduces at least $k$ steps.
+  % %
+  By maximality of $\?$ with respect to precision, we have that
+  $\? \to \? \pre \?$, so we can apply the strengthening of \kl{graduality}
+  applied to $\delta$, which tells us that
+  $\mathcal{C}[\asc{\asc{\delta}{\?}}{\?\to\?}]$
+  reduces at least $k$ steps, because $\mathcal{C}[\delta]$ reduces at least $k$ steps.
+  
+  But $\Omega$ reduces in one step of β-reduction to
+  $\mathcal{C}[\asc{\asc{\delta}{\?}}{\?\to\?}]$.
+  So $\Omega$ reduces at least $k+1$ steps.
+
+  This means that $\Omega$ diverges, which is a violation of \kl{normalization}.
+\end{proof}
+
+This result could be extended to all terms of the untyped lambda calculus, not only $\Omega$,
+in order to obtain the embedding theorem of \kl{GTLC} \sidecite{Siek2015}.
+Therefore, the embedding theorem is not an independent property, but rather a consequence of \kl{conservativity} and \kl{graduality}. This is why we have not included it in
+our overview of the gradual approach in \cref{sec:grad-simple}.
+
+\subsection{Gradualizing \kl{CIC}}
+We can now prove the same impossibility theorem for \kl{CIC}, by reducing
+it to the case of \kl{STLC}.
+In general, this theorem can be proven for type theories others than \kl{CIC},
+as soon as they faithfully embed \kl{STLC}.
+
+\begin{theorem}[\intro{Fire Triangle of Graduality} for \kl{CIC}]
+\label{thm:triangle}
+
+  A gradual dependent type theory cannot simultaneously satisfy
+  \kl{conservativity} with respect to \kl{CIC}, \kl{graduality} and \kl{normalization}.
+\end{theorem}
+
+\begin{proof}
+  We show that a gradual dependent type theory satisfying \kl{CIC} and \kl{graduality}
+  must contain a diverging term, thus contravening \kl{normalization}.
+  The typing rules of \kl{CIC} contain the typing rules of \kl{STLC},
+  using only one universe $\uni[0]$,
+  and the notions of reduction coincide, so \kl{CIC} embeds
+  \kl{STLC}. This is a well-known result on \kl{Pure Type Systems} \sidecite{Barendregt1991}.
+  %
+  This means that \kl{conservativity} with respect to \kl{CIC} implies \kl{conservativity}
+  with respect to \kl{STLC}.
+
+  Additionally, \kl{graduality} can be specialized to the simply-typed fragment of the theory,
+  by setting the unknown type $\?$ to be $\?[\uni[0]]$.
+  Therefore, we can apply \cref{thm:triangle-STLC}
+  and we get a well-typed term that diverges, finishing the proof.
+\end{proof}
+
+\subsection{The Fire Triangle in practice}
+
+In non-dependent settings, all gradual languages where $\?$ is universal
+admit non-termination and therefore compromise \kl{normalization}.
+\sidetextcite{Garcia2020} discuss the possibility to gradualize \kl{STLC}
+without admitting non-termination, for instance by considering that $\?$ is not universal
+and denotes only base types%
+\sidenote{In such a case, $\? \to \? \not \pre \?$,
+  so our argument involving $\Omega$ is invalid.}.
+Without sacrificing the universal unknown type, one could design a variant of \kl{GTLC}
+that uses some mechanism to detect divergence, such as termination contracts
+\sidetextcite{Nguyen2019}. This would yield a language that certainly satisfies
+\kl{normalization}, but it would break \kl{graduality}. Indeed, because the contract system is
+necessarily under-approximating in order to be sound – and actually imply \kl{normalization} –,
+there are effectively-terminating programs with imprecise variants that yield termination
+contract errors.
+
+To date, the only related work that considers the gradualization of full dependent types with
+$\?$ as both a term and a type, is the work on \intro{GDTL} \sidecite{Eremondi2019}.
+\kl{GDTL} is a programming language with a clear separation between the typing and execution 
+phases, like \kl{Idris} \sidecite{Brady2013}.
+\kl{GDTL} adopts a different strategy in each phase:
+for typing, it uses \intro{Approximate Normalization}, which always produces $\?[A]$ as a result
+of going through imprecision and back. This implies that the system is \kl{normalizing} – and thus that conversion is decidable –, but it breaks \kl{graduality} for the same reason as the
+degenerate system we discussed in \cref{sec:graduality}%
+\sidenote{The example uses a gain of precision from the unknown type to $\Nat$,
+  so it behaves just the same in \kl{GDTL}}.
+In such a phased setting, the lack of computational content of Approximate Normalization is not
+critical, because it only means that typing becomes overly optimistic.
+To execute programs, \kl{GDTL} relies on standard \kl{GTLC}-like reduction semantics,
+which is computationally precise, but not \kl{normalizing}.
 
 \section{GCIC: Overall Approach, Main Challenges and Results}
 \label{sec:gcic-overview}

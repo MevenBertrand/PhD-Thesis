@@ -10,6 +10,8 @@
 \renewcommand{\familydefault}{\sfdefault}
 
 \setmathfont[Scale=MatchLowercase]{Libertinus Math}
+% because the Libertinus mathcal is ugly, see https://tex.stackexchange.com/questions/67881/resetting-mathcal-font-to-default
+\DeclareMathAlphabet{\mathcal}{OMS}{cmsy}{m}{n}
 
 %% Colors
 
@@ -32,7 +34,7 @@
 \addtokomafont{section}{\color{LightGreen}}
 \addtokomafont{subsection}{\color{LightGreen}}
 \addtokomafont{subsubsection}{\color{LightGreen}}
-\addtokomafont{paragraph}{\color{LightGreen}}
+%\addtokomafont{paragraph}{\color{LightGreen}}
 %\addtokomafont{captionlabel}{\color{LightBlue}}
 
 %% Tables

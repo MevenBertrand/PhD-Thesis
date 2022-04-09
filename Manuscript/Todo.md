@@ -1,3 +1,3 @@
-- define a reusefigure/reuserule command
 - references for numerical analysis/CAS
 - references for proof of program correctness
+- change ugly math characters https://tex.stackexchange.com/questions/67881/resetting-mathcal-font-to-default

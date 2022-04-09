@@ -72,18 +72,23 @@ en fixant un système logique formel%
 Une personne voulant que ses conclusions soient acceptées par d’autres n’a plus qu’à
 rendre son raisonnement parfaitement précis dans le cadre d’un tel système formel.
 
-\subsection{Les débuts de la logique mathématique}
+L’enjeu principal de la logique est donc de construire un tel système formel,
+adapté à un domaine de raisonnement précis. Dans le cadre qui nous intéresse,
+celui de la logique mathématique, cela permet de donner un sens précis à
+ce qui constitue une preuve mathématique valide.
 
-À la suite d’Aristote, les mathématiciens et mathématiciennes se sont emparé·e·s
-de la logique, en cherchant à l’utiliser afin de fonder rigoureusement les mathématiques,
-c’est-à-dire de trouver un système formel permettant de donner un sens précis à ce
-qui constitue une preuve mathématique valide.
+\subsection{Les débuts de la logique mathématique : vers un fondement formel}
+
+À la suite d’Aristote, les mathématiciens et mathématiciennes se sont donc emparés
+de la logique, afin de trouver un système formel
+pouvant servir de fondement rigoureux aux mathématiques.
 Bien que les liens entre logique et mathématiques remontent à l’Antiquité grecque,
 d’importants progrès ont eu lieu au cours
 du 19\textsuperscript{e} siècle, sur deux fronts principaux.
 
 Le premier a consisté à se dégager du langage dit
-naturel\sidenote{
+naturel%
+\sidenote{
   Par opposition aux langages formels qui apparaissent
   en mathématiques, informatique, etc.
 }, inadapté pour une description formellement précise de la déduction, et à
@@ -113,7 +118,7 @@ les objets mathématiques sous la forme d’ensemble d’éléments.
 
 \subsection{La crise des fondements}
 Hélas, le système proposé dans le \citetitle{Begriffsschrift}, fortement inspiré par
-les travaux de Cantor, est inconsistant !%
+les travaux de Cantor, est incohérent !%
 \sidenote{
   C’est-à-dire qu’il permet de prouver le faux, et donc qu’il ne peut servir
   de fondement satisfaisant aux mathématiques.
@@ -124,12 +129,12 @@ Ce constat, fait par Russell en 1903%
   publics~\sidecite[1.5em][Nachwort p.~253]{Frege1903}.}
 ouvre une période de crise, en remettant en doute les systèmes qui avaient commencé à
 s’imposer comme de bons candidats pour servir de fondements aux mathématiques –
-celui de Frege mais surtout ceux de Cantor, affecté par les mêmes difficultés.
+celui de Frege mais surtout ceux de Cantor, affectés par les mêmes difficultés.
 
 Une possible solution est avancée dix ans plus tard
 par Russell et Whitehead dans leur \citetitle{Whitehead1913}~\sidecite[1em]{Whitehead1913},
 un énorme travail qui non seulement propose un système
-formel qui évite les paradoxes conduisant à l’inconsistance du
+formel qui évite les paradoxes conduisant à l’incohérence du
 \citetitle{Begriffsschrift}, mais de plus construit dans ce système une quantité importante
 de mathématiques, en particulier une construction des entiers, de l’arithmétique et
 finalement des nombres réels.
@@ -137,7 +142,7 @@ finalement des nombres réels.
 En parallèle, dans la continuité des travaux de Cantor,
 Zermelo~\sidecite{Zermelo1908} et
 d’autres travaillent à fournir une version de la théorie des ensembles de Cantor
-qui soit consistante. Ceci aboutit à ce qu’on appelle actuellement la
+qui soit cohérente. Ceci aboutit à ce qu’on appelle actuellement la
 théorie des ensembles de Zermelo-Fraenkel (ZF, ou ZFC quand on y ajoute l’axiome
 du choix), qui semble également à même de fournir une base solide pour fonder les
 mathématiques.
@@ -149,11 +154,11 @@ se heurte cependant à une seconde difficulté majeure : le théorème d’incom
 Gödel~\sidecite{Goedel1931}. Celui-ci affirme que tout système formel
 dans lequel on peut construire des nombres entiers comme ceux de Peano – donc
 \textit{a fortiori} tout système suffisamment riche pour fonder les mathématiques –
-ne peut pas démontrer sa propre consistance. De ce fait, il n’existe pas de
+ne peut pas démontrer sa propre cohérence. De ce fait, il n’existe pas de
 système qui puisse servir de base aux mathématiques
 avec une certitude formelle sur son adéquation.
-En effet, puisqu’on ne peut pas prouver la consistance du
-système dans lui-même, il pourrait finalement s’avérer inconsistant, ruinant les
+En effet, puisqu’on ne peut pas prouver la cohérence du
+système dans lui-même, il pourrait finalement s’avérer incohérent, ruinant les
 efforts fournis.
 
 Une conséquence de ce théorème est qu’un système suffisamment riche
@@ -161,7 +166,7 @@ pour fonder les mathématiques est nécessairement incomplet.%
 \sidenote{
   Cela signifie qu’il
   existe des énoncés indépendants, à savoir des assertions qu’on ne peut
-  ni démontrer, ni réfuter – c’est-à-dire montrer la négation. La consistance du
+  ni démontrer, ni réfuter – c’est-à-dire montrer la négation. La cohérence du
   système considéré en est un exemple.
 }
 Ainsi, dans la suite, il ne sera jamais question de vérité dans un sens absolu –
@@ -169,18 +174,20 @@ ce qui n’aurait de sens que dans un système complet
 où tout énoncé est vrai ou faux –, mais
 uniquement de prouvabilité \emph{relativement à un système donné}.
 
-\subsection{Une situation plutôt satisfaisante}
+\subsection{Une situation satisfaisante?}
 
 Malgré les difficultés mises à jour au début du 20\textsuperscript{e}
 siècle, les recherches en logique mathématique ont abouti à une situation
 globalement assez satisfaisante. D’abord, ZFC fournit un système formel raisonnable sur
-lequel fonder les mathématiques. Ensuite, même si peu de
-personnes se risquent à tenter, dans la veine des \citetitle{Whitehead1913},
-d’écrire leurs mathématiques dans un système formel,
-la communauté mathématique est dans son ensemble convaincue que ce serait théoriquement
-possible, ce qui suffit amplement à la plupart de ses membres.
+lequel fonder les mathématiques. Ensuite,
+la communauté mathématique est dans son ensemble convaincue qu’il serait
+\emph{théoriquement} possible de rédiger dans un système formel.
+Cela suffit amplement à la plupart de ses membres,
+même si rares sont ceux se risquent à véritablement tenter l’expérience, dans la veine
+les \citetitle{Whitehead1913}.
 
-De plus, le développement et la vérification humaine de mathématiques
+En \emph{pratique}, les choses sont toutes autres.
+Le développement et la vérification humaine de mathématiques
 formalisées%
 \sidenote{C’est-à-dire effectivement exprimées dans un système formel fixé.}
 semble à la fois impossible et inutile.
@@ -188,13 +195,15 @@ D’un côté, cela demanderait un effort considérable, car de telles mathémat
 demandent un niveau de précision extrêmement élevée, tant de la part de l’autrice
 de la preuve formelle que de sa lectrice.
 Dans le même temps, cela ne permettrait pas de réduire de manière importante
-les risques d’erreurs, puisqu’il serait
+les risques d’erreurs. Il serait
 humainement très difficile de vérifier qu’un raisonnement suit bien les règles du
 système : une minuscule erreur peut facilement se cacher au milieu de
 milliers de pages de raisonnement formel.
-Enfin, décrire les mathématiques de cette façon obscurcirait
-considérablement les intuitions mathématiques importantes,
-rendant la communication stérile.
+Enfin, décrire les mathématiques de cette façon noierait
+les intuitions mathématiques importantes, rendant la communication stérile.
+
+Si on veut rendre les mathématiques formelles praticables, il faut donc développer
+de nouveaux outils.
 
 \section{Les ordinateurs entrent en scène}
 \label{sec:assistants-preuve}
@@ -206,7 +215,7 @@ les mathématiques.
 
 \subsection{Les assistants à la preuve}
 
-Les ordinateurs excellent là où les humains pêchent : leur spécialité est de traiter
+Les ordinateurs excellent là où les humains pèchent : leur spécialité est de traiter
 d’immenses volumes d’informations de façon très précise, exactement le type
 de besoins que soulève la manipulation de mathématiques formalisées. C’est pourquoi, dès
 le début des années 70%
@@ -236,37 +245,39 @@ les preuves à haut niveau et de manière interactive%
 Il peut s’agir de simples facilités
 comme la possibilité de pouvoir visualiser la structure des
 preuves, de suivre l’utilisation des hypothèses…
+
 Mais l’informatique est bien plus puissante, elle rend possible
 l’automatisation de pans entiers de l’écriture de preuves,
-par exemple via l’utilisation d’un langage de tactiques~\sidecite{Delahaye2000} –
-qui permettent de programmer la génération de preuves.
-La recherche automatique de preuve est d’ailleurs un domaine de recherche à part entière,
-et leur intégration dans les assistants à la
-preuve est un domaine de recherche active~\sidecite{Boehme2010,Ekici2017}.
-Un autre domaine où l’informatique a fait ses preuves est le calcul mathématique
+par exemple via l’utilisation d’un langage de tactiques \sidecite{Delahaye2000} –
+qui permet de programmer la génération de preuves.
+La recherche automatique de preuve est par ailleurs un domaine de recherche à part entière,
+et son intégration dans les assistants à la
+preuve est un sujet de recherche actif \sidecite{Boehme2010,Ekici2017}.
+L’informatique a également fait ses preuves dans le domaine du calcul mathématique
 (calcul formel, analyse numérique) et là encore des interactions prometteuses
-commencent à voir le jour pour combiner ces domaines de recherche aux assistants de preuve
+commencent à voir le jour pour combiner ces domaines de recherche aux assistants à la preuve
 \sidecite{Lewis2022,Melquiond2012}.
 
-Enfin, si l’utilisation de programmes informatiques permet de grandement augmenter
-les possibilités offertes par les assistants à la preuve, ceux-ci ouvrent inversement
+Enfin, si l’utilisation de l’informatique facilite l’écriture de preuve,
+les assistants à la preuve ouvrent inversement
 de nouvelles possibilités pour la programmation.
-Les assistants à la preuve
-offrent en effet un cadre naturel dans lequel décrire au même endroit
-le code source d’un programme, sa spécification et la preuve formelle que le
-programme s’exécute correctement, remplissant sa spécification sans rencontrer de bug.
+Ils offrent en effet un cadre naturel dans lequel décrire au même endroit
+le code source d’un programme, sa spécification et la preuve formelle que cette 
+dernière est remplie. On peut alors \emph{prouver} que le
+programme s’exécute correctement, sans rencontrer de bug.
+Cette certitude mathématique est plus fiable que n’importe quelle batterie de tests !
 
 
 \subsection{Logique, programmation et théorie des types}
 
-Pour fonctionner, les assistants à la preuve ont besoin comme base d’un système
+Pour fonctionner, les assistants à la preuve nécessitent comme fondement un système
 formel, correspondant aux “règles du jeu” mathématique qu’ils sont censés imposer.
-Ainsi, ils demandent une étude renouvelée de la logique, mais dans le but
+Ainsi, ils requièrent une étude renouvelée de la logique mathématique, mais dans le but
 pratique de construire des outils à la fois fonctionnels,
 puissants et faciles à utiliser.
 Il existe plusieurs familles d’assistants à la preuve, basées sur des
-systèmes formels relativement différents. La famille qui m’intéresse dans cette thèse
-est basée sur la \kl{correspondance de Curry-Howard}
+systèmes formels relativement différents. Celle qui m’intéresse dans cette thèse
+est fondée sur la \kl{correspondance de Curry-Howard}
 et la \kl[type dépendant]{théorie des types dépendants}.
 C’est à elle qu’appartient l’assistant à la preuve \kl{Coq} qui est au cœur de mon
 travail.
@@ -317,13 +328,15 @@ Cette idée est celle de la \intro{correspondance de Curry-Howard}.
 Plutôt qu’un théorème précis, il s’agit d’un concept très général,
 selon lequel il existe une ressemblance forte entre d’un côté le monde de la
 logique et des preuves, et de l’autre celui des programmes et de leurs types.
+On parle aussi d’ailleurs également de \reintro{correspondance preuves-programmes}.
+
 Un exemple valant mieux qu’un discours abstrait, on peut voir la correspondance à l’œuvre dans la \cref{fig:curry-howard-exemple}, sous la forme de règles d’inférence
 ou de typage : chaque bloc présente une règle, avec au-dessus de la barre les
 hypothèses, et en dessous la conclusion.
 Les trois premières règles gouvernent la conjonction logique “et”, notée $\wedge$.
 La première signifie que pour déduire la proposition $A \wedge B$ (“$A$ et $B$”),
 il suffit de déduire $A$ et $B$ individuellement.
-À l’inverse si a comme hypothèse $A \wedge B$, alors on peut déduire à la fois $A$, et $B$.
+À l’inverse si on a comme hypothèse $A \wedge B$, alors on peut déduire à la fois $A$, et $B$.
 Les trois dernières règles gouvernent le typage du type des paires $A \times B$.
 Une paire $(a,b)$ construite à partir d’un premier objet $a$ de type $A$ et d’un second $b$
 de type $B$ a le type $A \times B$.
@@ -391,8 +404,8 @@ Ce fonctionnement est illustré en \cref{fig-coq} : l’utilisatrice échange in
 C’est lui qui implémente l’algorithme de vérification de type, et s’assure ainsi de la correction des termes de preuve construits interactivement.
 Le \kl{noyau} est donc l’élément crucial du système, car c’est lui – et lui seul – qui est responsable en dernier recours de la validation des preuves.
 
-Cette architecture, qui isole clairement la partie critique du système
-est appelée \intro{critère de De Bruijn}~\sidecite{Barendregt2001}, en 
+Cette architecture, qui isole clairement la partie critique du système,
+est appelée \intro{critère de De Bruijn}~\sidecite{Barendregt2001} en 
 hommage à l’un des pionniers des assistants à la preuve.
 % Elle a permis de mener à bien des projets de grande ampleur, parmi lesquels CompCert~\sidecite{Kaestner2017} – un compilateur optimisant pour le langage C entièrement prouvé correct –, ou les preuves du théorème des quatre couleurs~\sidecite{Gonthier2007} et du théorème de l’ordre impair~\sidecite{Gonthier2013}, deux théorèmes importants et difficiles respectivement de la théorie des graphes et des groupes.
 Si le reste de l’écosystème s’est beaucoup plus développé que le \kl{noyau} depuis les débuts, celui-ci a également évolué, en se complexifiant graduellement.
@@ -412,28 +425,32 @@ L’approche est simple : il s’agit d’utiliser \kl{Coq} lui-même pour certi
 
 Plus précisément, la première étape est de décrire le système de type sur lequel est basé le \kl{noyau}, puis de démontrer ses propriétés théoriques.
 % , comme la confluence de la réduction, la préservation du typage par cette même réduction, etc.
-Une fois ces propriétés établies, la deuxième étape consiste à programmer un algorithme de vérification de type ressemblant au maximum à celui du \kl{noyau}, directement en \kl{Gallina}\sidenote{
+Une fois ces propriétés établies, la deuxième étape%
+\sidenote{C’est celle sur laquelle j’ai principalemente travaillé, et sur laquelle 
+on reviendra plus longuement.}
+consiste à implémenter un algorithme de vérification de type ressemblant au maximum à celui du \kl{noyau}, directement en \kl{Gallina}\sidenote{
+  \color{black}
   En effet, grâce à la \kl{correspondance de Curry-Howard}, \kl{Gallina} est certes un langage
-  de preuve, mais aussi un véritable langage de programmation !},
-tout en démontrant qu’il est bien correct\sidenote{
-  Si l’algorithme prétend qu’un terme est bien typé, alors c’est bien le cas.}
-et complet\sidenote{
-  L’algorithme répond bien affirmativement sur tous les termes bien typés.}.
-Enfin, une troisième étape extrait de ce programme \kl{Gallina} certifié
-un autre programme plus efficace,
-qui puisse être utilisé en lieu et place du \kl{noyau} actuel.
-Cette extraction est complexe, car pour obtenir ce programme efficace il
+  de preuve, mais aussi un véritable langage de programmation !}.
+On démontre en même temps qu’il est bien \reintro{correct} –
+  si l’algorithme prétend qu’un terme est bien typé, alors c’est bien le cas –
+et \reintro{complet} – l’algorithme répond bien affirmativement sur tous les termes bien typés.
+Enfin, une troisième étape extrait
+un autre programme plus efficace de ce programme \kl{Gallina} certifié.
+Cette efficacité est cruciale si on veut l’utiliser en lieu et place du \kl{noyau} actuel.
+Cette extraction est complexe, car pour obtenir ce programme efficace, il
 faut effacer le contenu lié à la preuve de correction
 pour ne garder que le contenu algorithmiquement intéressant.
-C’est pourquoi là encore on prouve que l’extraction est correcte\sidenote{
-  C’est-à-dire qu’elle préserve la sémantique des programmes.},
+C’est pourquoi là encore on prouve que l’extraction est correcte%
+\sidenote{C’est-à-dire qu’elle préserve la sémantique des programmes.},
 à nouveau en la programmant en \kl{Gallina}.
 
 \subsection[Typage bidirectionnel]{Vérification, inférence et typage bidirectionnel}
 
-Pour prouver la complétude de l’algorithme de typage, il est très utile de
+Durant la deuxième étape, afin de prouver que l’algorithme de typage est complet,
+il est très utile de
 passer par une spécification intermédiaire plus structurée que la description
-théorique du système de type utilisée dans la première étape.
+théorique de la première étape.
 En particulier, il est important de séparer deux questions proches, mais
 différentes :
 d’une part, la vérification, où on cherche à \emph{vérifier}
@@ -444,8 +461,8 @@ L’algorithme de typage du \kl{noyau} de \kl{Coq} est \intro{bidirectionnel},
 c’est-à-dire qu’il alterne en permanence entre ces deux questions
 lorsqu’il vérifie qu’un terme est bien typé.
 % Par exemple, dans le cas d’une application $f~u$, il commence par inférer un type pour $f$, vérifie qu’il s’agit d’un type produit $\P x : A . B$ (une généralisation du type fonctionnel $A \to B$), puis vérifie que $u$ a le type $A$.
-Décrire formellement cette structure bidirectionnelle plus proche de l’algorithme
-permet de bien diviser les difficultés entre d’un côté
+Cette structure bidirectionnelle étant plus proche de l’algorithme,
+la décrire formellement permet de bien diviser les difficultés entre d’un côté
 son équivalence avec la présentation
 d’origine, et de l’autre la partie purement liée aux questions d’implémentation.
 
@@ -496,6 +513,9 @@ au cadre de la logique.
 Mon travail de doctorat lui-même
 est centré principalement autour du typage bidirectionnel, sous
 trois aspects, correspondant aux trois parties de cette thèse.
+Elles sont précédées par le \cref{chap:intro-en}, traduction en anglais
+de ce chapitre, et le \cref{chap:tech-intro}, qui introduit les principales
+notions techniques utilisées dans la suite.
 
 \subsection{Théorie du typage bidirectionnel}
 
@@ -566,7 +586,7 @@ J’ai ensuite travaillé à intégrer cette formalisation à
 qui y est implémenté. Ceci correspond au reste du \cref{chap:kernel-correctness}.
 Au-delà de cette contribution principale,
 j’ai également participé à ce projet sur d’autres points plus mineurs.
-Cette partie de mon travail de thèse n’a pas encore été publié, mais nous y
+Cette partie de mon travail de thèse n’a pas encore été publiée, mais nous y
 travaillons actuellement avec les autres contributeurs de \kl{MetaCoq}.
 
 Enfin le \cref{chap:bidir-conv} correspond à un travail que j’ai entamé dans

@@ -254,13 +254,20 @@
 
 % Gradual stuff
 
-\DeclareMathOperator{\axiom}{ax}
+\DeclareDocumentCommand{\?}{o}{\symbf{?}\IfValueT{#1}{_{#1}}}
+\DeclareDocumentCommand{\err}{o}{\operatorname{err}\IfValueT{#1}{_{#1}}}
 
-\newcommand{\?}{\mathbb{?}}
 \DeclareMathOperator{\ascop}{:\hspace{-1.5pt}:}
 \DeclareDocumentCommand{\asc}{m m}{#1 \ascop #2}
 
+\newcommand{\cons}{\sim}
+\newcommand{\pre}{\sqsubseteq}
+\newcommand{\equiprecise}{\sqsupseteq\sqsubseteq}
+\newcommand{\obsApprox}{\preccurlyeq^{o}}
+\newcommand{\obsEquiv}{\approx^{o}}
+\newcommand{\obsRef}{\sqsubseteq^{o}}
 
-% Errors
+% Bad Approaches
 
-\DeclareDocumentCommand{\err}{o}{\operatorname{err}\IfValueT{#1}{_{#1}}}
+\DeclareMathOperator{\axiom}{ax}
+\DeclareDocumentCommand{\rai}{o}{\operatorname{raise}\IfValueT{#1}{_{#1}}}

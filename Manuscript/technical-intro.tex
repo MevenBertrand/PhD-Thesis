@@ -993,8 +993,11 @@ and reason by induction on it $\no$ derivation. This is one way to phrase
   There is a type which is not inhabited in the empty context.
 \end{property}
 
-Thus, normalization ensures our type systems are meaningful as logics,
-which we of course care about! More generally, it entails the \kl{canonicity} property:
+\AP Thus, normalization ensures our type systems are meaningful as logics,
+which we of course care about!
+More generally, it entails the \kl{canonicity} property for \intro{closed terms} –
+\eg those that have no free variables.%
+\sidenote{Terms which are not closed are called \reintro{open}.}
 
 \begin{property}[\intro{Canonicity}]
   \label{prop:canonicity}
