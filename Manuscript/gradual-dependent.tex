@@ -19,7 +19,7 @@ for gradualizing \kl{CIC},
 anticipating what could be achieved in a hypothetical gradual version of \eg \kl{Coq}.
 
 \subsection{Smoother development with indexed types}
-  \label{ex:indices}
+  \label{sec:indices}
   
 \kl{CIC}, which underpins languages and proof assistants such as \kl{Coq},
 \kl{Agda} and \kl{Idris}, among others, is a very powerful system to program in,
@@ -68,7 +68,7 @@ type-checks but fails during reduction, upon the discovery that the assumption
 of non-emptiness of the argument to head is in fact incorrect.
 
 \subsection{Defining general recursive functions}
-\label{ex:rec}
+\label{sec:rec}
 
 Another challenge of working in \kl{CIC} is to convince the type-checker that recursive
 definitions are well-founded.
@@ -90,7 +90,7 @@ one can use this added expressiveness to bypass termination checking locally.
 This just means that the external facilities provided by specific proof assistant implementations now become internalized in the language.
 
 \subsection{Large elimination, gradually}
-\label{ex:elim}
+\label{sec:elim}
 
 One of the argued benefit of dynamically-typed languages, which is accommodated by gradual typing, is the ability to define functions that can return values of different types depending on their inputs, such as the following%
 \sidenote{With \coqe{?>} a boolean comparison operator.}:
@@ -123,7 +123,7 @@ then giving it any of the less precise types above does not introduce any new fa
 \sidecite{Siek2015}.
 
 \subsection{Gradually refining specifications}
-\label{ex:specif}
+\label{sec:specif}
   
 Let us come back to the \coqe{filter} function from the first example.
 Its fully-precise type requires appealing to a type-level function that counts the number of
@@ -297,7 +297,7 @@ The problem is that the term:
 \begin{coqcode}
   head ℕ (ax ℕ) (filter ℕ 4 even [ 0 ; 1 ; 2 ; 3 ])
 \end{coqcode}
-does not type-check since the type of the filtering expression, \coqe{vec A (ax ℕ)},
+is ill-typed since the type of the filtering expression, \coqe{vec A (ax ℕ)},
 is not convertible to \coqe{vec A (S (ax ℕ))}, as required by the domain type of
 \coqe{head ℕ (ax ℕ)}.
 
@@ -387,7 +387,7 @@ In such a system, the following term
 \begin{coqcode}
   head ℕ (raise ℕ) (filter ℕ 4 even [ 0 ; 1 ; 2 ; 3 ])
 \end{coqcode}
-does not type-check, because \coqe{vec A (raise ℕ)} is still not convertible to
+is ill-typed, because \coqe{vec A (raise ℕ)} is still not convertible to
 \coqe{vec A (S (raise ℕ))}.
 The reason is that \coqe{raise ℕ} behaves like an extra constructor to \coqe{ℕ}, so
 \coqe{S (raise ℕ)} is itself a normal form,
@@ -395,7 +395,7 @@ and normal forms with different head constructors
 – \coqe{S} and \coqe{raise} – are not convertible.
 
 \section{Gradual Simple Types}
-\label{sec:grad-simpl}
+\label{sec:grad-simple}
 
 Before going on with our exploration of the fundamental challenges in gradual dependent type
 theory, let us go over some key concepts and expected properties,
@@ -699,7 +699,7 @@ the term
 \begin{coqcode}
   head ℕ (? ℕ) (filter ℕ 4 even [ 0 ; 1 ; 2 ; 3 ])
 \end{coqcode}
-now type-checks: since \coqe{S (? ℕ)} is \kl(grad){consistent} with \coqe{? ℕ},
+is now well-typed: since \coqe{S (? ℕ)} is \kl(grad){consistent} with \coqe{? ℕ},
 \coqe{vec A (? ℕ)} can be deemed \kl(grad){consistent} with
 \coqe{vec A (S (? ℕ))}.
 This newly-brought flexibility is the key to support the different scenarios from the introduction.
@@ -801,7 +801,7 @@ includes equi-divergence.
 The situation in the dependent setting is however more
 complicated if the theory admits divergence.%
 \sidenote{
-  There exist non-gradual dependently-typed programming languages that admit divergence, \eg Dependent Haskell \sidecite[3em]{Eisenberg2016}, \kl{Idris} \sidecite[6em]{Brady2013}. We will also present one such theory in this article. 
+  There exist non-gradual dependently-typed programming languages that admit divergence, \eg \kl{Dependent Haskell} \sidecite[3em]{Eisenberg2016}, \kl{Idris} \sidecite[6em]{Brady2013}. We will also present one such theory in this article. 
 }
 In a gradual dependent type theory that admits divergence,
 a diverging term is more precise than the
@@ -878,7 +878,7 @@ cannot use it to avoid reducing $t$.
 This property is true in all gradual languages,
 where type information at runtime is used only as a monitor.
 
-\subsection{Gradualizing \kl{STLC}}
+\subsection{Gradualizing \kl(tit){STLC}}
 Let us first consider the case of \kl{STLC}.
 We show that $\Omega$ is \emph{necessarily} a well-typed, diverging term in any
 gradualization of \kl{STLC} that satisfies the other properties.
@@ -895,7 +895,6 @@ Suppose a gradual type theory that satisfies both \kl{conservativity} with respe
 \kl{STLC} and \kl{graduality}. Then it cannot be \kl{normalizing}.
 
 \end{theorem}
-
 
 \begin{proof}
   We pose $\Omega \coloneqq \delta\ (\asc{\delta}{\?})$ with
@@ -934,7 +933,7 @@ in order to obtain the embedding theorem of \kl{GTLC} \sidecite{Siek2015}.
 Therefore, the embedding theorem is not an independent property, but rather a consequence of \kl{conservativity} and \kl{graduality}. This is why we have not included it in
 our overview of the gradual approach in \cref{sec:grad-simple}.
 
-\subsection{Gradualizing \kl{CIC}}
+\subsection{Gradualizing \kl(tit){CIC}}
 We can now prove the same impossibility theorem for \kl{CIC}, by reducing
 it to the case of \kl{STLC}.
 In general, this theorem can be proven for type theories others than \kl{CIC},
@@ -953,7 +952,7 @@ as soon as they faithfully embed \kl{STLC}.
   The typing rules of \kl{CIC} contain the typing rules of \kl{STLC},
   using only one universe $\uni[0]$,
   and the notions of reduction coincide, so \kl{CIC} embeds
-  \kl{STLC}. This is a well-known result on \kl{Pure Type Systems} \sidecite{Barendregt1991}.
+  \kl{STLC}. This is a well-known result on \kl{Pure Type Systems} \sidecite{Barendregt1991}, of which \kl{CCω} is one of many examples.
   %
   This means that \kl{conservativity} with respect to \kl{CIC} implies \kl{conservativity}
   with respect to \kl{STLC}.
@@ -996,5 +995,314 @@ critical, because it only means that typing becomes overly optimistic.
 To execute programs, \kl{GDTL} relies on standard \kl{GTLC}-like reduction semantics,
 which is computationally precise, but not \kl{normalizing}.
 
-\section{GCIC: Overall Approach, Main Challenges and Results}
+\section{\kl(tit){GCIC}: An Overview}
 \label{sec:gcic-overview}
+
+Given the \kl{Fire Triangle of Graduality} (\cref{thm:triangle}),
+we know that gradualizing \kl{CIC} implies making some compromise.
+Instead of focusing on one possible solution, we actually develop
+a common parametrized framework, \kl{GCIC}, where the parameters control
+which of the three properties – \kl{normalization}, \kl{graduality} and \kl{conservativity} –
+is compromised. 
+This section gives an informal, non-technical overview of this system,
+highlighting the main challenges and results.
+
+\subsection{Three in One}
+\label{sec:gcic:-3-1}
+
+\paragraph{Two parameters…}
+
+To explore the spectrum of possibilities opened by the \kl{Fire Triangle of Graduality},
+we develop a general approach to gradualizing \kl{CIC}, and use it to define three theories, corresponding to different resolutions of the triangular tension between \kl{normalization}, \kl{graduality} and \kl{conservativity} with respect to \kl{CIC}.
+
+The crux of our approach is to recognize that, while there is not much to vary within \kl{STLC} itself to address the tension of the \kl{Fire Triangle of Graduality},
+there are several variants of \kl{CIC} that can be considered by changing
+the hierarchy of universes and its impact on typing –
+after all, its core \kl{CCω}
+is but a particular \kl{Pure Type System} \sidecite{barendregt:jfp1991}.
+Thus, we consider a parametrized version of a gradual \kl{CIC}, called
+\kl{GCIC}, with two parameters%
+\sidenote{This system is precisely detailed in \cref{fig:ccic-typing}}.
+
+The first parameter characterizes how the universe level of a Π-type is determined
+in typing rules: either as taking the \emph{maximum} of the levels of the involved 
+types – as in standard \kl{CIC} – or as the \emph{successor} of that maximum.
+The latter option yields a variant of \kl{CIC} that we call \kl{CICs} – read “\kl{CIC}-shift”.
+\kl{CICs} is a subset of \kl{CIC}, with a stricter constraint on universe levels.
+In particular \kl{CICs} loses the closure of universes under
+dependent functions that \kl{CIC} enjoys.
+As a consequence, some well-typed \kl{CIC} terms are not well-typed in \kl{CICs}.%
+\sidenote{
+  A typical example of a well-typed \kl{CIC} term that is ill typed in \kl{CICs} is
+  $\narrow \ty \Nat \to \uni$, where $\narrow n$ is the type of functions that
+  accept $n$ arguments. Such dependent arities violate the universe constraint of \kl{CICs}.}
+
+The second parameter is the dynamic counterpart of the first parameter:
+its role is to control universe levels during the reduction of type casts between Π-types.
+We only allow this reduction parameter to be loose – \ie~using maximum –
+if the typing parameter is also loose. Indeed, letting the typing parameter be strict 
+– \ie using successor of the maximum – while the reduction parameter is loose
+breaks subject reduction, and hence \kl{safety}
+
+\paragraph{… and three meaningful theories.}
+
+Based on these parameters, we develop the following three variants of \kl{GCIC},
+whose properties are summarized in \cref{tab:gcic}
+% with pointers to the respective theorems
+– because \kl{GCIC} is one common parametrized framework,
+we are able to establish most properties for all variants at once.
+
+\intro{GCICP} is a theory that satisfies both \kl{conservativity} with respect to \kl{CIC}
+and \kl{graduality}, but sacrifices \kl{normalization}.
+This theory is a rather direct application of the
+principles discussed in \cref{sec:graduality} by extending \kl{CIC}
+with \kl{errors} and \kl{unknown terms}, and replacing \kl{conversion} with
+\kl{consistency}. This results in a theory that is not normalizing.
+
+\intro{GCICs} is a theory that satisfies both \kl{normalization} and \kl{graduality},
+and supports \kl{conservativity}, but only with respect to \kl{CICs}.
+This theory uses the universe hierarchy at the \emph{typing level} to detect and forbid
+the potential non-termination induced by the use of \kl{consistency}
+instead of \kl{conversion}.
+
+Finally, \intro{GCICT} satisfies both \kl{conservativity} with respect to \kl{CIC}
+and \kl{normalization}, but does not fully validate \kl{graduality}.
+This theory uses the universe hierarchy at the \emph{computational level} to detect
+potential divergence, eagerly raising errors.
+Such runtime failures invalidate the \kl{DGG} for some terms,
+and hence \kl{graduality}, as well as the \kl{SGG}, since in our dependent setting it depends
+on the \kl{DGG}.
+
+\begin{table*}[h]
+  \begin{tabular}{ccccccc}
+   & \kl{Safety} & \kl{Normalization} & \kl{Conservativity} wrt. & \kl{Graduality} & \kl{SGG} & \kl{DGG} \\
+  \kl{GCICP} \rule{0pt}{4ex}
+    & {\checksymbol {\checksymbol ✓}} %\footnotesize{(Th.~\labelcref{thm:ccic-psafe})}
+    & {\checksymbol ✗}
+    & \kl{CIC} %\footnotesize{(Th.~\labelcref{thm:conservativity})}
+    & {\checksymbol ✓} %\footnotesize{(Th. ~\labelcref{thm:GCICP-graduality})}
+    & {\checksymbol ✓} %\footnotesize{(Th.~\labelcref{thm:static-graduality})}
+    & {\checksymbol ✓} %\footnotesize{(Th.~\labelcref{thm:dgg})}\\
+  \\
+  \kl{GCICs} \rule{0pt}{4ex}
+    & {\checksymbol ✓} %\footnotesize{(idem)}
+    & {\checksymbol ✓} %\footnotesize{(Th.~\labelcref{thm:ccic-pnorm} \& \labelcref{thm:discrete-model})}
+    & \kl{CICs}  %\footnotesize{(idem)}
+    & {\checksymbol ✓} %\footnotesize{(Th.~\labelcref{thm:graduality-gcics})}
+    & {\checksymbol ✓} %\footnotesize{(idem)}
+    & {\checksymbol ✓} %\footnotesize{(Th.~\labelcref{thm:dgg})}\\
+  \\
+  \kl{GCICT} \rule{0pt}{4ex}
+    & {\checksymbol ✓} %\footnotesize{(idem)}
+    & {\checksymbol ✓} %\footnotesize{(idem)}
+    & \kl{CIC} %$\mathsf{CIC}$\phantom{$^{\uparrow}$}    \footnotesize{(idem)}
+    & {\checksymbol ✗}  
+    & {\checksymbol ✗}
+    & {\checksymbol ✗}\\
+  \end{tabular}\\
+  
+  \caption{\kl{GCIC} variants and their properties}
+  \label{tab:gcic}
+\end{table*}
+
+\paragraph{Practical implications of \kl{GCIC} variants.}
+Regarding our introductory examples, all three variants of \kl{GCIC}
+support the exploration of the type-level precision spectrum.
+In particular, we can define \coqe{filter} by giving it the imprecise type
+\begin{coqcode}
+  forall A n (p : A -> 𝔹), vec A n -> vec A (? ℕ)
+\end{coqcode}
+in order to bypass the difficulty of precisely characterizing the size of the output vector.
+Any invalid optimistic assumption is detected during reduction and reported as an error.
+
+Unsurprisingly, the semantic differences between the three \kl{GCIC} variants crisply manifest in the treatment of potential non-termination, more specifically, \emph{self application}.
+%
+Let us come back to the term $\Omega$
+used in the proof of~\cref{thm:triangle}.
+In all three variants, this term is well-typed. In \kl{GCICP}, it
+reduces forever, as it would in the untyped lambda calculus. In that
+sense, \kl{GCICP} can embed the untyped lambda calculus just as
+\kl{GTLC} \sidecite{Siek2015}. In \kl{GCICT}, this term fails at runtime
+because of the strict universe check in the reduction of casts, which
+breaks graduality because $\?[\uni[i]] \to \?[\uni[i]] \pre \?[\uni[i]]$
+tells us that the upcast-downcast coming from an \kl{ep-pair} should not fail.
+%
+In \kl{GCICs}, $\Omega$ fails in the same way as in \kl{GCICT}, but this
+does not break graduality because of the shifted universe level on Π-types.
+%
+Indeed, a consequence of this stricter typing rule is that in \kl{GCICs},
+$\?[\uni[i]] \to \?[\uni[i]] \pre \?[\uni[j]]$
+for any $j > i$, but $\?[\uni[i]] \to \?[\uni[i]] \npre \?[\uni[j]]$.
+Therefore, the casts performed in $\Omega$ do not come from an \kl{ep-pair}
+anymore, and can thus legitimately fail.
+%
+This is described in full details in \cref{sec:back-to-omega}.
+
+Another scenario where the differences in semantics manifest is functions with
+\emph{dependent arities}.
+For instance, the well-known C function \printf{} can be embedded in a well-typed fashion in
+\kl{CIC}: it takes as first argument a format string and computes from it both
+the type and \emph{number} of later arguments.
+In \kl{GCICP} it can be gradualized as much as one wants, without surprises.
+%
+This function, however, brings into light the limitation of \kl{GCICs}:
+since the format string can specify an arbitrary number of arguments,
+we need as many $\to$, and \printf{} cannot be well-typed
+in a theory where universes are not closed under function types.
+%
+In \kl{GCICT}, \printf{} is well-typed but the same problem will appear dynamically
+when casting \printf{} to $\?$ and back to its original type: the result will be
+a function that works only on format strings specifying no more arguments than
+the universe level at which it has been typed.
+%
+Note that this constitutes an example of violation of graduality for
+\kl{GCICT}, even of the dynamic gradual guarantee.
+
+\paragraph{Which variant to pick?}
+As explained in the introduction, the aim here is to shed light on the design space of gradual
+dependent type theories, not to advocate for one specific design.
+%
+The appropriate choice indeed depends on the specific goals of the language designer,
+or perhaps more pertinently, on the specific goals of a given project,
+at a specific point in time.
+The key characteristics of each variant are as follows.
+
+\kl{GCICP} favors flexibility over decidability of type-checking. While this might appear
+heretical in the context of proof assistants, this choice has been embraced by practical languages such as \kl{Dependent Haskell} \sidecite{Eisenberg2016},
+where both divergence and runtime errors can happen at the type
+level. The pragmatic argument is simplicity: by letting programmers be responsible,
+there is no need for termination checking techniques and other restrictions.
+
+\kl{GCICs} is theoretically pleasing as it enjoys both normalization and graduality.
+In practice, though, the fact that it is not conservative wrt full \kl{CIC} means that one would
+not be able to simply import existing libraries as soon as they
+fall outside of the \kl{CICs} subset.
+In \kl{GCICs}, the introduction of $\?$ should be done with an appropriate understanding of
+universe levels. This might not be a problem for advanced programmers,
+but would surely be harder to grasp for beginners.
+
+\kl{GCICT} is normalizing and able to import existing libraries without restrictions,
+at the expense of some surprises on the graduality front.
+Programmers would have to be willing to accept that they cannot just sprinkle $\?$
+as they see fit without further consideration,
+as any dangerous usage of imprecision will be flagged during conversion.
+
+In the same way that systems like \kl{Coq}, \kl{Agda} or \kl{Idris} support
+different ways to customize their semantics regarding termination,%
+\sidenote{With the possibility to allow $\uni : \uni$, switch off termination checking,
+use the partial/total compiler flags…}
+and of course, many programming languages implementations supporting some sort of customization%
+\sidenote{GHC is a salient representative.}
+one can imagine a flexible realization of \kl{GCIC} that give users the control over the two
+parameters we identify in this work, and therefore lets them access all three \kl{GCIC} variants.
+%
+Considering the inherent tension captured by the \kl{Fire Triangle of Graduality},
+such a pragmatic approach might be the most judicious choice,
+making it possible to gather experience and empirical evidence about
+the pros and cons of each in a variety of concrete scenarios.
+
+\subsection{Typing, Conversion and Bidirectional Elaboration}
+
+As explained in \cref{sec:grad-simple},
+in a gradual language, whenever we reclaim precision, we might be wrong and need to fail in order to preserve \kl{safety}.
+%
+In a simply-typed setting, the standard approach is to define typing on a
+gradual source language, and then to translate terms via a type-directed elaboration
+to a target \intro{cast calculus}, \ie a language with explicit runtime type
+checks.
+This elaboration inserts casts, needed for a well-behaved reduction \sidecite{Siek2006}.
+For instance, in a call-by-value language, the upcast (loss of precision)
+$\cast{10}{\Nat}{\?}$ is considered a (tagged) value,
+and the downcast (gain of precision) $\cast{v}{\?}{\Nat}$ reduces successfully
+if $v$ is such a tagged natural number, or to an error otherwise.
+
+We follow a similar approach for \kl{GCIC}, which is
+elaborated in a type-directed manner to a second calculus,
+named \kl{CastCIC} (\cref{sec:cast-calculus}).
+The interplay between typing and cast insertion is however more subtle in the
+context of a dependent type theory. Because typing needs computation, and
+reduction is only meaningful in the target language, \kl{CastCIC} is used
+\emph{as part of the elaboration} in order to compare types (\cref{sec:elaboration}).
+This means that \kl{GCIC} has no typing on its own, independent of its
+elaboration to the cast calculus.%
+\sidenote{This is similar to what happens in practice in proof assistants such as \kl{Coq}
+\cite[Core language]{CoqManual}, where terms input by the user in the \kl{Gallina} language
+are first elaborated in order to add implicit arguments, coercions, etc.
+The computation steps required by conversion are
+performed on the elaborated terms, never on the raw input syntax.}
+
+In order to satisfy \kl{conservativity} with respect to \kl{CIC}, ascriptions in \kl{GCIC}
+are required to satisfy \kl{consistency}. For instance, $\asc{\asc{\true}{\?}}{\Nat}$ is well-typed by \kl{consistency} – used twice –, but $\asc{\true}{\Nat}$ is ill-typed.
+Such ascriptions in \kl{CastCIC} are realized by casts.
+For instance $\asc{\asc{0}{\?}}{\Bool}$ in \kl{GCIC} elaborates
+– up to desugaring and reduction – to
+$\cast{\cast{0}{\Nat}{\?[\uni]}}{\?[\uni]}{\Bool}$ in \kl{CastCIC}.
+A major difference between ascriptions in \kl{GCIC} and casts in \kl{CastCIC} is
+that casts are not required to satisfy consistency: a cast between any
+two types is well-typed, although of course it might produce an
+error.
+
+This is where the bidirectional structure is crucial.
+First, it is required in order to tame the non-transitive \kl{consistency} relation.
+Indeed, in the previous example of $\asc{\true}{\Nat}$, if one kept a free-standing rule like
+\namecref{rule:cic-conv} and simply replaced \kl{conversion} by \kl{consistency}, one could
+use the rule twice, through $\?$, and the term would be well-typed.
+But \kl{consistency} demands that only terms with explicitly-ascribed
+imprecision enjoy its flexibility.
+This observation is standard in the gradual typing literature
+\sidecite{Siek2006,Siek2007,Garcia2016}, but becomes even more crucial in the context of
+gradual dependent types \sidecite{Eremondi2019}.
+Moreover, the bidirectional structure is very suited to the description of
+a type-based elaboration, and directly translates to a deterministic typing/elaboration
+algorithm for \kl{GCIC}.
+
+\subsection{Precisions and Properties}
+\label{sec:precision-graduality}
+
+As explained earlier (\cref{sec:graduality}), we need three different notions of
+precision to deal with \kl{SGG} and \kl{graduality}.
+
+At the source level – \kl{GCIC} –,
+we introduce a notion of \reintro{syntactic precision}, that captures the
+intuition of a more imprecise term as "the same term with subterms and/or
+type annotations replaced by $\?$", and is defined without any assumption of typing.
+In \kl{CastCIC}, we define a notion of \reintro{structural precision},
+which is mostly syntactic except that, in order to account for cast insertion during elaboration, it tolerates precision-preserving casts.
+For instance, $\cast{t}{A}{A}$ is related to $t$ by structural precision.
+
+Armed with these two notions of precision, we prove
+% We prove that \GCIC satisfies static graduality.\km{forward ref?}
+% However, because \GCIC does not have a type system, we rather prove
+\reintro{elaboration graduality} (\cref{thm:static-graduality}), which is
+the equivalent of the \kl{static gradual guarantee} in our setting:
+if a term $t$ of \kl{GCIC} elaborates to a term $t'$ of \kl{CastCIC},
+then a term $u$ less syntactically precise than $t$ in \kl{GCIC} elaborates to
+a term $u'$ less structurally precise than $t'$ in \kl{CCIC}.
+%
+Because \kl{DGG} is about the behavior of terms during reduction,
+it is technically stated and proven for \kl{CastCIC}.
+We show in \cref{sec:gcic-theorems} that \kl{DGG} can be proven
+for \kl{CastCIC} – in its variants \kl{CCICP} and \kl{CCICs} – on \kl{structural
+precision}.
+
+However, as explained in \cref{sec:grad-simple}, we cannot expect to prove \kl{graduality}
+for these \kl{CastCIC} variants with respect to \kl{structural precision} directly.
+In order to overcome this problem, and to justify the design of \kl{CastCIC},
+we build two models kinds of models for \kl{CastCIC}. The first%
+\sidenote{That we call the \intro{discrete model}.} is a syntactic model
+\sidecite{Boulier2018} – akin to a program translation or a compilation phase –,
+and is used to justify the reduction rules and prove that they are terminating.
+The second%
+\sidenote{That we call the \intro{monotone model}}
+endows types endows types with the structure of an ordered set, or poset. This makes it
+possible to reason about the semantic notion of \reintro{propositional
+precision} and prove that it gives rise to \kl{embedding-projection pairs},
+thereby establishing \kl{graduality}.
+%
+% The monotone model only works for a normalizing gradual type theory,
+% thus we then establish \pgrad for \CCICP using a variant of the
+% monotone model based on Scott's
+% model~\cite{scott76} of the untyped $\lambda$-calculus using $\omega$-complete
+% partial orders (\cref{sec:grad-non-term}).
+As these models have no direct link with bidirectional typing, we only describe them
+succintly in \cref{sec:realizing-cast-calculus}.
