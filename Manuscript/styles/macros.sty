@@ -101,14 +101,13 @@
 }
 
 \DeclareDocumentCommand \inferdef {m m m}{%
-  \inferrule*[vcenter,right=#1]{#2}{#3}
+  \inferrule*[vcenter,left=#1]{#2}{#3}
   \mpr@label{\textsc{#1}}
 }%
 
-\DeclareDocumentCommand \redrule {o m m}{%
-	\IfValueTF{#1}
-	{\textsc{#1}: \; #2 \redCCIC #3 \mpr@label{\textsc{#1}}}
-	{#2 \redCCIC #3}
+\DeclareDocumentCommand \redrule {m m o}{%
+  \inferrule*[vcenter,left={#3:}]{}{#1 \tred #2}
+  \mpr@label{\textsc{#3}}
 }
 
 \makeatother
@@ -137,6 +136,12 @@
 
 \AtBeginDocument{\DeclareMathSymbol{:}{\mathpunct}{operators}{"3A}}
 \def\colon{\mathrel{:}}
+
+% Syntax
+
+\newcommand{\terms}[1]{\operatorname{Term}_{\text{#1}}}
+\newcommand{\types}[1]{\operatorname{Type}_{\text{#1}}}
+\renewcommand{\H}{\operatorname{Head}}
 
 % Typing
 
@@ -208,7 +213,7 @@
 
 \DeclareMathOperator{\List}{\symbf{Li}}
 \NewDocumentCommand\lnil{o}{[]\IfValueT{#1}{_{#1}}}
-\DeclareMathOperator{\lconsop}{:\hspace{-1.5pt}:}
+\DeclareMathOperator{\lconsop}{\mathord{;};}
 \NewDocumentCommand\lcons{o m m}{#2 \lconsop\IfValueT{#1}{_{#1}} #3}
 
 \DeclareMathOperator{\eqtyop}{=}
@@ -218,7 +223,7 @@
 
 \DeclareMathOperator{\Vect}{Ve}
 \NewDocumentCommand\vnil{o}{[]\IfValueT{#1}{_{#1}}}
-\DeclareMathOperator{\vconsop}{:\hspace{-1.5pt}:}
+\DeclareMathOperator{\vconsop}{\mathord{;};}
 \NewDocumentCommand\vcons{o o m m}{#3 \lconsop\IfValueT{#1}{_{#1,#2}} #4}
 
 % Conversion
@@ -246,10 +251,10 @@
 
 \AtBeginDocument{
   \NewCommandCopy{\numero}{\no}
-  \renewcommand{\no}{\mathrel{\mathrm{no}}}
+  \renewcommand{\no}{\mathop{\mathrm{no}}}
 
   \NewCommandCopy{\noteq}{\ne}
-  \renewcommand{\ne}{\mathrel{\mathrm{ne}}}
+  \renewcommand{\ne}{\mathop{\mathrm{ne}}}
 }
 
 % Gradual stuff
@@ -259,7 +264,7 @@
 
 % Ascriptions
 
-\DeclareMathOperator{\ascop}{:\hspace{-1.5pt}:}
+\DeclareMathOperator{\ascop}{\mathord{:}:}
 \DeclareDocumentCommand{\asc}{m m}{#1 \ascop #2}
 
 % Bad Approaches
@@ -283,4 +288,33 @@
 
 % Cast
 \DeclareDocumentCommand{\cast}{m m m}{
-  \mathop{\left\langle #3 \Leftarrow #2 \right\rangle #1}}
+  \mathop{\left\langle #2 \Leftarrow #1 \right\rangle #3}}
+\DeclareDocumentCommand{\castrev}{m m m}{
+  \cast{#2}{#3}{#1}}
+
+% Elaboration and colored typing
+
+\newcommand{\sourcecolor}[1]{\mathcolor{LightBlue}{#1}}
+\newcommand{\scol}[1]{\sourcecolor{#1}}
+\newcommand{\targetcolor}[1]{\mathcolor{DarkBlue}{#1}}
+\newcommand{\tcol}[1]{\targetcolor{#1}}
+\newcommand{\staticcolor}[1]{\mathcolor{black}{#1}}
+\newcommand{\ccol}[1]{\staticcolor{#1}}
+\newcommand{\inferelab}[4]{\targetcolor{#1} \vdash \sourcecolor{#2} \comp \targetcolor{#3} \ity \targetcolor{#4}}
+\newcommand{\pinferelab}[5]{\targetcolor{#2} \vdash \sourcecolor{#3} \comp \targetcolor{#4} \pity{#1} \targetcolor{#5}}
+\newcommand{\checkelab}[4]{\targetcolor{#1} \vdash \sourcecolor{#2} \cty \targetcolor{#4} \comp \targetcolor{#3}}
+\newcommand{\contelab}[2]{\vdash \sourcecolor{#1} \comp \targetcolor{#2}}
+
+\newcommand{\cinferty}[3]{\tcol{#1} \vdash \tcol{#2} \ity \tcol{#3}}
+\newcommand{\cpinferty}[4]{\tcol{#2} \vdash \tcol{#3} \pity{#1} \tcol{#4}}
+\newcommand{\ccheckty}[3]{\tcol{#1} \vdash \tcol{#2} \cty \tcol{#3}}
+
+% Parameters
+
+\newcommand{\sortOfPiName}{\mathop{\mathrm{s}_\Pi}}
+\newcommand{\castOfPiName}{\mathop{\mathrm{c}_\Pi}}
+\newcommand{\sortOfPi}[2]{\sortOfPiName(#1,#2)}
+\newcommand{\castOfPi}[1]{\castOfPiName(#1)}
+\DeclareMathOperator{\stalk}{germ}
+\newcommand{\stalkCIC}[2]{\mathop{\stalk_{#1}} #2}
+\DeclareMathOperator{\hd}{head}

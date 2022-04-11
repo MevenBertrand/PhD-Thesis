@@ -1216,8 +1216,8 @@ to a target \emph{cast calculus}, \ie a language with explicit runtime type
 checks.
 This elaboration inserts casts, needed for a well-behaved reduction \sidecite{Siek2006}.
 For instance, in a call-by-value language, the upcast (loss of precision)
-$\cast{10}{\Nat}{\?}$ is considered a (tagged) value,
-and the downcast (gain of precision) $\cast{v}{\?}{\Nat}$ reduces successfully
+$\castrev{10}{\Nat}{\?}$ is considered a (tagged) value,
+and the downcast (gain of precision) $\castrev{v}{\?}{\Nat}$ reduces successfully
 if $v$ is such a tagged natural number, or to an error otherwise.
 
 We follow a similar approach for \kl{GCIC}, which is
@@ -1240,7 +1240,7 @@ are required to satisfy \kl(grad){consistency}. For instance, $\asc{\asc{\true}{
 Such ascriptions in \kl{CastCIC} are realized by casts.
 For instance $\asc{\asc{0}{\?}}{\Bool}$ in \kl{GCIC} elaborates
 – up to desugaring and reduction – to
-$\cast{\cast{0}{\Nat}{\?[\uni]}}{\?[\uni]}{\Bool}$ in \kl{CastCIC}.
+$\castrev{\castrev{0}{\Nat}{\?[\uni]}}{\?[\uni]}{\Bool}$ in \kl{CastCIC}.
 A major difference between ascriptions in \kl{GCIC} and casts in \kl{CastCIC} is
 that casts are not required to satisfy \kl(grad){consistency}: a cast between any
 two types is well-typed, although of course it might produce an
@@ -1272,7 +1272,7 @@ intuition of a more imprecise term as "the same term with subterms and/or
 type annotations replaced by $\?$", and is defined without any assumption of typing.
 In \kl{CastCIC}, we define a notion of \reintro{structural precision},
 which is mostly syntactic except that, in order to account for cast insertion during elaboration, it tolerates precision-preserving casts.
-For instance, $\cast{t}{A}{A}$ is related to $t$ by structural precision.
+For instance, $\castrev{t}{A}{A}$ is related to $t$ by structural precision.
 
 Armed with these two notions of precision, we prove
 % We prove that \GCIC satisfies static graduality.\km{forward ref?}

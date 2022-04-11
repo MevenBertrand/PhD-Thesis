@@ -610,10 +610,6 @@ transitive closure of one-step reduction, see \cref{fig:red}.
 \begin{figure}[ht]
   \ContinuedFloat
   \begin{mathpar}
-    \inferrule
-    % \inferdef{TopRed}
-      {t \tred t'}
-      {t \ored t'} \and
     % \label{rule:top-red}
     \inferrule{ }{t \fred t}
     \and
@@ -885,7 +881,7 @@ the corresponding notions of typing, is \kl{confluence} of reduction.
 
 This is a very widely studied property in the context of rewriting systems. A nice
 proof technique relies on the definition of a notion of parallel reduction, see
-\sidetextcite{Takahashi1989}.
+\sidetextcite{Takahashi1995}.
 
 \subsection{Progress}
 
@@ -926,9 +922,11 @@ characterize well-typed normal terms.
 
 To prove progress, one can again resort to induction on the typing derivation. The key point
 is to characterize the \kl{normal forms} at a given type,
-by proving that they are either \kl{neutral forms}, or \kl{canonical form} of a right kind.
-For instance, if $t$ is a normal form and has a function type, then it must be
-either a neutral or a λ-abstraction.
+by proving that they are either \kl{neutral forms}, or \kl{canonical form}
+\emph{of the right kind}.
+For instance, if $f$ is a normal form and has a function type, then it must be
+either a neutral, or a λ-abstraction. If $f$ is applied to $u$, then either $f\ u$ is
+a neutral – a thus a normal form –, or it reduces further, by a β step.
 
 One way to understand \kl{progress} – and, indeed, the origin of the name – is that well-typed
 terms do not get stuck: either they have finished computing, and thus satisfy $\no$, or

@@ -1,5 +1,550 @@
 \chapter{From GCIC to CastCIC: Bidirectional Elaboration}
 \label{chap:bidir-gradual-elab}
 
-Again, should be an adaptation from TOPLAS. Maybe I can do a bit more, especially if
-I concentrate on the bidirectional way of things. For instance, I could try and give a better algorithm for deciding conversion than the crappy one from the paper.
+We now present the elaboration from the source gradual system \kl{GCIC} to the target
+cast calculus \kl{CCIC}. We start with \kl{CCIC}, describing its typing, reduction
+and metatheoretical properties (\cref{sec:cast-calculus}).
+%
+We next describe \kl{GCIC} and its bidirectional elaboration to
+\kl{CCIC}, along with few direct properties (\cref{sec:elaboration}).
+This elaboration can be seen as an extension of the bidirectional presentation of
+\kl{CIC}.
+%
+To illustrate the semantics of the different \kl{GCIC} variants, we show how
+the $\Omega$ term (\cref{sec:back-to-omega}) behaves in them.
+We finally expose technical properties
+of the reduction of \kl{CCIC} (\cref{sec:gcic-simulation}) used to prove the most
+important theorems on elaboration: conservativity over \kl{CIC} or \kl{CICs}, as well as
+the gradual guarantees (\cref{sec:gcic-theorems}).
+
+In this whole chapter, we do not treat indexed inductive types, thus the system should be
+seen as an extension of \kl{CIC-} rather than full-blown \kl{CIC}. We come back to this
+issue in \cref{chap:beyond-gcic}. The original reference \sidecite{LennonBertrand2022}
+considers the case of general inductive types, here we restrict the presentation to
+$\List$ to ease readibiliy.
+
+\section{\kl(tit){CCIC}}
+\label{sec:cast-calculus}
+
+\subsection{System Definition}
+
+\paragraph{Syntax}
+The syntax of \kl{CCIC}%
+\sidenote{Written using a \targetcolor{dark blue color}.}
+extends that of \kl{CIC-}
+with three new term constructors: the \intro{unknown term} $\tcol{\?[T]}$ and
+\intro[error]{dynamic error} $\tcol{\err[T]}$ of type $\tcol{T}$, 
+s well as the \intro{cast} $\tcol{\cast{S}{T}{t}}$
+of a term $\tcol{t}$ of type $\tcol{S}$ to type $\tcol{T}$
+%
+\begin{align}
+  \label{fig:syntax-castcic}
+  \tcol{\terms{\kl{CCIC}}} \ni \tcol{t} \coloneqq \dots \mid \tcol{\?[t]} \mid \tcol{\err[t]} \mid \tcol{\cast{t}{t}{t}} \tag{Syntax of \kl{CCIC}}
+\end{align}
+%
+with casts associating to the right:
+$\tcol{\cast{S}{S'}{\cast{T'}{T}{t}}}$ corresponds to the fully-parenthesized
+$\tcol{\cast{S}{S'}{\left(\cast{T}{T'}{t}\right)}}$.
+We also collapse successive ones:
+$\tcol{\cast{T}{T'' \Leftarrow T'}{t}}$ is shorthand for
+$\tcol{\cast{T'}{T''}{\cast{T}{T'}{t}}}$.
+The unknown term and dynamic error both behave as exceptions as
+defined in \kl{ExTT} \sidecite{Pedrot2018}.
+%
+Casts keep track of the use of consistency during elaboration, implementing
+a form of runtime type-checking, raising the error $\tcol{\err[T]}$ in case of a type mismatch.
+%
+We call \emph{static} the terms of \kl{CCIC} that do not use any of these new
+constructors – static \kl{CCIC} terms thus correspond to \kl{CIC} terms.
+
+\paragraph{Universe parameters}
+
+\begin{figure}
+\begin{align}
+\sortOfPi{i}{j} &\coloneqq \max(i,j) &  \castOfPi{i} &\coloneqq i \label{eq:spi-cpi-gcicp}\tag{\text{\kl{GCICP}-\kl{CCICP}}}\\
+\sortOfPi{i}{j} &\coloneqq \max(i,j) & \castOfPi{i} &\coloneqq i-1 \label{eq:spi-cpi-gcict}\tag{\text{\kl{GCICT}-\kl{CCICT}}}\\
+\sortOfPi{i}{j} &\coloneqq \max(i,j)+1 &  \castOfPi{i} &\coloneqq i-1 \label{eq:spi-cpi-gcics}\tag{\text{\kl{GCICs}-\kl{CCICs}}}
+\end{align}
+	\caption{Universe parameters}
+	\label{fig:univ-param}
+\end{figure}
+
+\kl{CCIC} is parametrized by two functions,
+described in \cref{fig:univ-param}, to account for the three
+different variants of \kl{GCIC} we consider – see \cref{sec:gcic:-3-1}.
+%
+The first function $\sortOfPiName$ computes the level of the universe
+of a dependent function type,
+given the levels of its domain and codomain – see the updated \ruleref{rule:ccic-prod}
+ in \cref{fig:ccic-prod}. The second function
+$\castOfPiName$ controls the universe level in the reduction of a cast between
+$\? \rightarrow \?$ and $\?$ – see \cref{fig:CCIC-reduction}.
+
+\paragraph{Typing}
+
+\begin{figure}
+  \begin{mathpar}
+  \inferdef{ΠTy}{
+    \cpinferty{\uni}{\Gamma}{A}{\uni[i]} \\
+    \cpinferty{\uni}{\Gamma}{B}{\uni[j]}}
+  { \cinferty{\Gamma}{\P x : A.\ B}{\uni[\sortOfPi{i}{j}]}
+  } \label{rule:ccic-prod} \and
+  \inferdef{Unk}{
+    \cpinferty{\uni}{\Gamma}{T}{\uni[i]}}
+  {\cinferty{\Gamma}{\?[T]}{T}}
+    \label{infrule:ccic-unk} \and
+  \inferdef{Err}{
+      \cpinferty{\uni}{\Gamma}{T}{\uni[i]}}
+    {\cinferty{\Gamma}{\?[T]}{T}}
+      \label{infrule:ccic-err} \and
+  \inferdef{Cast}{
+    \cpinferty{\uni}{\Gamma}{T}{\uni} \\
+    \cpinferty{\uni}{\Gamma}{T'}{\uni} \\
+    \ccheckty{\Gamma}{t}{T}
+  }{
+    \cinferty{\Gamma}{\cast{T}{T'}{t}}{T'}}
+      \label{rule:ccic-cast-ty}
+  \end{mathpar}
+  \caption{Typing rules for \kl{CastCIC} (Extending those for \kl{CIC},
+  replace \ruleref{rule:cic-prod})}
+  \label{fig:ccic-ty}
+\end{figure}
+%\cref{fig:ccic-typing} gives the typing rules for the three new primitives of \kl{CCIC}.
+The first difference between \kl{CCIC} and \kl{CIC} is \namecref{rule:ccic-prod},
+given in \cref{fig:ccic-prod}, which uses the $\sortOfPiName$ parameter. In \kl{CCICP} and
+\kl{CCICT}, this rule corresponds to the usual one of \kl{CIC}, but in \kl{CCICs} it is stricter.
+All other typing rules are exactly the same as in \kl{CIC}.
+%When disambiguation is needed, we note this typing judgment as $\caty$.
+
+Next, Rules \nameref{infrule:ccic-unk} and \nameref{infrule:ccic-err}
+say that both $\tcol{\?_T}$ and $\tcol{\err_T}$ infer $\tcol{T}$
+when $\tcol{T}$ is a type.
+%
+
+Finally \ruleref{rule:ccic-cast-ty} ensures that both the source and target of
+the cast are indeed types, and that the casted term indeed has the source type.
+%
+Note that in \kl{CCIC}, as is sometimes the case in cast calculi \sidecite{Siek2010,New2018}
+no consistency premise is required for a cast to be well-typed.
+Here, consistency only plays a role in \kl{GCIC}, but completely disappears after elaboration. 
+Instead, \kl{CCIC} only relies only on standard (\kl(conv){algorithmic}) \kl(algo){conversion}.
+
+\paragraph{Reduction}
+\begin{figure}[h]
+  \begin{mathpar}
+  % \jform{\H, \hd \ty \types{\kl{CCIC}} \to \H, \text{ and }
+  %     \stalk \ty \H \to \types{\kl{CCIC}}}
+
+    \H \ni h \coloneqq \uni[i] \mid \P \mid \List \\
+
+	\hd(\tcol{\P x : A .\ B}) := \P  \and
+	\hd(\tcol{\uni[i]}) := \uni[i]  \and
+	\hd(\tcol{\List(A)}) := \List	 \\\\
+
+	\stalkCIC{i}{\uni[j]} \coloneqq
+  \left\{ \begin{array}{lr}
+	\tcol{\uni[j]} & \text{ if $j < i$}
+	\\
+	\tcol{\err[\uni[i]]} & \text{if $j \geq i$}
+	\end{array} \right. \and
+%
+	\stalkCIC{i}{Li}
+	:= \tcol{Li(\?[\uni[i]])} \and
+%
+	\stalkCIC{i}{\P}
+	:= \left\{ \begin{array}{lr}
+	\tcol{\?[\uni[\castOfPi{i}]]} \rightarrow
+	\tcol{\?[\uni[\castOfPi{i}]]} & \text{if $\castOfPi{i} \geq 0$}
+	\\
+	\tcol{\err[\uni[i]]} & \text{if $\castOfPi{i} < 0$}
+	\end{array} \right.
+	\end{mathpar}
+
+	\caption{\kl{Head constructor} and \kl{germ}}
+	\label{fig:head-germ}
+\end{figure}
+
+The typing rules provide little insight on the new primitives; the interesting
+part really lie in their \kl{reduction} behavior.
+
+\kl{Reduction} relies on two auxiliary functions relating \intro{head constructors} $h \in \H$
+to those terms that start with either $\P$, $\uni$ or and inductive type
+– in our running example, $\List$ – the set of which we call $\types{\kl{CCIC}}$.
+These are defined in \cref{fig:head-germ}.
+%
+The first is the function $\hd$, which returns the head constructor of a type.
+%
+
+In the other direction, the \intro{germ} function $\stalkCIC{i}{h}$ constructs the least
+precise type with head $h$ at level $i$.
+In the case where no such type exists — \eg when $\castOfPi{i} < 0$ –
+this least precise type is the error.
+The germ function corresponds to an abstraction function in the sense of
+AGT~\sidecite{Garcia2016}, if one interprets the head $h$
+as the set of all types whose head type constructor is $h$.
+\sidetextcite{Wadler2009} christened the corresponding notion a
+\emph{ground type}, later reused in the gradual typing literature.
+This terminology however clashes with its prior use in denotational semantics
+\sidecite{Levy2004}: there a ground type is a first-order datatype.
+Note also that \sidetextcite{Siek2006}
+call ground types the base types of the 
+language, such as $\Bool$ and $\Nat$.
+We therefore prefer the less overloaded term \kl{germ}, used by analogy with the
+geometrical notion of the \emph{germ of a section}
+\sidecite{MacLane1994}: the germ of a head constructor represents an
+equivalence class of types that are locally the same.
+
+The exact design of the \kl{reduction} rules is mostly dictated by
+the models of \kl{CCIC} presented later in~\cref{sec:realizing-cast-calculus}.
+Nevertheless, we now provide some intuition about their meaning. We only present here the
+rules for \kl{top-level} reduction: the congruence closure for \kl{full reduction} is
+completely standard. As for \kl{weak-head reduction}, we present the adequate
+contextual closure later on when we prove \kl{progress}.
+
+\begin{figure*}[ht]
+\ContinuedFloat*
+\begin{mathpar}
+  \redrule{
+    \tcol{\?[\P(x:A).\ B]}
+  }{
+    \tcol{\l x : A.\ \?[B]}}[Π-Unk]
+  \label{rule:red-prod-unk} \and
+%
+  \redrule{
+    \tcol{\err[\P x:A.\ B]}
+  }{
+    \tcol{\l x : A.\ \err[B]}}[Π-Err]
+  \label{rule:red-prod-err} \and
+%
+  \redrule{
+    \tcol{ \ind{\List}{\?[\List(A)]}{z.P}{b_{\lnil},y_1.y_2.p_{y_2}.b_{\lconsop}}}
+  }{
+    \tcol{\?[\subs{P}{\?[\List(A)]}{z}]}
+  }[Match-Unk] \label{rule:red-match-unk} \and
+%
+  \redrule{
+    \tcol{ \ind{\List}{\err[\List(A)]}{z.P}{b_{\lnil},y_1.y_2.p_{y_2}.b_{\lconsop}}}
+  }{
+    \tcol{\err[\subs{P}{\err[\List(A)]}{z}]}
+  }[Match-Err] \label{rule:red-match-err} \\
+%
+  \redrule{
+    \tcol{\castrev{\?[\List(A)]}{\List(A'')}{\List(A')}}
+  }{
+    \tcol{\?[\List(A')]}
+  }[List-Unk] \label{rule:red-ind-unk} \and
+%
+  \redrule{
+    \tcol{\castrev{\err[\List(A)]}{\List(A'')}{\List(A')}}
+  }{
+    \tcol{\err[\List(A')]}
+  }[List-Err] \label{rule:red-ind-err} \and
+%
+  \redrule{
+    \tcol{\castrev{\?[\?[\uni]]}{\?[\uni]}{X}}
+  }{
+    \tcol{\?[X]}
+  }[Down-Unk] \label{rule:red-down-unk} \and
+%
+  \redrule{
+    \tcol{\castrev{\err[\?[\uni]]}{\?[\uni]}{X}}
+  }{
+    \tcol{\err[X]}
+  }[Down-Err] \label{rule:red-down-err}
+\end{mathpar}
+\caption{Propagation rules for $\tcol{\?}$ and $\tcol{\err}$}
+\label{fig:ccic-red-propag}
+\end{figure*}
+
+The first set of rules, given in \cref{fig:ccic-red-propag}, specify the exception-like
+propagation behavior of both $\tcol{\?}$ and $\tcol{\err}$ at function and inductive types.
+Rules \nameref{rule:red-ind-unk} and \nameref{rule:red-ind-err}
+similarly propagate $\tcol{\?}$ and $\tcol{\err}$ when cast between the same inductive
+type, and Rules \nameref{rule:red-down-unk} and \nameref{rule:red-down-err} do the same
+from the unknown type to any type $\tcol{X}$.
+
+\begin{figure*}[h]
+\ContinuedFloat
+\begin{mathpar}
+
+  \redrule{
+    \tcol{\castrev{(\l x : A .\ t)}{\P x: A_1.\ B_1}{\P y:A_2.\ B_2}}
+  }{ 
+    \tcol{\l y : A_2. \castrev{(\subs{t}{\cast{A_2}{A}{y}}{x})}{\subs{B_1}{\cast{A_2}{A_1}{y}}{x}}{B_2}}
+  }[Π-Π] \label{rule:red-prod-prod} \and
+%
+  \redrule{
+    \tcol{\castrev{A}{\uni[i]}{\uni[i]}}
+  }{\tcol{A}}[Univ-Univ] \label{rule:red-univ-univ} \and
+%
+  \redrule{
+      \tcol{\castrev{\lnil[A]}{\List(A_1)}{\List(A_2)}}
+    }{
+      \tcol{\lnil[A_2]}}[Nil-Nil] \label{rule:red-ind-ind} \and
+%
+  \redrule{
+    \tcol{\castrev{\lcons[A]{a}{l}}{\List(A_1)}{\List(A_2)}}
+  }{
+    \tcol{\lcons[A_2]{\cast{A_1}{A_2}{a}}{\castrev{l}{\List(A_1)}{\List(A_2)}}}}[Cons-Cons]
+    \label{rule:red-cons-cons}
+\end{mathpar}
+
+\caption{Success rules for casts}
+\label{fig:ccic-red-success}
+\end{figure*}
+
+Next come the rules of \cref{fig:ccic-red-success},
+which correspond to success cases of dynamic checks,
+where the cast is between types with the same head.
+In that case, casts are either completely
+erased when possible, or propagated. As usual in gradual typing,
+directly inspired by higher-order contracts \sidecite{Findler2002},
+\ruleref{rule:red-prod-prod} distributes the function cast in two casts,
+one for the argument and one for the body;
+note the substitution in the source codomain in order to account for dependency.
+%
+Also, because constructors and inductives are fully applied,
+this \nameref{rule:red-prod-prod} rule cannot be blocked because of
+a partially-applied constructor or inductive.
+Regarding inductive types, the propagation of casts on subterms cannot be avoided in the list
+type, but if we follow this strategy for simpler inductive types, \eg $\tcol{\Nat}$,
+the restriction to reduce only on constructors means that a cast
+between $\tcol{\Nat}$ and $\tcol{\Nat}$ is blocked until its argument term is a constructor,
+rather than disappearing right away as for $\uni$.
+This is somewhat non-optimal, but we stick to it here for simplicity.
+
+\begin{figure*}[h]
+  \ContinuedFloat
+  \begin{mathpar}
+    \inferdef{Head-Err}{
+      \tcol{T}, \tcol{T'} \in \types{\kl{CCIC}} \\
+      \hd \tcol{T} \noteq \hd \tcol{T'}
+    }{
+      \tcol{\castrev{t}{T}{T'}} \tred \tcol{\err[T']}
+    } \label{rule:head-err} \\
+  
+    \redrule{
+      \tcol{\castrev{t}{\err[\uni]}{T}}
+    }{
+      \tcol{\err_T}
+    }[Dom-Err] \label{rule:err-dom} \and
+  %
+    \inferdef{Codom-Err}{
+      T \in \types{\kl{CCIC}}
+    }{
+      \tcol{\castrev{t}{T}{\err[\uni]}} \tred \tcol{\err[\err[\uni]]}
+    } \label{rule:err-codom}
+  \end{mathpar}
+  \caption{Failure rules for casts}
+  \label{fig:ccic-red-fail}
+\end{figure*}
+
+On the contrary, \cref{fig:ccic-red-fail} specifies failures of dynamic checks, either when the considered types have different heads, or when casting to or from the
+error type.
+
+\begin{figure*}[ht]
+  \ContinuedFloat
+  \begin{mathpar}
+    \inferdef{Π-Germ}{
+      \tcol{\P x : A .\ B} \noteq \tcol{\stalkCIC{j}{\Pi}} \text{ for $j \geq i$}
+    }{
+      \tcol{\castrev{f}{\P x:A.\ B}{\?[\uni[i]]}} \tred
+      \tcol{\cast{\P x:A.\ B}{\?[\uni[i]] \Leftarrow \stalkCIC{i}{\P}}{f}}
+    }[Π-Germ] \label{rule:prod-germ} \and
+  %
+    \inferdef{List-Germ}{
+      \tcol{\List(A)} \noteq \tcol{\stalkCIC{j}{I}} \text{ for  $j \geq i$}
+    }{
+      \tcol{\castrev{t}{\List(A)}{\?[\uni[i]]}} \tred
+      \tcol{\cast{\List(A)}{\?[\uni[i]]} \Leftarrow \stalkCIC{i}{\List}}{t}
+    } \label{rule:ind-germ} \and
+  %
+    \inferdef{Up-Down}{
+      \tcol{\stalkCIC{i}{h}} \noteq \tcol{\err[\uni[i]]}
+    }{
+      \tcol{\cast{\stalkCIC{i}{h}}{X \Leftarrow \?[\uni[i]]}{t}} \tred
+      \tcol{\castrev{t}{\stalkCIC{i}{h}}{X}}
+    } \label{rule:up-down} \and
+  %
+    \inferdef{Size-Err}{
+      \min \{j \mid \exists h \in \H, \tcol{\stalkCIC{j}{h}} = A\} > i
+    }{
+      \tcol{\castrev{t}{A}{\?[\uni[i]]}} \tred
+      \tcol{\err[\?[\uni[i]]]}
+    } \label{rule:size-err}
+  \end{mathpar}
+  \caption{Casts and the unknown type}
+  \label{fig:ccic-red-cast-ukn}
+\end{figure*}
+
+Finally, there are specific rules pertaining to casts to and from $\tcol{\?}$,
+showcasing its behaviour as a universal type, given in \cref{fig:ccic-red-cast-ukn}.
+Rules \nameref{rule:prod-germ} and \nameref{rule:ind-germ} decompose an upcast into
+$\tcol{\?}$ into an upcast to a germ followed by an upcast from the germ to $\tcol{\?}$.
+This decomposition of an upcast to $\tcol{\?}$ into a series of "atomic" upcasts from a germ to
+$\tcol{\?}$ is a consequence of the way the cast operation is implemented in
+\cref{sec:realizing-ccic}, but similar decompositions appear \eg in \sidetextcite{Siek2015},
+where the equivalent of our germs are called ground types.
+The side conditions guarantee that this rule is used when no other applies.
+%
+\ruleref{rule:up-down} erases the succession of an upcast to $\tcol{\?}$
+and a downcast from it. Note that in this rule the upcast
+$\tcol{\castrev{}{\stalkCIC{h}{i}}{\?[\uni[i]]}}$ acts like a constructor for
+$\tcol{\?[\uni[i]]}$, and $\tcol{\castrev{}{\?[\uni[i]]}{X}}$ as a destructor –
+a view reflected by the canonical and neutral forms of \cref{fig:ccic-canonical}
+for $\tcol{\?[\uni]}$.%
+\sidenote{
+  In a simply-typed language such as \kl{GTLC} \cite{Siek2015},
+  where there are no neutrals at the type level,  casts from a germ or ground type 
+  to the unknown type are usually interpreted as tagged values \sidecite[7em]{Siek2006}. 
+  Here, these correspond exactly to the canonical forms of $\tcol{\?[\uni]}$,
+  but we also have to account for the many neutral forms that appear in open contexts.
+}
+%
+Finally, \ruleref{rule:size-err} corresponds to a peculiar kind of error, which only happens due to the presence of a type hierarchy: 
+$\tcol{?[\uni[i]]}$ is only universal with respect to types at level $i$, and so a type might
+be of a level too high to fit into it.
+To detect such a case, we check whether $A$ is a germ for a level that is below $i$,
+and when not must raise an error.
+
+\paragraph{Safety}
+
+Given the typing and reduction rules just define, we can already prove one of our main
+meta-theoretical properties:
+\kl{safety}, for the three variants of \kl{CCIC}.
+The structure of the proof is very much the same as that of \arefpart{metacoq} for
+\kl{PCUIC}.
+
+%
+The crucial lemma is, as before, \kl{confluence}:
+
+\begin{lemma}[Confluence of \kl{CCIC}]
+  \label{thm:ccic-confluence}
+  If $\tcol{t} \red \tcol{t_1}$ and $\tcol{t} \red \tcol{t_2}$,
+  then there exists $t'$ such that $\tcol{t_1} \red \tcol{t'}$ and $\tcol{t_2} \red \tcol{t'}$.
+\end{lemma}
+
+\begin{proof}
+
+  We follow again the Tait-Martin Löf proof, as exposed by \sidetextcite{Takahashi1995} extend the notion of parallel reduction from \cref{thm:pcuic-confluence}
+  to account for our additional reduction. The triangle property still holds,
+  because as before there is no real critical pair between our rules – we carefully set
+  them up to that effect!
+  
+\end{proof}
+
+From this, exactly as in \kl{PCUIC} we can obtain \kl{injectivity of type constructors},
+and thus finally, \kl{subject reduction} follows. The only possibly surprising point,
+with respect to \cref{chap:metacoq-general}, is that we state it directly for the bidirectional
+system.
+
+\begin{theorem}[Subject reduction for \kl{CCIC}]
+  If $\cinferty{\Gamma}{t}{T}$ and $\tcol{t} \red \tcol{t'}$ then $\ccheckty{\Gamma}{t'}{T}$.
+\end{theorem}
+
+Let us now turn to \kl{progress}.
+To state progress, we must first extend our canonical forms, to encompass the three new
+term formers. This corresponds to giving intuition on what are the new \kl{normal forms},
+and on “how” these new terms formers compute, so as to know when they are stuck, and thus
+give rise to a \kl{neutral form}.
+
+\begin{figure}[h]
+  \ContinuedFloat*
+  \begin{mathpar}
+    \inferrule{
+      \tcol{T} \in \{ \tcol{\uni},\tcol{\List(A)}, \tcol{\?[\uni]}, \tcol{\err[\uni]} \}
+    }{\no \tcol{\?[T]}} \and
+		\inferrule{\ne \tcol{t}}{\ne \tcol{\?[t]}} \and
+    \inferrule{
+      \tcol{T} \in \{ \tcol{\uni},\tcol{\List(A)}, \tcol{\?[\uni]}, \tcol{\err[\uni]} \}
+    }{\no \tcol{\err[T]}} \and
+		\inferrule{\ne \tcol{t}}{\ne \tcol{\err[t]}} \and
+  \end{mathpar}
+  \caption{\kl{Normal} and \kl{neutral} forms for $\?$ and $\err$}
+  \label{fig:ccic-nor-exc}
+\end{figure}
+
+First, an error $\tcol{\err[t]}$ or an unknown term $\tcol{\?[t]}$ is neutral when
+$\tcol{t}$ is neutral,
+and is canonical when $\tcol{t}$ is a canonical type – one of the canonical types of \kl{CIC},
+or the \kl{unknown} or \kl{error} types, but not a Π-type.
+This is detailed in \cref{fig:ccic-nor-exc}.
+This is because exception-like terms reduce on Π-types – see \ruleref{rule:red-prod-unk},
+and \sidetextcite{Pedrot2018}.
+
+\begin{marginfigure}
+  \ContinuedFloat
+  \begin{mathpar}
+    \inferrule{ }{\no \tcol{\cast{\stalkCIC{i}{h}}{\?[\uni]}{t}}}
+  \end{mathpar}
+  \caption{Cast as a canonical form of the unknown type}
+  \label{fig:ccic-cast-nor}
+\end{marginfigure}
+
+Second come the canonical form for inhabitants of $\tcol{\?[\uni]}$:
+these are upcasts from a germ, which can be seen as a term tagged
+with the head constructor of its type, in a matter reminiscent of
+actual implementations of dynamic typing using type tags.
+These canonical forms work as constructors for $\tcol{\?[\uni]}$.
+
+\begin{figure}[h]
+  \ContinuedFloat
+  \begin{mathpar}
+    \inferrule{\ne \tcol{S} }{\ne \tcol{\cast{S}{T}{t}}} \and
+    \inferrule{\ne \tcol{t} }{\ne \tcol{\cast{\?[T]}{T}{t}}} \\
+    \inferrule{\ne \tcol{T} }{\ne \tcol{\cast{\uni}{T}{t}}} \and
+    \inferrule{\ne \tcol{T}}{\ne \tcol{\cast{\P x : A.\ B}{T}{t}}} \and
+    \inferrule{\ne \tcol{t}}{\ne \tcol{\cast{\P x : A.\ B}{\P x : A'.\ B'}{t}}} \and
+    \inferrule{\ne \tcol{T}}{\ne \tcol{\cast{\List(A)}{T}{t}}} \and
+    \inferrule{\ne \tcol{t}}{\ne \tcol{\cast{\List(A)}{\List(A')}{t}}}
+  \end{mathpar}
+  \caption{\kl{Neutral} casts}
+  \label{fig:ccic-cast-neu}
+\end{figure}
+
+Finally, the cast operation behaves as a destructor on the
+universe $\tcol{\uni}$ – as if it were an inductive type of usual \kl{CIC}.
+This destructor first scrutinizes the source type of the cast.
+This is why the cast is neutral as soon as its source type is neutral.
+When the source type reduces to a head constructor, there are two
+possibilities. Either that constructor is $\tcol{\?[\uni]}$, in which case the cast
+scrutinizes whether its argument is a canonical form
+$\tcol{\cast{t}{\?[\uni]}{\stalkCIC{i}{h}}}$, and is neutral when this is not the case.
+In all other cases, it first scrutinizes the target type,
+so the cast is neutral when the target type is neutral.
+Finally, when both types have head constructors, the cast
+might still need its argument to be either a λ-abstraction or an inductive
+constructor to reduce.
+
+Additionally, the notion of neutral terms naturally induces a \kl(red){weak-head}
+reduction strategy, which reducing the (only) argument of the
+top-level destructor that is in a neutral position.
+
+Equipped with the notion of canonical forms, we can state \kl{progress} for \kl{CCIC}, and thus
+\kl{safety}.
+
+\begin{theorem}[\kl{Progress} for \kl{CCIC}]
+  \label{thm:ccic-progress}
+  If $\tcol{t}$ is a well-typed term of \kl{CCIC},
+  then either $\no \tcol{t}$, or there is some $\tcol{t'}$
+  such that $\tcol{t} \red \tcol{t'}$.
+\end{theorem}
+
+\begin{proof}
+  The proof is similar to that which has been sketched in \cref{sec:tech-properties}:
+  suppose a term is well-typed, and prove \kl{progress} by induction on its typing derivation.
+
+  For the two cases of $\?[T]$ and $\err[T]$, this is direct. If $T$ reduces, then the whole term
+  reduces. If it is neutral, the whole term is neutral. If it is a Π-type, the term reduces
+  again – using \eg \ruleref{rule:red-prod-unk} –. Finally if it is another canonical type,
+  then the whole term is canonical. Any other case is impossible, by typing.
+
+  For the cast term former, the proof still follows the same ideas. It is only complicated
+  by the fact that in most cases all three sub-terms need to be canonical before the whole
+  term can reduce. 
+\end{proof}
+
+\begin{theorem}[\kl{Safety} for \kl{CCIC}]
+  \label{thm:ccic-psafe}
+  All three variants of \kl{CCIC} enjoy \kl{safety}.
+\end{theorem}
