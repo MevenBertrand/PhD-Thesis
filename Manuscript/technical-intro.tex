@@ -32,7 +32,7 @@ For the others, this \namecref{chap:tech-intro} aims at introducing the basic
 systems and properties which we will refer to in the rest of the text.
 \cref{sec:tech-typing} introduces the basic notions;
 \cref{sec:tech-ccw} presents a first type system,
-the \kl{Calculus of Constructions} (\kl{CCω}),
+the \kl[CCω]{Calculus of Constructions} (\kl{CCω}),
 the purely functional core all our systems rely on;
 \cref{sec:tech-conversion} defines the various notions of \kl{conversion} and
 \kl{reduction} encountered in the remaining of the thesis;
@@ -107,8 +107,8 @@ which we write $\multisubs{t}{x_1 \into u_1, \dots, x_n \into u_n}$.
 \section{Functional core: \kl(tit){CCω}}
 \label{sec:tech-ccw}
 
-\AP Let us now turn to the core of CIC, namely the
-\intro{Calculus of Constructions} (\kl{CCω}). Through the \kl{Curry-Howard correspondence},
+\AP Let us now turn to the core of \kl{CIC}, namely the
+\intro{Calculus of Constructions} (\intro{CCω}). Through the \kl{Curry-Howard correspondence},
 it is both a typed form of λ-calculus – \ie a kind of purely functional
 programming language – and a minimal form
 of logic – only containing universal quantification and implication.
@@ -1026,7 +1026,7 @@ Because of such limitations of encodings, and in order to faithfully
 represent the use of induction in mathematics and pattern-matching in programming languages,
 \intro{inductive types} have been introduced by \sidetextcite{PaulinMohring1993}.
 Adding these to \kl{CCω} results in \intro{CIC},
-the \kl{Calculus of Inductive Constructions}.
+the \intro{Calculus of Inductive Constructions}.
 
 \subsection{Booleans}
 
@@ -1444,8 +1444,8 @@ the restriction of \kl{CIC} excluding \kl{indexed inductive types}.
 \kl{CIC} as described in the previous section is already very expressive and powerful.
 It is nevertheless
 still far from a "real-world" type theory such as that implemented in \kl{Coq} and
-formalized in \kl{MetaCoq}, the \intro{Polymorphic, Cumulative Calculus of Inductive Constructions} (\kl{PCUIC}), which extends \kl{CIC} with many features which are crucial
-for usability. 
+formalized in \kl{MetaCoq}, the \intro{Polymorphic, Cumulative Calculus of Inductive Constructions} (\intro{PCUIC}),
+which extends \kl{CIC} with many features which are crucial for usability. 
 As some of the additions of \kl{PCUIC} are discussed throughout this
 thesis, we wish to already give a high level idea of them,
 while reserving the fully precise technical details for \arefpart{metacoq}.

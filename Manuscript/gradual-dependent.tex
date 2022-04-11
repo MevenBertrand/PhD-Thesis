@@ -243,11 +243,11 @@ concessions must be made with respect to \kl{safety} – at the very least, the 
 of canonical forms must be extended.
 %
 
-Second, \kl{normalization} is endangered.
+\AP Second, \kl{normalization} is endangered.
 The quintessential example of non-termination in the untyped lambda calculus is the
 term $\Omega$, defined as $\delta~\delta$
 where $\delta$ is $\l x.\ x\ x)$.
-In the \kl{simply-typed lambda calculus}%
+In the \intro{simply-typed lambda calculus}%
   \sidenote[][2em]{Hereafter abbreviated as \intro{STLC}.},
 as in \kl{CIC}, \emph{self-applications} like $\delta\ \delta$ and $x\ x$ are ill-typed.
 However, when introducing gradual types, one usually expects to accommodate such idioms,
@@ -365,8 +365,8 @@ exceptional type theory, either using a parametricity
 requirement \sidecite{Pedrot2018}, or, more flexibly, a
 different universe hierarchies \sidecite{Pedrot2019}.
 
-It is also important to highlight that this weak form of logical
-consistency is the \emph{most} one can expect in
+It is also important to highlight that this weak form of \kl{logical
+consistency} is the \emph{most} one can expect in
 a theory with effects. Indeed, \sidetextcite{Pedrot2020} have
 shown that it is not possible to define a type theory with full
 dependent elimination%
@@ -503,7 +503,7 @@ These properties require precision to be extended from types to terms.
 a term is more precise than another if they are \kl{α-equal}, except
 for their type annotations, which can be more precise in the former.
 
-\AP The \kl{static gradual guarantee} (\reintro{SGG})
+\AP The \kl{static gradual guarantee} (\intro{SGG})
 ensures that imprecision does not break typeability:
 \begin{property}[\intro{Static Gradual Guarantee}]
 If $t \pre u$ and $\vdash t \ty T$, then $\vdash u \ty U$
@@ -515,7 +515,7 @@ maintains its typeability. As such, the notion of \kl{precision} $\pre$ used to
 formulate the \kl{SGG} is inherently syntactic,
 over as-yet-untyped terms: typeability is the \emph{consequence} of the \kl{SGG} theorem.
 
-\AP The \kl{dynamic gradual guarantee} (\reintro{DGG}) is the key result that
+\AP The \kl{dynamic gradual guarantee} (\intro{DGG}) is the key result that
 links the syntactic notion of precision to reduction:
 if $t \pre t'$ and $t$ reduces to some value $v$, then
 $t'$ reduces to some value $v'$ such that $v precise v'$;
@@ -609,23 +609,24 @@ and so losing and recovering precision must produce a term that is \kl{observati
 equivalent} to the original one.
 
 % A couple of additional observations need to be made here, as they will play a major role in the development that follows.
-\AP These two approaches to characterizing gradual typing highlight the need to distinguish
-\intro(pre){syntactic} from \intro(pre){semantic} notions of precision.
-Indeed, with the usual \kl{syntactic precision} from \sidetextcite{Siek2015},
+\AP These two approaches to characterizing gradual typing highlight
+the need to distinguish
+\emph{syntactic} from \emph{semantic} notions of precision.
+Indeed, with the usual syntactic \kl{precision} from \sidetextcite{Siek2015},
 one cannot derive the \kl{ep-pair} property, in particular the \kl{equi-precision} stated above.
-This is why \sidetextcite{New2018} introduce a \kl{semantic precision},
-defined on well-typed terms. This \kl{semantic precision} serves
-as a proxy between \kl{syntactic precision} and the desired
+This is why \sidetextcite{New2018} introduce a semantic \kl{precision},
+defined on well-typed terms. This semantic \kl{precision} serves
+as a proxy between syntactic \kl{precision} and the desired
 \kl{observational error-approximation}.
 %
-However, a type-based \kl{semantic precision} cannot be used for the \kl{SGG}.
+However, a type-based semantic \kl{precision} cannot be used for the \kl{SGG}.
 Indeed, this theorem%
 \sidenote{Not addressed by \textcite{New2018}.}
 requires a notion of \kl{precision} that \emph{predates} typing:
 well-typedness of the less precise term is the \emph{consequence} of the theorem. 
 Therefore, a full study of a gradual language that covers \kl{SGG}, \kl{DGG}, and
-\kl{embedding-projection pairs} needs to consider both \kl(pre){syntactic} and \kl(pre){semantic}
-notions of precision.
+\kl{embedding-projection pairs} needs to consider both syntactic and semantic
+notions of \kl{precision}.
 
 Note also that the \kl{embedding-projection} property does not
 \textit{per se} imply the \kl{DGG}: one could pick \kl{precision} to be the universal relation,
@@ -751,8 +752,8 @@ For instance, $\asc{\asc{1}{\?[\uni]}}{\Nat}$ and $\?[\Nat] + 1$ are respectivel
 less precise than the neutrals above, but do evaluate further – respectively to $1$
 and to $\?[\Nat]$. This interaction between \kl{neutrals}, \kl{reduction}, and \kl{precision}
 spices up the goal of establishing \kl{DGG} and \kl{graduality}.
-In particular, this re-enforces the need to consider \kl{semantic precision}, because a
-too \kl(pre){syntactic} notion of precision is likely not to be stable by reduction:
+In particular, this re-enforces the need to consider a semantic notion of \kl{precision},
+because a too syntactic one is likely not to be stable by reduction:
 $\asc{\asc{1}{X}}{\Nat} \pre \asc{\asc{1}{\?}}{\Nat}$ is obvious syntactically,
 but $\asc{\asc{1}{X}}{\Nat} \pre 1$ is not.
 
@@ -883,11 +884,7 @@ Let us first consider the case of \kl{STLC}.
 We show that $\Omega$ is \emph{necessarily} a well-typed, diverging term in any
 gradualization of \kl{STLC} that satisfies the other properties.
 
-\begin{marginfigure}
-  \includegraphics{Fire_triangle.pdf}
-  \caption{The Fire Triangle of Graduality}
-\end{marginfigure}
-
+\begin{minipage}{\textwidth}
 \begin{theorem}[\reintro{Fire Triangle of Graduality} for \kl{STLC}]
   \label{thm:triangle-STLC}
 
@@ -895,6 +892,12 @@ Suppose a gradual type theory that satisfies both \kl{conservativity} with respe
 \kl{STLC} and \kl{graduality}. Then it cannot be \kl{normalizing}.
 
 \end{theorem}
+\end{minipage}
+
+\begin{marginfigure}[-4em]
+  \includegraphics{Fire_triangle.pdf}
+  \caption{The Fire Triangle of Graduality}
+\end{marginfigure}
 
 \begin{proof}
   We pose $\Omega \coloneqq \delta\ (\asc{\delta}{\?})$ with
@@ -1052,17 +1055,18 @@ whose properties are summarized in \cref{tab:gcic}
 – because \kl{GCIC} is one common parametrized framework,
 we are able to establish most properties for all variants at once.
 
-\intro{GCICP} is a theory that satisfies both \kl{conservativity} with respect to \kl{CIC}
+\AP The first variant, \intro{GCICP},
+is a theory that satisfies both \kl{conservativity} with respect to \kl{CIC}
 and \kl{graduality}, but sacrifices \kl{normalization}.
 This theory is a rather direct application of the
 principles discussed in \cref{sec:graduality} by extending \kl{CIC}
 with \kl{errors} and \kl{unknown terms}, and replacing \kl{conversion} with
-\kl{consistency}. This results in a theory that is not normalizing.
+\kl(grad){consistency}. This results in a theory that is not normalizing.
 
-\intro{GCICs} is a theory that satisfies both \kl{normalization} and \kl{graduality},
+Next, \intro{GCICs} satisfies both \kl{normalization} and \kl{graduality},
 and supports \kl{conservativity}, but only with respect to \kl{CICs}.
 This theory uses the universe hierarchy at the \emph{typing level} to detect and forbid
-the potential non-termination induced by the use of \kl{consistency}
+the potential non-termination induced by the use of \kl(grad){consistency}
 instead of \kl{conversion}.
 
 Finally, \intro{GCICT} satisfies both \kl{conservativity} with respect to \kl{CIC}
@@ -1181,7 +1185,7 @@ In \kl{GCICs}, the introduction of $\?$ should be done with an appropriate under
 universe levels. This might not be a problem for advanced programmers,
 but would surely be harder to grasp for beginners.
 
-\kl{GCICT} is normalizing and able to import existing libraries without restrictions,
+Finally, \kl{GCICT} is normalizing and able to import existing libraries without restrictions,
 at the expense of some surprises on the graduality front.
 Programmers would have to be willing to accept that they cannot just sprinkle $\?$
 as they see fit without further consideration,
@@ -1208,7 +1212,7 @@ in a gradual language, whenever we reclaim precision, we might be wrong and need
 %
 In a simply-typed setting, the standard approach is to define typing on a
 gradual source language, and then to translate terms via a type-directed elaboration
-to a target \intro{cast calculus}, \ie a language with explicit runtime type
+to a target \emph{cast calculus}, \ie a language with explicit runtime type
 checks.
 This elaboration inserts casts, needed for a well-behaved reduction \sidecite{Siek2006}.
 For instance, in a call-by-value language, the upcast (loss of precision)
@@ -1224,7 +1228,7 @@ context of a dependent type theory. Because typing needs computation, and
 reduction is only meaningful in the target language, \kl{CastCIC} is used
 \emph{as part of the elaboration} in order to compare types (\cref{sec:elaboration}).
 This means that \kl{GCIC} has no typing on its own, independent of its
-elaboration to the cast calculus.%
+elaboration to \kl{CastCIC}.%
 \sidenote{This is similar to what happens in practice in proof assistants such as \kl{Coq}
 \cite[Core language]{CoqManual}, where terms input by the user in the \kl{Gallina} language
 are first elaborated in order to add implicit arguments, coercions, etc.
@@ -1232,22 +1236,22 @@ The computation steps required by conversion are
 performed on the elaborated terms, never on the raw input syntax.}
 
 In order to satisfy \kl{conservativity} with respect to \kl{CIC}, ascriptions in \kl{GCIC}
-are required to satisfy \kl{consistency}. For instance, $\asc{\asc{\true}{\?}}{\Nat}$ is well-typed by \kl{consistency} – used twice –, but $\asc{\true}{\Nat}$ is ill-typed.
+are required to satisfy \kl(grad){consistency}. For instance, $\asc{\asc{\true}{\?}}{\Nat}$ is well-typed by \kl(grad){consistency} – used twice –, but $\asc{\true}{\Nat}$ is ill-typed.
 Such ascriptions in \kl{CastCIC} are realized by casts.
 For instance $\asc{\asc{0}{\?}}{\Bool}$ in \kl{GCIC} elaborates
 – up to desugaring and reduction – to
 $\cast{\cast{0}{\Nat}{\?[\uni]}}{\?[\uni]}{\Bool}$ in \kl{CastCIC}.
 A major difference between ascriptions in \kl{GCIC} and casts in \kl{CastCIC} is
-that casts are not required to satisfy consistency: a cast between any
+that casts are not required to satisfy \kl(grad){consistency}: a cast between any
 two types is well-typed, although of course it might produce an
 error.
 
 This is where the bidirectional structure is crucial.
-First, it is required in order to tame the non-transitive \kl{consistency} relation.
+First, it is required in order to tame the non-transitive \kl(grad){consistency} relation.
 Indeed, in the previous example of $\asc{\true}{\Nat}$, if one kept a free-standing rule like
-\namecref{rule:cic-conv} and simply replaced \kl{conversion} by \kl{consistency}, one could
+\namecref{rule:cic-conv} and simply replaced \kl{conversion} by \kl(grad){consistency}, one could
 use the rule twice, through $\?$, and the term would be well-typed.
-But \kl{consistency} demands that only terms with explicitly-ascribed
+But \kl(grad){consistency} demands that only terms with explicitly-ascribed
 imprecision enjoy its flexibility.
 This observation is standard in the gradual typing literature
 \sidecite{Siek2006,Siek2007,Garcia2016}, but becomes even more crucial in the context of
@@ -1273,7 +1277,7 @@ For instance, $\cast{t}{A}{A}$ is related to $t$ by structural precision.
 Armed with these two notions of precision, we prove
 % We prove that \GCIC satisfies static graduality.\km{forward ref?}
 % However, because \GCIC does not have a type system, we rather prove
-\reintro{elaboration graduality} (\cref{thm:static-graduality}), which is
+\kl{elaboration graduality} (\cref{thm:static-graduality}), which is
 the equivalent of the \kl{static gradual guarantee} in our setting:
 if a term $t$ of \kl{GCIC} elaborates to a term $t'$ of \kl{CastCIC},
 then a term $u$ less syntactically precise than $t$ in \kl{GCIC} elaborates to

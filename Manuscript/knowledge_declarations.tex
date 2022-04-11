@@ -7,11 +7,35 @@
 \knowledgestyle{ignore intro}{color=LightOrange,emphasize}
 \knowledgedirective*{ignore}{intro style=ignore intro}
 
-\knowledgedirective*{title}{}
+\knowledgedirective{title}{}
 
-% Generic
-\knowledge{ignore}
+\knowledgedirective{system}{smallcaps}
+
+% Systems
+
+\knowledge{system}
   | Idris
+
+\knowledge{system}
+  | Coq
+
+\knowledge{system}
+  | Agda
+
+\knowledge{system}
+  | Gallina
+
+\knowledge{system}
+  | MetaCoq
+
+\knowledge{system}
+  | Matita
+
+\knowledge{system}
+  | GitHub
+
+\knowledge{system}
+  | Dependent Haskell
 
 %Chapter 1
 
@@ -31,26 +55,14 @@
   | assistants à la preuve
 
 \knowledge{notion}
-  | Coq
-
-\knowledge{notion}
-  | Agda
-
-\knowledge{notion}
   | correspondance de Curry-Howard
   | correspondance preuves-programmes
-
-\knowledge{notion}
-  | Gallina
 
 \knowledge{notion}
   | noyau
 
 \knowledge{notion}
   | critère de De Bruijn
-
-\knowledge{notion}
-  | MetaCoq
 
 \knowledge{notion}
   | bidirectionnel
@@ -85,24 +97,35 @@
 % Chapter 3
 
 % Section 3.2
+
 \knowledge{notion}
   | Calculus of Constructions
+
+\knowledge{notion, text={CC\textsubscript{ω}}}
   | CCω
 
-\knowledge{title}
+\knowledge{title, text={CC\textsubscript{ω}}}
   | CCω@tit
+
+\knowledge{title}
   | Calculus of Constructions@tit
 
 \knowledge{notion}
   | CIC
+
+\knowledge{notion}
   | Calculus of Inductive Constructions
 
 \knowledge{title}
   | CIC@tit
+
+\knowledge{title}
   | Calculus of Inductive Constructions@tit
 
 \knowledge{notion}
   | Polymorphic, Cumulative Calculus of Inductive Constructions
+
+\knowledge{notion}
   | PCUIC
 
 \knowledge{title}
@@ -145,6 +168,9 @@
 
 \knowledge{notion}
   | Pure Type Systems
+  | Pure Type System
+
+\knowledge{notion}
   | PTS
 
 \knowledge{notion}
@@ -305,9 +331,8 @@
   | indexed inductive type
   | indexed inductive types
 
-\knowledge{notion, text ={CIC\textsuperscript{-}}}
+\knowledge{notion, text ={CIC\textsubscript{-}}}
   | CIC-
-
 
 % Section 3.6
 \knowledge{notion}
@@ -373,9 +398,6 @@
   | checking
 
 \knowledge{notion}
-  | Matita
-
-\knowledge{notion}
   | boundary
 
 \knowledge{notion}
@@ -407,9 +429,6 @@
 
 % MetaCoq
 
-\knowledge{notion}
-  | GitHub
-
 % Gradual CIC
 
 \knowledge{notion}
@@ -426,7 +445,12 @@
 
 \knowledge{notion}
   | Gradual Calculus of Inductive Constructions
+
+\knowledge{notion}  
   | GCIC
+
+\knowledge{title}
+  | GCIC@tit
 
 % Chapter 9
 
@@ -458,7 +482,12 @@
 \knowledge{notion}
   | simply-typed lambda calculus
   | simply-typed
+
+\knowledge{notion}
   | STLC
+
+\knowledge{title}
+  | STLC@tit
 
 \knowledge{notion}
   | GTLC
@@ -485,13 +514,17 @@
 
 \knowledge{notion}
   | static gradual guarantee
-  | SGG
   | Static Gradual Guarantee
 
 \knowledge{notion}
+  | SGG
+
+\knowledge{notion}
   | dynamic gradual guarantee
-  | DGG
   | Dynamic Gradual Guarantee
+
+\knowledge{notion}
+  | DGG
 
 \knowledge{notion}
   | observational error-approximation
@@ -513,16 +546,6 @@
   | equi-precision
 
 \knowledge{notion}
-  | syntactic@pre
-  | precision@syn
-  | syntactic precision
-
-\knowledge{notion}
-  | semantic@pre
-  | precision@sem
-  | semantic precision
-
-\knowledge{notion}
   | graduality
   | Graduality
 
@@ -542,3 +565,57 @@
 
 \knowledge{notion}
   | Approximate Normalization
+
+\knowledge{notion, text={CIC\textsuperscript{$\uparrow$}}}
+  | CICs
+
+\knowledge{notion, text={GCIC\textsuperscript{$\mathcal{G}$}}}
+  | GCICP
+
+\knowledge{notion, text={GCIC\textsuperscript{$\uparrow$}}}
+  | GCICs
+
+\knowledge{notion, text={GCIC\textsuperscript{$\mathcal{N}$}}}  
+  | GCICT
+
+\knowledge{notion, text={CastCIC}}
+  | CastCIC
+  | CCIC
+
+\knowledge{notion, text={CastCIC\textsuperscript{$\mathcal{G}$}}}
+  | CCICP
+
+\knowledge{notion, text={CastCIC\textsuperscript{$\uparrow$}}}
+  | CCICs
+
+\knowledge{notion, text={CastCIC\textsuperscript{$\mathcal{N}$}}}  
+  | CCICT
+
+\knowledge{notion}
+  | syntactic@pre
+  | precision@syn
+  | syntactic precision
+
+\knowledge{notion}
+  | structural@pre
+  | precision@str
+  | structural precision
+
+\knowledge{notion}
+  | propositional@pre
+  | precision@prop
+  | propositional precision
+
+
+
+
+
+
+\knowledge{notion}
+  | elaboration graduality
+
+\knowledge{notion}
+  | discrete model
+
+\knowledge{notion}
+  | monotone model
