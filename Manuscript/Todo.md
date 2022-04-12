@@ -5,3 +5,4 @@
 - correct references in table 1
 - spell checking in gradual part
 - fix redrules in technical intro
+- try framed figures

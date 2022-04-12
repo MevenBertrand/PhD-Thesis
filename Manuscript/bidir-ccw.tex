@@ -178,6 +178,7 @@ as an input to the conclusion, it is not useful to re-check it. This is also in 
     \label{rule:bd-pinf-prod}
 \end{mathpar}
 \caption{Computation rules for bidirectional \kl{CCω}}
+\label{fig:bidir-ccw-other}
 \end{marginfigure}
 
 With the rules for term formers taken care of,
@@ -508,15 +509,15 @@ Correctness follows exactly the same proof as
 \cref{thm:corr-ccomega}. As for completeness, the main point is to show an analogous
 to \cref{lem:conv-red-tycons} for weak-head reduction.
   
-\begin{proposition}[Reduction strategy]
-  \label{prop:red-strat}
+\begin{theorem}[Reduction strategy]
+  \label{thm:red-strat}
 
   If Rules \nameref{rule:bd-pinf-univ} and \nameref{rule:bd-pinf-prod} are replaced by
   Rules \nameref{rule:bd-pinf-wh-univ} and \nameref{rule:bd-pinf-wh-prod},
   then given a well-formed context $\Gamma$ and a term $t$ there is at most one $T$
   such that $\inferty{\Gamma}{t}{T}$, and at most one $T'$ such that
   $\pinferty{h}{\Gamma}{t}{T'}$.
-\end{proposition}
+\end{theorem}
 
 \begin{proof}
   Once again, by mutual induction.

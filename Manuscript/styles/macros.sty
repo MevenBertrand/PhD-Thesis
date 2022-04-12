@@ -281,6 +281,14 @@
 \newcommand{\obsApprox}{\preccurlyeq^{o}}
 \newcommand{\obsEquiv}{\approx^{o}}
 \newcommand{\obsRef}{\sqsubseteq^{o}}
+\newcommand{\acons}{\cons_{\alpha}}
+\newcommand{\apre}{\pre^{\mathrm{G}}_{\alpha}}
+\newcommand{\capre}{\pre_{\alpha}}
+\newcommand{\caprerev}{\sqsupseteq_{\alpha}}
+\newcommand{\cdpre}{\pre_{\basered}}
+\newcommand{\caequipre}{\equiprecise_{\alpha}}
+
+\newcommand{\eras}{\mathop{\symup{\varepsilon}}}
 
 % Terms
 \DeclareMathOperator{\narrow}{narrow}
@@ -288,12 +296,15 @@
 
 % Cast
 \DeclareDocumentCommand{\cast}{m m m}{
-  \mathop{\left\langle #2 \Leftarrow #1 \right\rangle #3}}
+  \mathop{\left\langle #2 \Leftarrow #1 \right\rangle} #3}
 \DeclareDocumentCommand{\castrev}{m m m}{
   \cast{#2}{#3}{#1}}
+\DeclareDocumentCommand{\castbg}{m m m m}{
+    \mathop{\colorbox{#1}{$\left\langle #3 \Leftarrow #2 \right\rangle$}} #4}
 
 % Elaboration and colored typing
 
+\newcommand{\comp}{\leadsto}
 \newcommand{\sourcecolor}[1]{\mathcolor{LightBlue}{#1}}
 \newcommand{\scol}[1]{\sourcecolor{#1}}
 \newcommand{\targetcolor}[1]{\mathcolor{DarkBlue}{#1}}
@@ -302,7 +313,7 @@
 \newcommand{\ccol}[1]{\staticcolor{#1}}
 \newcommand{\inferelab}[4]{\targetcolor{#1} \vdash \sourcecolor{#2} \comp \targetcolor{#3} \ity \targetcolor{#4}}
 \newcommand{\pinferelab}[5]{\targetcolor{#2} \vdash \sourcecolor{#3} \comp \targetcolor{#4} \pity{#1} \targetcolor{#5}}
-\newcommand{\checkelab}[4]{\targetcolor{#1} \vdash \sourcecolor{#2} \cty \targetcolor{#4} \comp \targetcolor{#3}}
+\newcommand{\checkelab}[4]{\targetcolor{#1} \vdash \sourcecolor{#2} \comp \targetcolor{#3} \cty \targetcolor{#4}}
 \newcommand{\contelab}[2]{\vdash \sourcecolor{#1} \comp \targetcolor{#2}}
 
 \newcommand{\cinferty}[3]{\tcol{#1} \vdash \tcol{#2} \ity \tcol{#3}}
@@ -318,3 +329,10 @@
 \DeclareMathOperator{\stalk}{germ}
 \newcommand{\stalkCIC}[2]{\mathop{\stalk_{#1}} #2}
 \DeclareMathOperator{\hd}{head}
+
+%Relational contexts
+
+\newcommand{\GG}{\symbf{\Gamma}}
+\newcommand{\DD}{\symbf{\Delta}}
+\newcommand{\fs}[1]{#1_{1}}
+\newcommand{\sn}[1]{#1_{2}}
