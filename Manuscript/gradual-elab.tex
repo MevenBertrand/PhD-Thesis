@@ -325,7 +325,7 @@ This is somewhat non-optimal, but we stick to it here for simplicity.
   \begin{mathpar}
     \inferdef{Head-Err}{
       \tcol{T}, \tcol{T'} \in \types{\kl{CCIC}} \\
-      \hd \tcol{T} \nmteq \hd \tcol{T'}
+      \hd \tcol{T} \noteq \hd \tcol{T'}
     }{
       \tcol{\castrev{t}{T}{T'}} \tred \tcol{\err[T']}
     } \label{rule:head-err} \\
@@ -353,21 +353,21 @@ error type.
   \ContinuedFloat
   \begin{mathpar}
     \inferdef{Π-Germ}{
-      \tcol{\P x : A .\ B} \nmteq \tcol{\stalkCIC{j}{\Pi}} \text{ for $j \geq i$}
+      \tcol{\P x : A .\ B} \noteq \tcol{\stalkCIC{j}{\Pi}} \text{ for $j \geq i$}
     }{
       \tcol{\castrev{f}{\P x:A.\ B}{\?[\uni[i]]}} \tred
       \tcol{\cast{\P x:A.\ B}{\?[\uni[i]] \Leftarrow \stalkCIC{i}{\P}}{f}}
     }[Π-Germ] \label{rule:prod-germ} \and
   %
     \inferdef{List-Germ}{
-      \tcol{\List(A)} \nmteq \tcol{\stalkCIC{j}{I}} \text{ for  $j \geq i$}
+      \tcol{\List(A)} \noteq \tcol{\stalkCIC{j}{I}} \text{ for  $j \geq i$}
     }{
       \tcol{\castrev{t}{\List(A)}{\?[\uni[i]]}} \tred
       \tcol{\cast{\List(A)}{\?[\uni[i]]} \Leftarrow \stalkCIC{i}{\List}}{t}
     } \label{rule:ind-germ} \and
   %
     \inferdef{Up-Down}{
-      \tcol{\stalkCIC{i}{h}} \nmteq \tcol{\err[\uni[i]]}
+      \tcol{\stalkCIC{i}{h}} \noteq \tcol{\err[\uni[i]]}
     }{
       \tcol{\cast{\stalkCIC{i}{h}}{X \Leftarrow \?[\uni[i]]}{t}} \tred
       \tcol{\castrev{t}{\stalkCIC{i}{h}}{X}}
