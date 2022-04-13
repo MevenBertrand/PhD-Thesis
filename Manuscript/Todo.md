@@ -1,8 +1,3 @@
 - references for numerical analysis/CAS
 - references for proof of program correctness
-- change ugly math characters https://tex.stackexchange.com/questions/67881/resetting-mathcal-font-to-default
-- talk about PTS in the CCω section?
-- correct references in table 1
-- spell checking in gradual part
-- fix redrules in technical intro
-- try framed figures
+- hack continued floats for references

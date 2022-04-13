@@ -20,7 +20,7 @@ instead one has to adapt to the setting.
 For the impatient specialists, let me say now that with \kl{CIC}, I
 mean an intentional type theory, with Church-style abstractions,
 a predicative hierarchy of universes%
-\sidenote[][12em]{
+\sidenote[][14em]{
   And only those: by default I do \emph{not} include an impredicative sort of propositions, a feature often associated with the name \kl{CIC}.}
 \textit{à la} Russell, and any amount of inductive types presented by recursors.
 % – the ones appearing most often in what comes next being the empty and
@@ -220,7 +220,8 @@ we use the simpler one.
 \end{marginfigure}
 
 \AP There is an important caveat regarding universes.
-Since the paradox exhibited by Russell in the \citetitle{Begriffsschrift},
+Since the paradox exhibited by Russell in \citeauthor{Begriffsschrift}'s
+\citetitle{Begriffsschrift}~\sidecite{Begriffsschrift},
 logicians know that considering a set of all sets is a great
 source of inconsistencies. Type theory is not devoid of this issue:
 Girard~\sidecite[][Annex~A]{Girard1972}
@@ -529,10 +530,11 @@ which can be seen as a generalized form of reflexivity.
 
 \AP Before we can describe \kl{algorithmic conversion}, we first need
 to give a look at \intro{reduction}. Reduction is in some way an operational version of
-conversion. The main difference is that it is oriented, in the direction which would
-correspond to program evaluation. It itself decomposes into three components.
+conversion. The main difference is that it is oriented, in the direction
+corresponding to program evaluation. It itself decomposes into three components.
 
-\begin{marginfigure}
+\AP The first is \intro{top-level reduction} $\tred$,
+\begin{marginfigure}[0em]
   \ContinuedFloat*
   \begin{mathpar}
     \inferdef{βRed}{ }{(\l x : A.\ t)\ u \tred \subs{t}{x}{u}}
@@ -541,9 +543,7 @@ correspond to program evaluation. It itself decomposes into three components.
   \caption{Top-level reduction}
   \label{fig:cic-algo-conv}
 \end{marginfigure}
-
-\AP The first is \intro{top-level
-reduction} $\tred$, which corresponds purely to computation, without any congruent closure.
+which corresponds purely to computation, without any congruent closure.
 In \kl{CCω} there is only the single \ruleref{rule:beta-red}.
 
 \AP The second component is the congruent closure of top-level reduction,
@@ -888,18 +888,17 @@ proof technique relies on the definition of a notion of parallel reduction, see
 
 \begin{marginfigure}
   \begin{mathpar}
-    \jform{\no t}
-    \inferrule{ }{\no \uni}
+    % \jform{\nm t}
+    \inferrule{ }{\nm \uni}
     \and
-    \inferrule{\no A \\ \no B}{\no \P x : A.\ B}
+    \inferrule{\nm A \\ \nm B}{\nm \P x : A.\ B}
     \and
-    \inferrule{\no A \\ \no t}{\no \l x : A .\ t} \and
-    \inferrule{\ne t}{\no t}
+    \inferrule{\nm A \\ \nm t}{\nm \l x : A .\ t} \and
+    \inferrule{\ne t}{\nm t}
     \\
-    \jform{\ne t}
-    \inferrule{\ne f \\ \no u}{\ne f\ u}
-    \and
-  \inferrule{ }{\ne x}
+    % \jform{\ne t}
+    \inferrule{ }{\ne x} \and
+    \inferrule{\ne f \\ \nm u}{\ne f\ u}
   \end{mathpar}
   \caption{Normal and neutral forms}
   \label{fig:ccw-norm-neu}
@@ -907,8 +906,8 @@ proof technique relies on the definition of a notion of parallel reduction, see
 
 \kl{Subject reduction} ensures that when a term reduces, this reduction is type-preserving.
 The second important property linked to reduction characterizes which terms reduce.
-To state it, we first need to define the $\no$ and $\ne$ predicates,
-characterizing respectively \intro{normal forms} $\no$ and \intro{neutral forms} $\ne$.
+To state it, we first need to define the $\nm$ and $\ne$ predicates,
+characterizing respectively \intro{normal forms} $\nm$ and \intro{neutral forms} $\ne$.
 The inductive rules for those are given in \cref{fig:ccw-norm-neu}.
 The idea is that neutral forms are those terms which are stuck on a variable, which blocks
 further computation because it is not an λ-abstraction. Normal forms are either neutrals,
@@ -917,8 +916,8 @@ the canonical form for a function. What \kl{progress} says is that these forms a
 characterize well-typed normal terms.
 
 \begin{property}[\intro{Progress}]
-  Given a notion of \kl{normal forms} $\no$, if for every well-typed term $t$,
-  either $\no t$ holds, or there is $t'$ such that $t \ored t'$.
+  Given a notion of \kl{normal forms} $\nm$, if for every well-typed term $t$,
+  either $\nm t$ holds, or there is $t'$ such that $t \ored t'$.
 \end{property}
 
 To prove progress, one can again resort to induction on the typing derivation. The key point
@@ -930,7 +929,7 @@ either a neutral, or a λ-abstraction. If $f$ is applied to $u$, then either $f\
 a neutral – a thus a normal form –, or it reduces further, by a β step.
 
 One way to understand \kl{progress} – and, indeed, the origin of the name – is that well-typed
-terms do not get stuck: either they have finished computing, and thus satisfy $\no$, or
+terms do not get stuck: either they have finished computing, and thus satisfy $\nm$, or
 they should be able to make progress by reducing further.
 Put together with \kl{preservation}, progress can be iterated. Indeed,
 if a term is well-typed, it is either is a normal form, or reduces to a term, which is itself
@@ -952,7 +951,7 @@ The last important property, and one which is specific to type systems in the co
 programming languages, is \kl{normalization}. It ensures that progress cannot be applied
 forever, but that evaluation always ends up reaching a normal form.
 The most standard way to phrase this is to say that there is no infinite reduction sequence 
-starting from a well-typed term. This formulation, however, is constructively too weak,
+starting from a well-typed term.This formulation, however, is constructively too weak,
 so we instead use a more adequate – but classically equivalent – definition,
 using the following accessibility predicate.
 
@@ -974,7 +973,7 @@ induction, something we exploit in \kl{MetaCoq}.
 
 Normalization is a crucial building block towards decidability of typing,
 as it entails that one can rely on normal forms of
-terms to decide conversion. Thus, it is a property of prime important if we wish to
+terms to decide conversion. Thus, it is a property of prime importance if we wish to
 implement a type-checker.
 
 Another key consequence, of normalization is that,
@@ -983,7 +982,7 @@ eventually reduces to a normal form, which is unique by \kl{confluence}.
 It follows that there are some uninhabited types in the empty context,
 for instance $\P A : \uni.\ A$.
 Indeed, there are no normal forms at that type – suppose there is one,
-and reason by induction on it $\no$ derivation. This is one way to phrase
+and reason by induction on the derivation. This is one way to phrase
 \kl{logical consistency}, which has the advantage that it does not put forward one particular
 "false" type.
 
@@ -1055,12 +1054,12 @@ Let us start with a very simple example: \intro{booleans}.
 To add those to \kl{CCω}, we need to specify three new kinds of term formers.
 The first is the type, that we write $\Bool$ – see \ruleref{rule:bool-type}.
 Next we need \intro{constructors}, giving the canonical inhabitants of the type.
-In the case of booleans, there are two of them: the false boolean $\false$ and the true one $\true$ – this is Rules~\nameref{rule:false} and \nameref{rule:false}.
+In the case of booleans, there are two of them: the false boolean $\false$ and the true one $\true$ – this is Rules~\nameref{rule:false} and \nameref{rule:true}.
 The last one is a way to use those canonical inhabitants.
 For booleans, this corresponds to a conditional,
 taking one branch or another depending on the value of the term being used,
 whose typing rule is given in \ruleref{rule:bool-ind}.%
-\sidenote{We call $s$ the \intro{scrutinee}, $P$ the \reintro{predicate}
+\sidenote[][0em]{We call $s$ the \intro{scrutinee}, $P$ the \reintro{predicate}
 and $b_{\false}$, $b_{\true}$ the \reintro{branches}.}
 As was the case for dependent functions, here also there is a generalization with respect to
 conditionals in usual programming languages: the return type itself can depend on the scrutinee.
@@ -1546,8 +1545,8 @@ we refrain from including one in our reference \kl{CIC}.
 \AP The second defining characteristic of $\Prop$ is \intro{proof irrelevance}.
 This means that \kl{PCUIC} has a criterion, called singleton elimination, which maintains
 a form of segregation between terms inhabiting types in $\uni$ and
-those inhabiting types in $\Prop$, ensuring that the second cannot depend in a relevant
-way on the first. For instance, if $P \ty \Prop$, it ensures that it is impossible
+those inhabiting types in $\Prop$, ensuring that the first kind cannot depend in a relevant
+way on the second. For instance, if $P \ty \Prop$, it ensures that it is impossible
 to build a function $f \ty P \to \Bool$ and two terms $p_1 \ty P$ and $p_2 \ty P$ such that
 $f\ p_1 \conv \false$ and $f\ p_2 \conv \true$. This segregation aims at allowing separation
 between the part of the system that should be seen as programs and that which should be
@@ -1674,7 +1673,7 @@ to how a recursive function
 can be defined, which amounts to checking that recursive calls are made on
 structurally smaller sub-terms – by means of pattern-matching. This guard condition
 theoretically ensures that fixed-points and pattern-matching can always be reduced to
-\kl{recursors} \sidetextcite{Gimenez1995}. However, in practise the former give more
+\kl{recursors} \sidecite{Gimenez1995}. However, in practise the former give more
 flexible and natural definitions than the latter.
 
 \subsection{Records and co-inductive types}

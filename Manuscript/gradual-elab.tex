@@ -1,13 +1,14 @@
-\chapter{From GCIC to CastCIC: Bidirectional Elaboration}
+\chapter{From \kl(tit){GCIC} to \kl(tit){CastCIC}: Bidirectional Elaboration}
 \label{chap:bidir-gradual-elab}
 
 \margintoc
 
-We now present the elaboration from the source gradual system \kl{GCIC} to the target
+Let us now look in details at the elaboration from the source gradual
+system \kl{GCIC} to the target
 cast calculus \kl{CCIC}. We start with \kl{CCIC}, describing its typing, reduction
 and metatheoretical properties (\cref{sec:cast-calculus}).
 %
-We next describe \kl{GCIC} and its bidirectional elaboration to
+Next, we describe \kl{GCIC} and its bidirectional elaboration to
 \kl{CCIC}, along with few direct properties (\cref{sec:elaboration}).
 This elaboration can be seen as an extension of the bidirectional presentation of
 \kl{CIC}.
@@ -21,18 +22,18 @@ the gradual guarantees (\cref{sec:gcic-theorems}).
 
 In this whole chapter, we do not treat indexed inductive types, thus the system should be
 seen as an extension of \kl{CIC-} rather than full-blown \kl{CIC}. We come back to this
-issue in \cref{chap:beyond-gcic}. The original reference \sidecite{LennonBertrand2022}
+issue in \cref{chap:beyond-gcic}. The original reference \sidecite[4em]{LennonBertrand2022}
 considers the case of general inductive types, here we restrict the presentation to
-$\List$ to ease readibiliy.
+$\List$ to ease readability.
 
-\section{\kl(tit){CCIC}}
+\section{\kl(tit){CastCIC}}
 \label{sec:cast-calculus}
 
 \subsection{System Definition}
 
 \paragraph{Syntax.}
-The syntax of \kl{CCIC}%
-\sidenote{Written using a \targetcolor{dark blue color}.}
+The syntax of \intro{CCIC}%
+\sidenote{Written using a \targetcolor{dark blue colour}.}
 extends that of \kl{CIC-}
 with three new term constructors: the \intro{unknown term} $\tcol{\?[T]}$ and
 \intro[error]{dynamic error} $\tcol{\err[T]}$ of type $\tcol{T}$, 
@@ -56,8 +57,8 @@ defined in \kl{ExTT} \sidecite{Pedrot2018}.
 Casts keep track of the use of consistency during elaboration, implementing
 a form of runtime type-checking, raising the error $\tcol{\err[T]}$ in case of a type mismatch.
 %
-We call \emph{static} the terms of \kl{CCIC} that do not use any of these new
-constructors – static \kl{CCIC} terms thus correspond to \kl{CIC} terms.
+We call \intro{static} the terms of \kl{CCIC} that do not use any of these new
+constructors – \kl{static} \kl{CCIC} terms thus correspond to \kl{CIC} terms.
 
 \paragraph{Universe parameters.}
 
@@ -73,14 +74,15 @@ constructors – static \kl{CCIC} terms thus correspond to \kl{CIC} terms.
 
 \kl{CCIC} is parametrized by two functions,
 described in \cref{fig:univ-param}, to account for the three
-different variants of \kl{GCIC} we consider – see \cref{sec:gcic:-3-1}.
+different variants of \kl{GCIC} we consider – see \cref{sec:gcic:-3-1} : \intro{CCICP},
+\intro{CCICs} and \intro{CCICT}.
 %
 The first function $\sortOfPiName$ computes the level of the universe
 of a dependent function type,
 given the levels of its domain and codomain – see the updated \ruleref{rule:ccic-prod}
- in \cref{fig:ccic-prod}. The second function
+ in \cref{fig:ccic-ty}. The second function
 $\castOfPiName$ controls the universe level in the reduction of a cast between
-$\? \rightarrow \?$ and $\?$ – see \cref{fig:CCIC-reduction}.
+$\? \rightarrow \?$ and $\?$ – see \cref{fig:head-germ,fig:ccic-red-cast-ukn}.
 
 \paragraph{Typing.}
 
@@ -112,24 +114,24 @@ $\? \rightarrow \?$ and $\?$ – see \cref{fig:CCIC-reduction}.
   \label{fig:ccic-ty}
 \end{figure}
 %\cref{fig:ccic-typing} gives the typing rules for the three new primitives of \kl{CCIC}.
-The first difference between \kl{CCIC} and \kl{CIC} is \namecref{rule:ccic-prod},
-given in \cref{fig:ccic-prod}, which uses the $\sortOfPiName$ parameter. In \kl{CCICP} and
+The first difference between \kl{CCIC} and \kl{CIC} is \ruleref{rule:ccic-prod},
+given in \cref{fig:ccic-ty}, which uses the $\sortOfPiName$ parameter. In \kl{CCICP} and
 \kl{CCICT}, this rule corresponds to the usual one of \kl{CIC}, but in \kl{CCICs} it is stricter.
 All other typing rules are exactly the same as in \kl{CIC}.
-%When disambiguation is needed, we note this typing judgment as $\caty$.
+%When disambiguation is needed, we note this typing judgement as $\caty$.
 
 Next, Rules \nameref{rule:ccic-unk} and \nameref{rule:ccic-err}
 say that both $\tcol{\?_T}$ and $\tcol{\err_T}$ infer $\tcol{T}$
 when $\tcol{T}$ is a type.
 %
 
-Finally \ruleref{rule:ccic-cast-ty} ensures that both the source and target of
-the cast are indeed types, and that the casted term indeed has the source type.
+Finally, \ruleref{rule:ccic-cast-ty} ensures that both the source and target of
+the cast are indeed types, and that the cast term indeed has the source type.
 %
 Note that in \kl{CCIC}, as is sometimes the case in cast calculi \sidecite{Siek2010,New2018}
 no consistency premise is required for a cast to be well-typed.
 Here, consistency only plays a role in \kl{GCIC}, but completely disappears after elaboration. 
-Instead, \kl{CCIC} only relies only on standard (\kl(conv){algorithmic}) \kl(algo){conversion}.
+Instead, \kl{CCIC} relies only on standard (\kl(conv){algorithmic}) \kl(algo){conversion}.
 
 \paragraph{Reduction.}
 \begin{figure}[h]
@@ -167,7 +169,7 @@ Instead, \kl{CCIC} only relies only on standard (\kl(conv){algorithmic}) \kl(alg
 \end{figure}
 
 The typing rules provide little insight on the new primitives; the interesting
-part really lie in their \kl{reduction} behavior.
+part really lie in their \kl{reduction} behaviour.
 
 \kl{Reduction} relies on two auxiliary functions relating \intro{head constructors} $h \in \H$
 to those terms that start with either $\P$, $\uni$ or and inductive type
@@ -199,8 +201,11 @@ equivalence class of types that are locally the same.
 The exact design of the \kl{reduction} rules is mostly dictated by
 the models of \kl{CCIC} presented later in~\cref{sec:realizing-cast-calculus}.
 Nevertheless, we now provide some intuition about their meaning. We only present here the
-rules for \kl{top-level} reduction: the congruence closure for \kl{full reduction} is
-completely standard. As for \kl{weak-head reduction}, we present the adequate
+rules for \kl{top-level reduction}%
+\sidenote{As all our reduction rules have empty premises, we spare the needless
+bar to make them more readable.}
+: the congruence closure to obtain \kl{full reduction}
+is completely standard. As for \kl{weak-head reduction}, we give the adequate
 contextual closure later on when we prove \kl{progress}.
 
 \begin{figure*}[ht]
@@ -259,7 +264,7 @@ contextual closure later on when we prove \kl{progress}.
 \end{figure*}
 
 The first set of rules, given in \cref{fig:ccic-red-propag}, specify the exception-like
-propagation behavior of both $\tcol{\?}$ and $\tcol{\err}$ at function and inductive types.
+propagation behaviour of both $\tcol{\?}$ and $\tcol{\err}$ at function and inductive types.
 Rules \nameref{rule:red-ind-unk} and \nameref{rule:red-ind-err}
 similarly propagate $\tcol{\?}$ and $\tcol{\err}$ when cast between the same inductive
 type, and Rules \nameref{rule:red-down-unk} and \nameref{rule:red-down-err} do the same
@@ -305,10 +310,10 @@ directly inspired by higher-order contracts \sidecite{Findler2002},
 one for the argument and one for the body;
 note the substitution in the source codomain in order to account for dependency.
 %
-Also, because constructors and inductives are fully applied,
+Also, because constructors and inductive types are fully applied,
 this \nameref{rule:red-prod-prod} rule cannot be blocked because of
 a partially-applied constructor or inductive.
-Regarding inductive types, the propagation of casts on subterms cannot be avoided in the list
+Regarding inductive types, the propagation of casts on sub-terms cannot be avoided in the list
 type, but if we follow this strategy for simpler inductive types, \eg $\tcol{\Nat}$,
 the restriction to reduce only on constructors means that a cast
 between $\tcol{\Nat}$ and $\tcol{\Nat}$ is blocked until its argument term is a constructor,
@@ -320,7 +325,7 @@ This is somewhat non-optimal, but we stick to it here for simplicity.
   \begin{mathpar}
     \inferdef{Head-Err}{
       \tcol{T}, \tcol{T'} \in \types{\kl{CCIC}} \\
-      \hd \tcol{T} \noteq \hd \tcol{T'}
+      \hd \tcol{T} \nmteq \hd \tcol{T'}
     }{
       \tcol{\castrev{t}{T}{T'}} \tred \tcol{\err[T']}
     } \label{rule:head-err} \\
@@ -348,21 +353,21 @@ error type.
   \ContinuedFloat
   \begin{mathpar}
     \inferdef{Π-Germ}{
-      \tcol{\P x : A .\ B} \noteq \tcol{\stalkCIC{j}{\Pi}} \text{ for $j \geq i$}
+      \tcol{\P x : A .\ B} \nmteq \tcol{\stalkCIC{j}{\Pi}} \text{ for $j \geq i$}
     }{
       \tcol{\castrev{f}{\P x:A.\ B}{\?[\uni[i]]}} \tred
       \tcol{\cast{\P x:A.\ B}{\?[\uni[i]] \Leftarrow \stalkCIC{i}{\P}}{f}}
     }[Π-Germ] \label{rule:prod-germ} \and
   %
     \inferdef{List-Germ}{
-      \tcol{\List(A)} \noteq \tcol{\stalkCIC{j}{I}} \text{ for  $j \geq i$}
+      \tcol{\List(A)} \nmteq \tcol{\stalkCIC{j}{I}} \text{ for  $j \geq i$}
     }{
       \tcol{\castrev{t}{\List(A)}{\?[\uni[i]]}} \tred
       \tcol{\cast{\List(A)}{\?[\uni[i]]} \Leftarrow \stalkCIC{i}{\List}}{t}
     } \label{rule:ind-germ} \and
   %
     \inferdef{Up-Down}{
-      \tcol{\stalkCIC{i}{h}} \noteq \tcol{\err[\uni[i]]}
+      \tcol{\stalkCIC{i}{h}} \nmteq \tcol{\err[\uni[i]]}
     }{
       \tcol{\cast{\stalkCIC{i}{h}}{X \Leftarrow \?[\uni[i]]}{t}} \tred
       \tcol{\castrev{t}{\stalkCIC{i}{h}}{X}}
@@ -385,7 +390,7 @@ Rules \nameref{rule:prod-germ} and \nameref{rule:ind-germ} decompose an upcast i
 $\tcol{\?}$ into an upcast to a germ followed by an upcast from the germ to $\tcol{\?}$.
 This decomposition of an upcast to $\tcol{\?}$ into a series of "atomic" upcasts from a germ to
 $\tcol{\?}$ is a consequence of the way the cast operation is implemented in
-\cref{sec:realizing-ccic}, but similar decompositions appear \eg in \sidetextcite{Siek2015},
+\cref{sec:realizing-cast-calculus}, but similar decompositions appear \eg in \sidetextcite{Siek2015},
 where the equivalent of our germs are called ground types.
 The side conditions guarantee that this rule is used when no other applies.
 %
@@ -393,8 +398,8 @@ The side conditions guarantee that this rule is used when no other applies.
 and a downcast from it. Note that in this rule the upcast
 $\tcol{\castrev{}{\stalkCIC{h}{i}}{\?[\uni[i]]}}$ acts like a constructor for
 $\tcol{\?[\uni[i]]}$, and $\tcol{\castrev{}{\?[\uni[i]]}{X}}$ as a destructor –
-a view reflected by the canonical and neutral forms of \cref{fig:ccic-canonical}
-for $\tcol{\?[\uni]}$.%
+a view reflected by the canonical and neutral forms for $\tcol{\?[\uni]}$ given in
+\cref{fig:ccic-cast-nor,fig:ccic-cast-neu}.%
 \sidenote{
   In a simply-typed language such as \kl{GTLC} \cite{Siek2015},
   where there are no neutrals at the type level,  casts from a germ or ground type 
@@ -428,7 +433,7 @@ The crucial lemma is, as before, \kl{confluence}:
 
 \begin{proof}
 
-  We follow again the Tait-Martin Löf proof, as exposed by \sidetextcite{Takahashi1995} extend the notion of parallel reduction from \cref{thm:pcuic-confluence}
+  We follow again the Tait-Martin-Löf proof, as exposed by \sidetextcite{Takahashi1995} extend the notion of parallel reduction from \cref{thm:pcuic-confluence}
   to account for our additional reduction. The triangle property still holds,
   because as before there is no real critical pair between our rules – we carefully set
   them up to that effect!
@@ -447,7 +452,7 @@ system.
 Let us now turn to \kl{progress}.
 To state progress, we must first extend our canonical forms, to encompass the three new
 term formers. This corresponds to giving intuition on what are the new \kl{normal forms},
-and on “how” these new terms formers compute, so as to know when they are stuck, and thus
+and on “how” these new terms formers compute, in order to know when they are stuck, and thus
 give rise to a \kl{neutral form}.
 
 \begin{figure}[h]
@@ -455,11 +460,11 @@ give rise to a \kl{neutral form}.
   \begin{mathpar}
     \inferrule{
       \tcol{T} \in \{ \tcol{\uni},\tcol{\List(A)}, \tcol{\?[\uni]}, \tcol{\err[\uni]} \}
-    }{\no \tcol{\?[T]}} \and
+    }{\nm \tcol{\?[T]}} \and
 		\inferrule{\ne \tcol{t}}{\ne \tcol{\?[t]}} \and
     \inferrule{
       \tcol{T} \in \{ \tcol{\uni},\tcol{\List(A)}, \tcol{\?[\uni]}, \tcol{\err[\uni]} \}
-    }{\no \tcol{\err[T]}} \and
+    }{\nm \tcol{\err[T]}} \and
 		\inferrule{\ne \tcol{t}}{\ne \tcol{\err[t]}} \and
   \end{mathpar}
   \caption{\kl{Normal} and \kl{neutral} forms for $\?$ and $\err$}
@@ -477,7 +482,7 @@ and \sidetextcite{Pedrot2018}.
 \begin{marginfigure}
   \ContinuedFloat
   \begin{mathpar}
-    \inferrule{ }{\no \tcol{\cast{\stalkCIC{i}{h}}{\?[\uni]}{t}}}
+    \inferrule{ }{\nm \tcol{\cast{\stalkCIC{i}{h}}{\?[\uni]}{t}}}
   \end{mathpar}
   \caption{Cast as a canonical form of the unknown type}
   \label{fig:ccic-cast-nor}
@@ -528,7 +533,7 @@ Equipped with the notion of canonical forms, we can state \kl{progress} for \kl{
 \begin{theorem}[\kl{Progress} for \kl{CCIC}]
   \label{thm:ccic-progress}
   If $\tcol{t}$ is a well-typed term of \kl{CCIC},
-  then either $\no \tcol{t}$, or there is some $\tcol{t'}$
+  then either $\nm \tcol{t}$, or there is some $\tcol{t'}$
   such that $\tcol{t} \red \tcol{t'}$.
 \end{theorem}
 
@@ -536,9 +541,10 @@ Equipped with the notion of canonical forms, we can state \kl{progress} for \kl{
   The proof is similar to that which has been sketched in \cref{sec:tech-properties}:
   suppose a term is well-typed, and prove \kl{progress} by induction on its typing derivation.
 
-  For the two cases of $\?[T]$ and $\err[T]$, this is direct. If $T$ reduces, then the whole term
-  reduces. If it is neutral, the whole term is neutral. If it is a Π-type, the term reduces
-  again – using \eg \ruleref{rule:red-prod-unk} –. Finally if it is another canonical type,
+  For the two cases of $\?[T]$ and $\err[T]$, this is direct.
+  If $T$ reduces, then the whole term reduces.
+  In case it is neutral, the whole term is neutral. If it is a Π-type, the term reduces
+  again – using \eg \ruleref{rule:red-prod-unk} –. Finally, if it is another canonical type,
   then the whole term is canonical. Any other case is impossible, by typing.
 
   For the cast term former, the proof still follows the same ideas. It is only complicated
@@ -556,10 +562,10 @@ Equipped with the notion of canonical forms, we can state \kl{progress} for \kl{
 \label{sec:elaboration}
 
 Now that \kl{CCIC} has been described, let us move on to \kl{GCIC}.
-The typing judgment of \kl{GCIC} is \emph{defined}
-by an elaboration judgment from \kl{GCIC} to \kl{CCIC}, based upon
+The typing judgement of \kl{GCIC} is \emph{defined}
+by an elaboration judgement from \kl{GCIC} to \kl{CCIC}, based upon
 that of \arefpart{bidir}, but
-augmenting all judgments with an extra output: the elaborated \kl{CCIC} term.
+augmenting all judgements with an extra output: the elaborated \kl{CCIC} term.
 This definition of typing using elaboration is required because of the intricate interdependency between typing and reduction exposed in \cref{sec:gcic-overview}.
 
 \subsection{System Definition}
@@ -568,7 +574,7 @@ This definition of typing using elaboration is required because of the intricate
 \label{gcic-syntax}
 The syntax of \intro{GCIC}%
 \sidenote{We use \sourcecolor{teal} for terms of
-  \kl{GCIC}. To maintain a distinction in the absence of colors, we also
+  \kl{GCIC}. To maintain a distinction in the absence of colours, we also
   use tildes – like this: $\scol{\tilde{t}}$ – for terms in \kl{GCIC}
   in expressions mixing both source and target terms.}
 extends that of \kl{CIC} with a single new term constructor $\scol{\?[i]}$,
@@ -632,9 +638,9 @@ to compare \kl{CCIC} terms, rather than usual conversion relation.
   \caption{\kl{Consistent conversion}, as a diagram}
 \end{marginfigure}
 
-\begin{definition}[\intro{Consistent conversion}]
+\begin{definition}[Consistent conversion]
 	\label{def:cons}
-	Two \kl{CCIC} terms are \kl{α-consistent}, written $\acons$,
+	Two \kl{CCIC} terms are \intro{α-consistent}, written $\acons$,
   if they are in the relation defined by the inductive rules of \cref{fig:acons}.
 
 	Two terms are \intro{consistently convertible} – or simply \reintro(grad){consistent},
@@ -646,15 +652,16 @@ Apart from the standard rules making $\tcol{\?}$ consistent with any term,
 \kl{α-consistency} optimistically ignores casts,
 and does not consider errors to be consistent with themselves.
 The first point is to prevent casts inserted by the elaboration from disrupting valid
-conversions, typically between static terms.
+conversions, typically between \kl{static} terms.
 The second is guided by the idea that if errors are encountered at elaboration already,
-the term cannot be well behaved,
-so it must be rejected as early as possible and we should avoid typing it.
-The \kl{consistency} relation is then built upon \kl{α-consistency} in a way totally similar to
+the term cannot be well-behaved,
+so it must be rejected as early as possible, and we should avoid typing it.
+The \kl(grad){consistency} relation is then built upon \kl{α-consistency} in a way totally similar to
 how \kl{algorithmic conversion} in \cref{fig:cic-algo-conv} is built upon \kl{α-equality}.
 
 It is very important at this point to extend \kl{algorithmic conversion}, rather than
-\kl{declarative conversion}, because we do \emph{not} want \kl{consistency} to be transitive,
+\kl{declarative conversion}, because we do \emph{not} want \kl(grad){consistency}
+to be transitive,
 since we wish to have $\tcol{t} \cons \?$ for any $\tcol{t}$, which would turn $\cons$ into
 the full relation if it were to be transitive. Thus, we must extend a relation where
 transitivity is not baked in.
@@ -663,12 +670,12 @@ normalization, and is therefore usable as such in the non-normalizing \kl{GCICP}
 
 An important property of \kl{consistent conversion}, and a necessary condition
 for \kl{conservativity} of \kl{GCIC} with respect to \kl{CIC},
-is that it corresponds to \kl{conversion} on static terms.
+is that it corresponds to \kl{conversion} on \kl{static} terms.
 
 \begin{proposition}[Properties of \kl{consistent conversion}]
 	\label{prop:cons-static}
   \begin{itemize}
-  \item Two static terms are consistently convertible if and only if
+  \item Two \kl{static} terms are consistently convertible if and only if
     they are convertible in \kl{CIC}.
   \item If $\tcol{s}$ and $\tcol{t}$ have a normal form,
     then $\tcol{s} \cons \tcol{t}$ is decidable.
@@ -677,23 +684,24 @@ is that it corresponds to \kl{conversion} on static terms.
 
 \begin{proof}
 	For the first point, first remark that \kl{α-consistency}
-  between static terms corresponds to \kl{α-equality} of terms.
-  Thus, and because the \kl{reduction} of static terms in \kl{CCIC}
+  between \kl{static} terms corresponds to \kl{α-equality} of terms.
+  Thus, and because the \kl{reduction} of \kl{static} terms in \kl{CCIC}
   is the same as the \kl{reduction} of \kl{CIC},
-  two consistent static terms must reduce to \kl{α-equal} terms,
+  two consistent \kl{static} terms must reduce to \kl{α-equal} terms,
   which in turn implies that they are convertible.
-	Conversely two convertible terms of \kl{CIC} have \kl{α-equal} reducts,
+	Conversely, two convertible terms of \kl{CIC} have \kl{α-equal} reducts,
   which are also \kl{α-consistent}.
 
   For the second point, if $\tcol{s}$ and $\tcol{t}$ are normalizing,
   they have a finite number of reducts.
-  Thus to decide their consistency it is sufficient to check each pair of reducts
+  Thus, to decide their consistency it is sufficient to check each pair of reducts
   for the decidable \kl{α-consistency}.
   % Comparing normal forms is not enough, because a term $\tcol{t}$ might be stuck because of a cast while another one $\tcol{s}$ can be $\alpha$-consistent with it and reduce further, so that the normal form of $\tcol{t}$ and $\tcol{s}$ are not $\alpha$-consistent while $\tcol{t}$ and $\tcol{s}$ are consistent.
   We conjecture that the more reasonable algorithm which is used in practice in \eg \kl{Coq}
-  for deciding conversion, and relies on iterated \kl{weak-head} normalization,
-  can be adapted to decide \kl{consistency}. This would
-  however need somewhat subtle proofs, in the vein of those we use to prove the \kl{DGG}.
+  for deciding conversion, and relies on iterated \kl(red){weak-head} normalization,
+  can be adapted to decide \kl(grad){consistency}. This would
+  however need somewhat subtle proofs, in the vein of those we use in order
+  to prove the \kl{DGG}.
 \end{proof}
 
 \paragraph{Elaboration.}
@@ -759,14 +767,14 @@ is that it corresponds to \kl{conversion} on static terms.
     {\ind{\List}{s}{z.P}{b_{\lnil},y_1.y_2.p_{y_2}.b_{\lconsop}}}{\subs{P}{z}{s}}}
   \label{rule:gcic-ind}
   \end{mathpar}
-  \caption{Type-directed elaboration of \kl{GCIC}: static fragment}
+  \caption{Type-directed elaboration of \kl{GCIC}: \kl{static} fragment}
   \label{fig:gcic-infer-stat}
 \end{figure*}
 
 Elaboration from \kl{GCIC} to \kl{CCIC} closely follows the bidirectional presentation of
 \kl{CIC} given in \arefpart{bidir} for most rules,
 simply carrying around the extra elaborated terms : see \cref{fig:gcic-infer-stat}.
-Note that only the \kl{subject} of the judgment is a \scol{source term} in \kl{GCIC};
+Note that only the \kl{subject} of the judgement is a \scol{source term} in \kl{GCIC};
 \kl{inputs} – that have already been elaborated –,
 as well as \kl{outputs} – that are to be constructed –,
 are \tcol{target terms} in \kl{CCIC}. In particular, the extra elaborated term in \kl{CCIC}
@@ -896,8 +904,8 @@ insofar as it always produces well-typed \kl{CCIC} terms.
 
 \begin{proof}
   The proof is by induction on the elaboration derivation,
-  mutually with similar properties for all elaboration judgments.
-  It resembles a lot the \kl{correctness} proof for bidirectional typing
+  mutually with similar properties for all elaboration judgements.
+  It resembles a lot the \kl(bidir){correctness} proof for bidirectional typing
   (\cref{thm:compl-ccomega}).
   %
   In particular, for checking, we have an extra hypothesis that the
@@ -930,7 +938,7 @@ and outputs are unique – up to \kl{conversion} if no strategy is fixed.
 
   As the elaboration rules are completely syntax-directed, they
   immediately translate to an algorithm for elaboration.
-  Coupled with decidability of \kl{consistency} (\cref{prop:cons-static}),
+  Coupled with decidability of \kl(grad){consistency} (\cref{prop:cons-static}),
   this makes elaboration decidable whenever $\red$ is normalizing; 
   when $\red$ is not normalizing, the elaboration algorithm might diverge,
   resulting in only semi-decidability of typing – 
@@ -977,13 +985,13 @@ The second is a strengthening if a \kl{weak-head reduction} strategy is imposed 
   For $\pity{\P}$, by confluence of \kl{CCIC} the inferred type cannot
   at the same time reduce to $\tcol{\?[\uni]}$ and $\tcol{\P x : A .\ B}$,
   because those do not have a common reduct.
-  Thus, only one of \ruleref{rule:gcic-inf-prod} and \ruleref{infrule:gcic-prod-unk} can apply.
+  Thus, only one of \ruleref{rule:gcic-inf-prod} and \ruleref{rule:gcic-prod-unk} can apply.
   It is enough to conclude for \cref{thm:uniqueness},
   because reducts of convertible types are still convertible.
   For \cref{thm:uniqueness-wh} the deterministic reduction strategy ensures that
   the inferred type is unique, rather than unique up to conversion.
 
-  The reasoning is similar for the other constrained inference judgments.
+  The reasoning is similar for the other constrained inference judgements.
 \end{proof}
 
 \subsection{Illustration: Back to Ω}
@@ -991,7 +999,7 @@ The second is a strengthening if a \kl{weak-head reduction} strategy is imposed 
 
 Now that \kl{GCIC} has been entirely presented,
 let us come back to the important example of $\scol{\Omega}$,
-and explain in detail the behavior described in \cref{sec:gcic:-3-1} for the three
+and explain in detail the behaviour described in \cref{sec:gcic:-3-1} for the three
 \kl{GCIC} variants. 
 
 Recall that $\scol{\Omega}$ is the term $\scol{\delta\ \delta}$, with
@@ -1018,7 +1026,7 @@ $\scol{\delta}$ can be elaborated, and we have
 From this, we get that $\scol{\Omega}$ also elaborates, namely
 \[ \inferelab{\emptycon}{\Omega}{\delta'\ \left(\cast{T \to \?[\castOfPi{i}]}{T}{\delta'}\right)}{\?[\castOfPi{i}]} \]
 with $\tcol{\delta'}$ the elaboration of $\scol{\delta}$ above.
-Let us now look at the reduction behavior of this elaborated term $\tcol{\Omega'}$ in
+Let us now look at the reduction behaviour of this elaborated term $\tcol{\Omega'}$ in
 the three systems: it reduces seamlessly when $\castOfPi{i} = i$ (\kl{CCICP}),
 while having $\castOfPi{i} < i$ makes it fail (\kl{CCICs} and \kl{CCICT}).
 
@@ -1077,27 +1085,28 @@ At a high-level, the error can be seen as a dynamic universe inconsistency, trig
 \label{sec:gcic-simulation}
 
 Establishing \kl{elaboration graduality} – the formulation of
-the static gradual guarantee \kl{SGG} in our setting – is no small feat, as it
+the \kl{static gradual guarantee} \kl{SGG} in our setting – is no small feat, as it
 requires properties about
 computations in \kl{CCIC} that amount to the \kl{dynamic gradual guarantee} (\kl{DGG}).
 Indeed, to handle
 the typing rules for checking and constrained inference, it is
-necessary to know how \kl{consistency} and \kl{reduction} evolve as a type
+necessary to know how \kl(grad){consistency} and \kl{reduction} evolve as a type
 becomes less precise.
 
 As already explained in \cref{sec:gcic-overview}, we
-cannot directly prove graduality for a syntactic notion of
-precision. However, we can still show that this relation is a \kl{simulation} for reduction.
-While weaker than graduality, this property implies the \kl{DGG},
-and suffices to conclude that graduality of elaboration holds.
+cannot directly prove \kl{graduality} for a syntactic notion of
+precision. However, we can still show that such a \kl{syntactic precision}
+is a \kl{simulation} for reduction.
+While weaker than \kl{graduality}, this property implies the \kl{DGG},
+and suffices to conclude that \kl{graduality} of elaboration holds.
 
 The purpose of this section is to establish this property.
 Our proof is partly inspired by the proof of \kl{DGG} by
 \sidetextcite{Siek2015} for the \kl{simply-typed lambda calculus}.%
 \sidenote{
 Lemma 7 in \textcite{Siek2015} is similar to our \cref{thm:simulation},
-and \cref{fig:apre} draws from their Fig. 9, especially for \ruleref{rule:capre-castr}
-and \ruleref{infrule:capre-castl}.
+and \cref{fig:apre-diag,fig:apre-unk-err,fig:apre-cast} draws from their Fig. 9,
+especially for \ruleref{rule:capre-castr} and \ruleref{rule:capre-castl}.
 Also, while we do not make them explicit, Lemmas 8, 10 and 11 also appear in our proofs.
 }
 We however have to adapt to the much higher complexity of \kl{CIC} compared to \kl{STLC}.
@@ -1110,16 +1119,16 @@ to tame, as we must in general reduce types in a cast before we can reduce the c
 
 Technically, we need to distinguish between two notions of precision,
 one for \kl{GCIC} and one for \kl{CCIC}:
-\kl{syntactic precision}, on terms in \kl{GCIC}, which corresponds to the
+\reintro{syntactic precision}, on terms in \kl{GCIC}, which corresponds to the
 usual syntactic precision of gradual typing, such as that of \textcite{Siek2015};
-and \kl{structural precision} on terms in \kl{CCIC}, which corresponds
+and \reintro{structural precision} on terms in \kl{CCIC}, which corresponds
 to syntactic precision, together with a proper account of casts.
 In this section, we concentrate on properties of \kl{structural precision} – in \kl{CCIC}. 
 We only state and discuss the various lemmas and
 theorems on a rather high level, and refer the reader to
 \sidetextcite[][Appendix B]{LennonBertrand2022} for the detailed proofs.
 
-\subsection{Structural precision for \kl(tit){CCIC}}
+\subsection{\kl{Structural precision} for \kl(tit){CCIC}}
 
 As emphasized already, the key property we want to establish is that precision
 is a \kl{simulation} for reduction,
@@ -1202,7 +1211,8 @@ Thus, the definition of structural precision relies on typing, and to do this we
 \end{figure*}
 
 \begin{minipage}{\textwidth}
-\begin{definition}[\kl(pre){Structural} and \kl{definitional} precision in \kl{CCIC}]
+\begin{definition}[\kl{Structural}
+  and \kl{definitional} precision in \kl{CCIC}]
 
   \intro{Structural precision}, denoted $\tcol{\GG} \vdash \tcol{t}
   \capre \tcol{t'}$, is defined in \cref{fig:apre-diag,fig:apre-unk-err,fig:apre-cast},
@@ -1287,10 +1297,10 @@ with a typing premise similar to that of \ruleref{rule:capre-unk}.
 
 Finally, casts on the right-hand side can be ignored as long as they
 are performed on types that are \emph{less} precise than the type of the
-term on the left – \ruleref{infrule:capre-castr}. Dually, casts on the
+term on the left – \ruleref{rule:capre-castr}. Dually, casts on the
 left-hand side can be ignored as long as they are performed on types
 that are \emph{more} precise than the type of the term on the right
-– \ruleref{infrule:capre-castl}.
+– \ruleref{rule:capre-castl}.
 
 \begin{figure*}[ht]
   \ContinuedFloat
@@ -1321,8 +1331,9 @@ $\tcol{\GG} \vdash \tcol{s} \capre \tcol{s'}$.%
   \caption{\kl{Definitional precision}, diagrammatically}
 \end{marginfigure}
 %
-The situation is the same as for \kl{consistency} – resp.\ \kl{algorithmic conversion} –, which
-is the closure by \kl{reduction} of \kl{α-consistency} – resp. \kl{α-equality}.
+The situation is the same as for \kl(grad){consistency} – respectively
+\kl{algorithmic conversion} –, which
+is the closure by \kl{reduction} of \kl{α-consistency} – respectively \kl{α-equality}.
 %
 However, here \kl{definitional precision} is also \emph{used} in
 the definition of \kl{structural precision}, in order to permit
@@ -1332,7 +1343,7 @@ reduce – and thus the two notions must be mutually defined.
 
 \subsection{Catch-up lemmas}
 
-The fact that \kl{structural precision} is a simulation relies on a series of lemmas,
+The fact that \kl{structural precision} is a \kl{simulation} relies on a series of lemmas,
 which constitute the technical core of this whole chapter.
 They all have the same form:
 under the assumption that a term $\tcol{t'}$ is less precise than a term $\tcol{t}$
@@ -1360,7 +1371,7 @@ apart from \cref{lem:catchup-univ}, where an induction hypothesis is used instea
 \end{lemma}
 
 \begin{proof}
-  It is enough to show the property for $\capre$, in which case we prove the judgment
+  It is enough to show the property for $\capre$, in which case we prove the judgement
   by induction on $T'$.
   
   We know that the judgement
@@ -1402,7 +1413,7 @@ apart from \cref{lem:catchup-univ}, where an induction hypothesis is used instea
   The idea of the proof is very similar to that of \cref{lem:catchup-univ}: decompose
   $\tcol{T'}$ into a series of cast, and check that all those casts reduce. To do so,
   we need the previous lemma to know that the types appearing in the casts have a
-  \kl{weak-head} normal form of the right kind – either $\?[\uni]$ or $\uni$.
+  \kl(red){weak-head} normal form of the right kind – either $\?[\uni]$ or $\uni$.
 
 \end{proof}
 
@@ -1440,7 +1451,7 @@ This is the manifestation in the reduction of the \kl{embedding-projection} prop
 In \kl{CCICT}, \cref{lem:catchup-lambda} still holds only if one restricts to terms without $\tcol{\?}$, where such casts never happen.
 This is important with regard to \kl{conservativity},
 as elaboration produces terms with casts but without $\tcol{\?}$,
-and \cref{lem:catchup-lambda} ensures that for those precision is still a simulation,
+and \cref{lem:catchup-lambda} ensures that precision is still a \kl{simulation} for these,
 even in \kl{CCICT}.
 
 % \begin{example}[Catch-up of $\lambda$-abstraction]
@@ -1466,7 +1477,7 @@ via repeated uses of \ruleref{rule:capre-castr}, since
 $\inferelab{\emptycon}{\Nat \to \Nat}{\Nat \to \Nat}{{\sortOfPi{0}{0}}}$,
 and $\sortOfPi{0}{0} \leq 1 \leq i$.
 Moreover, also $0 \leq i - 1 \leq \castOfPi{i}$ and so the reduction is errorless.
-Thus \cref{lem:catchup-lambda} holds in all three systems when $i \geq 1$.
+Thus, \cref{lem:catchup-lambda} holds in all three systems when $i \geq 1$.
 
 The difference appears in the specific case where $i = 0$.
 In \kl{CCICP} and \kl{CCICT}, we still have
@@ -1510,14 +1521,14 @@ because the unknown term in a Π-type reduces to a λ-abstraction.
 
 \subsection{Simulation}
 
-We finally come to the main property of this section, the advertised
-simulation property.
+\AP We finally come to the main property of this section, the advertised
+\kl{simulation} property.
 It needs to be stated – and proven – mutually for \kl(pre){structural} and
 \kl(pre){definitional} precision.
 % but it is really informative only for structural precision (definitional precision is somehow a
 % simulation by construction).
 
-\begin{theorem}[Precision is a simulation for reduction]
+\begin{theorem}[Precision is a \intro{simulation} for reduction]
 	\label{thm:simulation}
   Suppose we have that $\tcol{\fs{\GG}} \cdpre \tcol{\sn{\GG}}$,
   $\cinferty{\fs{\GG}}{t}{T}$, $\cinferty{\sn{\GG}}{u}{U}$ and
@@ -1542,7 +1553,7 @@ It needs to be stated – and proven – mutually for \kl(pre){structural} and
   reduction.
   %
 	For the case of structural precision, the hardest point is of course that of
-  \kl{top-level}, where we use \cref{lem:catchup-lambda,lem:catchup-cons},
+  \kl(red){top-level}, where we use \cref{lem:catchup-lambda,lem:catchup-cons},
   to show that a similar reductions can also happen in $\tcol{t'}$, once the destructed
   term has properly caught up.
 
@@ -1553,8 +1564,8 @@ It needs to be stated – and proven – mutually for \kl(pre){structural} and
   the premises holding on $\tcol{t}$ still hold on $\tcol{t'}$.
 	Finally, the restriction to terms without $\tcol{\?}$ in \kl{CCICT} similar to \cref{lem:catchup-lambda} appears again when treating \nameref{rule:up-down}, where having $\castOfPi{\sortOfPi{i}{i}} = i$ is required.
 
-  Finally, since the catch-up can be done using only \kl{weak-head} reduction,
-  a \kl{weak-head} reduction step can always be simulated by \kl{weak-head} reductions.
+  Finally, since the catch-up can be done using only \kl(red){weak-head} reduction,
+  a \kl(red){weak-head} reduction step can always be simulated by \kl(red){weak-head} reductions.
 
 \end{proof}
 
@@ -1647,10 +1658,10 @@ statements and proofs can be found in \sidetextcite{LennonBertrand2022}.
 \subsection{Conservativity with respect to \kl(tit){CIC}}
 
 Elaboration systematically inserts casts during checking, thus even
-static terms are not elaborated to themselves. Therefore we use a (partial) erasure function $\eras$ to relate terms of \kl{CCIC} to terms of \kl{CIC} by erasing all casts.
+\kl{static} terms are not elaborated to themselves. Therefore we use a (partial) erasure function $\eras$ to relate terms of \kl{CCIC} to terms of \kl{CIC} by erasing all casts.
 We also introduce the notion of \kl{erasability},
 characterizing terms that contain only ”harmless“ casts,
-such that in particular the elaboration of a static term is always erasable.
+such that in particular the elaboration of a \kl{static} term is always erasable.
 
 \begin{definition}[Equi-precision]
   \label{def:equipre}
@@ -1660,15 +1671,15 @@ such that in particular the elaboration of a static term is always erasable.
 
 \begin{definition}[Erasure, erasability]
   \label{def:erasure}
-	\kl{Erasure} $\eras$ is a partial function from the syntax of \kl{CCIC} to the syntax of
+	\intro{Erasure} $\eras$ is a partial function from the syntax of \kl{CCIC} to the syntax of
   \kl{CIC}, which is undefined on $\tcol{\?}$ and $\tcol{\err}$,
   is such that $\eras(\tcol{\cast{A}{B}{t}}) = \eras(\tcol{t})$,
   and is a congruence for all other term constructors.
 
 	Given a context $\tcol{\GG}$, we say that a term $\tcol{t}$ well-typed in $\tcol{\fs{\GG}}$
-  is \intro{erasable} if $\eras(\tcol{t})$ is defined, well-typed in $\tcol{\sn{\GG}}$,
+  is \reintro{erasable} if $\eras(\tcol{t})$ is defined, well-typed in $\tcol{\sn{\GG}}$,
   and \kl{equi-precise} with $\tcol{t}$ in $\tcol{\GG}$.
-  Similarly a context $\tcol{\Gamma}$ is called \reintro{erasable} if it is pointwise erasable.
+  Similarly, a context $\tcol{\Gamma}$ is called \reintro{erasable} if it is pointwise erasable.
   When $\tcol{\Gamma}$ is erasable, we say that a term $\tcol{t}$ is erasable in
   $\tcol{\Gamma}$ to mean that it is erasable in $\tcol{\Gamma} \mid \eras(\tcol{\Gamma})$.
 \end{definition}
@@ -1681,20 +1692,20 @@ full \kl{CIC} for \kl{GCICP} and \kl{GCICT}, and \kl{CICs} for \kl{GCICs}.
 \begin{theorem}[\intro{Conservativity}]
 	\label{thm:conservativity}
 
-	Let $t$ be a static term – \ie a term of \kl{CIC}.
+	Let $t$ be a \kl{static} term – \ie a term of \kl{CIC}.
 
   If $\emptycon \vdash t \ity T$ for some type $T$,
   then there exists $\tcol{t'}$ and $\tcol{T'}$ such that
   $\inferelab{\emptycon}{\ccol{t}}{t'}{T'}$, and
   moreover $\eras(\tcol{t}) = t$ and $\eras(\tcol{T'}) = T$.
   
-  Conversely if $\inferelab{\emptycon}{\ccol{t}}{t'}{T}$ for some $\tcol{t'}$ and $\tcol{T}$,
+  Conversely, if $\inferelab{\emptycon}{\ccol{t}}{t'}{T}$ for some $\tcol{t'}$ and $\tcol{T}$,
   then $\emptycon \vdash t \ity \eras(\tcol{T})$.
 \end{theorem}
 
 \begin{proof}
 
-	Because $\scol{t}$ is static, its typing derivation in \kl{GCIC}
+	Because $\scol{t}$ is \kl{static}, its typing derivation in \kl{GCIC}
   can only use rules that have a counterpart in \kl{CIC},
   and conversely all rules of \kl{CIC} have a counterpart in \kl{GCIC}.
   The only difference is about the \kl{reduction}/\kl{conversion} side conditions,
@@ -1704,18 +1715,18 @@ full \kl{CIC} for \kl{GCICP} and \kl{GCICT}, and \kl{CICs} for \kl{GCICs}.
 	Thus, the main difficulty is to ensure that the extra casts
   inserted by elaboration do not alter \kl{reduction}. This is why we
   maintain the property that all terms $\tcol{t}$ considered in
-  \kl{CCIC} are erasable, and more precisely that any static term $t$
+  \kl{CCIC} are erasable, and more precisely that any \kl{static} term $t$
   that elaborates to some $\tcol{t'}$ is such that
   $\eras(\tcol{t}) = t$. Indeed, from the simulation property of
   structural precision (\cref{thm:simulation}), we obtain that an
-  erasable term $\tcol{t}$ has the same reduction behavior as
+  erasable term $\tcol{t}$ has the same reduction behaviour as
   its erasure, \ie if $\tcol{t} \red \tcol{s}$ then
   $\eras(\tcol{t}) \red s'$ for some $s'$ such that $s' = \eras(\tcol{s})$,
   and conversely if $\eras(\tcol{t}) \red s'$
   then $\tcol{t} \red \tcol{s}$ for some $\tcol{s}$ such that $s' = \eras(\tcol{s})$.
   Using that property, we  prove that
-  \kl{constrained reductions} on an erasable term of \kl{CCIC} behave
-  the same as its erasure. Similarly \kl{consistency} of erasable terms of \kl{CCIC}
+  \kl{constrained inference} on an erasable term of \kl{CCIC} behave
+  the same as its erasure. Similarly, \kl(grad){consistency} of erasable terms of \kl{CCIC}
   is equivalent to \kl{conversion} of the erased terms.
 \end{proof}
 
@@ -1748,27 +1759,27 @@ Next, we turn to \kl{elaboration graduality}, the equivalent of the \kl{static g
 guarantee} (SGG) of \sidetextcite{Siek2015} in our setting.
 %
 We state it with respect to a notion of precision for terms in \kl{GCIC},
-\intro(gcic){syntactic precision} $\apre$, defined in \cref{fig:apre-gcic}.
+\intro{syntactic precision} $\apre$, defined in \cref{fig:apre-gcic}.
 %
-\kl(gcic){Syntactic precision} is the usual and expected source-level notion
+\kl{Syntactic precision} is the usual and expected source-level notion
 of \kl{precision} in gradual languages:
 it is generated by a single non-trivial rule $\scol{t} \apre
 \scol{\?[i]}$, and congruence rules for all term formers.
 
 In contrast with the simply-typed setting, the presence of multiple unknown types
 $\scol{\?[i]}$, one for each universe level $i$,
-requires an additional hypothesis relating elaboration and precision judgments.
+requires an additional hypothesis relating elaboration and precision judgements.
 
 \begin{definition}[Universe adequacy]
-  We say that two judgments $\scol{\tilde{t}} \apre \scol{\?[i]}$ and
+  We say that two judgements $\scol{\tilde{t}} \apre \scol{\?[i]}$ and
   $\inferelab{\Gamma}{\tilde{t}}{t}{T}$ are \intro{universe adequate} if the
-  universe level $j$ given by the well-formedness judgment
+  universe level $j$ given by the well-formedness judgement
   $\pinferty{\uni}{\tcol{\Gamma}}{\tcol{T}}{\tcol{\uni[j]}}$
   induced by correction of the elaboration satisfies $i = j$.
   %
   More generally, $\scol{\tilde{t}} \apre \scol{\tilde{s}}$ and
   $\inferelab{\Gamma}{\tilde{t}}{t}{T}$ are \reintro{universe adequate} if for any
-  subterm $\scol{\tilde{t}_0}$ of $\scol{\tilde{t}}$ inducing judgments $\scol{\tilde{t}_0}
+  sub-term $\scol{\tilde{t}_0}$ of $\scol{\tilde{t}}$ inducing judgements $\scol{\tilde{t}_0}
   \apre \scol{\?[i]}$ and $\inferelab{\Gamma_0}{\tilde{t}_0}{t}{T}$,
   those are \kl{universe adequate} in the previous sense.
 \end{definition}
@@ -1779,8 +1790,9 @@ since universe levels are very seldom given explicitly. In such a case, the elab
 would insert fresh universe levels at each $\scol{\?}$, which would automatically ensure
 universe adequacy.
 
-\begin{theorem}[Elaboration Graduality / Static Gradual Guarantee]
+\begin{theorem}[\intro{Elaboration Graduality} / Static Gradual Guarantee]
 	\label{thm:static-graduality}
+
   In \kl{GCICP} and \kl{GCICs}, if $\scol{\tilde{t}} \apre \scol{\tilde{s}}$ and
   $\inferelab{\emptycon}{\tilde{t}}{t}{T}$ by derivations that are \kl{universe adequate},
   then $\inferelab{\emptycon}{\tilde{s}}{s}{S}$ for some $\tcol{s}$ and $\tcol{S}$
@@ -1798,7 +1810,7 @@ universe adequacy.
 	Here again the technical difficulties arise in the rules involving computation.
   This is where \cref{cor:red-types} is useful, proving that the less precise type
   obtained by induction can simulate the reduction of the more precise one.
-  Thus either the same rule can still be used, or one has to trade Rule
+  Thus, either the same rule can still be used, or one has to trade Rule
   \nameref{rule:gcic-inf-univ}, \nameref{rule:gcic-inf-prod} or
   \nameref{rule:gcic-inf-list} respectively for Rule \nameref{rule:gcic-univ-unk},
   \nameref{rule:gcic-prod-unk} or \nameref{rule:gcic-list-unk} in case the less precise type is some $\tcol{\?[\uni]}$ and the more precise type is not.
@@ -1834,7 +1846,7 @@ $\obsRef$ from \cref{def:obsref}.
   By the diagonal rules of structural precision, we have
   $\tcol{\Gamma \mid \Gamma} \vdash \tcol{\mathcal{C}[t]} \capre \tcol{\mathcal{C}[u]}$.
   %
-  By \kl{safety} (\cref{thm:ccic-safety}), $\tcol{\mathcal{C}[t]}$ either reduces
+  By \kl{safety} (\cref{thm:ccic-psafe}), $\tcol{\mathcal{C}[t]}$ either reduces
   to $\tcol{\true}$, $\tcol{\false}$, $\tcol{\?[\Bool]}$, $\tcol{\err[\Bool]}$ or diverges, and similarly for $\tcol{\mathcal{C}[u]}$.
   %
   If $\tcol{\mathcal{C}[t]}$ diverges or reduces to $\tcol{\err[\Bool]}$, we are done.
@@ -1848,4 +1860,4 @@ $\obsRef$ from \cref{def:obsref}.
 Note that the counter-example to \cref{lem:catchup-lambda} given in
 \cref{sec:gcic-simulation} provides a counter-example to this theorem as well for \kl{CCICT},
 by choosing the context $\tcol{\ind{\Nat}{\bullet~0}{z.\Bool}{\true,\true}}$,
-because in that context the function $\tcol{\l x : \Nat . \S x}$ reduces to $\tcol{\true}$ while the less precise casted function reduces to $\tcol{\err[\Bool]}$.
+because in that context the function $\tcol{\l x : \Nat . \S x}$ reduces to $\tcol{\true}$ while the less precise cast function reduces to $\tcol{\err[\Bool]}$.

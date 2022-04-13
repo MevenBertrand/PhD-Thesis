@@ -432,9 +432,10 @@ consiste à implémenter un algorithme de vérification de type ressemblant au m
   \color{black}
   En effet, grâce à la \kl{correspondance de Curry-Howard}, \kl{Gallina} est certes un langage
   de preuve, mais aussi un véritable langage de programmation !}.
-On démontre en même temps qu’il est bien \reintro{correct} –
+On démontre en même temps qu’il est bien \reintro(bidir){correct} –
   si l’algorithme prétend qu’un terme est bien typé, alors c’est bien le cas –
-et \reintro{complet} – l’algorithme répond bien affirmativement sur tous les termes bien typés.
+et \reintro[Completeness]{complet} –
+l’algorithme répond bien affirmativement sur tous les termes bien typés.
 Enfin, une troisième étape extrait
 un autre programme plus efficace de ce programme \kl{Gallina} certifié.
 Cette efficacité est cruciale si on veut l’utiliser en lieu et place du \kl{noyau} actuel.
