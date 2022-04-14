@@ -951,7 +951,7 @@ The last important property, and one which is specific to type systems in the co
 programming languages, is \kl{normalization}. It ensures that progress cannot be applied
 forever, but that evaluation always ends up reaching a normal form.
 The most standard way to phrase this is to say that there is no infinite reduction sequence 
-starting from a well-typed term.This formulation, however, is constructively too weak,
+starting from a well-typed term. This formulation, however, is constructively too weak,
 so we instead use a more adequate – but classically equivalent – definition,
 using the following accessibility predicate.
 
@@ -1444,7 +1444,7 @@ It is nevertheless
 still far from a "real-world" type theory such as that implemented in \kl{Coq} and
 formalized in \kl{MetaCoq}, the \intro{Polymorphic, Cumulative Calculus of Inductive Constructions} (\intro{PCUIC}),
 which extends \kl{CIC} with many features which are crucial for usability. 
-As some of the additions of \kl{PCUIC} are discussed throughout this
+As some additions of \kl{PCUIC} are discussed throughout this
 thesis, we wish to already give a high level idea of them,
 while reserving the fully precise technical details for \arefpart{metacoq}.
 
@@ -1695,7 +1695,7 @@ These are somewhat similar to inductive types, but
 while the latter correspond to well-founded objects, the former represent
 potentially infinite objects, such as streams of values. Because of this flavour of infinity,
 co-inductive types pose an inherent threat to good properties of the system, such as
-decidability of type-checking. At the time of their introduction in Coq
+decidability of type-checking. At the time of their introduction in \kl{Coq}
 \sidecite{Gimenez1995}, they were presented in a so-called "positive" fashion – close
 to the presentation of \kl{inductive types} –, which
 kept \kl{normalization} at the cost of \kl{subject reduction}.

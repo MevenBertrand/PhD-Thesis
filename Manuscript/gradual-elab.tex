@@ -1074,7 +1074,7 @@ and thus share the following reduction path:
 The first step corresponds to the first three above, the only difference being the value of $\castOfPi{i}$. The reductions however differ in the next step because $\tcol{\?_i \to \?_{i-1}} \neq \tcol{\stalkCIC{i}{\Pi}}$, so \ruleref{rule:prod-germ} applies before
 \ruleref{rule:up-down}.
 For the third step, note that $\tcol{\?_{i-1} \to \?_{i-1}} = \tcol{\stalkCIC{i}{\P}}$,
-so that \ruleref{rule:red-down-err} applies in the rightmost sequence of casts.
+so that \ruleref{rule:red-size-err} applies in the rightmost sequence of casts.
 The last three steps of reduction then propagate the error by first using
 \ruleref{rule:prod-germ}, \ruleref{rule:up-down} and \ruleref{rule:red-prod-prod},
 then the β-rule, and finally \ruleref{rule:red-down-err},

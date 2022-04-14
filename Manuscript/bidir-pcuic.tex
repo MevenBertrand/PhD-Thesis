@@ -13,7 +13,7 @@ of the completeness and uniqueness properties, see \cref{sec:bidir-pcuic-cumulat
 But the main is the introduction of inductive types. In particular, there is a subtle
 interplay with cumulativity in the treatment of pattern-matching.
 Working on the formalized proof of completeness in \kl{MetaCoq} led to the discovery of
-an incompleteness bug in the kernel of Coq linked to this.
+an incompleteness bug in the kernel of \kl{Coq} linked to this.
 In \cref{sec:bidir-pcuic-inductives} we show how the bidirectional setting adapts to
 inductive types, and try and give an intuition of the origin of the completeness issue.
 
@@ -223,7 +223,7 @@ bug that manifested as a failure of subject reduction in situations such as the 
 This prompted subsequent work, both on the theory of \kl{PCUIC} and in the implementation, to
 remove the use of Π- and λ-abstractions completely from pattern-matching%
 \sidenote{This was carried out by Pierre-Marie Pédrot starting with pull-request \coqPR{13563},
-following ideas that had been laid down earlier by Hugo Herbelin in the Coq enhancement
+following ideas that had been laid down earlier by Hugo Herbelin in the \kl{Coq} enhancement
 proposal \href{https://github.com/coq/ceps/blob/master/text/inductive-branch-predicate-representation-and-reduction.md}{\#34}.},
 making both the implementation less ad-hoc, and the theory cleaner.
 A detailed summary has been given by Matthieu Sozeau \sidecite{Sozeau2022}.
