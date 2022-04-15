@@ -235,8 +235,10 @@ and then any other type: for instance, $0 \ascop \? \ascop \Bool$ is a
 well-typed closed term of type $\Bool$.%
 \sidenote{
   We write $a \ascop A$ for a type \intro{ascription}, which we define as syntactic sugar
-  for $(\l x:A.\ x)\ a$ \sidecite[3em]{Siek2006}; in
-  other systems, it is taken as a primitive notion \sidecite[5em]{Garcia2016}.}
+  for $(\l x:A.\ x)\ a$ \cite{Siek2006}; in
+  other systems, it is taken as a primitive notion \cite{Garcia2016}.}%
+\margincite{Siek2006}%
+\margincite{Garcia2016}
 However, such a term
 cannot possibly reduce to either $\true$ or $\false$, so some
 concessions must be made with respect to \kl{safety} – at the very least, the notion
@@ -733,7 +735,8 @@ There lies an important challenge: because of the dependency of typing on \kl{co
 the \kl{static gradual guarantee} already demands monotonicity of the approximation
 one chooses. But if this approximation is defined using reduction, this demand is
 very close to that of the \kl{dynamic gradual guarantee}.%
-\sidenote{In a dependently-typed programming language with separate typing and execution phases, this demand is called the normalization gradual guarantee \sidecite[2em]{Eremondi2019}.}
+\sidenote{In a dependently-typed programming language with separate typing and execution phases, this demand is called the normalization gradual guarantee \cite{Eremondi2019}.}%
+\margincite{Eremondi2019}
 In practice, this means that the \kl{SGG} essentially depends on the \kl{DGG}!
 
 \subsection{Dealing with neutrals}
@@ -802,8 +805,12 @@ includes equi-divergence.
 The situation in the dependent setting is however more
 complicated if the theory admits divergence.%
 \sidenote{
-  There exist non-gradual dependently-typed programming languages that admit divergence, \eg \kl{Dependent Haskell} \sidecite[3em]{Eisenberg2016}, \kl{Idris} \sidecite[6em]{Brady2013}. We will also present one such theory in this article. 
-}
+  There exist non-gradual dependently-typed programming languages that admit divergence, \eg \kl{Dependent Haskell} \cite{Eisenberg2016},
+  \kl{Idris} \sidecite{Brady2013}.
+  We will also present one such theory in this article. 
+}%
+\margincite{Eisenberg2016}%
+\margincite{Brady2013}
 In a gradual dependent type theory that admits divergence,
 a diverging term is more precise than the
 \kl{unknown term} $\?$. Because the unknown term does not diverge, this

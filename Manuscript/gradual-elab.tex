@@ -403,10 +403,11 @@ a view reflected by the canonical and neutral forms for $\tcol{\?[\uni]}$ given 
 \sidenote{
   In a simply-typed language such as \kl{GTLC} \cite{Siek2015},
   where there are no neutrals at the type level,  casts from a germ or ground type 
-  to the unknown type are usually interpreted as tagged values \sidecite[7em]{Siek2006}. 
+  to the unknown type are usually interpreted as tagged values \cite{Siek2006}. 
   Here, these correspond exactly to the canonical forms of $\tcol{\?[\uni]}$,
   but we also have to account for the many neutral forms that appear in open contexts.
-}
+}%
+\margincite{Siek2006}
 %
 Finally, \ruleref{rule:size-err} corresponds to a peculiar kind of error, which only happens due to the presence of a type hierarchy: 
 $\tcol{\?[\uni[i]]}$ is only universal with respect to types at level $i$, and so a type might
