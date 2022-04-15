@@ -47,7 +47,7 @@ of a term $\tcol{t}$ of type $\tcol{S}$ to type $\tcol{T}$
 %
 with casts associating to the right:
 $\tcol{\cast{S}{S'}{\cast{T'}{T}{t}}}$ corresponds to the fully-parenthesized
-$\tcol{\cast{S}{S'}{\left(\cast{T}{T'}{t}\right)}}$.
+$\tcol{\cast{S}{S'}{\left(\cast{T'}{T}{t}\right)}}$.
 We also collapse successive ones:
 $\tcol{\cast{T}{T'' \Leftarrow T'}{t}}$ is shorthand for
 $\tcol{\cast{T'}{T''}{\cast{T}{T'}{t}}}$.
@@ -452,7 +452,7 @@ system.
 
 Let us now turn to \kl{progress}.
 To state progress, we must first extend our canonical forms, to encompass the three new
-term formers. This corresponds to giving intuition on what are the new \kl{normal forms},
+term formers. This corresponds to giving intuition on what are the new \kl{canonical forms},
 and on “how” these new terms formers compute, in order to know when they are stuck, and thus
 give rise to a \kl{neutral form}.
 
