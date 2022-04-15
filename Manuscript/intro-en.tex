@@ -179,10 +179,11 @@ and attracting.
 
 Computers excel where humans are weak: their speciality is to treat large volumes of
 information in a very precise way, exactly the kind of needs brought up when manipulating
-formalized mathematics. Therefore, already at the beginning of the 70s,%
+formalized mathematics. Therefore, already at the beginning of the 70s%
 \sidenote{With systems like Automath \cite{DeBruijn1970}, or Mizar
   \cite{Rudnicki1992}.}%
-\margincite{DeBruijn1970}\margincite{Rudnicki1992}
+\margincite{DeBruijn1970}%
+\margincite{Rudnicki1992},
 software tools, collectively called \intro{proof assistants}, had started to
 appear. They are dedicated to writing and verifying formal proofs.
 Through the formalization of proofs and the verification by computers that they
@@ -231,8 +232,9 @@ The one I am interested in in this thesis relies on the \kl{Curry-Howard corresp
 and \kl[dependent type]{dependent type theory}. The proof assistant \kl{Coq},
 which is at the heart of my work, belongs to this family.
 
-If one compares a computer program with a text in a natural language, \intro{types}
-are a sort of equivalent of grammatical categories. However, contrarily to natural
+If one compares a computer program with a text in a natural language,
+\intro(en){types}
+are a kind of equivalent of grammatical categories. However, contrarily to natural
 languages, these types are conceived at the same time as the programming language, in order
 to mirror properties of the objects it manipulates.
 Their first use is to detect manifest errors. For instance, if a procedure
@@ -380,7 +382,7 @@ Once these are established, the second step
 % length later on.}
 consists in implementing a type-checking algorithm as close as possible to the one of the
 \kl{kernel}, directly in \kl{Gallina}%
-\sidenote{Indeed, thanks to the \kl{Curry-Horward correspondence}, \kl{Gallina} is of
+\sidenote{Indeed, thanks to the \kl{Curry-Howard correspondence}, \kl{Gallina} is of
 course a proof language, but also a true programming language!}.
 We show, while defining the algorithm, that it is indeed \reintro(bidir){correct}%
 \sidenote{If the algorithm pretends that a term is well-typed, then it is the case.}
@@ -429,8 +431,9 @@ The dynamic discipline is more flexible, as it verifies exactly what is necessar
 for the good execution of a program.
 The strictness of static typing, conversely, allows for error detection earlier in the
 development, and imposes invariants useful to optimize compilation or execution.
-Instead of opting exclusively for one of the two approaches, \intro{gradual typing}
-\sidecite{Siek2015} aims at integrating the static and dynamic disciplines in one and the
+Instead of opting exclusively for one of the two approaches,
+\reintro{gradual typing} \sidecite{Siek2015} aims at integrating
+the static and dynamic disciplines in one and the
 same language. This gives access to a whole spectrum of options, from a rigid completely static
 discipline to a flexible dynamic one. It particularly allows for a fine-grained, local choice
 of how each part of a program is type-checked.
@@ -446,7 +449,7 @@ early development phase more difficult. Indeed, nobody writes correct code on th
 and it would often be nice to temporarily lift the strong guarantees of typing to
 facilitate experimentation. The idea would then be to take inspiration from gradual typing,
 in order to pave the way for a more flexible logical or software development. Once again,
-\kl{Curry-Horward correspondence} is at work, since we adapt concepts from the world of
+\kl{Curry-Howard correspondence} is at work, since we adapt concepts from the world of
 programming languages to the logical one.
 
 \section{And this thesis?}
@@ -487,7 +490,7 @@ presented in \cref{chap:gradual-dependent}. An interesting point of emphasis is 
 usual presentation of dependent types turns out to be unsuited, as it is too flexible.
 The additional structure provided by bidirectional typing is thus key. It also
 appeared relevant to present the type-directed elaboration of terms from a source language
-to a target one, an important characteristic shared by all \kl[gradual]{gradual languages}.
+to a target one, an important characteristic shared by all\kl[gradual@typ]{gradual languages}.
 The use of a bidirectional elaboration, and the properties it allows us to obtain, are described
 in \cref{chap:bidir-gradual-elab}. Finally, \cref{chap:beyond-gcic} succinctly describes the
 rest of the work I took part in regarding gradual types, but which is not directly
@@ -495,7 +498,8 @@ linked to bidirectional typing.
 
 \subsection{Technical contributions}
 
-My doctoral work started with the study of \kl{gradual} \kl(typ){dependent} types.
+My doctoral work started with the study of \kl(typ){gradual}
+\kl(typ){dependent} types.
 I contributed, together with Kenji Maillard, Nicolas Tabareau and Éric Tanter, to
 \sidetextcite{LennonBertrand2022}, where we study a gradual extension to the
 Calculus of Inductive Constructions. My main technical contribution corresponds

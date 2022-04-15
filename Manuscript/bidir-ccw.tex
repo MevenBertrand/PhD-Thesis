@@ -236,7 +236,7 @@ As in \textcite{Pollack1992}, $\Gamma \vdash t \ty T$ is used for inference,
 and the other judgements are inlined.
 Once again, reduction is not enough to perform constrained inference, this time
 because type constructors can be hidden in subsets:
-a type such as $\{f : \Nat \to \Nat \mid f\ 0 = 0 \}$
+an inhabitant of a type such as $\{f : \Nat \to \Nat \mid f\ 0 = 0 \}$
 should be usable as a function of type $\Nat \to \Nat$.
 An erasure procedure is therefore required on top of reduction to remove subsets in the places where we use constrained inference.
 
@@ -270,8 +270,8 @@ Let us now state and sketch proofs of the main properties of the bidirectional s
 The first two relate it to the
 undirected one: it is both \kl(bidir){correct} – terms typeable in the bidirectional system are typeable in the undirected system – and \kl(bidir){complete} – all terms typeable in the undirected system are also typeable in the bidirectional system.
 Next, we investigate \kl{uniqueness of types}, and its relation to the choice of a strategy for reduction.
-Finally, we show how \kl{strengthening} can be shown for undirected \kl{CCω} by proving it on the
-directed side.
+Finally, we expose how \kl{strengthening} can be shown for undirected \kl{CCω}
+by proving it on the bidirectional side.
 
 \subsection{Correctness}
 
@@ -480,7 +480,7 @@ we get \kl{uniqueness of types} for the undirected system.
 \end{theorem}
 
 \begin{proof}
-  Since $\Gamma \vdash t \ty T'$, then by correctness
+  Since $\Gamma \vdash t \ty T$, by correctness
   there exists some $T'$ such that $\inferty{\Gamma}{t}{T'}$ and moreover $T' \conv T$.
   Similarly, there exists some $S'$ such that $\inferty{\Gamma}{t}{S'}$
   and moreover $S' \conv S$.

@@ -289,7 +289,7 @@ C’est à elle qu’appartient l’assistant à la preuve \kl{Coq} qui est au c
 travail.
 
 Si on compare un programme informatique à un texte dans une langue naturelle,
-les \intro{types} sont une sorte d’équivalent des catégories grammaticales.
+les \intro(fr){types} sont une sorte d’équivalent des catégories grammaticales.
 Cependant, contrairement aux langues naturelles, ces types sont conçus
 en même temps que le langage de programmation,
 de manière à refléter des propriétés des objets manipulés par celui-ci.
@@ -297,15 +297,16 @@ Cela permet en premier lieu de détecter des erreurs manifestes.
 Par exemple, si une procédure attendant un objet de type “image” est
 appliquée à un objet de type “chaîne de caractères”, une erreur pourra être rapportée
 à la programmeuse.\sidenote{
-  Un slogan dû à \sidetextcite[4em]{Milner1978} affirme que
+  Un slogan dû à \textcite{Milner1978} affirme que
   « Les programmes bien typés ne peuvent pas  mal s’exécuter. »
-}
+}%
+\margincite{Milner1978}
 Mais les types sont très versatiles, et leur capacité à encoder
 des propriétés des programmes sous-jacents peut servir à la compilation, la
 documentation, et bien d’autres choses.
 Dans notre cadre, par exemple, les types correspondent à la validité d’un raisonnement logique.
 
-\begin{marginfigure}[2em]
+\begin{marginfigure}
 
   % \begin{mathpar}
   %   \inferrule{ \Gamma, A \vdash B}{\Gamma \vdash A \Rightarrow B} \and
@@ -404,7 +405,7 @@ preuve dont il sera le plus question dans cette thèse : \kl{Coq}.
   \label{fig:coq}
 \end{figure}
 
-\kl{Coq} est basé sur la \kl{correspondance de Curry-Howard} : les preuves sont vues comme des programmes dans un langage appelé \intro{Gallina},
+\kl{Coq} est basé sur la \kl{correspondance de Curry-Howard} : les preuves sont vues comme des programmes dans un langage appelé \intro(fr){Gallina},
 et leur vérification est effectuée par un algorithme proche
 de ceux utilisés pour les types des langages conventionnels.
 Cependant, si, dans les premières versions des années 80, \kl{Coq} ressemblait à un langage de programmation un peu étrange, ce n’est actuellement plus du tout le cas.
@@ -440,15 +441,15 @@ Plus précisément, la première étape est de décrire le système de type sur 
 Une fois ces propriétés établies, la deuxième étape
 % \sidenote{C’est celle sur laquelle j’ai principalement travaillé, et sur laquelle 
 % on reviendra plus longuement.}
-consiste à implémenter un algorithme de vérification de type ressemblant au maximum à celui du \kl{noyau}, directement en \kl{Gallina}\sidenote{
-  En effet, grâce à la \kl{correspondance de Curry-Howard}, \kl{Gallina} est certes un langage
+consiste à implémenter un algorithme de vérification de type ressemblant au maximum à celui du \kl{noyau}, directement en \kl(fr){Gallina}\sidenote{
+  En effet, grâce à la \kl{correspondance de Curry-Howard}, \kl(fr){Gallina} est certes un langage
   de preuve, mais aussi un véritable langage de programmation !}.
 On démontre en même temps qu’il est bien \reintro(bidir){correct}%
 \sidenote{
   Si l’algorithme prétend qu’un terme est bien typé, alors c’est bien le cas.}
 et \reintro[Completeness]{complet}%
 \sidenote{L’algorithme répond bien affirmativement sur tous les termes bien typés.}.
-Enfin, lors d’une troisième étape, on extrait de ce programme \kl{Gallina} certifié
+Enfin, lors d’une troisième étape, on extrait de ce programme \kl(fr){Gallina} certifié
 un autre programme plus efficace, en effaçant le contenu lié à la preuve de correction
 pour ne garder que celui qui est algorithmiquement intéressant.
 Cette extraction est une étape complexe,
@@ -456,7 +457,7 @@ mais cruciale si on veut remplacer le \kl{noyau} actuel en conservant une
 efficacité raisonnable.
 C’est pourquoi on prouve là encore que ladite extraction est correcte%
 \sidenote{C’est-à-dire qu’elle préserve la sémantique des programmes.},
-en la programmant à nouveau en \kl{Gallina}.
+en la programmant à nouveau en \kl(fr){Gallina}.
 
 \subsection{Vérification, inférence et typage bidirectionnel}[Typage bidirectionnel]
 

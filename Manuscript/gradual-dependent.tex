@@ -187,7 +187,7 @@ setting (\cref{sec:grad-simple}),
 and revisiting them in the context of a dependent type theory (\cref{sec:graduality}).
 This finally leads us to establish a fundamental impossibility in the gradualization
 of \kl{CIC}, which means that at least one of the desired properties has to be sacrificed (\cref{sec:fire-triangle}).
-With all set up, we can finally present our \kl{gradual},
+With all set up, we can finally present our \kl(typ){gradual},
 \kl{dependently} typed system, \kl{GCIC}, and its main characteristics
 (\cref{sec:gcic-overview}).
 
@@ -250,7 +250,7 @@ The quintessential example of non-termination in the untyped lambda calculus is 
 term $\Omega$, defined as $\delta~\delta$
 where $\delta$ is $\l x.\ x\ x)$.
 In the \intro{simply-typed lambda calculus}%
-  \sidenote[][2em]{Hereafter abbreviated as \intro{STLC}.},
+  \sidenote{Hereafter abbreviated as \intro{STLC}.},
 as in \kl{CIC}, \emph{self-applications} like $\delta\ \delta$ and $x\ x$ are ill-typed.
 However, when introducing gradual types, one usually expects to accommodate such idioms,
 and therefore in a standard gradually-typed calculus such as
@@ -274,7 +274,7 @@ Let us first address the elephant in the room:
 why would one want to gradualize \kl{CIC} instead of simply postulating
 an axiom for any term (be it a program or a proof) that one does not feel like providing (yet)?
 
-Indeed, we can augment \kl{CIC} with a wildcard axiom $\axiom \ty \P A : \uni.\ A$.
+\AP Indeed, we can augment \kl{CIC} with a wildcard axiom $\axiom \ty \P A : \uni.\ A$.
 The resulting system, called \intro{CICax}, has an obvious practical benefit: we can use
 $\axiom A$%
 %\sidenote{Hereafter written $\axiom[A]$.}
@@ -329,7 +329,7 @@ $\ind{\Nat}{\axiom \Nat}{P}{b_{\z},b_{\Sop}}$.
 \subsection{Exceptions}
 \label{sec:extt}
 
-\sidetextcite[0em]{Pedrot2018} present the exceptional type theory \intro{ExTT},
+\AP \sidetextcite{Pedrot2018} present the exceptional type theory \intro{ExTT},
 demonstrating that it is possible to extend a
 type theory with a wildcard term while enjoying a satisfying notion of \kl{safety},
 which coincides with that of programming languages with exceptions.
@@ -343,7 +343,7 @@ emulating exceptions in programming languages, which propagate instead of being 
 For instance, in \kl{ExTT} the following conversion holds:
 \[\ind{\Bool}{\rai[\Bool]}{\Nat}{0,1} \conv \rai[\Nat]\]
 
-Notably, such exceptions are \intro{call-by-name} exceptions, so one can only
+\AP Notably, such exceptions are \intro{call-by-name} exceptions, so one can only
 discriminate exceptions on positive types – \ie inductive types –, not on negative
 types – \ie function types. In particular, in \kl{ExTT}, $\rai[A \to B]$ reduces to
 $\l x : A.\ \rai[B]$ are \kl{convertible}.
@@ -405,7 +405,8 @@ in the context of simple types.
 
 \subsection{Static semantics}
 
-\intro[gradual]{Gradually typed} languages introduce the \reintro{unknown type}, written $\?$,
+\AP \intro[gradual typing]{Gradually typed} languages introduce the
+\reintro{unknown type}, written $\?$,
 which is used to indicate the lack of static typing information \sidecite{Siek2006}.
 One can understand such an unknown type as an abstraction of the
 set of possible types that it stands for \sidecite{Garcia2016}.
@@ -438,7 +439,7 @@ Having optimistically relaxed typing based on \kl(grad){consistency},
 a gradual language must detect inconsistencies at runtime if it is to satisfy \kl{safety},
 which therefore has to be formulated in a way that encompasses runtime errors.
 
-For instance, if the function $f$ above returns $\false$,
+\AP For instance, if the function $f$ above returns $\false$,
 then an \kl{error} must be raised to avoid reducing to $\false + 1$ – a closed stuck term,
 corresponding to a violation of safety.
 The traditional approach to do so is to avoid giving a direct reduction semantics to gradual
@@ -460,7 +461,8 @@ unjustified \sidecite{Garcia2016}.
 There are many ways to realize each of these approaches,
 which vary in terms of efficiency and eagerness of checking \sidecite{Herman2010,TobinHochstadt2008,Siek2010,Siek2009,Toro2020,BanadosSchwerter2021}.
 
-\subsection{Conservativity} A first important property of a gradual language is that it is a
+\subsection{Conservativity}
+\AP A first important property of a gradual language is that it is a
 \reintro{conservative extension} of a related static typing discipline:
 the gradual and static systems should coincide on static terms.
 This property is hereafter called \reintro{Conservativity},
@@ -483,7 +485,7 @@ Importantly, this does not mean that \kl{CICax} is a conservative extension of
 \kl{CIC} \emph{as a logic} – which it clearly is not!
 
 \subsection{Gradual guarantees}
-The early accounts of gradual typing emphasized \kl(grad){consistency} as the central idea.
+\AP The early accounts of gradual typing emphasized \kl(grad){consistency} as the central idea.
 However, \sidetextcite{Siek2015} observed that this characterization left too many
 possibilities for the impact of type information on program behaviour,
 compared to what was originally intended \sidecite{Siek2006}.
@@ -507,10 +509,14 @@ for their type annotations, which can be more precise in the former.
 
 \AP The \kl{static gradual guarantee} (\intro{SGG})
 ensures that imprecision does not break typeability:
+
+\begin{minipage}{\textwidth}
 \begin{property}[\intro{Static Gradual Guarantee}]
 If $t \pre u$ and $\vdash t \ty T$, then $\vdash u \ty U$
 for some $U$ such that $T \pre U$.
-\end{property}
+\end{property}  
+\end{minipage}
+
 %
 This \kl{SGG} captures the intuition that “sprinkling $\?$ over a term“
 maintains its typeability. As such, the notion of \kl{precision} $\pre$ used to
@@ -579,8 +585,8 @@ To go beyond a syntactic axiomatic definition of \kl{precision}, \sidetextcite{N
 characterize the good dynamic behaviour of a gradual language:
 the runtime checking mechanism used to define it, such as casting,
 should only perform type-checking, and not otherwise affect behaviour.
-%
-Specifically, they mandate that precision gives rise
+
+\AP Specifically, they mandate that precision gives rise
 to \intro{embedding-projection pairs} (\reintro{ep-pairs}):
 the cast induced by two types related by precision forms an adjunction,
 which induces a retraction.
@@ -611,7 +617,7 @@ and so losing and recovering precision must produce a term that is \kl{observati
 equivalent} to the original one.
 
 % A couple of additional observations need to be made here, as they will play a major role in the development that follows.
-\AP These two approaches to characterizing gradual typing highlight
+These two approaches to characterizing gradual typing highlight
 the need to distinguish
 \emph{syntactic} from \emph{semantic} notions of precision.
 Indeed, with the usual syntactic \kl{precision} from \sidetextcite{Siek2015},
@@ -640,7 +646,7 @@ proof technique to establish the \kl{DGG}.
 But as we uncover later on, it turns out that in certain settings – and in particular dependent types – the \kl{embedding-projection} property imposes \emph{more}
 desirable constraints on the behaviour of casts than the \kl{DGG} alone.
 
-In regard of these two remarks, in what follows we use the term \intro{graduality}
+\AP In regard of these two remarks, in what follows we use the term \intro{graduality}
 for the \kl{DGG} established with respect to a notion of \kl{precision} which also
 induces \kl{embedding-projection pairs}.
 
@@ -718,7 +724,7 @@ In a dependent type theory, there is a more powerful notion than syntactic equal
 The proper notion to relax in the gradual dependently-typed setting is therefore \kl{conversion},
 not syntactic equality.
 
-\sidetextcite{Garcia2016} give a general framework for gradual typing that explains how to relax any type predicate to account for imprecision:
+\AP \sidetextcite{Garcia2016} give a general framework for gradual typing that explains how to relax any type predicate to account for imprecision:
 for a binary type predicate $P$, its \intro{consistent lifting} $\mathop{\tilde{P}}(A,B)$ holds
 if there exist static types $A'$ and $B'$ in the denotation%
 \sidenote{Concretization, in abstract interpretation parlance.}
@@ -805,8 +811,8 @@ includes equi-divergence.
 The situation in the dependent setting is however more
 complicated if the theory admits divergence.%
 \sidenote{
-  There exist non-gradual dependently-typed programming languages that admit divergence, \eg \kl{Dependent Haskell} \cite{Eisenberg2016},
-  \kl{Idris} \sidecite{Brady2013}.
+  There exist non-gradual dependently-typed programming languages that admit divergence, \eg \kl{Dependent Haskell} \cite{Eisenberg2016} or
+  \kl{Idris} \cite{Brady2013}.
   We will also present one such theory in this article. 
 }%
 \margincite{Eisenberg2016}%
@@ -891,7 +897,13 @@ Let us first consider the case of \kl{STLC}.
 We show that $\Omega$ is \emph{necessarily} a well-typed, diverging term in any
 gradualization of \kl{STLC} that satisfies the other properties.
 
-\begin{minipage}{\textwidth}
+\pagebreak
+
+\begin{marginfigure}
+  \includegraphics{Fire_triangle.pdf}
+  \caption{The Fire Triangle of Graduality}
+\end{marginfigure}
+
 \begin{theorem}[\reintro{Fire Triangle of Graduality} for \kl{STLC}]
   \label{thm:triangle-STLC}
 
@@ -899,14 +911,9 @@ Suppose a gradual type theory that satisfies both \kl{conservativity} with respe
 \kl{STLC} and \kl{graduality}. Then it cannot be \kl{normalizing}.
 
 \end{theorem}
-\end{minipage}
-
-\begin{marginfigure}[-4em]
-  \includegraphics{Fire_triangle.pdf}
-  \caption{The Fire Triangle of Graduality}
-\end{marginfigure}
 
 \begin{proof}
+
   We pose $\Omega \coloneqq \delta\ (\asc{\delta}{\?})$ with
   $\delta \coloneqq \l x : \?.\ (\asc{x}{\? \to \?})~x$
   and show that it must necessarily be a well-typed, diverging term.
@@ -969,8 +976,8 @@ as soon as they faithfully embed \kl{STLC}.
 
   Additionally, \kl{graduality} can be specialized to the simply-typed fragment of the theory,
   by setting the unknown type $\?$ to be $\?[\uni[0]]$.
-  Therefore, we can apply \cref{thm:triangle-STLC},
-  and we get a well-typed term that diverges, finishing the proof.
+  We can then apply \cref{thm:triangle-STLC},
+  and get a diverging well-typed term, finishing the proof.
 \end{proof}
 
 \subsection{The Fire Triangle in practice}
@@ -990,7 +997,8 @@ necessarily under-approximating in order to be sound – and actually imply \kl{
 there are effectively-terminating programs with imprecise variants that yield termination
 contract errors.
 
-To date, the only related work that considers the gradualization of full dependent types with
+\AP To date, the only related work that considers
+the gradualization of full dependent types with
 $\?$ as both a term and a type, is the work on \intro{GDTL} \sidecite{Eremondi2019}.
 \kl{GDTL} is a programming language with a clear separation between the typing and execution 
 phases, like \kl{Idris} \sidecite{Brady2013}.
@@ -1034,7 +1042,7 @@ Thus, we consider a parametrized version of a gradual \kl{CIC}, called
 \kl{GCIC}, with two parameters%
 \sidenote{This system is precisely detailed in \cref{fig:ccic-ty}}.
 
-The first parameter characterizes how the universe level of a Π-type is determined
+\AP The first parameter characterizes how the universe level of a Π-type is determined
 in typing rules: either as taking the \emph{maximum} of the levels of the involved 
 types – as in standard \kl{CIC} – or as the \emph{successor} of that maximum.
 The latter option yields a variant of \kl{CIC} that we call \intro{CICs} – read “\kl{CIC}-shift”.
@@ -1057,7 +1065,7 @@ breaks subject reduction, and hence \kl{safety}
 \paragraph{… and three meaningful theories.}
 
 Based on these parameters, we develop the following three variants of \kl{GCIC},
-whose properties are summarized in \cref{tab:gcic}
+whose properties are summarized in \cref{fig:gcic-summary}
 % with pointers to the respective theorems
 – because \kl{GCIC} is one common parametrized framework,
 we are able to establish most properties for all variants at once.
@@ -1070,13 +1078,13 @@ principles discussed in \cref{sec:graduality} by extending \kl{CIC}
 with \kl{errors} and \kl{unknown terms}, and replacing \kl{conversion} with
 \kl(grad){consistency}. This results in a theory that is not normalizing.
 
-Next, \intro{GCICs} satisfies both \kl{normalization} and \kl{graduality},
+\AP Next, \intro{GCICs} satisfies both \kl{normalization} and \kl{graduality},
 and supports \kl{conservativity}, but only with respect to \kl{CICs}.
 This theory uses the universe hierarchy at the \emph{typing level} to detect and forbid
 the potential non-termination induced by the use of \kl(grad){consistency}
 instead of \kl{conversion}.
 
-Finally, \intro{GCICT} satisfies both \kl{conservativity} with respect to \kl{CIC}
+\AP Finally, \intro{GCICT} satisfies both \kl{conservativity} with respect to \kl{CIC}
 and \kl{normalization}, but does not fully validate \kl{graduality}.
 This theory uses the universe hierarchy at the \emph{computational level} to detect
 potential divergence, eagerly raising errors.
@@ -1084,7 +1092,7 @@ Such runtime failures invalidate the \kl{DGG} for some terms,
 and hence \kl{graduality}, as well as the \kl{SGG}, since in our dependent setting it depends
 on the \kl{DGG}.
 
-\begin{table*}[h]
+\begin{figure*}[h]
   \begin{tabular}{ccccccc}
    & \kl{Safety} & \kl{Normalization} & \kl{Conservativity} wrt. & \kl{Graduality} & \kl{SGG} & \kl{DGG} \\
   \kl{GCICP} \rule{0pt}{4ex}
@@ -1113,8 +1121,8 @@ on the \kl{DGG}.
   \end{tabular}\\
   
   \caption{\kl{GCIC} variants and their properties}
-  \label{tab:gcic}
-\end{table*}
+  \label{fig:gcic-summary}
+\end{figure*}
 
 \paragraph{Practical implications of \kl{GCIC} variants.}
 Regarding our introductory examples, all three variants of \kl{GCIC}
@@ -1227,7 +1235,7 @@ $\castrev{10}{\Nat}{\?}$ is considered a (tagged) value,
 and the downcast (gain of precision) $\castrev{v}{\?}{\Nat}$ reduces successfully
 if $v$ is such a tagged natural number, or to an error otherwise.
 
-We follow a similar approach for \kl{GCIC}, which is
+\AP We follow a similar approach for \kl{GCIC}, which is
 elaborated in a type-directed manner to a second calculus,
 named \reintro{CastCIC} (\cref{sec:cast-calculus}).
 The interplay between typing and cast insertion is however more subtle in the
@@ -1240,7 +1248,8 @@ elaboration to \kl{CastCIC}.%
 \cite[Core language]{CoqManual}, where terms input by the user in the \kl{Gallina} language
 are first elaborated in order to add implicit arguments, coercions, etc.
 The computation steps required by conversion are
-performed on the elaborated terms, never on the raw input syntax.}
+performed on the elaborated terms, never on the raw input syntax.}%
+\margincite{CoqManual}%
 
 In order to satisfy \kl{conservativity} with respect to \kl{CIC}, ascriptions in \kl{GCIC}
 are required to satisfy \kl(grad){consistency}. For instance, $\asc{\asc{\true}{\?}}{\Nat}$ is well-typed by \kl(grad){consistency} – used twice –, but $\asc{\true}{\Nat}$ is ill-typed.
@@ -1273,7 +1282,7 @@ algorithm for \kl{GCIC}.
 As explained earlier (\cref{sec:graduality}), we need three different notions of
 precision to deal with \kl{SGG} and \kl{graduality}.
 
-At the source level – \kl{GCIC} –,
+\AP At the source level – \kl{GCIC} –,
 we introduce a notion of \reintro{syntactic precision}, that captures the
 intuition of a more imprecise term as "the same term with sub-terms and/or
 type annotations replaced by $\?$", and is defined without any assumption of typing.
@@ -1296,7 +1305,7 @@ We show in \cref{sec:gcic-theorems} that \kl{DGG} can be proven
 for \kl{CastCIC} – in its variants \kl{CCICP} and \kl{CCICs} – on \kl{structural
 precision}.
 
-However, as explained in \cref{sec:grad-simple}, we cannot expect to prove \kl{graduality}
+\AP However, as explained in \cref{sec:grad-simple}, we cannot expect to prove \kl{graduality}
 for these \kl{CastCIC} variants with respect to \kl{structural precision} directly.
 In order to overcome this problem, and to justify the design of \kl{CastCIC},
 we build two models kinds of models for \kl{CastCIC}. The first%

@@ -21,7 +21,7 @@ important theorems on elaboration: conservativity over \kl{CIC} or \kl{CICs}, as
 the gradual guarantees (\cref{sec:gcic-theorems}).
 
 In this whole chapter, we do not treat indexed inductive types, thus the system should be
-seen as an extension of \kl{CIC-} rather than full-blown \kl{CIC}. We come back to this
+seen as an extension of \kl{CIC-}, rather than full-blown \kl{CIC}. We come back to this
 issue in \cref{chap:beyond-gcic}. The original reference \sidecite[4em]{LennonBertrand2022}
 considers the case of general inductive types, here we restrict the presentation to
 $\List$ to ease readability.
@@ -32,7 +32,7 @@ $\List$ to ease readability.
 \subsection{System Definition}
 
 \paragraph{Syntax.}
-The syntax of \intro{CCIC}%
+\AP The syntax of \intro{CCIC}%
 \sidenote{Written using a \targetcolor{dark blue colour}.}
 extends that of \kl{CIC-}
 with three new term constructors: the \intro{unknown term} $\tcol{\?[T]}$ and
@@ -72,7 +72,7 @@ constructors – \kl{static} \kl{CCIC} terms thus correspond to \kl{CIC} terms.
 	\label{fig:univ-param}
 \end{figure}
 
-\kl{CCIC} is parametrized by two functions,
+\AP \kl{CCIC} is parametrized by two functions,
 described in \cref{fig:univ-param}, to account for the three
 different variants of \kl{GCIC} we consider – see \cref{sec:gcic:-3-1} : \intro{CCICP},
 \intro{CCICs} and \intro{CCICT}.
@@ -171,7 +171,8 @@ Instead, \kl{CCIC} relies only on standard (\kl(conv){algorithmic}) \kl(algo){co
 The typing rules provide little insight on the new primitives; the interesting
 part really lie in their \kl{reduction} behaviour.
 
-\kl{Reduction} relies on two auxiliary functions relating \intro{head constructors} $h \in \H$
+\AP \kl{Reduction} relies on two auxiliary functions relating
+\intro{head constructors} $h \in \H$
 to those terms that start with either $\P$, $\uni$ or and inductive type
 – in our running example, $\List$ – the set of which we call $\types{\kl{CCIC}}$.
 These are defined in \cref{fig:head-germ}.
@@ -179,7 +180,7 @@ These are defined in \cref{fig:head-germ}.
 The first is the function $\hd$, which returns the head constructor of a type.
 %
 
-In the other direction, the \intro{germ} function $\stalkCIC{i}{h}$ constructs the least
+\AP In the other direction, the \intro{germ} function $\stalkCIC{i}{h}$ constructs the least
 precise type with head $h$ at level $i$.
 In the case where no such type exists — \eg when $\castOfPi{i} < 0$ –
 this least precise type is the error.
@@ -393,7 +394,7 @@ $\tcol{\?}$ is a consequence of the way the cast operation is implemented in
 \cref{sec:realizing-cast-calculus}, but similar decompositions appear \eg in \sidetextcite{Siek2015},
 where the equivalent of our germs are called ground types.
 The side conditions guarantee that this rule is used when no other applies.
-%
+
 \ruleref{rule:up-down} erases the succession of an upcast to $\tcol{\?}$
 and a downcast from it. Note that in this rule the upcast
 $\tcol{\castrev{}{\stalkCIC{h}{i}}{\?[\uni[i]]}}$ acts like a constructor for
@@ -407,8 +408,7 @@ a view reflected by the canonical and neutral forms for $\tcol{\?[\uni]}$ given 
   Here, these correspond exactly to the canonical forms of $\tcol{\?[\uni]}$,
   but we also have to account for the many neutral forms that appear in open contexts.
 }%
-\margincite{Siek2006}
-%
+
 Finally, \ruleref{rule:size-err} corresponds to a peculiar kind of error, which only happens due to the presence of a type hierarchy: 
 $\tcol{\?[\uni[i]]}$ is only universal with respect to types at level $i$, and so a type might
 be of a level too high to fit into it.
@@ -434,7 +434,8 @@ The crucial lemma is, as before, \kl{confluence}:
 
 \begin{proof}
 
-  We follow again the Tait-Martin-Löf proof, as exposed by \sidetextcite{Takahashi1995} extend the notion of parallel reduction from \cref{thm:pcuic-confluence}
+  We follow again the Tait-Martin-Löf proof, as exposed by \sidetextcite{Takahashi1995},
+  extending the notion of parallel reduction from \cref{thm:pcuic-confluence}
   to account for our additional reduction. The triangle property still holds,
   because as before there is no real critical pair between our rules – we carefully set
   them up to that effect!
@@ -929,6 +930,8 @@ insofar as it always produces well-typed \kl{CCIC} terms.
 Next come the more "algorithmic" properties: elaboration is decidable,
 and outputs are unique – up to \kl{conversion} if no strategy is fixed.
 
+\pagebreak
+
 \begin{theorem}[Decidability of elaboration]
 	\label{thm:decidability}
 	The relation elaboration of \cref{fig:gcic-infer-stat,fig:gcic-infer-unk,fig:gcic-check-pinfer}
@@ -1075,7 +1078,7 @@ and thus share the following reduction path:
 The first step corresponds to the first three above, the only difference being the value of $\castOfPi{i}$. The reductions however differ in the next step because $\tcol{\?_i \to \?_{i-1}} \neq \tcol{\stalkCIC{i}{\Pi}}$, so \ruleref{rule:prod-germ} applies before
 \ruleref{rule:up-down}.
 For the third step, note that $\tcol{\?_{i-1} \to \?_{i-1}} = \tcol{\stalkCIC{i}{\P}}$,
-so that \ruleref{rule:red-size-err} applies in the rightmost sequence of casts.
+so that \ruleref{rule:size-err} applies in the rightmost sequence of casts.
 The last three steps of reduction then propagate the error by first using
 \ruleref{rule:prod-germ}, \ruleref{rule:up-down} and \ruleref{rule:red-prod-prod},
 then the β-rule, and finally \ruleref{rule:red-down-err},
@@ -1118,7 +1121,7 @@ to tame, as we must in general reduce types in a cast before we can reduce the c
   \textcite{Siek2015}, \cref{lem:catchup-univ,lem:catchup-type} are completely novel.
 }
 
-Technically, we need to distinguish between two notions of precision,
+\AP Technically, we need to distinguish between two notions of precision,
 one for \kl{GCIC} and one for \kl{CCIC}:
 \reintro{syntactic precision}, on terms in \kl{GCIC}, which corresponds to the
 usual syntactic precision of gradual typing, such as that of \textcite{Siek2015};
@@ -1344,7 +1347,7 @@ reduce – and thus the two notions must be mutually defined.
 
 \subsection{Catch-up lemmas}
 
-The fact that \kl{structural precision} is a \kl{simulation} relies on a series of lemmas,
+\AP The fact that \kl{structural precision} is a \kl{simulation} relies on a series of lemmas,
 which constitute the technical core of this whole chapter.
 They all have the same form:
 under the assumption that a term $\tcol{t'}$ is less precise than a term $\tcol{t}$
@@ -1385,7 +1388,6 @@ apart from \cref{lem:catchup-univ}, where an induction hypothesis is used instea
   reduce away.
 \end{proof}
 
-\begin{minipage}{\textwidth}
 \begin{lemma}[Types catchup]
 	\label{lem:catchup-type}
 	Under the hypothesis that $\tcol{\fs{\GG}} \capre \tcol{\sn{\GG}}$, we have the following:
@@ -1407,7 +1409,6 @@ apart from \cref{lem:catchup-univ}, where an induction hypothesis is used instea
       such that $\tcol{\GG} \vdash \tcol{\List(A)} \capre \tcol{\List(A')}$.
 	\end{itemize}
 \end{lemma}
-\end{minipage}
 
 \begin{proof}
   
@@ -1549,6 +1550,7 @@ It needs to be stated – and proven – mutually for \kl(pre){structural} and
   \ie $\tcol{u} \hred \tcol{u'}$.
 \end{theorem}
 
+\pagebreak
 \begin{proof}
   The case of \kl{definitional precision} holds by \kl{confluence} of
   reduction.
@@ -1756,7 +1758,7 @@ full \kl{CIC} for \kl{GCICP} and \kl{GCICT}, and \kl{CICs} for \kl{GCICs}.
 	\label{fig:apre-gcic}
 \end{figure*}
 
-Next, we turn to \kl{elaboration graduality}, the equivalent of the \kl{static gradual
+\AP Next, we turn to \kl{elaboration graduality}, the equivalent of the \kl{static gradual
 guarantee} (SGG) of \sidetextcite{Siek2015} in our setting.
 %
 We state it with respect to a notion of precision for terms in \kl{GCIC},

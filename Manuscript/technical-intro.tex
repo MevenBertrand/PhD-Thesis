@@ -146,7 +146,7 @@ Logically, those rules make sense if $\to$ is read as implication:
 if from a hypothesis $A$ one can deduce $T$, then $A \to T$ holds; conversely if $A \to T$
 and $A$ both hold, then $T$ does as well.
 
-\begin{marginfigure}[-4em]
+\begin{marginfigure}
   \ContinuedFloat*
   \begin{mathpar}
     \inferdef{Abs}{\Gamma \vdash A \ty \uni \\ \Gamma, x : A \vdash t \ty T}
@@ -692,7 +692,7 @@ Let us go over these, and some proof techniques that can be employed to establis
 The most essential properties of a type system are its stability
 by basic type theoretic operations.
 The first is stability under renaming, which states that a context can be replaced by another
-one which declares at least variables with the same types:
+one which contains at least the same variables:
 
 \begin{property}[\intro{Stability under renaming}]
   \label{prop:stab-renaming}
@@ -700,10 +700,17 @@ one which declares at least variables with the same types:
   \begin{itemize}
     \item $x_1 : A_1 \dots x_n : A_n \vdash t \ty T$
     \item $\vdash \Delta$
-    \item for all $i$, there is a variable $y_i$ such that $(y_i : \multisubs{A}{x_1 \into y_1 \dots x_n \into y_n}) \in \Delta$
+    \item for all $i$, there is a variable $y_i$ such that $(y_i : \multisubs{A_i}{x_1 \into y_1 \dots x_n \into y_n}) \in \Delta$%
   \end{itemize} 
   we have that $\Delta \vdash \multisubs{t}{x_1 \into y_1 \dots x_n \into y_n} \ty \multisubs{T}{x_1 \into y_1 \dots x_n \into y_n}$.
 \end{property}
+
+Since the context $x_1 : A_1 \dots x_n : A_n$ is well-formed – a consequence of
+\kl{validity}, another property we are about to see –, $A_i$ can only depend on variables
+$x_1 \dots x_{i-1}$, thus we do not actually need to substitute the variables
+$x_{i+1} \dots x_n$ in it. However, this presentation, where the same substitution is applied
+to all types even if applies to variables which we know are not present in them,
+is easier to work with in practice.
 
 A direct consequence is the \kl{weakening} property:
 
@@ -718,7 +725,7 @@ variables by arbitrary terms:
 
 \begin{property}[\intro{Stability under substitution}]
   \label{prop:stab-subst}
-  For any substitution $\sigma$ (function from variable to terms)
+  For any substitution $\sigma$ (function from variables to terms)
   such that the following hold
   \begin{itemize}
     \item $x_1 : A_1 \dots x_n : A_n \vdash t \ty T$
