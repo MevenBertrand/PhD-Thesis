@@ -1308,13 +1308,13 @@ precision}.
 \AP However, as explained in \cref{sec:grad-simple}, we cannot expect to prove \kl{graduality}
 for these \kl{CastCIC} variants with respect to \kl{structural precision} directly.
 In order to overcome this problem, and to justify the design of \kl{CastCIC},
-we build two models kinds of models for \kl{CastCIC}. The first%
-\sidenote{That we call the \intro{discrete model}.} is a syntactic model
+we build two kinds of models for \kl{CastCIC}. The first%
+\sidenote{That we call the \reintro{discrete model}.} is a syntactic model
 \sidecite{Boulier2018} – akin to a program translation or a compilation phase –,
 and is used to justify the reduction rules and prove that they are terminating.
 The second%
-\sidenote{That we call the \intro{monotone model}}
-endows types endows types with the structure of an ordered set, or poset. This makes it
+\sidenote{That we call the \reintro{monotone model}}
+endows types with the structure of an ordered set, or poset. This makes it
 possible to reason about the semantic notion of \reintro{propositional
 precision} and prove that it gives rise to \kl{embedding-projection pairs},
 thereby establishing \kl{graduality}.
@@ -1324,5 +1324,4 @@ thereby establishing \kl{graduality}.
 % monotone model based on Scott's
 % model~\cite{scott76} of the untyped $\lambda$-calculus using $\omega$-complete
 % partial orders (\cref{sec:grad-non-term}).
-As these models have no direct link with bidirectional typing, we only describe them
-succinctly in \cref{sec:realizing-cast-calculus}.
+These models are described in \cref{sec:realizing-cast-calculus}.

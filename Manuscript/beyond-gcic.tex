@@ -1,8 +1,417 @@
-\chapter{Beyond \kl(tit){CastCIC}}
+\chapter{Beyond \kl(tit){CastCIC}: Models, Indices and Pure Reasoning}
 \label{chap:beyond-gcic}
+
+\cref{chap:bidir-gradual-elab} establishes quite a few properties of \kl{GCIC} and
+\kl{CCIC}, culminating with \kl{elaboration graduality}. This is, however, still far
+from satisfactory. First, it is missing proofs of \kl{normalization} for the two variants
+which are supposed to be – \kl{CCICT} and \kl{CCICs} –, and of \kl{graduality}.
+Next, it only treats \kl{CIC-}, \ie it does not handle indexed inductive types.
+But these are crucial in order to really exploit dependency:
+for instance, most of our introductory examples were based on the vector type, an indexed
+inductive type outside the scope of \cref{chap:bidir-gradual-elab}.
+
+In this chapter we go over these issues and solutions: \cref{sec:realizing-cast-calculus}
+describes model constructions to establish both \kl{normalization} and \kl{graduality};
+\cref{sec:indices-issue} describes the issue with indexed inductive types, and gives
+possible solutions in case the indices are “nice enough”, which covers vectors; finally,
+\cref{sec:ReTT} gives a much more ambitious solution to handle indices, giving a proper
+treatment of the equality type – the stereotypical pathologic inductive type –, and much more.
+
+As these have no direct relation to bidirectional typing \textit{per se},
+we do not dwell on the technical details in this chapter.
+The interested reader can consult either \sidetextcite{LennonBertrand2022} –
+\cref{sec:realizing-cast-calculus} corresponds roughly to
+Section 6 there, and \cref{sec:indices-issue} to Sections 6 and 8.3 –, or
+\sidetextcite{Maillard2022} – corresponding to \cref{sec:ReTT}.
 
 \section{Realizing \kl(tit){CastCIC}}
 \label{sec:realizing-cast-calculus}
+
+\subsection{The discrete model}
+
+To inform the design and justify the reduction rules provided for
+\kl{CCIC}, we build a syntactic model%
+\sidenote{
+  \intro{Syntactic models} \textcite{Boulier2017,Boulier2018},
+  are a kind of models of type theory defined directly by induction
+  on the raw syntax, in a way akin to program translation or compilation. This allows for
+  simple models, that moreover can be used to capture fine-grained properties that only
+  make sense on that raw syntax,
+  typically those that need to separate between convertible terms.
+}%
+\margincite{Boulier2017}%
+\margincite{Boulier2018}
+of \kl{CCIC} by translation to \kl{CIC}
+augmented with induction-recursion
+\sidecite{MartinLoef1996,Dybjer2003,Ghani2015}.
+
+From a type theory point of view, what makes \kl{CCIC} peculiar are the
+possibility of having \emph{exceptions} (both “pessimistic” as $\err$ and
+“optimistic” as $\?$), and the necessity to do \emph{intensional type
+analysis} in order to resolve casts. For the former, we build upon the work of
+\sidetextcite{Pedrot2018} on the exceptional type theory \kl{ExTT}.
+For the latter, we reuse the technique of \textcite{Boulier2017} to equip the universe with
+an elimination principle $\typerec$%
+\sidenote{Corresponding to a form of ad-hoc polymorphism.},
+which requires induction-recursion to be implemented.
+%
+
+We call this syntactic model of \kl{CCIC} the \intro{discrete model}.
+% , in contrast with a semantic model motivated by \kl{graduality}. This \kl{discrete model}
+It captures the intuition that the unknown type is
+inhabited by “tagged values”, \eg a term together with its type.
+In other words, the \kl{unknown type} $\?[\uni]$ behaves as a dependent sum $\Sb A : \uni.\ A$.
+Projecting out of it is realized through type analysis using $\typerec$,
+and may fail – raising an error in the \kl{ExTT} sense.
+
+Note that we provide a particular interpretation of the unknown
+term in the universe, which is legitimized by an observation
+made by \textcite{Pedrot2018}: \kl{ExTT} does not constrain in
+any way the definition of exceptions in the universe.
+This is crucial to combine \kl{ExTT} with a universe equipped with $\typerec$.
+%
+
+The key point to prove \kl{normalization} is that reduction is preserved,
+in the sense that a reduction step in the source theory \kl{CCIC} is mapped to at least one step
+in the target. Thus, the target being \kl{normalizing}, so is \kl{CCIC}.
+
+\begin{theorem}[Normalization for \kl{CCIC}]
+  Both \kl{CCICT} and \kl{CCICs} have the \kl{normalization}
+  property (\cref{prop:normalization}).  
+\end{theorem}
+
+An important corollary of this property, in combination with \kl{safety}
+(\cref{thm:ccic-psafe}), is a weak form of \kl{logical consistency}, characterizing the
+possible inhabitants of the empty type:
+
+\begin{theorem}[Weak logical consistency]
+  Suppose $\vdash t : \Empty$ in \kl{CCICT} or \kl{CCICs}.
+  Then $t$ must reduce to either $\err[\Empty]$ or $\?[\Empty]$. 
+\end{theorem}
+
+\subsection{The monotone model}
+
+The simplicity of the discrete model comes at the price of an inherent inability to
+characterize which casts are guaranteed to succeed, \ie a \kl{graduality} theorem.
+%
+To overcome this limitation, and prove graduality of \kl{CCICs},
+we can build a more elaborate \intro{monotone model}, inducing a
+precision relation that is well-behaved with respect to conversion.
+
+In this model, each type $A$ comes equipped with an order
+structure $\sqsubseteq^A$ – a reflexive, transitive, antisymmetric and
+proof-irrelevant relation – modelling precision between terms.
+%
+In particular, the exceptions $\err[A]$ and $\?[A]$ correspond respectively to the smallest
+and greatest element of $A$ for this order.
+%
+Saying that this interpretation of types as posets is a model is equivalent to
+saying that each term and type former is enforced to be monotone,
+providing a strong form of \kl{graduality}.
+%
+This implies in particular that such a model cannot be defined for \kl{CCICT},
+as this type theory lacks graduality.
+
+The precision order of the monotone model can be reflected back to
+\kl{CCIC}, giving rise to the \intro{propositional precision} judgment
+$\tcol{\Gamma} \vdash \tcol{t} \precision{\tcol{T}}{\tcol{U}} \tcol{u}$, where
+$T$ and $U$ are the respective types of $t$ and $u$ – type dependency naturally demands
+such a notion of inhomogeneous precision, rather than a simpler notion relating only terms
+of the same type.
+
+This precision relation bears a similar relationship to \kl{definitional precision}
+$\cdpre$ as propositional equality with \kl{conversion}/definitional equality in \kl{CIC}.
+%
+\kl{Propositional precision} can be used to prove precision statements
+inside the target type theory, for instance we can show by
+case analysis on $\tcol{b} : \tcol{\Bool}$ that 
+\[ \tcol{b} : \tcol{\Bool} \vdash \tcol{\ind{\Bool}{b}{x.\uni}{A,A}}
+\precision{\tcol{\square}}{\tcol{\square}} \tcol{A}\]
+a judgment that does not hold for \kl{definitional precision}.
+%
+In particular, \kl{propositional precision} is invariant by \kl{conversion}: if
+$\tcol{t} \conv \tcol{t'}$, $\tcol{u} \conv \tcol{u'}$ and
+$\tcol{\Gamma} \vdash \tcol{t} \precision{\tcol{T}}{\tcol{U}} \tcol{u}$
+then
+$\tcol{\Gamma} \vdash \tcol{t'} \precision{\tcol{T}}{\tcol{U}}
+\tcol{u'}$.
+%
+But this means that \kl{propositional precision} is too coarse to capture properties such
+as the \kl{simulation} property (\cref{thm:simulation}) and its corollaries
+(\cref{cor:red-types,cor:mon-cons}), because these distinguish \kl{convertible} terms.
+
+Still, we can relate the two notions, as follows:
+\begin{theorem}[Compatibility of \kl{structural} and \kl{propositional} precision]
+  \label{thm:prop-prop-prec}
+   
+  If $\cinferty{\emptycon}{t}{T}$, $\cinferty{\emptycon}{u}{U}$ and
+  $\vdash \tcol{t} \capre \tcol{u}$, then
+  $\vdash \tcol{t} \precision{\tcol{T}}{\tcol{U}} \tcol{u}$.
+  
+  Conversely, if
+    $\emptycon \vdash \tcol{v_1} \precision{\tcol{\Bool}}{\tcol{\Bool}}
+    \tcol{v_2}$ for normal forms $\tcol{v_1}, \tcol{v_2}$, then
+    $\emptycon \vdash \tcol{v_1} \capre \tcol{v_2}$.
+
+\end{theorem}
+Again, this is similar to the relation between \kl{conversion} and propositional equality:
+the former always implies the latter, and one can come back from the second to the first in
+a constrained enough setting – here, on closed booleans.
+
+Finally, the main property satisfied by \kl{propositional precision} is \kl{graduality}:
+
+\begin{theorem}[\kl{Graduality}]
+  \label{thm:graduality}
+
+  \kl{Propositional precision} satisfies the \kl{Dynamic Gradual Guarantee}: if
+  $\cinferty{\Gamma}{t}{T}$, $\cinferty{\Gamma}{t'}{T}$ and
+  $\tcol{\Gamma} \vdash \tcol{t} \precision{\tcol{T}}{\tcol{T}} \tcol{t'}$ hold, then
+  $ \tcol{t} \obsRef \tcol{t'}$.
+  
+  Casts form \kl{embedding-projection pairs}. That is, if
+  $\cinferty{\Gamma}{t}{T}$ and $\cinferty{\Gamma}{u}{U}$,
+  and moreover
+    $\tcol{\Gamma} \vdash \tcol{T} \precision{\tcol{\square}}{\tcol{\square}} \tcol{U}$,
+  then the following three properties are equivalent:
+  \begin{align*}
+    \tcol{\Gamma} \vdash \tcol{\cast{T}{U}{t}} \precision{\tcol{U}}{\tcol{U}} \tcol{u}
+    \Leftrightarrow  \tcol{\Gamma} \vdash \tcol{t} \precision{\tcol{T}}{\tcol{U}} \tcol{u}
+    \Leftrightarrow  \tcol{\Gamma} \vdash \tcol{t}
+    \precision{\tcol{T}}{\tcol{T}} \tcol{\cast{U}{T} u}
+  \end{align*}
+  And furthermore,
+    $\tcol{\Gamma} \vdash \tcol{{\cast{U}{T}{\cast{T}{U}{t}}} \precision{\tcol{T}}{\tcol{T}} \tcol{t}}$ – this is the retraction property.
+\end{theorem}
+
+
+
+\section{What is the issue with indices? Gradual vectors and equalities}
+  [Gradual vectors and equalities]
+\label{sec:indices-issue}
+
+\subsection{The issue with propositional equality}
+
+% In \kl{CIC}, propositional equality \coqe{eq A x y}, corresponds to the Martin-L{\"o}f
+% identity type~\cite{Martin-Lof-1973}, with a single constructor \coqe{refl} for reflexivity, and the
+% elimination principle known as \coqe{J}:
+% %
+% \begin{coq}
+%   Inductive eq (A : Type) (x : A) : A -> Type := refl : eq A x x.
+% \end{coq}
+% \begin{coq}
+%   J : forall (A : Type) (P : A -> Type) (x : A) (t : P x) (y : A) (e : eq A x y), P y
+% \end{coq}
+% together with the conversion rule:
+
+% \begin{center}
+%  \coqe{J A P x t x (refl A x) equiv t}
+% \end{center}
+
+For the sake of exposing the problem, suppose that we can define the identity type
+$\eqty[A]{a}{a'}$ in \kl{CCIC}, 
+while still satisfying \kl{canonicity}, \kl{conservativity} and \kl{graduality}.
+%
+This means that for an equality $\eqty{t}{u}$ involving closed terms
+$t$ and $u$ of \kl{CIC}, there should only be three possible canonical forms:
+$\refl[A][t]$ whenever $t$ and $u$ are convertible terms – of type \coqe{A} –,
+as well as $\err$ and $\?$.
+
+Just under these assumptions, 
+we can show that there exist two functions that are pointwise equal in \kl{CIC},
+but are no longer equivalent in \kl{CCIC}. 
+Consider the two functions $\tcol{\id_{\Nat}}$ and $\tcol{\addz}$ defined respectively as
+$\tcol{\id_{\Nat}} \coloneqq \tcol{\l x : \Nat.\ n}$ and
+$\tcol{\addz} \coloneqq \tcol{\l x : \Nat.\ x + 0}$.
+In \kl{CIC}, these functions are not convertible, but they are pointwise equal,
+and observationally equivalent.
+However, they would not be observationally equivalent in \kl{GCIC} under our assumptions.
+%
+To see why, consider the following term:
+\[\tcol{\test} \coloneqq \tcol{\l f : \Nat \to \Nat. \ind{\eqtyop}{y.z.\Bool}{\cast{\eqty{\id_{\Nat}}{\id_{\Nat}}}{\eqty{\id_{\Nat}}{f} \Leftarrow \?[\uni]}{\refl}}{\true}} \]
+
+We have $\tcol{\test \id_{\Nat} \red \tcol{\true}}$ because, by \kl{graduality}, the
+upcast-downcast in the scrutinee must succeed, \ie
+\[\tcol{\cast{\eqty{\id_{\Nat}}{\id_{\Nat}}}{\eqty{\id_{\Nat}}{\id_{\Nat}} \Leftarrow \?[\uni]}{\refl}} \red \tcol{\refl[\id_{\Nat}]}\]
+However, since $\tcol{\addz}$ is \emph{not} \kl{convertible} to $\tcol{\id_{\Nat}}$,
+\[\tcol{\cast{\eqty{\id_{\Nat}}{\id_{\Nat}}}{\eqty{\id_{\Nat}}{\addz} \Leftarrow \?[\uni]}{\refl}}\]
+cannot possibly reduce to $\tcol{\refl}$, and
+thus would need to reduce either to $\tcol{\err}$ or $\tcol{\?}$;
+and so does $\tcol{\test \addz}$.
+
+This means that the theory would be very intentional, by being able to distinguish between
+any two functions that are not \kl{convertible}, even if they are pointwise equal.
+
+More generally, the issue is the following: given a constructor $\tcol{c}$
+of an inductive type $\tcol{I}$, we need to decide what to do when confronted with some
+$\tcol{\cast{I(b_1, \dots, b_n)}{I(b'_1, \dots, b'_n)}{c(a_1, \dots, a_m)}}$.
+If $\tcol{I}$ does not have indices, as in the case of lists, we know that $c$
+can always be used to inhabit $\tcol{I(b_1', \dots, b_n')}$,
+if given arguments of the right types.
+If $I$ has indices, however, this might not be possible due to typing constraints,
+as in the example of $\tcol{\refl}$.
+But we still need to provide an inhabitant of that type as redex for the cast! If we resort to
+the wildcards $\?$ or $\err$, then we expose a very intentional behaviour such as the one above.
+However, in the setting of a generic inductive type
+– such as that of the equality –, deciding whether it is inhabited by a “valid”,
+non-wildcard, term in a given non-empty context is undecidable,
+so we cannot hope to always decide whether the cast should fail or
+return such a valid term.
+
+\subsection{Solutions for vectors}
+
+Not all indexed inductive types are as thorny as equality. Indeed, in examples such as
+$\Vect$,%
+\sidenote{And quite a lot of those used in the context of dependently typed programming.}
+solutions are possible that avoid the dead-end identified for equality, by carefully
+relying on the structure of indices. These rely on two well-known alternatives to indexed
+inductive types for capturing properties intrinsically: type-level eliminators,
+and “forded” inductive types.
+
+\paragraph{Type-level eliminators.}
+
+Instead of an inductive type, $\Vect$ can be defined as a recursive function on its index,
+at the type level, effectively representing lists as nested pairs:
+\[\FVect \coloneqq \l (A : \uni) (n : \Nat). \ind{\Nat}{n}{x.\uni}{\Unit,y.p_y.A \times p_y}\]
+corresponding to the \kl{Coq} definition
+
+\begin{coqcode}
+  Fixpoint FVect (A : Type) (n : nat) : Type :=
+    match n with 0 => unit | S n => A * FVec A n end.
+\end{coqcode}
+
+Type-level eliminators can be used as soon as the indices are \intro{concretely
+forceable} \sidecite{Brady2004}. Intuitively, \kl{concretely forceable} indices
+are those that can be matched upon (like $n$ in the example of $\Vect$).
+\sidetextcite{Gilbert2019} give a general translation of this kind
+to build mock-up inductive types inside a sort of definitionally irrelevant propositions.
+
+This presentation coincides with the indexed inductive one 
+on non-exceptional terms, but is extremely imprecise in presence of unknown indices.
+
+\paragraph{Forded inductive type.}
+
+Instead of using an indexed inductive type, one can use a parametrized inductive type, with \emph{explicit} equalities as arguments to constructors.% 
+\sidenote{This technique has been coined “fording” by \textcite[Section 3.5]{McBride1999},
+as an allusion to Henry Ford' quote “\textit{Any customer can have a car painted any color that he wants, so long as it is black.}”}%
+\margincite{McBride1999}
+For instance, vectors can be defined in this style as follows:
+\begin{coqcode}
+  Fixpoint eq_nat (m n : nat) : Type :=
+  match m, n with
+  | 0, 0 => True
+  | S m, S n => eq_nat m n
+  | _, _ => False
+  end.
+
+  Inductive Vectf (A : Type) (n : nat) : Type :=
+  | nilf : eq_nat 0 n -> Vectf A n
+  | consf : A -> forall m : nat, eq_nat (S m) n
+      -> Vectf A m -> Vectf A n.
+\end{coqcode}
+
+Here \coqe{eq_nat} is the type of \emph{decidable} equality proofs between natural numbers,
+expressing the constraints on $n$ – \eg $\eqty{n}{0}$ – but avoiding the use of the unavailable propositional equalities.
+
+This presentation is more accurate than the previous one when dealing with unknown indices,
+but is arguably too permissive with invalid index assertions. 
+
+\paragraph{Direct support}
+
+In contrast to the two previously-exposed encodings that both have serious shortcomings, 
+extending \kl{CCIC} with direct support for indexed inductive types can provide a
+much more satisfactory solution. The idea is to reason about indices directly in
+the reduction of casts. 
+
+To do so, we first add two new canonical forms,
+corresponding to the casts of $\gvnil$ and $\gvconsop$ to
+$\GVect(A,\?[\Nat])$: namely, $\gvnil[A]$ and
+$\gvcons[A][n]{a}{v}$.
+
+\begin{figure*}[ht]
+\ContinuedFloat*
+\begin{mathpar}
+  % \inferrule{  }{\can{\GnilU{A}}}
+  % \and
+  % \inferrule{ }{\can{(\GconsU{A}{a}{n}{v})}}
+  % \\
+  \redrule{\tcol{
+    \castrev{\left(\vcons[A][k]{a}{v}\right)}{\GVect(A,\S n)}{\GVect(B,\?[\Nat])} 
+  }}
+  {\tcol{ \gvcons[B][n]{\left(\castrev{a}{A}{B}\right)}{\left(\castrev{v}{\GVect(A,k)}{\GVect(B,n)}\right)}
+  }}[V-cons-?] \label{red:v-S?} \and
+  \redrule{\tcol{
+    \castrev{\left(\gvcons[A][k]{a}{v}\right)}{\GVect(A,\?[\Nat])}{\GVect(B,\S n)}
+  }}
+  {\tcol{ \vcons[B][n]{\left(\castrev{a}{A}{B}\right)}{\left(\castrev{v}{\GVect(A,k)}{\GVect(B,n)}\right)}
+  }}[V-cons?-s] \label{red:v-?S} \and
+  \redrule{\tcol{
+    \castrev{\left(\vcons[A][k]{a}{v}\right)}{\GVect(A,\S n)}{\GVect(B, \S m)} 
+  }}
+  {\tcol{\vcons[B][m]{\left(\castrev{a}{A}{B}\right)}
+    {\left(\castrev{v}{\GVect(A,k)}{\GVect(B,m)}\right)}
+  }}[V-cons-s]\label{red:v-S}
+  \and
+  \redrule{\tcol{
+    \castrev{\left(\vcons[A][k]{a}{v}\right)}{\GVect(A,\S n)}{\GVect(B,0)} 
+  }}{\tcol{
+    \err[\GVect(B,0)]
+  }}[V-cons-0]\label{red:v-S0} \and
+  \redrule{\tcol{
+    \castrev{\left(\gvcons[A][k]{a}{v}\right)}{\GVect(A,\?[\Nat])}{\GVect(B,0)} 
+  }}{\tcol{
+    \err[\GVect(B,0)]
+  }}[V-cons?-0]\label{red:v-S?0}
+\end{mathpar}
+\caption{Casts between gradual vector types (excerpt)}
+\label{fig:grad-vect-casts}
+\end{figure*}
+
+We then extend \kl{reduction} to account for casts on vectors
+in canonical forms. \cref{fig:grad-vect-casts} presents these rules
+when the argument of the cast is a non-empty vector.
+%
+\ruleref{red:v-S?} propagates the cast on the arguments,
+but using the newly introduced $\gvconsop$, effectively losing precision in the type
+information, but keeping all the underlying information of the term, so that it can be used
+in case of a downcast. This is exactly what \ruleref{red:v-S?} does.
+%
+\ruleref{red:v-S} applies when both source and target indices are successors,
+and propagates the cast of the arguments, just like in the case of lists.
+%
+Finally, as expected, \ruleref{red:v-S0} raises an error when the indices do not match.
+Similarly, \ruleref{red:v-S?0} also raises an error when trying to create a vector of length
+$0$ from a non-empty one.
+
+\begin{figure}[ht]
+\ContinuedFloat
+\begin{mathpar}
+
+\redrule{\tcol{
+  \ind{\Vect}{\gvnil[A]}{y.z.P}{b_{\vnil},y_1.y_2.y_3.p_{y_3}.b_{\vconsop}}
+}}
+{\tcol{\castrev{b_{\vnil}}{\mathop{P}0}{\mathop{P} \?[\Nat]}
+}}[V-rect-nil?]\label{red:v-rect-unk-0}
+
+\end{mathpar}
+\caption{Eliminator for the gradual vector type (excerpt)}
+\label{fig:vectors-excerpt}
+\end{figure}
+
+For the eliminator, there are two new computation rules, one for each
+new constructor. We give the one for the case of $\gvnil$: this is \ruleref{red:v-rect-unk-0}.
+These rules apply the eliminator to the 
+underlying non-exceptional constructor, and then cast the result to $\mathop{P} \?[\Nat]$.
+Intuitively, they transfer the cast on vectors to a cast on
+the returned type of the predicate.
+
+Note that all of these rules crucially use the fact that it is possible to discriminate between
+$0$, $\S n$ and $\?[\Nat]$, which is a specificity of the vector type and explains why
+this solution is not possible for \eg the equality.
+
+This “definitive” presentation is justified by a modification of the models described in
+\cref{sec:realizing-cast-calculus}, and gives the satisfactory behaviour described
+in the examples of \cref{sec:indices,sec:specif}: it preserves as much computational content
+as possible, while failing early when invalid assumptions are used.
 
 
 \section{A Reasonably Gradual Type Theory}

@@ -32,6 +32,7 @@
 % \RequirePackage{amsfonts}
 \RequirePackage{stmaryrd} % More symbols
 \RequirePackage{dsfont} % More double-struck stuff
+\RequirePackage{tensor}
 
 \renewcommand{\epsilon}{\varepsilon}
 \renewcommand{\phi}{\varphi}
@@ -197,6 +198,7 @@
 {\operatorname{match}_{#1;#2;#3}(#4 ; #5 ; #6)}
 
 \DeclareMathOperator{\Empty}{\bot}
+\DeclareMathOperator{\Unit}{\top}
 
 \DeclareMathOperator{\Bool}{\symbf{B}}
 \DeclareMathOperator{\true}{tt}
@@ -205,7 +207,7 @@
 \DeclareMathOperator{\Nat}{\symbf{N}}
 \newcommand{\z}{0}
 \let\S\relax
-\DeclareMathOperator{\Sop}{suc}
+\DeclareMathOperator{\Sop}{s}
 \DeclareDocumentCommand\S{m}{\Sop(#1)}
 
 \DeclareMathOperator{\Sb}{Σ}
@@ -224,7 +226,14 @@
 \DeclareMathOperator{\Vect}{Ve}
 \NewDocumentCommand\vnil{o}{[]\IfValueT{#1}{_{#1}}}
 \DeclareMathOperator{\vconsop}{\mathord{;};}
-\NewDocumentCommand\vcons{o o m m}{#3 \lconsop\IfValueT{#1}{_{#1,#2}} #4}
+\NewDocumentCommand\vcons{o o m m}{#3 \vconsop\IfValueT{#1}{_{#1,#2}} #4}
+
+\DeclareMathOperator{\FVect}{Ve^{\symup{\mu}}}
+
+\DeclareMathOperator{\GVect}{Ve}
+\NewDocumentCommand\gvnil{o}{[]^{\?}\IfValueT{#1}{_{#1}}}
+\DeclareMathOperator{\gvconsop}{\mathord{;};^{\?}}
+\NewDocumentCommand\gvcons{o o m m}{#3 \gvconsop\IfValueT{#1}{_{#1,#2}} #4}
 
 % Conversion
 \newcommand{\alpheq}{=_{\alpha}}
@@ -335,3 +344,13 @@
 \newcommand{\DD}{\symbf{\Delta}}
 \newcommand{\fs}[1]{#1_{1}}
 \newcommand{\sn}[1]{#1_{2}}
+
+%Models
+
+\DeclareMathOperator{\typerec}{typerec}
+\newcommand{\precision}[2]{\tensor[_{#1}]{\sqsubseteq}{_{#2}}}
+
+% Indices
+\DeclareMathOperator{\id}{id}
+\DeclareMathOperator{\addz}{add0}
+\DeclareMathOperator{\test}{test}
