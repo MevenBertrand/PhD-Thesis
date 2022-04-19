@@ -1,6 +1,1 @@
-- references for numerical analysis/CAS
-- references for proof of program correctness
 - hack continued floats for references
-- cite Neel + Dunfield on bidir typing
-- check all acronyms are properly capitalized
-- correct sidecite -> margincitation

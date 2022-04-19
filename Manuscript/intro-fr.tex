@@ -259,10 +259,10 @@ par exemple via l’utilisation d’un langage de tactiques \sidecite{Delahaye20
 qui permet de programmer la génération de preuves.
 La construction automatique de preuve est par ailleurs un domaine de recherche à part entière,
 et la question de son intégration dans les assistants à la
-preuve y est un sujet actif \sidecite{Boehme2010,Ekici2017}.
+preuve y est un sujet actif \sidecite{Blanchette2016,Ekici2017}.
 L’informatique a également fait ses preuves dans le champ du calcul mathématique
-(calcul formel, analyse numérique), et là encore des interactions prometteuses
-avec les assistants à la preuve commencent à voir le jour \sidecite{Lewis2022,Melquiond2012}.
+(calcul formel, analyse numérique), et là encore des connections prometteuses
+avec les assistants à la preuve commencent à voir le jour \sidecite{Lewis2022,Mahboubi2019}.
 
 Enfin, si l’utilisation de l’informatique facilite l’écriture de preuve,
 les assistants à la preuve ouvrent inversement
@@ -272,7 +272,10 @@ le code source d’un programme, sa spécification et la preuve formelle que cet
 dernière est remplie. On peut alors \emph{prouver} que le
 programme s’exécute correctement, sans rencontrer de bug.
 Cette certitude mathématique est bien plus fiable que n’importe quelle batterie de tests !
-
+Dans ce domaine, de nombreux projets ont déjà abouti à des programmes d’envergure,
+entièrement prouvés corrects : compilateur pour le langage C \sidecite{Kaestner2017},
+protocoles cryptographiques \sidecite{Bhargavan2017},
+résolution d’équations différentielles \sidecite{Immler2018}…
 
 \subsection{Logique, programmation et théorie des types}
 
@@ -382,13 +385,13 @@ les listes contenant exactement $n$ éléments de type $A$ – avec $n$ un entie
 Ce type dépend de $n$, au sens où ses habitants diffèrent suivant ses valeurs.
 Du point de vue de la logique, cette
 dépendance correspond à la quantification : si on veut exprimer
-une propriété universelle « pour tout $x$, on a $P(x)$ », on a besoin que la propriété $P$
+une propriété universelle « pour tout $x$, on a $P(x)$ », on a besoin que la propriété $P$
 puisse dépendre de $x$.
 Grâce à cette capacité à exprimer la quantification,
 les types dépendants sont suffisamment riches et puissants pour
 servir de fondement aux mathématiques.
 
-\section{Coq et son noyau}
+\section{\kl{Coq} et son noyau}
 \label{sec:intro-coq}
 
 Intéressons-nous maintenant un peu plus précisément à l’assistant à la

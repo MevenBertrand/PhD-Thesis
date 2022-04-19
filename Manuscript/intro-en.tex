@@ -209,10 +209,10 @@ proof writing, for instance through the use of tactic languages \sidecite{Delaha
 with which one can program proof generation.
 In addition, the automatic construction of proofs is a research field by itself,
 and the question of its integration intro proof assistants is an active topic
-\sidecite{Boehme2010,Ekici2017}. Computer science has also proven its worth in the
+\sidecite{Blanchette2016,Ekici2017}. Computer science has also proven its worth in the
 setting of mathematical computations (computer algebra systems, numerical analysis),
 and here again promising interactions with proof assistants are starting to arise
-\sidecite{Lewis2022,Melquiond2012}.
+\sidecite{Lewis2022,Mahboubi2019}.
 
 Finally, if the use of software eases the writing of proofs, proof assistants conversely
 open new possibilities for programming. They indeed offer a natural framework to describe in
@@ -220,6 +220,8 @@ the same place the source code of a program, its specification, and the formal p
 former fulfils the latter. This way, we can \emph{prove} that the program runs correctly,
 without encountering any bugs.
 This mathematical certainty is much more reliable than any test set!
+In this field, numerous projects have already achieved large scale programs, entirely proven
+correct: compiler for the C language \sidecite{Kaestner2017}, cryptographic protocols \sidecite{Bhargavan2017}, ODE solving \sidecite{Immler2018}…
 
 \subsection{Logics, programming and type theory}
 
@@ -325,7 +327,7 @@ the property $P$ to depend on $x$.
 Thanks to this ability to express quantification, dependent types are rich and powerful enough
 to serve as foundations for mathematics.
 
-\section{Coq and its kernel}
+\section{\kl{Coq} and its kernel}
 \label{sec:intro-coq-en}
 
 Let us focus a bit more on the proof assistant which we will consider mainly in this
