@@ -274,7 +274,13 @@ framework, for instance, types correspond to the validity of a logical reasoning
   \label{fig:curry-howard-example-en}
 \end{marginfigure}
 
-This idea is that of the \intro{Curry-Howard correspondence}. Rather than a precise theorem,
+This idea is that of the \intro{Curry-Howard correspondence}.%
+\sidenote{Made explicit for the first time in informal notes by Howard in 1969,
+published only much later \cite{Howard1980},
+based upon previous remarks by Curry \cite{Curry1958}.}%
+\margincite{Howard1980}%
+\margincite{Curry1958}
+Rather than a precise theorem,
 it is more of a very general concept, according to which two worlds closely resemble each
 other: on the one hand, that of logics and proofs, on the other that of programs
 and their types.
@@ -492,7 +498,7 @@ presented in \cref{chap:gradual-dependent}. An interesting point of emphasis is 
 usual presentation of dependent types turns out to be unsuited, as it is too flexible.
 The additional structure provided by bidirectional typing is thus key. It also
 appeared relevant to present the type-directed elaboration of terms from a source language
-to a target one, an important characteristic shared by all\kl[gradual@typ]{gradual languages}.
+to a target one, an important characteristic shared by all\kl[gradual types]{gradual languages}.
 The use of a bidirectional elaboration, and the properties it allows us to obtain, are described
 in \cref{chap:bidir-gradual-elab}. Finally, \cref{chap:beyond-gcic} succinctly describes the
 rest of the work I took part in regarding gradual types, but which is not directly
