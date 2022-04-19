@@ -4,14 +4,16 @@
 \cref{chap:bidir-gradual-elab} establishes quite a few properties of \kl{GCIC} and
 \kl{CCIC}, culminating with \kl{elaboration graduality}. This is, however, still far
 from satisfactory. First, it is missing proofs of \kl{normalization} for the two variants
-which are supposed to be – \kl{CCICT} and \kl{CCICs} –, and of \kl{graduality}.
+which are supposed to satisfy it – \kl{CCICT} and \kl{CCICs} –, and of \kl{graduality} – for
+\kl{CCICP} and \kl{CCICs}.
 Next, it only treats \kl{CIC-}, \ie it does not handle indexed inductive types.
 But these are crucial in order to really exploit dependency:
 for instance, most of our introductory examples were based on the vector type, an indexed
 inductive type outside the scope of \cref{chap:bidir-gradual-elab}.
 
-In this chapter we go over these issues and solutions: \cref{sec:realizing-cast-calculus}
-describes model constructions to establish both \kl{normalization} and \kl{graduality};
+In this chapter we go over these issues and possible solutions:
+\cref{sec:realizing-cast-calculus} describes model constructions to establish
+both \kl{normalization} and \kl{graduality};
 \cref{sec:indices-issue} describes the issue with indexed inductive types, and gives
 possible solutions in case the indices are “nice enough”, which covers vectors; finally,
 \cref{sec:ReTT} gives a much more ambitious solution to handle indices, giving a proper
@@ -32,7 +34,7 @@ Section 6 there, and \cref{sec:indices-issue} to Sections 6 and 8.3 –, or
 To inform the design and justify the reduction rules provided for
 \kl{CCIC}, we build a syntactic model%
 \sidenote{
-  \intro{Syntactic models} \textcite{Boulier2017,Boulier2018},
+  \intro{Syntactic models} \cite{Boulier2017,Boulier2018},
   are a kind of models of type theory defined directly by induction
   on the raw syntax, in a way akin to program translation or compilation. This allows for
   simple models, that moreover can be used to capture fine-grained properties that only
@@ -45,9 +47,9 @@ of \kl{CCIC} by translation to \kl{CIC}
 augmented with induction-recursion
 \sidecite{MartinLoef1996,Dybjer2003,Ghani2015}.
 
-From a type theory point of view, what makes \kl{CCIC} peculiar are the
-possibility of having \emph{exceptions} (both “pessimistic” as $\err$ and
-“optimistic” as $\?$), and the necessity to do \emph{intensional type
+From a type theoretical point of view, what makes \kl{CCIC} peculiar are the
+possibility of having \emph{exceptions} – both “pessimistic” ($\err$) and
+“optimistic” ($\?$) –, and the necessity to do \emph{intensional type
 analysis} in order to resolve casts. For the former, we build upon the work of
 \sidetextcite{Pedrot2018} on the exceptional type theory \kl{ExTT}.
 For the latter, we reuse the technique of \textcite{Boulier2017} to equip the universe with
@@ -56,7 +58,7 @@ an elimination principle $\typerec$%
 which requires induction-recursion to be implemented.
 %
 
-We call this syntactic model of \kl{CCIC} the \intro{discrete model}.
+\AP We call this syntactic model of \kl{CCIC} the \intro{discrete model}.
 % , in contrast with a semantic model motivated by \kl{graduality}. This \kl{discrete model}
 It captures the intuition that the unknown type is
 inhabited by “tagged values”, \eg a term together with its type.
@@ -85,8 +87,9 @@ An important corollary of this property, in combination with \kl{safety}
 possible inhabitants of the empty type:
 
 \begin{theorem}[Weak logical consistency]
-  Suppose $\vdash t : \Empty$ in \kl{CCICT} or \kl{CCICs}.
-  Then $t$ must reduce to either $\err[\Empty]$ or $\?[\Empty]$. 
+  Suppose $\tcol{t}$ is a closed inhabitant of the empty type
+  $\tcol{\Empty}$ in \kl{CCICT} or \kl{CCICs}, \eg $\vdash \tcol{t} \cty \tcol{\Empty}$.
+  Then $\tcol{t}$ must reduce to either $\tcol{\err[\Empty]}$ or $\tcol{\?[\Empty]}$. 
 \end{theorem}
 
 \subsection{The monotone model}
@@ -94,7 +97,7 @@ possible inhabitants of the empty type:
 The simplicity of the discrete model comes at the price of an inherent inability to
 characterize which casts are guaranteed to succeed, \ie a \kl{graduality} theorem.
 %
-To overcome this limitation, and prove graduality of \kl{CCICs},
+\AP To overcome this limitation, and prove graduality of \kl{CCICs},
 we can build a more elaborate \intro{monotone model}, inducing a
 precision relation that is well-behaved with respect to conversion.
 
@@ -112,15 +115,15 @@ providing a strong form of \kl{graduality}.
 This implies in particular that such a model cannot be defined for \kl{CCICT},
 as this type theory lacks graduality.
 
-The precision order of the monotone model can be reflected back to
+\AP The precision order of the monotone model can be reflected back to
 \kl{CCIC}, giving rise to the \intro{propositional precision} judgment
 $\tcol{\Gamma} \vdash \tcol{t} \precision{\tcol{T}}{\tcol{U}} \tcol{u}$, where
-$T$ and $U$ are the respective types of $t$ and $u$ – type dependency naturally demands
-such a notion of inhomogeneous precision, rather than a simpler notion relating only terms
-of the same type.
+$\tcol{T}$ and $\tcol{U}$ are the respective types of $\tcol{t}$ and $\tcol{u}$.
+Type dependency naturally demands such a notion of inhomogeneous precision,
+rather than a simpler notion relating only terms of the same type.
 
 This precision relation bears a similar relationship to \kl{definitional precision}
-$\cdpre$ as propositional equality with \kl{conversion}/definitional equality in \kl{CIC}.
+$\cdpre$ as propositional equality to \kl{conversion}/definitional equality in \kl{CIC}.
 %
 \kl{Propositional precision} can be used to prove precision statements
 inside the target type theory, for instance we can show by
@@ -144,9 +147,9 @@ Still, we can relate the two notions, as follows:
 \begin{theorem}[Compatibility of \kl{structural} and \kl{propositional} precision]
   \label{thm:prop-prop-prec}
    
-  If $\cinferty{\emptycon}{t}{T}$, $\cinferty{\emptycon}{u}{U}$ and
-  $\vdash \tcol{t} \capre \tcol{u}$, then
-  $\vdash \tcol{t} \precision{\tcol{T}}{\tcol{U}} \tcol{u}$.
+  If $\cinferty{\Gamma}{t}{T}$, $\cinferty{\Gamma}{u}{U}$ and
+  $\tcol{\Gamma \mid \Gamma} \vdash \tcol{t} \capre \tcol{u}$, then
+  $\tcol{\Gamma} \vdash \tcol{t} \precision{\tcol{T}}{\tcol{U}} \tcol{u}$.
   
   Conversely, if
     $\emptycon \vdash \tcol{v_1} \precision{\tcol{\Bool}}{\tcol{\Bool}}
@@ -207,14 +210,14 @@ Finally, the main property satisfied by \kl{propositional precision} is \kl{grad
 %  \coqe{J A P x t x (refl A x) equiv t}
 % \end{center}
 
-For the sake of exposing the problem, suppose that we can define the identity type
-$\eqty[A]{a}{a'}$ in \kl{CCIC}, 
+For the sake of exposing the problem, suppose that we can define the equality type
+$\tcol{\eqty[A]{a}{a'}}$ in \kl{CCIC}, 
 while still satisfying \kl{canonicity}, \kl{conservativity} and \kl{graduality}.
 %
-This means that for an equality $\eqty{t}{u}$ involving closed terms
-$t$ and $u$ of \kl{CIC}, there should only be three possible canonical forms:
-$\refl[A][t]$ whenever $t$ and $u$ are convertible terms – of type \coqe{A} –,
-as well as $\err$ and $\?$.
+This means that for an equality $\tcol{\eqty{t}{u}}$ involving closed terms
+$\tcol{t}$ and $\tcol{u}$ of \kl{CIC}, there should only be three possible canonical forms:
+$\tcol{\refl[A][t]}$ whenever $\tcol{t}$ and $\tcol{u}$ are convertible terms,
+as well as $\tcol{\err}$ and $\tcol{\?}$.
 
 Just under these assumptions, 
 we can show that there exist two functions that are pointwise equal in \kl{CIC},
@@ -237,20 +240,21 @@ However, since $\tcol{\addz}$ is \emph{not} \kl{convertible} to $\tcol{\id_{\Nat
 cannot possibly reduce to $\tcol{\refl}$, and
 thus would need to reduce either to $\tcol{\err}$ or $\tcol{\?}$;
 and so does $\tcol{\test \addz}$.
-
+%
 This means that the theory would be very intentional, by being able to distinguish between
 any two functions that are not \kl{convertible}, even if they are pointwise equal.
 
 More generally, the issue is the following: given a constructor $\tcol{c}$
 of an inductive type $\tcol{I}$, we need to decide what to do when confronted with some
 $\tcol{\cast{I(b_1, \dots, b_n)}{I(b'_1, \dots, b'_n)}{c(a_1, \dots, a_m)}}$.
-If $\tcol{I}$ does not have indices, as in the case of lists, we know that $c$
+If $\tcol{I}$ does not have indices, as in the case of lists, we know that $\tcol{c}$
 can always be used to inhabit $\tcol{I(b_1', \dots, b_n')}$,
 if given arguments of the right types.
-If $I$ has indices, however, this might not be possible due to typing constraints,
+If $\tcol{I}$ has indices, however, this might not be possible due to typing constraints,
 as in the example of $\tcol{\refl}$.
 But we still need to provide an inhabitant of that type as redex for the cast! If we resort to
-the wildcards $\?$ or $\err$, then we expose a very intentional behaviour such as the one above.
+the wildcards $\tcol{\?}$ or $\tcol{\err}$,
+then we expose a very intentional behaviour such as the one above.
 However, in the setting of a generic inductive type
 – such as that of the equality –, deciding whether it is inhabited by a “valid”,
 non-wildcard, term in a given non-empty context is undecidable,
@@ -259,11 +263,11 @@ return such a valid term.
 
 \subsection{Solutions for vectors}
 
-Not all indexed inductive types are as thorny as equality. Indeed, in examples such as
-$\Vect$,%
+Thankfully, not all indexed inductive types are as thorny as equality. Indeed,
+in examples such as $\Vect$,%
 \sidenote{And quite a lot of those used in the context of dependently typed programming.}
 solutions are possible that avoid the dead-end identified for equality, by carefully
-relying on the structure of indices. These rely on two well-known alternatives to indexed
+using the structure of indices. These rely on two well-known alternatives to indexed
 inductive types for capturing properties intrinsically: type-level eliminators,
 and “forded” inductive types.
 
@@ -275,18 +279,17 @@ at the type level, effectively representing lists as nested pairs:
 corresponding to the \kl{Coq} definition
 
 \begin{coqcode}
-  Fixpoint FVect (A : Type) (n : nat) : Type :=
+  Fixpoint FVect (A : Type) (n : ℕ) : Type :=
     match n with 0 => unit | S n => A * FVec A n end.
 \end{coqcode}
 
-Type-level eliminators can be used as soon as the indices are \intro{concretely
+\AP Type-level eliminators can be used as soon as the indices are \intro{concretely
 forceable} \sidecite{Brady2004}. Intuitively, \kl{concretely forceable} indices
 are those that can be matched upon (like $n$ in the example of $\Vect$).
 \sidetextcite{Gilbert2019} give a general translation of this kind
 to build mock-up inductive types inside a sort of definitionally irrelevant propositions.
 
-This presentation coincides with the indexed inductive one 
-on non-exceptional terms, but is extremely imprecise in presence of unknown indices.
+This presentation coincides with the indexed inductive one  on standard, non-exceptional terms, but quickly becomes very imprecise in presence of unknown indices.
 
 \paragraph{Forded inductive type.}
 
@@ -296,24 +299,25 @@ as an allusion to Henry Ford' quote “\textit{Any customer can have a car paint
 \margincite{McBride1999}
 For instance, vectors can be defined in this style as follows:
 \begin{coqcode}
-  Fixpoint eq_nat (m n : nat) : Type :=
-  match m, n with
-  | 0, 0 => True
-  | S m, S n => eq_nat m n
-  | _, _ => False
-  end.
-
-  Inductive Vectf (A : Type) (n : nat) : Type :=
+  Inductive Vectf (A : Type) (n : ℕ) : Type :=
   | nilf : eq_nat 0 n -> Vectf A n
-  | consf : A -> forall m : nat, eq_nat (S m) n
+  | consf : A -> forall m : ℕ, eq_nat (S m) n
       -> Vectf A m -> Vectf A n.
 \end{coqcode}
-
-Here \coqe{eq_nat} is the type of \emph{decidable} equality proofs between natural numbers,
-expressing the constraints on $n$ – \eg $\eqty{n}{0}$ – but avoiding the use of the unavailable propositional equalities.
+Here, \coqe{eq_nat} is the type of \emph{decidable} equality proofs between natural numbers,
+expressing the constraints on $n$ – \eg $\eqty{n}{0}$ – but avoiding the use of the unavailable propositional equalities –, which can be defined like this:
+\begin{coqcode}
+  Fixpoint eq_nat (m n : ℕ) : Type :=
+  match m, n with
+    | 0, 0 => True
+    | S m, S n => eq_nat m n
+    | _, _ => False
+  end.
+\end{coqcode}
 
 This presentation is more accurate than the previous one when dealing with unknown indices,
-but is arguably too permissive with invalid index assertions. 
+but is too permissive with invalid index assertions. It fails very late when such invalid
+assertions are made, meaning that error-reporting is bad.
 
 \paragraph{Direct support}
 
@@ -323,9 +327,9 @@ much more satisfactory solution. The idea is to reason about indices directly in
 the reduction of casts. 
 
 To do so, we first add two new canonical forms,
-corresponding to the casts of $\gvnil$ and $\gvconsop$ to
-$\GVect(A,\?[\Nat])$: namely, $\gvnil[A]$ and
-$\gvcons[A][n]{a}{v}$.
+corresponding to the casts of $\tcol{\vnil}$ and $\tcol{\vconsop}$ to
+$\tcol{\GVect(A,\?[\Nat])}$: namely, $\tcol{\gvnil[A]}$ and
+$\tcol{\gvcons[A][n]{a}{v}}$.
 
 \begin{figure*}[ht]
 \ContinuedFloat*
@@ -371,16 +375,16 @@ in canonical forms. \cref{fig:grad-vect-casts} presents these rules
 when the argument of the cast is a non-empty vector.
 %
 \ruleref{red:v-S?} propagates the cast on the arguments,
-but using the newly introduced $\gvconsop$, effectively losing precision in the type
-information, but keeping all the underlying information of the term, so that it can be used
-in case of a downcast. This is exactly what \ruleref{red:v-S?} does.
+but using the newly introduced $\tcol{\gvconsop}$. This effectively loses precision in the type
+information, but keeps it all recorded in the term, so that it can be used
+in case of a downcast. This is exactly what \ruleref{red:v-?S} does.
 %
 \ruleref{red:v-S} applies when both source and target indices are successors,
 and propagates the cast of the arguments, just like in the case of lists.
 %
 Finally, as expected, \ruleref{red:v-S0} raises an error when the indices do not match.
 Similarly, \ruleref{red:v-S?0} also raises an error when trying to create a vector of length
-$0$ from a non-empty one.
+$0$ from one with an unknown index, but whose underlying vector is non-empty.
 
 \begin{figure}[ht]
 \ContinuedFloat
@@ -398,14 +402,15 @@ $0$ from a non-empty one.
 \end{figure}
 
 For the eliminator, there are two new computation rules, one for each
-new constructor. We give the one for the case of $\gvnil$: this is \ruleref{red:v-rect-unk-0}.
-These rules apply the eliminator to the 
-underlying non-exceptional constructor, and then cast the result to $\mathop{P} \?[\Nat]$.
-Intuitively, they transfer the cast on vectors to a cast on
-the returned type of the predicate.
+new constructor. We give the one for the case of $\tcol{\gvnil}$,
+this is \ruleref{red:v-rect-unk-0}. These rules apply the eliminator to the 
+underlying non-exceptional constructor,
+and then cast the result to $\tcol{\mathop{P} \?[\Nat]}$.
+Intuitively, they transfer the cast on vectors to a cast on the reduct.
 
 Note that all of these rules crucially use the fact that it is possible to discriminate between
-$0$, $\S n$ and $\?[\Nat]$, which is a specificity of the vector type and explains why
+$\tcol{0}$, $\tcol{\S n}$ and $\tcol{\?[\Nat]}$,
+which is a specificity of the vector type and explains why
 this solution is not possible for \eg the equality.
 
 This “definitive” presentation is justified by a modification of the models described in
@@ -416,3 +421,121 @@ as possible, while failing early when invalid assumptions are used.
 
 \section{A Reasonably Gradual Type Theory}
 \label{sec:ReTT}
+
+In the context of a gradual proof assistant based on \kl{CIC},
+the \kl{normalizing} and \kl{conservative} variant \kl{GCICT} is the most appealing,
+as it ensures decidability of typing, (weak) \kl{canonicity}, and supports all existing developments and libraries by virtue of being a \kl{conservative extension} of \kl{CIC}.
+Unfortunately, the universe shift introduced in \kl{CCICT} during reduction
+means that some terms break graduality. 
+For instance, while the term
+\[\tcol{\nArrow} \coloneqq
+  \tcol{\l n : \Nat.\ \ind{\Nat}{n}{x.\uni[0]}{\Nat,y.p_{y}.\Nat \to p_{y}}} \]
+or, in \kl{Coq},
+\begin{coqcode}
+  Fixpoint nArrow (n : ℕ) : Type :=
+  match n with 
+    | 0 => ℕ
+    | S m => ℕ -> nArrow n
+  end.
+\end{coqcode}
+is well-typed in \kl{GCICT},
+the type $\tcol{\P n : \Nat. \nArrow n}$ does not satisfy the \kl{embedding-projection} property
+with respect to any unknown type $\tcol{\?[\uni[i]]}$,
+because the appropriate universe level is not known \textit{a priori}.
+However, apart from the fact that \kl{GCICT} does not satisfy \kl{graduality} globally,
+little is known about its gradual properties as its metatheory
+in this regard has not been developed. In particular, there is no clear characterization
+of a class of terms for which \kl{graduality} holds.
+
+\paragraph{A Refined Stratification of Precision} 
+%
+\AP However, by refining the stratification of
+\kl{precision} we can develop a full account of graduality for an extension
+of \kl{CCICT}, called \intro{CCICPrec}. The key idea is that $\tcol{\?[\uni[i]]}$ should be
+the least precise type among all types at level $i$ and below,
+\emph{except} for dependent function types at level $i$
+– which are however still less precise than $\tcol{\?[\uni[\unext{i}]]}$.
+
+\AP We can precisely characterize problematic terms as those that are not \intro{self-precise} –
+\ie more precise than themselves. For function types,
+self-precision means monotonicity with respect to precision.
+A recursive large elimination as in $\tcol{\nArrow}$ is not monotone because
+there is no fixed level $i$ for which 
+$\tcol{\nArrow n} \precision{}{} \tcol{\?[\uni[i]]}$, given 
+$\tcol{n} \precision{}{} \tcol{\?[\Nat]}$.
+
+On the contrary, we can prove that the \kl{dynamic gradual guarantee} holds in \kl{CCICPrec}
+for \emph{any} \kl{self-precise} context, and that casts between types related by
+\kl{precision} induce \kl{embedding-projection pairs} between \kl{self-precise} terms.
+%
+Therefore, this shift in perspective in the interpretation of the unknown type and
+the associated notion of precision yields a gradual theory
+that conservatively extends \kl{CIC}, is normalizing,
+and satisfies graduality for a large and well-defined class of terms.
+
+\paragraph{Internalizing Precision, Reasonably}
+While we could study graduality for \kl{CCICPrec} externally,
+we observe that we can exploit the expressiveness of the type-theoretic setting to
+internalize precision and its associated reasoning.
+In particular, this makes it possible to state and prove, within the theory itself,
+results about (self-)precision and graduality for specific terms.
+In a way, this is the natural next step following the definition of
+\kl{propositional precision} in \cref{sec:realizing-cast-calculus}.
+
+Introducing \kl{internal precision} in a gradual type theory however
+requires us to address two main obstacles.
+First, when adding exceptions to CIC \sidecite{Pedrot2018}, 
+the theory becomes inconsistent as a logic,
+because it is possible to inhabit any type $\tcol{A}$ by raising an
+exception $\tcol{\err[A]}$.
+In the gradual setting, there is also the alternative of using the \kl{unknown term}
+$\tcol{\?[A]}$ to inhabit any type $\tcol{A}$.
+If we want to support valid internal reasoning about precision and graduality,
+we need to avoid these degenerate proofs and provide a logically consistent theory.
+Second, the gradual type theory needs to satisfy extensionality principles in order to support 
+the notion of precision as error approximation \sidecite{New2018}. 
+% In particular, precision on function types 
+% should be defined pointwise, \ie~functions should be extensionally monotone with respect to precision (if $t \precision{}{} u$ then 
+% $f\;t \precision{}{} f\;u$ for any function $f$).
+Embracing extensionality principles in an intensional type theory such as \kl{CIC}
+is a challenge in itself.
+
+\AP We can address both issues by combining recent advances in type theory:
+the reasonably exceptional type theory \intro{RETT} \sidecite{Pedrot2019}
+and the observational type theory \intro{TTOBS} \sidecite{Pujet2022}.
+First, \kl{RETT} supports consistent reasoning about exceptional terms.
+It features a layer of possibly exceptional terms,
+and a separate layer of pure terms in which raising an exception is prohibited.
+This way, the consistency of the logical layer is guaranteed,
+while allowing non-trivial interaction with the exceptional layer.
+Technically, the two layers are defined using two distinct universe hierarchies.
+%
+Second, based on the seminal work on Observational Type Theory \sidecite{Altenkirch2007}, 
+\kl{TTOBS} provides a setoidal equality in a specific universe $\SProp$
+of definitionally proof-irrelevant propositions. 
+This universe of strict propositions, introduced by \sidecite{Gilbert2019}
+and supported in recent versions of \kl{Coq} and \kl{Agda}, 
+makes it possible to define an extensional notion of equality,
+while trivializing the so-called higher coherence hell by imposing that any two proofs
+of a given equality are \emph{convertible}.
+% The resulting theory is arguably much simpler and closer to the current practice of proof assistants than 
+% cubical type theory~\cite{cubicaltt,cubical-agda}, which is another approach to provide extensional principles with computational content.
+
+A major insight of \kl{CCICPrec} is to realize that we can actually merge
+the logical universe of \kl{RETT} used to reason about exceptional terms
+with the universe $\SProp$ of proof-irrelevant propositions in order to 
+define an internal notion of precision that is extensional and whose proofs
+cannot be trivialized with exceptional terms.
+
+\paragraph{Applications of Internal Precision}
+
+In addition to supporting reasoning about the graduality of terms in a theory
+that is not globally gradual, \kl{internal precision} makes it possible
+to support gradual subset types, in which a type can be refined
+by a proposition expressed using precision.
+Moreover, in the literature, exception handling is never considered
+when proving \kl{graduality} because this mechanism inherently allows terms that
+do not behave monotonically with respect to \kl{precision}.
+\kl{Internal precision} enables us to support exception handling in the impure layer
+of the type theory,
+and to consistently reason about the graduality (or not) of exception-handling terms.
