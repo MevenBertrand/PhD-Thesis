@@ -43,6 +43,9 @@
 \usetikzlibrary{arrows}
 \RequirePackage[Libertinus]{./styles/fontcd}
 \usetikzlibrary[patterns]
+\usepackage[customcolors]{hf-tikz}
+\hfsetfillcolor{black!8}
+\hfsetbordercolor{white}
 
 % Colors in math mode, with correct spacing
 % https://tex.stackexchange.com/questions/21598/how-to-color-math-symbols
@@ -141,26 +144,26 @@
 % Syntax
 
 \newcommand{\terms}[1]{\operatorname{Term}_{\text{#1}}}
-\newcommand{\types}[1]{\operatorname{Type}_{\text{#1}}}
-\renewcommand{\H}{\operatorname{Head}}
+\knowledgenewrobustcmd{\types}[1]{\cmdkl{\operatorname{Type}}_{\text{#1}}}
+\knowledgenewrobustcmd{\Hd}{\cmdkl{\operatorname{Head}}}
 
 % Typing
 
-\DeclareMathOperator{\ty}{:}
-\DeclareMathOperator{\cty}{\triangleleft}
-\newcommand{\pity}[1]{\mathop{\triangleright_{#1}}}
-\DeclareMathOperator{\ity}{\triangleright}
+\DeclareMathOperator{\ty}{\colon}
+\knowledgenewrobustcmd{\cty}{\mathrel{\cmdkl{\triangleleft}}}
+\knowledgenewrobustcmd{\pity}[1]{\mathrel{\cmdkl{\triangleright}_{#1}}}
+\knowledgenewrobustcmd{\ity}{\mathrel{\cmdkl{\triangleright}}}
 
 \newcommand{\inferty}[3]{#1 \vdash #2 \ity #3}
 \newcommand{\pinferty}[4]{#2 \vdash #3 \pity{#1} #4}
 \newcommand{\checkty}[3]{#1 \vdash #2 \cty #3}
 
 %% Contexts
-\newcommand{\emptycon}{\cdot}
+\knowledgenewrobustcmd{\emptycon}{\cmdkl{\cdot}}
 
-\newcommand{\into}{\coloneqq}
-\newcommand{\subs}[3]{#1[#2 \into #3]}
-\newcommand{\multisubs}[2]{#1[#2]}
+\knowledgenewrobustcmd{\into}{\mathop{\cmdkl{\coloneqq}}}
+\knowledgenewrobustcmd{\subs}[3]{#1\mathopen{\cmdkl{[}}#2 \into #3\mathclose{\cmdkl{]}}}
+\knowledgenewrobustcmd{\multisubs}[2]{#1\mathopen{\cmdkl{[}}#2\mathclose{\cmdkl{]}}}
 
 % Terms
 
@@ -176,20 +179,20 @@
 
 %% Universes
 
-\DeclareDocumentCommand\uni{o}{\square\IfValueT{#1}{_{#1}}}
-\newcommand{\umaxsymb}{\max}
-\newcommand{\unextsymb}{+1}
-\DeclareDocumentCommand\unext{m}{#1+1}
-\DeclareDocumentCommand\umax{m m}{\max(#1,#2)}
+\DeclareDocumentCommand\uni{o}{\withkl{\kl[\uni]}{\cmdkl{\square}\IfValueT{#1}{_{#1}}}}
+\knowledgenewrobustcmd{\umaxsymb}{\cmdkl{\max}}
+\knowledgenewrobustcmd{\unextsymb}{\cmdkl{+1}}
+\DeclareDocumentCommand\unext{m}{#1\unextsymb}
+\DeclareDocumentCommand\umax{m m}{\umaxsymb(#1,#2)}
 
 \newcommand{\ulev}[1]{^{@#1}}
 
-\DeclareMathOperator{\Prop}{Prop}
-\DeclareMathOperator{\SProp}{SProp}
+\knowledgenewrobustcmd{\Prop}{\cmdkl{\symup{Prop}}}
+\knowledgenewrobustcmd{\SProp}{\cmdkl{\symup{SProp}}}
 
 %% Inductive Types
 
-\DeclareMathOperator{\indop}{ind}
+\knowledgenewrobustcmd{\indop}{\cmdkl{\symup{ind}}}
 \DeclareDocumentCommand\ind{m m m m}
   % First the type, then the scrutinee, the predicate and finally the branches
 {\indop_{#1}(#2 ; #3 ; #4)}
@@ -201,115 +204,127 @@
 \DeclareMathOperator{\Empty}{\bot}
 \DeclareMathOperator{\Unit}{\top}
 
-\DeclareMathOperator{\Bool}{\symbf{B}}
-\DeclareMathOperator{\true}{tt}
-\DeclareMathOperator{\false}{ff}
+\knowledgenewrobustcmd{\Bool}{\cmdkl{\symup{\symbf{B}}}}
+\knowledgenewrobustcmd{\true}{\cmdkl{\symup{tt}}}
+\knowledgenewrobustcmd{\false}{\cmdkl{\symup{ff}}}
 
-\DeclareMathOperator{\Nat}{\symbf{N}}
-\newcommand{\z}{0}
+\knowledgenewrobustcmd{\Nat}{\cmdkl{\symup{\symbf{N}}}}
+\knowledgenewrobustcmd{\z}{\cmdkl{0}}
 \let\S\relax
-\DeclareMathOperator{\Sop}{s}
+\knowledgenewrobustcmd{\Sop}{\cmdkl{\symup{s}}}
 \DeclareDocumentCommand\S{m}{\Sop(#1)}
 
-\DeclareMathOperator{\Sb}{Σ}
-\NewDocumentCommand\pair{o o m m}{(#3,#4)\IfValueT{#1}{_{(#1,#2)}}}
+\knowledgenewrobustcmd{\Sb}{\mathop{\cmdkl{\symup{Σ}}}}
+\NewDocumentCommand\pair{o o m m}{\withkl{\kl[\pair]}{\cmdkl{(}#3\cmdkl{,}#4\cmdkl{)}\IfValueT{#1}{_{(#1,#2)}}}}
 
-\DeclareMathOperator{\List}{\symbf{Li}}
-\NewDocumentCommand\lnil{o}{[]\IfValueT{#1}{_{#1}}}
-\DeclareMathOperator{\lconsop}{\mathord{;};}
+\knowledgenewrobustcmd{\List}{\mathop{\cmdkl{\symup{\symbf{Li}}}}}
+\NewDocumentCommand\lnil{o}{\withkl{\kl[\lnil]}{\cmdkl{\varepsilon}\IfValueT{#1}{_{#1}}}}
+\knowledgenewrobustcmd{\lconsop}{\mathop{\cmdkl{\mathord{;};}}}
 \NewDocumentCommand\lcons{o m m}{#2 \lconsop\IfValueT{#1}{_{#1}} #3}
 
-\DeclareMathOperator{\eqtyop}{=}
-\NewDocumentCommand\eqty{o m m}{#2 =\IfValueT{#1}{_{#1}} #3}
-\DeclareMathOperator{\reflop}{refl}
+\knowledgenewrobustcmd{\eqtyop}{\mathop{\cmdkl{=}}}
+\NewDocumentCommand\eqty{o m m}{#2 \eqtyop\IfValueT{#1}{_{#1}} #3}
+\knowledgenewrobustcmd{\reflop}{\cmdkl{\symup{refl}}}
 \NewDocumentCommand\refl{o o}{\reflop\IfValueT{#2}{_{\IfValueT{#1}{#1,}#2}}}
 
-\DeclareMathOperator{\Vect}{Ve}
-\NewDocumentCommand\vnil{o}{[]\IfValueT{#1}{_{#1}}}
-\DeclareMathOperator{\vconsop}{\mathord{;};}
+\knowledgenewrobustcmd{\Vect}{\mathop{\cmdkl{\symup{\symbf{Ve}}}}}
+\NewDocumentCommand\vnil{o}{\withkl{\kl[\vnil]}{\cmdkl{\varepsilon}\IfValueT{#1}{_{#1}}}}
+\knowledgenewrobustcmd{\vconsop}{\mathop{\cmdkl{\mathord{;};}}}
 \NewDocumentCommand\vcons{o o m m}{#3 \vconsop\IfValueT{#1}{_{#1,#2}} #4}
 
 \DeclareMathOperator{\FVect}{Ve^{\symup{\mu}}}
 
 \DeclareMathOperator{\GVect}{Ve}
-\NewDocumentCommand\gvnil{o}{[]^{\?}\IfValueT{#1}{_{#1}}}
+\NewDocumentCommand\gvnil{o}{\varepsilon^{\?}\IfValueT{#1}{_{#1}}}
 \DeclareMathOperator{\gvconsop}{\mathord{;};^{\?}}
 \NewDocumentCommand\gvcons{o o m m}{#3 \gvconsop\IfValueT{#1}{_{#1,#2}} #4}
 
 % Conversion
-\newcommand{\alpheq}{=_{\alpha}}
-\newcommand{\alphleq}{\leq_{\alpha}}
-\newcommand{\conv}{\cong}
-\newcommand{\udconv}{\conv} % Untyped declarative conversion
-\newcommand{\uaconv}{\conv} % Untyped algorithmic conversion
+\knowledgenewrobustcmd{\alpheq}{\mathrel{\cmdkl{=_{\symup{\alpha}}}}}
+\newcommand{\alphleq}{\leq_{\symup{\alpha}}}
+\knowledgenewrobustcmd{\conv}{\mathrel{\cmdkl{\cong}}}
+\knowledgenewrobustcmd{\dconv}{\mathrel{\cmdkl{\conv}}} % Untyped declarative conversion
+\knowledgenewrobustcmd{\aconv}{\mathrel{\cmdkl{\conv}}} % Untyped algorithmic conversion
 \newcommand{\tdconv}{\conv} % Typed declarative conversion
 \newcommand{\taconv}{\conv} % Typed algorithmic conversion
-\newcommand{\cum}{\preceq} % Cumulativity
+\knowledgenewrobustcmd{\cum}{\mathrel{\cmdkl{\preceq}}} % Cumulativity
 
 % Reduction
 \newcommand{\basered}{\rightarrow}
-\newcommand{\ored}{\basered^1} % One-step full reduction (closed by all contexts)
-\newcommand{\fred}{\basered^{\star}} % Multi-step full reduction (closed by all contexts)
-\newcommand{\tred}{\rightharpoonup} % Top reduction (closed by no context, one step)
-\newcommand{\hored}{\ored_{h}} % One-step weak-head reduction (closed by head contexts)
-\newcommand{\hred}{\red_{h}} % One-step weak-head reduction (closed by head contexts)
+\knowledgenewrobustcmd{\ored}{\mathrel{\cmdkl{\basered^1}}}
+  % One-step full reduction (closed by all contexts)
+\knowledgenewrobustcmd{\fred}{\mathrel{\cmdkl{\basered^{\star}}}}
+  % Multi-step full reduction (closed by all contexts)
+\knowledgenewrobustcmd{\tred}{\mathrel{\cmdkl{\rightharpoonup}}}
+  % Top reduction (closed by no context, one step)
+\knowledgenewrobustcmd{\hored}{\mathrel{\cmdkl{\basered^1_{\symup{h}}}}}
+  % One-step weak-head reduction (closed by head contexts)
+\knowledgenewrobustcmd{\hred}{\mathrel{\cmdkl{\basered^{\star}_{\symup{h}}}}}
+  % One-step weak-head reduction (closed by head contexts)
 \newcommand{\red}{\fred} % Reduction
 
 \newcommand{\ocored}{\reflectbox{$\basered^{\reflectbox{$1$}}$}}
+\newcommand{\nored}{\not \basered^{1}}
 
 % Neutral/normal forms
 
 \AtBeginDocument{
-  \newcommand{\nm}{\mathop{\mathrm{nm}}}
+  \knowledgenewrobustcmd{\nm}{\mathop{\symup{nm}}}
 
   \NewCommandCopy{\noteq}{\ne}
-  \renewcommand{\ne}{\mathop{\mathrm{ne}}}
+  \knowledgerenewcommand{\ne}{\mathop{\symup{ne}}}
 }
 
 % Gradual stuff
 
-\DeclareDocumentCommand{\?}{o}{\symbf{?}\IfValueT{#1}{_{#1}}}
-\DeclareDocumentCommand{\err}{o}{\operatorname{err}\IfValueT{#1}{_{#1}}}
+\DeclareDocumentCommand{\?}{o}{\withkl{\kl[\?]}{\cmdkl{\symbf{?}}\IfValueT{#1}{_{#1}}}}
+\DeclareDocumentCommand{\err}{o}{\withkl{\kl[\err]}{\cmdkl{\symup{err}}\IfValueT{#1}{_{#1}}}}
 
 % Ascriptions
 
-\DeclareMathOperator{\ascop}{\mathord{:}:}
+\knowledgenewrobustcmd{\ascop}{\mathop{\cmdkl{\mathord{:}:}}}
 \DeclareDocumentCommand{\asc}{m m}{#1 \ascop #2}
 
 % Bad Approaches
 
-\DeclareMathOperator{\axiom}{ax}
-\DeclareDocumentCommand{\rai}{o}{\operatorname{raise}\IfValueT{#1}{_{#1}}}
+\knowledgenewrobustcmd{\axiom}{\cmdkl{\symup{ax}}}
+\DeclareDocumentCommand{\rai}{o}{\withkl{\kl[\rai]}
+  {\operatorname{\cmdkl{raise}}\IfValueT{#1}{_{#1}}}}
 
 % Relations
 
-\newcommand{\cons}{\sim}
-\newcommand{\pre}{\sqsubseteq}
-\newcommand{\npre}{\not \sqsubseteq}
-\newcommand{\equiprecise}{\sqsupseteq\sqsubseteq}
-\newcommand{\obsApprox}{\preccurlyeq^{o}}
-\newcommand{\obsEquiv}{\approx^{o}}
-\newcommand{\obsRef}{\sqsubseteq^{o}}
-\newcommand{\acons}{\cons_{\alpha}}
-\newcommand{\apre}{\pre^{\mathrm{G}}_{\alpha}}
-\newcommand{\capre}{\pre_{\alpha}}
-\newcommand{\caprerev}{\sqsupseteq_{\alpha}}
-\newcommand{\cdpre}{\pre_{\basered}}
-\newcommand{\caequipre}{\equiprecise_{\alpha}}
+\knowledgenewrobustcmd{\cons}{\mathrel{\cmdkl{\sim}}}
+\knowledgenewrobustcmd{\pre}{\mathrel{\cmdkl{\sqsubseteq}}}
+\knowledgenewrobustcmd{\precision}[2]{\mathop{\tensor[_{#1}]{\cmdkl{\sqsubseteq}}{_{#2}}}}
+\newcommand{\npre}{\withkl{\kl[\pre]}{\mathrel{\cmdkl{\not \sqsubseteq}}}}
+\knowledgenewrobustcmd{\equiprecise}{\mathrel{\cmdkl{\sqsupseteq\sqsubseteq}}}
+\knowledgenewrobustcmd{\obsApprox}{\mathrel{\cmdkl{\preccurlyeq^{\symup{ob}}}}}
+\knowledgenewrobustcmd{\obsEquiv}{\mathrel{\cmdkl{\approx^{\symup{ob}}}}}
+\knowledgenewrobustcmd{\obsRef}{\mathrel{\cmdkl{\sqsubseteq^{\symup{ob}}}}}
+\knowledgenewrobustcmd{\acons}{\mathrel{\cmdkl{\sim_{\symup{\alpha}}}}}
+\knowledgenewrobustcmd{\apre}{\mathrel{\cmdkl{\sqsubseteq^{\symup{G}}_{\symup{\alpha}}}}}
+\knowledgenewrobustcmd{\capre}{\mathrel{\cmdkl{\sqsubseteq_{\symup{\alpha}}}}}
+\newcommand{\caprerev}{\withkl{\kl[\capre]}{
+  \mathrel{\cmdkl{\sqsupseteq_{\symup{\alpha}}}}}}
+\knowledgenewrobustcmd{\cdpre}{\mathrel{\cmdkl{\sqsubseteq_{\basered}}}}
+\newcommand{\caequipre}{\withkl{\kl[\capre]}{
+  \mathrel{\cmdkl{\sqsupseteq \sqsubseteq_{\symup{\alpha}}}}}}
 
-\newcommand{\eras}{\mathop{\symup{\varepsilon}}}
+\knowledgenewrobustcmd{\eras}{\mathop{\cmdkl{\symup{eras}}}}
 
 % Terms
-\DeclareMathOperator{\narrow}{narrow}
+\DeclareMathOperator{\narrow}{nArrow}
 \newcommand{\printf}{\mintinline{C}{printf}}
 
 % Cast
-\DeclareDocumentCommand{\cast}{m m m}{
-  \mathop{\left\langle #2 \Leftarrow #1 \right\rangle} #3}
+% \DeclareDocumentCommand{\cast}{m m m}{
+%  \mathop{\left\langle #2 \Leftarrow #1 \right\rangle} #3}
+\DeclareDocumentCommand{\cast}{m m m}{\withkl{\kl[\cast]}{
+ \mathop{\left\langle #2 \mathop{\cmdkl{\Leftarrow}} #1 \right\rangle} #3}}
 \DeclareDocumentCommand{\castrev}{m m m}{
   \cast{#2}{#3}{#1}}
 \DeclareDocumentCommand{\castbg}{m m m m}{
-    \mathop{\colorbox{#1}{$\left\langle #3 \Leftarrow #2 \right\rangle$}} #4}
+    \mathop{\tikzmarkin{#1}(0,-0.15)(0,0.4)\left\langle #3 \Leftarrow #2 \right\rangle\tikzmarkend{#1}} #4}
 
 % Elaboration and colored typing
 
@@ -320,10 +335,16 @@
 \newcommand{\tcol}[1]{\targetcolor{#1}}
 \newcommand{\staticcolor}[1]{\mathcolor{black}{#1}}
 \newcommand{\ccol}[1]{\staticcolor{#1}}
-\newcommand{\inferelab}[4]{\targetcolor{#1} \vdash \sourcecolor{#2} \comp \targetcolor{#3} \ity \targetcolor{#4}}
-\newcommand{\pinferelab}[5]{\targetcolor{#2} \vdash \sourcecolor{#3} \comp \targetcolor{#4} \pity{#1} \targetcolor{#5}}
-\newcommand{\checkelab}[4]{\targetcolor{#1} \vdash \sourcecolor{#2} \comp \targetcolor{#3} \cty \targetcolor{#4}}
-\newcommand{\contelab}[2]{\vdash \sourcecolor{#1} \comp \targetcolor{#2}}
+\knowledgenewrobustcmd{\inferelab}[4]{
+  \tcol{#1} \mathrel{\cmdkl{\vdash}} \scol{#2} \mathrel{\cmdkl{\comp}} \tcol{#3}
+  \mathrel{\cmdkl{\triangleright}} \tcol{#4}}
+\knowledgenewrobustcmd{\pinferelab}[5]{
+  \tcol{#2} \mathrel{\cmdkl{\vdash}} \scol{#3} \mathrel{\cmdkl{\comp}} \tcol{#4}
+  \mathrel{\cmdkl{\triangleright}_{#1}} \tcol{#5}}
+\knowledgenewrobustcmd{\checkelab}[4]{
+  \tcol{#1} \mathrel{\cmdkl{\vdash}} \scol{#2} \mathrel{\cmdkl{\comp}} \tcol{#3}
+  \mathrel{\cmdkl{\triangleleft}} \tcol{#4}}
+\knowledgenewrobustcmd{\contelab}[2]{\mathrel{\cmdkl{\vdash}} \scol{#1} \mathrel{\cmdkl{\comp}} \tcol{#2}}
 
 \newcommand{\cinferty}[3]{\tcol{#1} \vdash \tcol{#2} \ity \tcol{#3}}
 \newcommand{\cpinferty}[4]{\tcol{#2} \vdash \tcol{#3} \pity{#1} \tcol{#4}}
@@ -331,25 +352,24 @@
 
 % Parameters
 
-\newcommand{\sortOfPiName}{\mathop{\mathrm{s}_\Pi}}
-\newcommand{\castOfPiName}{\mathop{\mathrm{c}_\Pi}}
+\knowledgenewrobustcmd{\sortOfPiName}{\mathop{\cmdkl{\symup{s}_\Pi}}}
+\knowledgenewrobustcmd{\castOfPiName}{\mathop{\cmdkl{\symup{c}_\Pi}}}
 \newcommand{\sortOfPi}[2]{\sortOfPiName(#1,#2)}
 \newcommand{\castOfPi}[1]{\castOfPiName(#1)}
-\DeclareMathOperator{\stalk}{germ}
-\newcommand{\stalkCIC}[2]{\mathop{\stalk_{#1}} #2}
-\DeclareMathOperator{\hd}{head}
+\knowledgenewrobustcmd{\stalk}{\mathop{\cmdkl{\symup{germ}}}}
+\newcommand{\stalkCIC}[2]{\stalk_{#1} #2}
+\knowledgenewrobustcmd{\hd}{\mathop{\cmdkl{head}}}
 
 %Relational contexts
 
 \newcommand{\GG}{\symbf{\Gamma}}
 \newcommand{\DD}{\symbf{\Delta}}
-\newcommand{\fs}[1]{#1_{1}}
-\newcommand{\sn}[1]{#1_{2}}
+\knowledgenewrobustcmd{\fs}[1]{#1_{\cmdkl{1}}}
+\knowledgenewrobustcmd{\sn}[1]{#1_{\cmdkl{2}}}
 
 %Models
 
-\DeclareMathOperator{\typerec}{typerec}
-\newcommand{\precision}[2]{\tensor[_{#1}]{\sqsubseteq}{_{#2}}}
+\knowledgenewrobustcmd{\typerec}{\mathop{\cmdkl{typerec}}}
 
 % Indices
 \DeclareMathOperator{\id}{id}

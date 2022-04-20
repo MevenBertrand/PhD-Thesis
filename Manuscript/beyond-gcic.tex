@@ -53,7 +53,7 @@ possibility of having \emph{exceptions} – both “pessimistic” ($\err$) and
 analysis} in order to resolve casts. For the former, we build upon the work of
 \sidetextcite{Pedrot2018} on the exceptional type theory \kl{ExTT}.
 For the latter, we reuse the technique of \textcite{Boulier2017} to equip the universe with
-an elimination principle $\typerec$%
+an elimination principle $\intro*\typerec$%
 \sidenote{Corresponding to a form of ad-hoc polymorphism.},
 which requires induction-recursion to be implemented.
 %
@@ -117,7 +117,7 @@ as this type theory lacks graduality.
 
 \AP The precision order of the monotone model can be reflected back to
 \kl{CCIC}, giving rise to the \intro{propositional precision} judgment
-$\tcol{\Gamma} \vdash \tcol{t} \precision{\tcol{T}}{\tcol{U}} \tcol{u}$, where
+$\tcol{\Gamma} \vdash \tcol{t} \intro*\precision{\tcol{T}}{\tcol{U}} \tcol{u}$, where
 $\tcol{T}$ and $\tcol{U}$ are the respective types of $\tcol{t}$ and $\tcol{u}$.
 Type dependency naturally demands such a notion of inhomogeneous precision,
 rather than a simpler notion relating only terms of the same type.
@@ -133,7 +133,7 @@ case analysis on $\tcol{b} : \tcol{\Bool}$ that
 a judgment that does not hold for \kl{definitional precision}.
 %
 In particular, \kl{propositional precision} is invariant by \kl{conversion}: if
-$\tcol{t} \conv \tcol{t'}$, $\tcol{u} \conv \tcol{u'}$ and
+$\tcol{t} \aconv \tcol{t'}$, $\tcol{u} \aconv \tcol{u'}$ and
 $\tcol{\Gamma} \vdash \tcol{t} \precision{\tcol{T}}{\tcol{U}} \tcol{u}$
 then
 $\tcol{\Gamma} \vdash \tcol{t'} \precision{\tcol{T}}{\tcol{U}}
@@ -180,10 +180,10 @@ Finally, the main property satisfied by \kl{propositional precision} is \kl{grad
     \tcol{\Gamma} \vdash \tcol{\cast{T}{U}{t}} \precision{\tcol{U}}{\tcol{U}} \tcol{u}
     \Leftrightarrow  \tcol{\Gamma} \vdash \tcol{t} \precision{\tcol{T}}{\tcol{U}} \tcol{u}
     \Leftrightarrow  \tcol{\Gamma} \vdash \tcol{t}
-    \precision{\tcol{T}}{\tcol{T}} \tcol{\cast{U}{T} u}
+    \precision{\tcol{T}}{\tcol{T}} \tcol{\cast{U}{T}{u}}
   \end{align*}
   And furthermore,
-    $\tcol{\Gamma} \vdash \tcol{{\cast{U}{T}{\cast{T}{U}{t}}} \precision{\tcol{T}}{\tcol{T}} \tcol{t}}$ – this is the retraction property.
+    $\tcol{\Gamma} \vdash \tcol{\cast{U}{T}{\cast{T}{U}{t}}} \precision{\tcol{T}}{\tcol{T}} \tcol{t}$ – this is the retraction property.
 \end{theorem}
 
 
@@ -224,7 +224,7 @@ we can show that there exist two functions that are pointwise equal in \kl{CIC},
 but are no longer equivalent in \kl{CCIC}. 
 Consider the two functions $\tcol{\id_{\Nat}}$ and $\tcol{\addz}$ defined respectively as
 $\tcol{\id_{\Nat}} \coloneqq \tcol{\l x : \Nat.\ n}$ and
-$\tcol{\addz} \coloneqq \tcol{\l x : \Nat.\ x + 0}$.
+$\tcol{\addz} \coloneqq \tcol{\l x : \Nat.\ x + \z}$.
 In \kl{CIC}, these functions are not convertible, but they are pointwise equal,
 and observationally equivalent.
 However, they would not be observationally equivalent in \kl{GCIC} under our assumptions.
@@ -305,7 +305,7 @@ For instance, vectors can be defined in this style as follows:
       -> Vectf A m -> Vectf A n.
 \end{coqcode}
 Here, \coqe{eq_nat} is the type of \emph{decidable} equality proofs between natural numbers,
-expressing the constraints on $n$ – \eg $\eqty{n}{0}$ – but avoiding the use of the unavailable propositional equalities –, which can be defined like this:
+expressing the constraints on $n$ – \eg $\eqty{n}{\z}$ – but avoiding the use of the unavailable propositional equalities –, which can be defined like this:
 \begin{coqcode}
   Fixpoint eq_nat (m n : ℕ) : Type :=
   match m, n with
@@ -356,14 +356,14 @@ $\tcol{\gvcons[A][n]{a}{v}}$.
   }}[V-cons-s]\label{red:v-S}
   \and
   \redrule{\tcol{
-    \castrev{\left(\vcons[A][k]{a}{v}\right)}{\GVect(A,\S n)}{\GVect(B,0)} 
+    \castrev{\left(\vcons[A][k]{a}{v}\right)}{\GVect(A,\S n)}{\GVect(B,\z)} 
   }}{\tcol{
-    \err[\GVect(B,0)]
+    \err[\GVect(B,\z)]
   }}[V-cons-0]\label{red:v-S0} \and
   \redrule{\tcol{
-    \castrev{\left(\gvcons[A][k]{a}{v}\right)}{\GVect(A,\?[\Nat])}{\GVect(B,0)} 
+    \castrev{\left(\gvcons[A][k]{a}{v}\right)}{\GVect(A,\?[\Nat])}{\GVect(B,\z)} 
   }}{\tcol{
-    \err[\GVect(B,0)]
+    \err[\GVect(B,\z)]
   }}[V-cons?-0]\label{red:v-S?0}
 \end{mathpar}
 \caption{Casts between gradual vector types (excerpt)}
@@ -384,7 +384,7 @@ and propagates the cast of the arguments, just like in the case of lists.
 %
 Finally, as expected, \ruleref{red:v-S0} raises an error when the indices do not match.
 Similarly, \ruleref{red:v-S?0} also raises an error when trying to create a vector of length
-$0$ from one with an unknown index, but whose underlying vector is non-empty.
+$\z$ from one with an unknown index, but whose underlying vector is non-empty.
 
 \begin{figure}[ht]
 \ContinuedFloat
@@ -393,7 +393,7 @@ $0$ from one with an unknown index, but whose underlying vector is non-empty.
 \redrule{\tcol{
   \ind{\Vect}{\gvnil[A]}{y.z.P}{b_{\vnil},y_1.y_2.y_3.p_{y_3}.b_{\vconsop}}
 }}
-{\tcol{\castrev{b_{\vnil}}{\mathop{P}0}{\mathop{P} \?[\Nat]}
+{\tcol{\castrev{b_{\vnil}}{\mathop{P}\z}{\mathop{P} \?[\Nat]}
 }}[V-rect-nil?]\label{red:v-rect-unk-0}
 
 \end{mathpar}
@@ -409,7 +409,7 @@ and then cast the result to $\tcol{\mathop{P} \?[\Nat]}$.
 Intuitively, they transfer the cast on vectors to a cast on the reduct.
 
 Note that all of these rules crucially use the fact that it is possible to discriminate between
-$\tcol{0}$, $\tcol{\S n}$ and $\tcol{\?[\Nat]}$,
+$\tcol{\z}$, $\tcol{\S n}$ and $\tcol{\?[\Nat]}$,
 which is a specificity of the vector type and explains why
 this solution is not possible for \eg the equality.
 
@@ -511,7 +511,7 @@ while allowing non-trivial interaction with the exceptional layer.
 Technically, the two layers are defined using two distinct universe hierarchies.
 %
 Second, based on the seminal work on Observational Type Theory \sidecite{Altenkirch2007}, 
-\kl{TTOBS} provides a setoidal equality in a specific universe $\SProp$
+\kl{TTOBS} provides a setoidal equality in a specific universe $\intro*\SProp$
 of definitionally proof-irrelevant propositions. 
 This universe of strict propositions, introduced by \sidecite{Gilbert2019}
 and supported in recent versions of \kl{Coq} and \kl{Agda}, 

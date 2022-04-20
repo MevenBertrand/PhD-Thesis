@@ -35,9 +35,10 @@ $\List$ to ease readability.
 \AP The syntax of \intro{CCIC}%
 \sidenote{Written using a \targetcolor{dark blue colour}.}
 extends that of \kl{CIC-}
-with three new term constructors: the \intro{unknown term} $\tcol{\?[T]}$ and
-\intro[error]{dynamic error} $\tcol{\err[T]}$ of type $\tcol{T}$, 
-s well as the \intro{cast} $\tcol{\cast{S}{T}{t}}$
+with three new term constructors: the \intro{unknown term}
+$\tcol{\intro*\?[T]}$ and
+\intro[error]{dynamic error} $\tcol{\intro*\err[T]}$ of type $\tcol{T}$, 
+as well as the \intro{cast} $\tcol{\intro*\cast{S}{T}{t}}$
 of a term $\tcol{t}$ of type $\tcol{S}$ to type $\tcol{T}$
 %
 \begin{align}
@@ -63,6 +64,7 @@ constructors – \kl{static} \kl{CCIC} terms thus correspond to \kl{CIC} terms.
 \paragraph{Universe parameters.}
 
 \begin{figure}
+\AP
 \begin{align}
 \sortOfPi{i}{j} &\coloneqq \max(i,j) &  \castOfPi{i} &\coloneqq i \label{eq:spi-cpi-gcicp}\tag{\text{\kl{GCICP}-\kl{CCICP}}}\\
 \sortOfPi{i}{j} &\coloneqq \max(i,j) & \castOfPi{i} &\coloneqq i-1 \label{eq:spi-cpi-gcict}\tag{\text{\kl{GCICT}-\kl{CCICT}}}\\
@@ -77,11 +79,11 @@ described in \cref{fig:univ-param}, to account for the three
 different variants of \kl{GCIC} we consider – see \cref{sec:gcic:-3-1} : \intro{CCICP},
 \intro{CCICs} and \intro{CCICT}.
 %
-The first function $\sortOfPiName$ computes the level of the universe
+The first function $\intro*\sortOfPiName$ computes the level of the universe
 of a dependent function type,
 given the levels of its domain and codomain – see the updated \ruleref{rule:ccic-prod}
  in \cref{fig:ccic-ty}. The second function
-$\castOfPiName$ controls the universe level in the reduction of a cast between
+$\intro*\castOfPiName$ controls the universe level in the reduction of a cast between
 $\? \rightarrow \?$ and $\?$ – see \cref{fig:head-germ,fig:ccic-red-cast-ukn}.
 
 \paragraph{Typing.}
@@ -134,16 +136,17 @@ Here, consistency only plays a role in \kl{GCIC}, but completely disappears afte
 Instead, \kl{CCIC} relies only on standard (\kl(conv){algorithmic}) \kl(algo){conversion}.
 
 \paragraph{Reduction.}
+\AP
 \begin{figure}[h]
   \begin{mathpar}
   % \jform{\H, \hd \ty \types{\kl{CCIC}} \to \H, \text{ and }
   %     \stalk \ty \H \to \types{\kl{CCIC}}}
 
-    \H \ni h \coloneqq \uni[i] \mid \P \mid \List \\
+    \intro*\Hd \ni h \coloneqq \uni[i] \mid \P \mid \List \\
 
-	\hd(\tcol{\P x : A .\ B}) := \P  \and
-	\hd(\tcol{\uni[i]}) := \uni[i]  \and
-	\hd(\tcol{\List(A)}) := \List	 \\\\
+	\hd(\tcol{\P x : A .\ B}) \coloneqq \P  \and
+	\hd(\tcol{\uni[i]}) \coloneqq \uni[i]  \and
+	\hd(\tcol{\List(A)}) \coloneqq \List	 \\\\
 
 	\stalkCIC{i}{\uni[j]} \coloneqq
   \left\{ \begin{array}{lr}
@@ -152,11 +155,11 @@ Instead, \kl{CCIC} relies only on standard (\kl(conv){algorithmic}) \kl(algo){co
 	\tcol{\err[\uni[i]]} & \text{if $j \geq i$}
 	\end{array} \right. \and
 %
-	\stalkCIC{i}{Li}
-	:= \tcol{Li(\?[\uni[i]])} \and
+	\stalkCIC{i}{\List}
+	\coloneqq \tcol{\List(\?[\uni[i]])} \and
 %
 	\stalkCIC{i}{\P}
-	:= \left\{ \begin{array}{lr}
+	\coloneqq \left\{ \begin{array}{lr}
 	\tcol{\?[\uni[\castOfPi{i}]]} \rightarrow
 	\tcol{\?[\uni[\castOfPi{i}]]} & \text{if $\castOfPi{i} \geq 0$}
 	\\
@@ -172,15 +175,16 @@ The typing rules provide little insight on the new primitives; the interesting
 part really lie in their \kl{reduction} behaviour.
 
 \AP \kl{Reduction} relies on two auxiliary functions relating
-\intro{head constructors} $h \in \H$
+\intro{head constructors} $h \in \Hd$
 to those terms that start with either $\P$, $\uni$ or and inductive type
-– in our running example, $\List$ – the set of which we call $\types{\kl{CCIC}}$.
+– in our running example, $\List$ – the set of which we call
+$\intro*\types{\kl{CCIC}}$.
 These are defined in \cref{fig:head-germ}.
 %
-The first is the function $\hd$, which returns the head constructor of a type.
+The first is the function $\intro*\hd$, which returns the head constructor of a type.
 %
 
-\AP In the other direction, the \intro{germ} function $\stalkCIC{i}{h}$ constructs the least
+\AP In the other direction, the \intro{germ} function $\intro*\stalkCIC{i}{h}$ constructs the least
 precise type with head $h$ at level $i$.
 In the case where no such type exists — \eg when $\castOfPi{i} < 0$ –
 this least precise type is the error.
@@ -375,7 +379,7 @@ error type.
     } \label{rule:up-down} \and
   %
     \inferdef{Size-Err}{
-      \min \{j \mid \exists h \in \H, \tcol{\stalkCIC{j}{h}} = A\} > i
+      \min \{j \mid \exists h \in \Hd, \tcol{\stalkCIC{j}{h}} = A\} > i
     }{
       \tcol{\castrev{t}{A}{\?[\uni[i]]}} \tred
       \tcol{\err[\?[\uni[i]]]}
@@ -642,11 +646,11 @@ to compare \kl{CCIC} terms, rather than usual conversion relation.
 
 \begin{definition}[Consistent conversion]
 	\label{def:cons}
-	Two \kl{CCIC} terms are \intro{α-consistent}, written $\acons$,
+	\AP Two \kl{CCIC} terms are \intro{α-consistent}, written $\intro*\acons$,
   if they are in the relation defined by the inductive rules of \cref{fig:acons}.
 
 	Two terms are \intro{consistently convertible} – or simply \reintro(grad){consistent},
-  noted $\tcol{s} \cons \tcol{t}$, if and only if there exists $\tcol{s'}$ and $\tcol{t'}$ such that $\tcol{s} \red \tcol{s'}$, $\tcol{t} \red \tcol{t'}$ and $\tcol{s'} \acons \tcol{t'}$.
+  noted $\tcol{s} \intro*\cons \tcol{t}$, if and only if there exists $\tcol{s'}$ and $\tcol{t'}$ such that $\tcol{s} \red \tcol{s'}$, $\tcol{t} \red \tcol{t'}$ and $\tcol{s'} \acons \tcol{t'}$.
 \end{definition}
 
 Thus, \kl{α-consistency} is an extension of \kl{α-equality} that takes imprecision into account.
@@ -773,9 +777,10 @@ is that it corresponds to \kl{conversion} on \kl{static} terms.
   \label{fig:gcic-infer-stat}
 \end{figure*}
 
+\AP \phantomintro{\inferelab} \phantomintro{\pinferelab} \phantomintro{\checkelab}
 Elaboration from \kl{GCIC} to \kl{CCIC} closely follows the bidirectional presentation of
 \kl{CIC} given in \arefpart{bidir} for most rules,
-simply carrying around the extra elaborated terms : see \cref{fig:gcic-infer-stat}.
+simply carrying around the extra elaborated term: see \cref{fig:gcic-infer-stat}.
 Note that only the \kl{subject} of the judgement is a \scol{source term} in \kl{GCIC};
 \kl{inputs} – that have already been elaborated –,
 as well as \kl{outputs} – that are to be constructed –,
@@ -959,7 +964,7 @@ The second is a strengthening if a \kl{weak-head reduction} strategy is imposed 
 	\label{thm:uniqueness}
 	Elaborated terms are convertible:
 	If $\inferelab{\Gamma}{\tilde{t}}{t}{T}$ and $\inferelab{\Gamma}{\tilde{t}}{t'}{T'}$,
-  then $\tcol{t} \conv \tcol{t'}$ and $\tcol{T} \conv \tcol{T'}$.
+  then $\tcol{t} \aconv \tcol{t'}$ and $\tcol{T} \aconv \tcol{T'}$.
 	% 	\item if $\pcheckelab{\bullet}{}{\tilde{t}}{}{\Gamma}{t}{T}$ and $\pcheckelab{\bullet}{}{\tilde{t}}{}{\Gamma}{t'}{T'}$ then $\tcol{t} \conv \tcol{t'}$ and $\tcol{T} \conv \tcol{T'}$;
 	% 	\item if $\checkelab{}{\tilde{t}}{}{\Gamma}{t}{T}$ and $\checkelab{}{\tilde{t}}{}{\Gamma}{t'}{T}$ then $\tcol{t} \conv \tcol{t'}$.
 	% \end{itemize}
@@ -1012,7 +1017,7 @@ We leave out the casts present in \cref{sec:gcic-overview},
 knowing that they will be introduced by elaboration.
 We also use $\scol{\?}$ at level $\unext{i}$, because
 $\scol{\?[\unext{i}]}$, when elaborated as a type, becomes
-$\tcol{T_i} := \tcol{\cast{\?[\uni[\unext{i}]]}{\uni[i]}{\?[\?[\uni[\unext{i}]]]}}$,
+$\tcol{T_i} \coloneqq \tcol{\cast{\?[\uni[\unext{i}]]}{\uni[i]}{\?[\?[\uni[\unext{i}]]]}}$,
 such that $\tcol{T_i} \red \tcol{\?[\uni[i]]}$.
 For the rest of this section, we write $\tcol{\?[j]}$ instead of $\tcol{\?[\uni[j]]}$
 to avoid stacked indices and ease readability.
@@ -1045,23 +1050,23 @@ The reduction of $\tcol{\Omega'}$ in \kl{CCICP} is as follows:
   \red & \tcol{\left(\cast{\?_i \to \?_i}{\?_i \to
           \?_i}{\delta'}\right)~\left(\cast{\?_i \to
           \?_i}{\?_i}{\delta'}\right)} \\
-  \red & \tcol{\left(\l x : \?_i . \castbg{black!10}{\?_i}{\?_i}{\left(\left(\cast{\?_i}{\?_i \to \?_i}{x}\right)
-  \left(\cast{\?[i]}{\colorbox{black!10}{$\?[i] \Leftarrow \?[i]$}{x}}\right)\right)}\right)} \\
+  \red & \tcol{\left(\l x : \?_i . \castbg{m1}{\?_i}{\?_i}{\left(\left(\cast{\?_i}{\?_i \to \?_i}{x}\right)
+  \left(\cast{\?[i]}{\tikzmarkin{m5}\?[i] \Leftarrow \?[i]\tikzmarkend{m5}}{x}\right)\right)}\right)} \\
   & \hspace{18em} \tcol{\left(\cast{\?_i \to \?_i}{\?_i}{\delta'}\right)} \\
   \end{array}\]
 
 The first step is the identity, simply replacing $\tcol{\Omega'}, \castOfPi{i}$ and the first occurrence of $\tcol{\delta'}$ by their definitions.
 The second reduces $\tcol{T}$ to $\tcol{\?[i]}$.
-In the third, the casted $\tcol{\delta'}$ is substituted for $\tcol{x}$ by a β-step.
+In the third, the cast $\tcol{\delta'}$ is substituted for $\tcol{x}$ by a β-step.
 Casts are finally simplified using \ruleref{rule:up-down} and \ruleref{rule:red-prod-prod}.
-At that point, the reduction has almost looped back to the second step, apart from the casts $\tcol{\castbg{black!10}{\?[i]}{\?[i]}{}}$ in the first occurrence of $\tcol{\delta'}$,
+At that point, the reduction has almost looped back to the second step, apart from the casts $\tcol{\castbg{m2}{\?[i]}{\?[i]}{}}$ in the first occurrence of $\tcol{\delta'}$,
 which will simply accumulate through reduction, but without hindering divergence.
 
 On the contrary, the normalizing variants have $\castOfPi{i} < i$, 
 and thus share the following reduction path:
 \[\begin{array}{rcl}
   \tcol{\Omega'} &
-  \red & \tcol{\delta'' \left(\castbg{black!10}{\?_i \to \?_{i-1}}{\?_{i-1} \Leftarrow \?_i}{\delta'}\right)} \\
+  \red & \tcol{\delta'' \left(\castbg{m3}{\?_i \to \?_{i-1}}{\?_{i-1} \Leftarrow \?_i}{\delta'}\right)} \\
   && \text{where $\tcol{\delta''}$ is $\tcol{\left(\cast{\?_i \to \?_{i-1}}{\?_{i-1} \to \?_{i-1} \Leftarrow \?_i}{\delta'}\right)}$} \\
   &\red & \tcol{\delta''
     \left(\cast{\?_i \to \?_{i-1}}{\?_{i-1} \Leftarrow \?_{i-1} \to \?_{i-1}}{\delta'}\right)} \\
@@ -1075,7 +1080,7 @@ and thus share the following reduction path:
   \end{array}
 \]
 
-The first step corresponds to the first three above, the only difference being the value of $\castOfPi{i}$. The reductions however differ in the next step because $\tcol{\?_i \to \?_{i-1}} \neq \tcol{\stalkCIC{i}{\Pi}}$, so \ruleref{rule:prod-germ} applies before
+The first step corresponds to the first three above, the only difference being the value of $\castOfPi{i}$. The reductions however differ in the next step because $\tcol{\?_i \to \?_{i-1}} \noteq \tcol{\stalkCIC{i}{\Pi}}$, so \ruleref{rule:prod-germ} applies before
 \ruleref{rule:up-down}.
 For the third step, note that $\tcol{\?_{i-1} \to \?_{i-1}} = \tcol{\stalkCIC{i}{\P}}$,
 so that \ruleref{rule:size-err} applies in the rightmost sequence of casts.
@@ -1083,7 +1088,7 @@ The last three steps of reduction then propagate the error by first using
 \ruleref{rule:prod-germ}, \ruleref{rule:up-down} and \ruleref{rule:red-prod-prod},
 then the β-rule, and finally \ruleref{rule:red-down-err},
 \ruleref{rule:red-prod-err} and a last β step.
-At a high-level, the error can be seen as a dynamic universe inconsistency, triggered by the invalid downcast $\castbg{black!10}{\?_i}{\?_{i-1}}{}$ highlighted on the first line.
+At a high-level, the error can be seen as a dynamic universe inconsistency, triggered by the invalid downcast $\tcol{\castbg{m4}{\?_i}{\?_{i-1}}{}}$ highlighted on the first line.
 
 \section{Precision is a simulation for reduction}
 \label{sec:gcic-simulation}
@@ -1149,8 +1154,11 @@ during reduction. But in order to control what
 casts can be ignored, we impose some restriction on the types
 involved. In particular, we want to ensure that ignored casts
 would not have raised an error: \eg we want to prevent
-$\tcol{0} \capre \tcol{\cast{\Nat}{\Bool}{0}}$.
-Thus, the definition of structural precision relies on typing, and to do this we need to record the contexts of the two compared terms. To denote such contexts where each variable is given two types, we use bold letters, writing $\tcol{\GG , x : A \mid  A'}$ for context extensions. We use $\tcol{\GG_i}$ for projections, \ie $\tcol{\fs{(\GG, x : A \mid A')}} := \tcol{\fs{\GG}, x : A}$, and write $\tcol{\Gamma \mid \Gamma'}$ for the converse pairing operation.
+$\tcol{\z} \capre \tcol{\cast{\Nat}{\Bool}{\z}}$.
+Thus, the definition of structural precision relies on typing, and to do this we need to record the contexts of the two compared terms.
+To denote such contexts where each variable is given two types, we use bold letters, writing $\tcol{\GG , x : A \mid  A'}$ for context extensions.
+\AP \phantomintro{\fs}\phantomintro{\sn}
+We use $\tcol{\GG_i}$ for projections, \ie $\tcol{\fs{(\GG, x : A \mid A')}} \coloneqq \tcol{\fs{\GG}, x : A}$, and write $\tcol{\Gamma \mid \Gamma'}$ for the converse pairing operation.
 
 \begin{figure*}[ht]
   \ContinuedFloat*
@@ -1219,9 +1227,9 @@ Thus, the definition of structural precision relies on typing, and to do this we
   and \kl{definitional} precision in \kl{CCIC}]
 
   \intro{Structural precision}, denoted $\tcol{\GG} \vdash \tcol{t}
-  \capre \tcol{t'}$, is defined in \cref{fig:apre-diag,fig:apre-unk-err,fig:apre-cast},
+  \intro*\capre \tcol{t'}$, is defined in \cref{fig:apre-diag,fig:apre-unk-err,fig:apre-cast},
   mutually with \intro{definitional precision},
-  denoted $\tcol{\GG} \vdash \tcol{t} \cdpre \tcol{t'}$
+  denoted $\tcol{\GG} \vdash \tcol{t} \intro*\cdpre \tcol{t'}$
   and defined in \cref{fig:dpre}.
 
   We write $\tcol{\Gamma} \capre \tcol{\Gamma'}$ and $\tcol{\Gamma} \cdpre \tcol{\Gamma'}$ for the pointwise extensions of those to contexts.
@@ -1462,7 +1470,7 @@ even in \kl{CCICT}.
 \[\tcol{t_i} \coloneqq \tcol{\cast{\Nat \to \Nat}{\Nat \to \Nat \Leftarrow \?[\uni[i]]}{\l x : \Nat . \S x}}\]
 Such a term appears naturally whenever a loss of precision happens on a function,
 for instance when elaborating a term such as
-\[\scol{\left(\asc{(\l x : \Nat . \S x)}{\?}\right) 0}\]
+\[\scol{\left(\asc{(\l x : \Nat . \S x)}{\?}\right) \z}\]
 This term $\tcol{t_i}$ always reduces to
 \[\tcol{\cast{\?[\uni[i]] \Leftarrow \stalkCIC{i}{\Pi} \Leftarrow \Nat \to \Nat}{\Nat \to \Nat}{\l x : \Nat . \S x }}\]
 and at this point the difference kicks in:
@@ -1470,7 +1478,7 @@ if $\tcol{\stalkCIC{i}{\Pi}}$ is $\tcol{\err[\?[\uni[i]]]}$ – \ie if $\castOfP
 then the whole term reduces to $\tcol{\err[\Nat \to \Nat]}$.
 Otherwise, further reductions finally give
 \[\tcol{\l x : \Nat . \Sop \left(\cast{\Nat \Leftarrow \Nat}{\Nat}{x}\right) }\]
-Although the body is blocked by the variable $\tcol{x}$, applying the function to $\tcol{0}$
+Although the body is blocked by the variable $\tcol{x}$, applying the function to $\tcol{\z}$
 would reduce to $\tcol{1}$ as expected. Let us compare what happens in the three systems.
 
 In all of them, if $i \geq 1$, we have
@@ -1661,7 +1669,7 @@ statements and proofs can be found in \sidetextcite{LennonBertrand2022}.
 \subsection{Conservativity with respect to \kl(tit){CIC}}
 
 Elaboration systematically inserts casts during checking, thus even
-\kl{static} terms are not elaborated to themselves. Therefore we use a (partial) erasure function $\eras$ to relate terms of \kl{CCIC} to terms of \kl{CIC} by erasing all casts.
+\kl{static} terms are not elaborated to themselves. Therefore we use a (partial) erasure function $\intro*\eras$ to relate terms of \kl{CCIC} to terms of \kl{CIC} by erasing all casts.
 We also introduce the notion of \kl{erasability},
 characterizing terms that contain only ”harmless“ casts,
 such that in particular the elaboration of a \kl{static} term is always erasable.
@@ -1738,7 +1746,7 @@ full \kl{CIC} for \kl{GCICP} and \kl{GCICT}, and \kl{CICs} for \kl{GCICs}.
 \begin{figure*}
 	\begin{mathpar}
 		\inferrule{ }{\scol{x} \apre \scol{x}} \and
-		\inferrule{ }{\scol{[]_i} \apre \scol{[]_i}} \and
+		\inferrule{ }{\scol{\uni[i]} \apre \scol{\uni[i]}} \and
 		\inferrule{\scol{A} \apre \scol{A'} \\ \scol{B} \apre \scol{B'}}
 		{\scol{\P x : A . B} \apre \scol{\P x : A'.B'}} \and
 		\inferrule{\scol{A} \apre \scol{A'} \\ \scol{t} \apre \scol{t'}}
@@ -1762,7 +1770,7 @@ full \kl{CIC} for \kl{GCICP} and \kl{GCICT}, and \kl{CICs} for \kl{GCICs}.
 guarantee} (SGG) of \sidetextcite{Siek2015} in our setting.
 %
 We state it with respect to a notion of precision for terms in \kl{GCIC},
-\intro{syntactic precision} $\apre$, defined in \cref{fig:apre-gcic}.
+\intro{syntactic precision} $\intro*\apre$, defined in \cref{fig:apre-gcic}.
 %
 \kl{Syntactic precision} is the usual and expected source-level notion
 of \kl{precision} in gradual languages:
@@ -1862,5 +1870,5 @@ $\obsRef$ from \cref{def:obsref}.
 
 Note that the counter-example to \cref{lem:catchup-lambda} given in
 \cref{sec:gcic-simulation} provides a counter-example to this theorem as well for \kl{CCICT},
-by choosing the context $\tcol{\ind{\Nat}{\bullet~0}{z.\Bool}{\true,\true}}$,
+by choosing the context $\tcol{\ind{\Nat}{\bullet~\z}{z.\Bool}{\true,\true}}$,
 because in that context the function $\tcol{\l x : \Nat . \S x}$ reduces to $\tcol{\true}$ while the less precise cast function reduces to $\tcol{\err[\Bool]}$.

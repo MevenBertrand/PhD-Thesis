@@ -1,8 +1,11 @@
 % \knowledgestyle*{notion}{style={color=black!80!},intro style={color=black!80!,emphasize}}
 
-\knowledgestyle{notion}{color=black}
+\knowledgestyle{black}{color=black}
+\knowledgestyle{no}{color=.}
 \knowledgestyle{notion intro}{color=LightOrange,emphasize}
-\knowledgedirective*{notion}{autoref,style=notion,intro style=notion intro}
+\knowledgedirective*{notion}{autoref,style=black,intro style=notion intro}
+
+\knowledgedirective*{automatic in command}{autoref,style=no,intro style=no}
 
 \knowledgestyle{ignore intro}{color=LightOrange,emphasize}
 \knowledgedirective*{ignore}{intro style=ignore intro}
@@ -23,6 +26,9 @@
   | Agda
 
 \knowledge{system}
+  | Lean
+
+\knowledge{system}
   | Gallina@fr
 
 \knowledge{system}
@@ -39,6 +45,36 @@
 
 \knowledge{system}
   | Dependent Haskell
+
+% Mathematical Macros
+\knowledge{automatic in command}
+  | \uni
+
+\knowledge{automatic in command}
+  | \pair
+
+\knowledge{automatic in command}
+  | \lnil
+
+\knowledge{automatic in command}
+  | \vnil
+
+\knowledge{automatic in command}
+  | \?
+
+\knowledge{automatic in command}
+  | \err
+
+\knowledge{automatic in command}
+  | \cast
+
+\knowledge{automatic in command}
+  | \rai
+
+% Pre-text
+
+\knowledge{notion}
+  | example
 
 %Chapter 1
 

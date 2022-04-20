@@ -22,10 +22,8 @@
 \DefineBibliographyExtras{french}{\restorecommand\mkbibnamefamily} %To have consistent citations between French and English text
 \addbibresource{biblio.bib} % Bibliography file
 
-% Load my own packages
+%Load my own style
 \usepackage{styles/layout}
-\usepackage{styles/macros}
-\usepackage{styles/alectryon-minted}
 
 % Load mathematical packages for theorems and related environments
 \usepackage[boxed]{kaobook/kaotheorems}
@@ -33,13 +31,16 @@
 % Load the package for hyperreferences
 \usepackage{kaobook/kaorefs}
 
-%\includeonly{intro-fr}
+% Macros are after the knowledge package
+\input{knowledge_declarations.tex}
+\usepackage{styles/macros}
+\usepackage{styles/alectryon-minted}
+
+%\includeonly{gradual-dependent,gradual-elab}
 
 \graphicspath{{./figures/}} % Paths where images are looked for
 
 %\makeindex[columns=3, title=Alphabetical Index, intoc] % Make LaTeX produce the files required to compile the index
-
-\input{knowledge_declarations.tex}
 
 \begin{document}
 

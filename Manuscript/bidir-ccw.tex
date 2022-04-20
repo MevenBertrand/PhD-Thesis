@@ -25,14 +25,14 @@ By \intro{well-formed}, which we use indistinctly for contexts, terms and types,
 we mean:
 \begin{itemize}
   \item $\vdash \Gamma$ in the case of a context $\Gamma$,
-  \item $\Gamma \vdash T : \uni$ in the case of a type $T$,
+  \item $\Gamma \vdash T \ty \uni$ in the case of a type $T$,
   \item the existence of some $T$ such that $\Gamma \vdash t \ty T$ in the case of a term $t$.
 \end{itemize}
 We also use \reintro{well-typed} for a term, with the same meaning as \kl{well-formed}.
 
-\AP In the case of \intro{inference} $\inferty{\Gamma}{t}{T}$, the subject is $t$,
+\AP In the case of \intro{inference} $\intro*\inferty{\Gamma}{t}{T}$, the subject is $t$,
 $\Gamma$ is an input and $T$ is an output.
-On the contrary, in \intro{checking} $\checkty{\Gamma}{t}{T}$, $t$ is still the subject
+On the contrary, in \intro{checking} $\intro*\checkty{\Gamma}{t}{T}$, $t$ is still the subject
 and $\Gamma$ is an input, but this time $T$ is an input as well.
 This means that one should consider whether $\inferty{\Gamma}{t}{T}$
 only in cases where $\vdash \Gamma$ is already known,
@@ -73,7 +73,7 @@ condition to only demand inputs to be well-formed but not outputs.
 
 \AP Beyond the already mentioned inference and checking judgements,
 we need to introduce a third one: \intro{constrained inference}, written
-$\pinferty{h}{\Gamma}{t}{T}$, where $h$ is either $\Pi$ or $\uni$.%
+$\intro*\pinferty{h}{\Gamma}{t}{T}$, where $h$ is either $\Pi$ or $\uni$.%
 \sidenote{These are the only type formers in \kl{CCω}, but
 in \kl{PCUIC}, $h$ can also be \eg an inductive type.}
 Constrained inference is a judgement – or, rather, a family of judgements indexed by $h$ –
@@ -236,7 +236,7 @@ As in \textcite{Pollack1992}, $\Gamma \vdash t \ty T$ is used for inference,
 and the other judgements are inlined.
 Once again, reduction is not enough to perform constrained inference, this time
 because type constructors can be hidden in subsets:
-an inhabitant of a type such as $\{f : \Nat \to \Nat \mid f\ 0 = 0 \}$
+an inhabitant of a type such as $\{f : \Nat \to \Nat \mid f\ \z = \z \}$
 should be usable as a function of type $\Nat \to \Nat$.
 An erasure procedure is therefore required on top of reduction to remove subsets in the places where we use constrained inference.
 

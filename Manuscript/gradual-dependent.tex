@@ -231,10 +231,10 @@ and \kl{normalization}, must be considered with care.
 %
 
 First, any \kl{closed term} can be ascribed the unknown type $\?$
-and then any other type: for instance, $0 \ascop \? \ascop \Bool$ is a
+and then any other type: for instance, $\z \ascop \? \ascop \Bool$ is a
 well-typed closed term of type $\Bool$.%
 \sidenote{
-  We write $a \ascop A$ for a type \intro{ascription}, which we define as syntactic sugar
+  We write $\intro*\asc{a}{A}$ for a type \intro{ascription}, which we define as syntactic sugar
   for $(\l x:A.\ x)\ a$ \cite{Siek2006}; in
   other systems, it is taken as a primitive notion \cite{Garcia2016}.}%
 \margincite{Siek2006}%
@@ -274,7 +274,7 @@ Let us first address the elephant in the room:
 why would one want to gradualize \kl{CIC} instead of simply postulating
 an axiom for any term (be it a program or a proof) that one does not feel like providing (yet)?
 
-\AP Indeed, we can augment \kl{CIC} with a wildcard axiom $\axiom \ty \P A : \uni.\ A$.
+\AP Indeed, we can augment \kl{CIC} with a wildcard axiom $\intro*\axiom \ty \P A : \uni.\ A$.
 The resulting system, called \intro{CICax}, has an obvious practical benefit: we can use
 $\axiom A$%
 %\sidenote{Hereafter written $\axiom[A]$.}
@@ -335,13 +335,13 @@ type theory with a wildcard term while enjoying a satisfying notion of \kl{safet
 which coincides with that of programming languages with exceptions.
 
 \kl{ExTT} is essentially \kl{CICrai}, that is, it
-extends \kl{CIC} with an indexed exceptional term $\rai[A]$ that can inhabit any type $A$.
+extends \kl{CIC} with an indexed exceptional term $\intro*\rai[A]$ that can inhabit any type $A$.
 But instead of being treated as a computational black box like $\axiom A$,
 $\rai[A]$ is endowed with computational content
 emulating exceptions in programming languages, which propagate instead of being stuck.
 %
 For instance, in \kl{ExTT} the following conversion holds:
-\[\ind{\Bool}{\rai[\Bool]}{\Nat}{0,1} \conv \rai[\Nat]\]
+\[\ind{\Bool}{\rai[\Bool]}{\Nat}{\z,1} \conv \rai[\Nat]\]
 
 \AP Notably, such exceptions are \intro{call-by-name} exceptions, so one can only
 discriminate exceptions on positive types – \ie inductive types –, not on negative
@@ -490,7 +490,7 @@ However, \sidetextcite{Siek2015} observed that this characterization left too ma
 possibilities for the impact of type information on program behaviour,
 compared to what was originally intended \sidecite{Siek2006}.
 %
-Consequently, \textcite{Siek2015} brought forth type \intro{precision} – denoted $\pre$ –
+Consequently, \textcite{Siek2015} brought forth type \intro{precision} – denoted $\intro*\pre$ –
 as the key notion, from which consistency can be derived: two types $A$ and $B$
 are consistent if and only if there exists $T$ such that $T \pre A$ and $T \pre B$.
 The \kl{unknown type} $\?$ is the most imprecise type of all,
@@ -546,7 +546,7 @@ that one may fail more:%
 \label{def:obsapprox}
   A term $\Gamma \vdash t \ty T$ \kl{observationally error-approximates}
   a term $\Gamma \vdash t' \ty T'$, noted $ t
-  \obsApprox t'$, if for all boolean-valued observation contexts
+  \intro*\obsApprox t'$, if for all boolean-valued observation contexts
   $\mathcal{C} : (\Gamma \vdash T) \Rightarrow (\vdash \Bool)$
   closing over all free variables, either
   \begin{itemize}
@@ -554,7 +554,7 @@ that one may fail more:%
   \item otherwise if $\mathcal{C}[t'] \red \err[\Bool]$, then $\mathcal{C}[t] \red \err[\Bool]$.
   \end{itemize}
 
-  Two terms $t$ and $t'$ are \intro{observationally equivalent}, written $t \obsEquiv t'$,
+  Two terms $t$ and $t'$ are \intro{observationally equivalent}, written $t \intro*\obsEquiv t'$,
   if they are related by \kl{observational error-approximation} in both directions.
 \end{definition}
 
@@ -610,7 +610,7 @@ and a term $b$ of type $B$, then $a \pre \asc{b}{A}$ if and only if $\asc{a}{B} 
 %
 \AP The retraction part further states that $a$ is not only more \kl{precise}
 than$\asc{\asc{a}{B}}{A}$ – which is given by the unit of the adjunction –
-but is \reintro{equi-precise} to it – noted $t \equiprecise \asc{\asc{t}{B}}{A}$.
+but is \reintro{equi-precise} to it – noted $t \intro*\equiprecise \asc{\asc{t}{B}}{A}$.
 Because the \kl{DGG} dictates that precision implies \kl{observational error-approximation},
 \kl{equi-precision} implies \kl{observational equivalence},
 and so losing and recovering precision must produce a term that is \kl{observationally
@@ -840,7 +840,7 @@ of \kl{observational refinement}.
 \begin{definition}[\intro{Observational refinement}]
 \label{def:obsref}
   A term $\Gamma \vdash t \ty A$ \kl{observationally refines} a term
-  $\Gamma \vdash u \ty A$, noted $t \obsRef u$, if for all boolean-valued observation context
+  $\Gamma \vdash u \ty A$, noted $\intro* t \obsRef u$, if for all boolean-valued observation context
   $\mathcal{C} \ty (\Gamma \vdash A) \Rightarrow (\vdash \Bool)$ closing over all
   free variables, if $\mathcal{C}[u] \red \err[\Bool]$ or diverges,
   then either $\mathcal{C}[t] \red \err[\Bool]$ or $\mathcal{C}[t]$ diverges.
@@ -1254,9 +1254,9 @@ performed on the elaborated terms, never on the raw input syntax.}%
 In order to satisfy \kl{conservativity} with respect to \kl{CIC}, ascriptions in \kl{GCIC}
 are required to satisfy \kl(grad){consistency}. For instance, $\asc{\asc{\true}{\?}}{\Nat}$ is well-typed by \kl(grad){consistency} – used twice –, but $\asc{\true}{\Nat}$ is ill-typed.
 Such ascriptions in \kl{CastCIC} are realized by casts.
-For instance $\asc{\asc{0}{\?}}{\Bool}$ in \kl{GCIC} elaborates
+For instance $\asc{\asc{\z}{\?}}{\Bool}$ in \kl{GCIC} elaborates
 – up to desugaring and reduction – to
-$\castrev{\castrev{0}{\Nat}{\?[\uni]}}{\?[\uni]}{\Bool}$ in \kl{CastCIC}.
+$\castrev{\castrev{\z}{\Nat}{\?[\uni]}}{\?[\uni]}{\Bool}$ in \kl{CastCIC}.
 A major difference between ascriptions in \kl{GCIC} and casts in \kl{CastCIC} is
 that casts are not required to satisfy \kl(grad){consistency}: a cast between any
 two types is well-typed, although of course it might produce an

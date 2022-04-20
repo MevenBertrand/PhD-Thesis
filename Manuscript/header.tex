@@ -65,9 +65,90 @@
 
 \addchap{Abstract}
 
-To do!
+“\kl{Coq} is an old man now, and it has a lot of scars”
+\cite[citing Assia Mahboubi]{QuantaPA}.
+Proof assistants have been around for 50 years now, and they have become a more and
+more established technology over time. This history is both a blessing and a curse: as
+the field matured, the tools have become more and more complex, making them more and more
+powerful, but also more and more prone to critical bugs hiding in dark corners. At a time
+when they are gaining traction in an increasing number of communities,
+especially those concerned with high safety and security guarantees, this simply cannot be.
+The historical solution of keeping a small, trusted \kl{kernel}
+– the so-called de Bruijn criterion –
+is  simply not enough if we wish to keep moving on and integrate more new complex features
+to keep up with the needs of users.
+
+There is a straightforward solution to this:
+proof assistants have been used for decades to prove
+programs correct. Why could they not prove \emph{themselves} correct? After all, if this is
+the golden standard we demand for software, it should apply first and foremost to the ones
+used to justify that trust. For the proof assistant \kl{Coq},
+this is the ambition of the \kl{MetaCoq} project,
+which aims at providing a drop-in replacement for \kl{Coq}’s \kl{kernel}, but one that has been
+fully proven correct, even though it handles all the subtleties and quirks of said \kl{kernel}.
+No more trusting a complex and ever-evolving implementation, trust the formally validated
+\emph{proofs} instead!
+
+But before we can hope to achieve that goal, we need more study of the structures at work
+in the \kl{kernel}. In particular, its typing algorithm is \emph{bidirectional}, meaning that
+it constantly alternates between the two problems of type \emph{inference} – finding a type for
+a term – and type \emph{checking} – verifying that a type is adequate for a term. While this
+structure is crucial in relating the specification of the type system to its implementation,
+it has been rather little studied in the context of the \kl{Calculus of Inductive Constructions}
+(\kl{CIC}), the theoretical foundation of \kl{Coq} – but also of the closely related
+\kl{Agda}, \kl{Lean}…
+
+This thesis aims at filling that gap, by providing a thorough study of this bidirectional
+structure, formalized in the setting of the \kl{MetaCoq} project. This is a key
+ingredient in the first formal proof of correctness and completeness of a type-checking
+algorithm for (a significant subset of) \kl{Coq}, which was able to catch bugs that had gone
+unnoticed until then.
+But it is also an interesting theoretical tool in its own right, giving a form of control
+over computation that turns out to be crucial in quite a few situations.
+
+In particular, bidirectional typing is a necessary piece in the design of a gradual extension of
+\kl{CIC}, \kl{GCIC}.
+\kl{Gradual typing} aims at giving programmers in one and the same system the flexibility of
+development offered by dynamic typing, and the strong guarantees offered
+by static typing. \kl{GCIC} intends
+to bring that flexibility to dependently-typed programming,
+and, by using the power of the \kl{Curry-Howard correspondence}, to proof writing.
+But this flexibility comes with subtle difficulties, that can only be solved in a bidirectional
+setting.
+
+The first part of the thesis gives a theoretical account of bidirectional typing; the second
+describes the formalization of the ideas of the first section in the setting of \kl{MetaCoq};
+the third and last introduces \kl{GCIC} and its properties.
+
 
 \addchap{How to read this thesis}
+
+This thesis has been written primarily for screen reading, as I think this will be the medium
+used by most of my viewers. Therefore, I use hyperlinking as much as possible
+inside the document.
+
+While it is not visible – in order to keep the text readable by not being too distracting –,
+most technical keywords are actually linked to the
+place of their definitions. For instance \kl{bidirectional typing} links to
+the place in \cref{chap:intro-en} where the notion is introduced.
+This definition itself is put into emphasis like the following \intro{example}.
+I might cheat a bit and introduce a notion twice, once on a high level in an introductory
+section, and a second time precisely later on, in which case the link point to the precise
+definition. Most notations are also linked: no more wondering what the symbol $\obsRef$
+means again, just click on it!
+
+The main text has large margins, which I use and abuse 
+for notes, small figures and references. Hopefully this reduces
+back and forth between the text and some stuff much too far away.
+Regarding figures, rather than having large, bulky ones that take a full page,
+I tried to keep them as close as possible to their explanation. This often means that
+they are split in multiple small fragments, so that each part of the figure goes with its
+explanation. In such cases, the fragments should really be understood
+as different parts of one and the same figure. To indicate this, the fragments share the same
+figure number, such as
+\cref{fig:cic-var,fig:cic-nondep-fun,fig:cic-dep-fun,fig:cic-univ,fig:cic-prod,fig:cic-con,fig:cic-conv} which all define the same system, one rule at a time.
+
+
 
 %----------------------------------------------------------------------------------------
 %	TABLE OF CONTENTS & LIST OF FIGURES/TABLES
