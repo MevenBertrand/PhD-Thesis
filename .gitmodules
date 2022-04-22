@@ -1,3 +1,6 @@
 [submodule "Manuscript/kaobook"]
 	path = Manuscript/kaobook
 	url = https://github.com/MevenBertrand/kaobook.git
+[submodule "MathSTICTemplate"]
+	path = MathSTICTemplate
+	url = https://gitlab.inria.fr/ed-mathstic/latex-template.git
