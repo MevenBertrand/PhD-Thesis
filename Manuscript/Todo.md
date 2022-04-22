@@ -1,1 +1,2 @@
 - hack continued floats for references
+- import Matthieu’s fix to projections

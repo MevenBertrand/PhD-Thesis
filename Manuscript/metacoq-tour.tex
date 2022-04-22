@@ -329,7 +329,62 @@ related to inductive types – in particular the positivity criterion which ensu
 definitions are well-founded – and universe polymorphism.
 
 \section[Stabilities]{The Easy Properties: Stabilities}
-\label{sec:pcuic-stabilities}
+\label{sec:meta-stabilities}
+
+With the main definitions set up, we can turn to the properties that we collectively called
+stabilities in \cref{sec:tech-properties}. These assert that \kl{cumulativity} and \kl{typing}
+as just defined are stable by various ubuquitous operations: extension of the local context
+(\pcuicfile[Conversion]{WeakeningConv}, \pcuicfile[Typing]{WeakeningTyp}) and global
+environment (\pcuicfile[Conversion]{WeakeningEnvConv}, \pcuicfile[Typing]{WeakeningEnvTyp}),
+and substitution, not only for terms (\pcuicfile[Conversion]{InstConv}, \pcuicfile{Substitution}),
+but also for universe variables
+(\pcuicfile[Conversion]{UnivSubstitutionConv}, \pcuicfile[Typing]{UnivSubstitutionTyp}).
+
+A last property falling in the section of low-hanging fruits as well
+is the fact that well-typedness implies
+\intro{well-scopedness} (\pcuicfile{ClosedTyp}), that is that if \coqe{Σ ;;; Γ |- t : T}
+then all free variables of \coqe{t} appear in \coqe{Γ}. This \kl{well-scopedness} appears
+in the transitivity rule for \kl{cumulativity} (\cref{fig:meta-cumul-struct}) and is a
+condition for many lemmas.
+
+All of these are proven by induction on the typing derivation.
+However, while the proof by themselves are not very surprising, the formalization of the definitions
+is not sot easy, and deserves a few comments.
+
+The first point to note is that while the weakening and substitution operations are defined
+directly by induction on the syntax of terms, the proofs are not done directly
+on those definitions. Rather, \kl{MetaCoq} uses definitions of renaming and instantiation coming
+from the σ-calculus \sidecite{Abadi1991,Schaefer2015}, as functions of integers – to integers for
+renamings, and to terms for instantiations. \kl{Weakening} and \kl{substitution} are then connected
+respectively to a specific form of renamings and of instantiations, and the stability follows from
+more general forms, for instance weakening is but a consequence of general stability by
+(unconditional) renaming. This approach makes it easier to handle the complex binding structures
+present in the syntax of \kl{PCUIC}, which require parallel substitution, lifting by a whole context
+at once…
+
+More interestingly, the same approach is taken also for well-scopedness: a general way of lifting
+a boolean function on integers to a function boolean function
+on terms\sidenote{This is \pcuicline[Syntax]{OnFreeVars}{on\_free\_vars}{71}.}
+is used as a generalization of the well-scopedness predicate.
+This makes it easy to relate the σ-calculus
+to well-scopedness assumptions, \eg to show that if two substitutions \coqe{σ} and \coqe{σ'}
+agree on the free variables of a term \coqe{t}, then the application of \coqe{σ} and \coqe{σ'}
+to \coqe{t} are equal.
+
+\begin{figure}[h]
+  \coqfile{./code/PCUICSubstitution.v}
+  \caption{Well-formed substitution (\pcuicline{Substitution}{subslet}{44})}
+  \label{fig:meta-subslet}
+\end{figure}
+
+A last point of interest is the definition of a well-formed substitution, a predicate called
+\pcuicline{Substitution}{subslet}{44}. Indeed the usual typing judgment for substitutions
+is of the form $\Delta \vdash \sigma \ty \Gamma$, meaning that
+$\sigma$ maps each assumption $(x : A) \in \Gamma$ to a term $t$ such that
+$\Delta \vdash t \ty \multisubs{T}{\sigma}$. But in our setting we must account for variables
+that can be \emph{defined} in $\Delta$. This leads to the definition of a well-formed substitution as in \cref{fig:meta-subslet}.
+A similar definition, called \pcuicline[Syntax]{InstDef}{well\_subst}{65}, is also available for
+instantiations.
 
 \section[Confluence]{Things Get Serious: Confluence}
 \label{sec:pcuic-confluence}
