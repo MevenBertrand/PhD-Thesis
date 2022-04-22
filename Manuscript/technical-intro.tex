@@ -468,6 +468,7 @@ with a check that the target type is indeed a well-formed type.
     \label{rule:cic-uconv-beta}
   \end{mathpar}
   \caption{Computation rule for functions}
+  \label{fig:cic-uconv-beta}
 \end{marginfigure}
 
 Regarding conversion itself, the first rule is \ruleref{rule:cic-uconv-beta},
@@ -1490,7 +1491,7 @@ by allowing $\P x : A.\ B \cum \P x : A'.\ B$ whenever $A \conv A'$ and $B \cum 
 Note that contrarily to other forms of subtyping, this does not allow for contravariant
 subtyping on the domain – that would correspond to $A' \cum A$ –, only for equivariant
 one – the domains should be convertible. This is because cumulativity is usually modelled
-using set inclusion \sidecite{Lee2011}, which extends straightforwardly to equivariant
+using set inclusion \sidecite{Lee2011}, which straightforwardly handles equivariant
 subtyping, but not so easily to contravariant subtyping.
 
 \begin{figure}
@@ -1612,7 +1613,7 @@ In the end, there are two \kl{top-level reductions} for definitions: they can be
 simplified right away into a substitution (\nameref{rule:zeta-red})%
 \sidenote{The notations are a bit misleading here: the local definition is part
 of the syntax of terms, while substitution is a meta-level operation. While the former
-encodes the latter in the syntax, they are very different!},
+encodes the latter in the syntax, they are quite different!},
 or recorded into the context and simplified only later on
 using \ruleref{rule:delta-red}.
 
@@ -1629,14 +1630,15 @@ using \ruleref{rule:delta-red}.
 
 \subsection{Global environments}
 
-\kl{PCUIC} offers a second way to record definitions, inside a so-called \intro{environment}.
+\kl{PCUIC} offers a second way to record definitions, inside a so-called
+\intro{global environment}.
 The difference between this and the addition of local definitions in a context we
 just saw is motivated by rather concrete considerations.
 The (local) context corresponds to definitions and abstractions
 encountered when type-checking a single proof or program, and should thus be relatively shallow
 – the order of magnitude is a dozen variables – but it might change very often, with variable
 being both added and abstracted over.
-The (global) environment, on the contrary, can become huge –
+The \kl{environment}, on the contrary, can become huge –
 corresponding to a whole library with thousands of components — but changes less often, and
 usually in a monotone way – new definitions are added, but not removed.
 Therefore, typing in \kl{PCUIC} actually has an extra parameter: it is of the form
@@ -1651,7 +1653,7 @@ only contain objects that are well-typed, together with other constraints, for i
 that inductive types respect the strict positivity criterion.
 
 There is a further use for this environment: it also records the level variables available for
-universes, and their constraints. Thus, in \kl{PCUIC}, universe levels are expressions,
+universes, and their constraints. Indeed, in \kl{PCUIC}, universe levels are expressions,
 and the order between expressions is relative to a given environment $\Sigma$.
 There are actually two kinds of those universe variables.
 The first are global ones, that are recorded in an ever-growing fashion in the environment.
@@ -1659,12 +1661,16 @@ This is the older approach, that was introduced in \kl{Coq} together with \kl{ty
 ambiguity}, following \sidetextcite{Pollack1992}.
 This approach is slightly not flexible enough, which is why a second kind of variables
 were more recently introduced \sidecite{Sozeau2014}. Those are attached locally to
-an entry in the environment, corresponding to a form of universe polymorphism, somewhat
-similar to the Hindley-Milner style of type polymorphism
-\sidecite{Hindley1969,Milner1978} widely used in the ML family of languages.
-They allow for instance to have a single polymorphic definition of categories,
+an entry in the environment, corresponding to a form of \intro{universe polymorphism},
+and each time such a definition is used it can be instantiated with new universe levels.%
+\sidenote{
+  This is somewhat similar to the Hindley-Milner style of type polymorphism
+  \cite{Hindley1969,Milner1978} widely used in the ML family of languages,
+  albeit with universe levels rather than types.
+}\margincite{Hindley1969}\margincite{Milner1978}
+This is for instance useful to have a single (polymorphic) definition of categories,
 and still be able to define the category – at level $j$ – of all categories
-– at a level $i < j$ –, by instantiating the same definition at different levels.
+– at a level $i < j$ –, by instantiating the definition at the two different levels $i$ and $j$.
 
 \subsection{Enhanced inductive types}
 

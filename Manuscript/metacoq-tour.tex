@@ -8,39 +8,325 @@
 \margintoc
 
 Before we can attempt to build a certified kernel, we need a thorough meta-theoretical study
-of the type system. This is necessary in order to show that the
-kernel preserves invariants – typically, well-typedness of the objects it manipulates.
+of the type system. This is necessary in order to show that the invariants used by the kernel – typically, well-typedness of the objects it manipulates – 
+re preserved during the type-checking algorithm.
 The use of these invariants goes beyond correctness:
-the conversion check performs evaluation of terms, and, since all functions in \kl{Coq}
-must be terminating,
-this evaluation is defined by well-founded induction on the normalization of well-typed terms.
+the conversion test used as a sub-routine by the \kl{kernel} needs to reduce terms, and,
+since all functions in \kl{Coq} must be terminating,
+this reduction is defined by well-founded induction on the normalization of well-typed terms.
 Since evaluation is not normalizing on ill-typed terms, the mere \emph{definition} of the
 conversion check relies on \kl{preservation} to be able to iterate reduction steps.
 
-The properties under scrutinee here are not new,
+The properties under scrutinee in this chapter are not new,
 and neither are the basic strategy of most proofs.
 Indeed, the development roughly follows the architecture we already exposed in
-\cref{sec:tech-properties}. The main difficulty is the scale of the proofs: due to the
+\cref{sec:tech-properties}. The main difficulty is the scale: due to the
 complexity of \kl{PCUIC}, even well-understood techniques are challenging to apply.
 Moreover, subtleties that do not appear in a simpler setting become apparent –
 typically pertaining to universe levels or general inductive types –,
 demanding original ideas. Thus, rather than getting lost in
-the gory details of the formalisation which are best understood by looking at
-– and maybe replaying – it, we try and focus on these interesting subtleties.
+the gory details of the formalization which are best understood by looking at it
+– and maybe replaying it –, we try and focus on describing these interesting subtleties.
 
 In more details, we start with the main definitions : the syntax, and conversion and typing
-judgments (\cref{sec:pcuic-defs}). We follow (\cref{sec:pcuic-stabilities}) by the basic
+judgments (\cref{sec:meta-defs}). We follow (\cref{sec:meta-stabilities}) by the basic
 stability properties: renaming, substitution, environment extension, etc.
 Next comes the first important proof, that of confluence, and its multiple consequences
-(\cref{sec:pcuic-confluence}). This leads to the properties pertaining to typing, culminating
-with subject reduction (\cref{sec:pcuic-typing-prop}).
+(\cref{sec:meta-confluence}). This leads to the properties pertaining to typing, culminating
+with subject reduction (\cref{sec:meta-typing-prop}).
 Finally, we discuss the place of normalization.
 
-\section[Terms, Conversion and Types]{Setting up the Definitions: Terms, Conversion and Types}
-\label{sec:pcuic-defs}
+\section[Terms, Cumulativity and Types]{Setting up the Definitions: Terms, Cumulativity and Types}
+\label{sec:meta-defs}
+
+\subsection{Terms}
+
+First thing first: the syntax of terms, defined in \pcuicfile{Ast} and reproduced in \cref{fig:metacoq-ast}.
+
+\begin{figure*}
+  \coqfile{./code/PCUICAst.v}
+  \caption{The Abstract Syntax Tree of terms in \kl{MetaCoq} (\pcuicline{Ast}{term}{194})}
+  \label{fig:metacoq-ast}
+\end{figure*}
+
+It of course contains  the term formers introduced in \cref{chap:tech-intro}:
+\coqe{tRel} for variables, \coqe{tAbs} for abstractions,
+\coqe{tApp} for application, and \coqe{tProd} for dependent function types.
+The syntax uses de Bruijn indices for binders – the integer argument of the \coqe{tVar}
+term former –, but names are still recorded, mainly for printing annotations, directly in the
+binders – this is the \coqe{aname} argument of \coqe{tProp} and \coqe{tAbs}.
+There are also local definitions, in the form of the \coqe{tLetIn} constructor,
+binding the term \coqe{b} of type \coqe{B} in \coqe{t}.
+
+The \coqe{tSort} constructor is for sorts – what we have called universe earlier.
+Its argument \coqe{Universe.t} represents its \kl{universe level}, which can be either $\Prop$
+or an algebraic expression based on universe variables, in order to handle \kl{typical ambiguity}.
+
+Next come \coqe{tVar} and \coqe{tEvar}, which
+correspond respectively to named variables and existential variables. These are never well-typed in
+the current formalization, and ignored in most of the development. Still, they are kept to be as
+faithful as possible to the representation of the \kl{Coq} kernel.
+Indeed, the inductive \coqe{term} corresponds directly to the
+\mintinline{OCaml}{constr} datatype used there.%
+\sidenote{The only differences are that the latter uses
+an n-ary application rather than a binary one, and casts that inform the \kl{kernel} as to
+which conversion algorithm to use, but which is left out since we implement only one.}
+
+Follow the three term formers \coqe{tConst}, \coqe{tInd} and
+\coqe{tConstruct} all refer to previous definitions, stored in a \kl{global environment}.
+The first corresponds to constants, that either have a body – definitions –
+or do not – axioms. The next two are respectively for
+inductive types and inductive constructors, respectively. Co-inductive and record types and
+constructors are also represented by these term formers, the information contained in the
+\coqe{inductive} argument is used to separate between them.
+All of these can be \kl{universe polymorphic}, in which case they must be instantiated
+with a list of universes – their \coqe{Instance.t} argument.
+
+The two subsequent \coqe{tCase} and \coqe{tProj} are destructors for (co-)inductive types. The
+latter is a \kl{projection}, used to destruct \kl{record types}. The former represents the
+pattern-matching construction. Its main components are the \kl{predicate} \coqe{p}, the
+\kl{scrutinee} \coqe{c} and the \kl{branches} \coqe{brs}.
+
+Finally, the two very similar \coqe{tFix} and \coqe{tCoFix} are for (co-)fixed-points. 
+These can be mutual: the \coqe{mfix} argument is a list of definitions,
+that can each refer each other.
+
+\subsection{Cumulativity}
+
+The next important definition is that of \kl{cumulativity}, given in \pcuicfile{CumulativitySpec}.%
+\sidenote{The “Spec” part comes from the fact that this is the \emph{specification} of conversion,
+by contrast to the algorithmic version encountered later on.}
+It is stated in the \kl[declarative conversion]{declarative} \kl(conv){untyped} fashion,
+akin to how we defined \kl{declarative conversion} in
+\cref{fig:cic-uconv-beta,fig:cic-uconv-equiv,fig:cic-uconv-cong}.
+This time, however, it is done relatively to
+both a \kl{global environment} \coqe{Σ} and a context \coqe{Γ},
+as these contain definitions that \kl{cumulativity} can unfold.
+
+\kl{Cumulativity} is defined mutually with \kl{conversion}, because for instance when two Π-types
+are compared for \kl{cumulativity}, their codomains are recursively compared for \kl{cumulativity},
+but their domains are compared for \kl{conversion} instead.%
+\sidenote{As explained in \cref{sec:tech-pcuic},
+this is a consequence of the models justifying cumulativity.}
+Since the two relations are extremely similar, they are actually fused in a single
+inductive relation, \coqe{Σ ;;; Γ ⊢ t ≤s[pb] u}.
+This relation is indexed by a \intro{conversion problem} \coqe{pb : conv_pb}, which can take
+the two values \coqe{Conv} and \coqe{Cumul}, so that \kl{cumulativity}
+is actually \coqe{≤s[Cumul]} – and \kl{conversion} is
+\coqe{≤s[Conv]}. This has the advantage that a lot of definitions and proofs
+can be factored using \coqe{conv_pb}. Moreover, using a simple boolean allows for case reasoning
+when needed, which would not be possible if the index was \eg a relation.%
+\sidenote{This used to be the case prior to the uniform introduction of \coqe{conv_pb}: the
+relation was the one to be used at leaves to compare universes, which differed between 
+\kl{conversion} and \kl{cumulativity}.}
+
+\begin{figure}[h]
+  \ContinuedFloat*
+  \coqfile[firstline=4,lastline=15]{./code/PCUICCumulativitySpec.v}
+  \caption{Pre-order rules (\pcuicline{CumulativitySpec}{cumulSpec0}{29})}
+  \label{fig:meta-cumul-struct}
+\end{figure}
+
+The first set of rules are the pre-order rules of \cref{fig:meta-cumul-struct}:
+transitivity, symmetry and reflexivity. Note that symmetry restricts the \kl{conversion problem},
+since only \kl{conversion} should be symmetric. Using this rule twice shows that 
+\kl{conversion} is included inside transitivity.
+Another important thing to note is that symmetry is restricted: the middle term is required
+to have all its variables in the context \coqe{Γ}.%
+\sidenote{This is the \coqe{is_open_term} predicate.}
+This is key in proving the equivalence between this notion of \kl{cumulativity} and the
+algorithmic version that appears later on. Indeed, this equivalence relies on \kl{confluence},
+which is only true on well-scoped terms in \kl{PCUIC}. Thus, we need to know that this
+\kl{declarative conversion} only goes through well-scoped terms, which is exactly what this
+condition ensures.
+
+\begin{figure}[h]
+  \ContinuedFloat
+  \coqfile[firstline=19,lastline=32]{./code/PCUICCumulativitySpec.v}
+  \caption{Cumulativity rules (\pcuicline{CumulativitySpec}{cumulSpec0}{29})}
+  \label{fig:meta-cumul-cumul}
+\end{figure}
+
+\begin{figure}[ht]
+  \ContinuedFloat
+  \coqfile[firstline=55,lastline=59]{./code/PCUICCumulativitySpec.v}
+  \caption{Example of congruence rule (\pcuicline{CumulativitySpec}{cumulSpec0}{29})}
+  \label{fig:meta-cumul-cong}
+\end{figure}
+
+Next come the rules of congruence. There are actually two kinds of them. The first are the
+“standard” ones – similar to those of \cref{fig:cic-uconv-cong}. An example
+is given in \cref{fig:meta-cumul-cong}.
+More interesting are the rules of
+\cref{fig:meta-cumul-cumul}, which implement “real” cumulativity. Rule \coqe{cumul_Sort} directly
+implements subtyping between universes, while rules \coqe{cumul_Ind} and \coqe{cumul_Construct}
+implement cumulativity of inductive types \sidecite{Timany2017}. The latter two apply respectively
+to \emph{fully applied} inductive types and inductive constructors, that can be considered equal
+if their arguments are one-to-one convertible, and their universe levels are correctly related.
+This means that \eg the \coqe{nil} constructor of polymorphic lists \emph{always} satisfies that
+\coqe{nil@{u} A} is convertible \coqe{nil@{u'} A}, irrespective of the universe levels \coqe{u}
+and \coqe{u'}.
 
 
+Last, but not least, are the rules for computation.
 
+\begin{figure*}[h]
+  \ContinuedFloat
+  \coqfile[firstline=103,lastline=114]{./code/PCUICCumulativitySpec.v}
+  \caption{Computation rules for destructors (\pcuicline{CumulativitySpec}{cumulSpec0}{29})}
+  \label{fig:meta-cumul-dest}
+\end{figure*}
+
+The three rules of \cref{fig:meta-cumul-dest} are for destructors, \ie applied functions,
+pattern-matching on a constructor, and projections. The β rule for functions directly uses
+substitution: \coqe|b{0 := a}| denotes the substitution of \coqe{a} for the variable of de Bruijn
+index \coqe{0} in \coqe{b}. Similarly, the
+\coqe{iota_red} function computes the substitution of the branch \coqe{br} by the arguments
+of the constructor \coqe{args}.
+Finally, the rule for projections simply selects the right field of the record.
+
+\begin{figure*}[h]
+  \ContinuedFloat
+  \coqfile[firstline=117,lastline=126]{./code/PCUICCumulativitySpec.v}
+  \caption{Computation rules for definitions (\pcuicline{CumulativitySpec}{cumulSpec0}{29})}
+  \label{fig:meta-cumul-defs}
+\end{figure*}
+
+The next three rules deal with definitions. Rule \coqe{cumul_zeta} directly reduces a
+let-binder into a substitution, while \coqe{cumul_rel} and \coqe{cumul_delta} unfold a definition,
+respectively one that is present in the local context or in the global environment. In the latter
+case, the definition must be instantiated with a universe instance, which is denoted \coqe{@[u]}.
+
+\begin{figure}[h]
+  \ContinuedFloat
+  \coqfile[firstline=129,lastline=142]{./code/PCUICCumulativitySpec.v}
+  \caption{Computation rules for fixed-points (\pcuicline{CumulativitySpec}{cumulSpec0}{29})}
+  \label{fig:meta-cumul-fix}
+\end{figure}
+
+The last rules – \cref{fig:meta-cumul-fix} – pertain to the reduction of (co-)fixed-points.
+In all cases, they are unfolded in a guarded fashion, in order to avoid a non-terminating behaviour.
+On fixed-points, this guard is that they have to be applied to a constructor,
+and dually co-fixed-points are unfolded when
+they are forced, either by a pattern-matching or a projection. In both cases, this ensures that
+the unfolded (co-)fixed-point can reduce further, either by consuming the constructor of
+its recursive argument, or by producing a constructor to be consumed by the destructor
+that forced the unfolding.
+
+\subsection{Typing}
+
+With the \kl{cumulativity} relation defined, we can turn to typing, defined in \pcuicfile{Typing}.
+As for \kl{cumulativity}, typing is an inductively defined relation \coqe{Σ ;;; Γ |- t : T},
+relative to a global environment \coqe{Σ} and a local context \coqe{Γ}.
+The rules correspond roughly to ones we already went over in \cref{chap:tech-intro}.
+
+\begin{figure}
+  \ContinuedFloat*
+  \coqfile[firstline=2,lastline=22]{./code/PCUICTyping.v}
+  \caption{\kl{CCω} fragment (\pcuicline{Typing}{typing}{188})}
+  \label{fig:meta-typing-ccw}
+\end{figure}
+
+The first set of typing rules pertain to the \kl{CCω} fragment. There are not many differences
+there with respect to \cref{fig:ccw-typing}. Rule \coqe{type_Rel} looks up the type of the
+variable in the context, and ensures that said context is well-formed:
+the \coqe{wf_local} predicate corresponds to $\vdash \Gamma$, but here as everything else it is
+relative to a global environment. Rule \coqe{type_Sort} uses the \coqe{super} function to compute
+the successor of an algebraic universe, and similarly Rule \coqe{type_Prod} uses the
+\coqe{sort_of product} to compute the universe level of a Π-type%
+\sidenote{This not only includes computing the maximum of two algebraic universes expressions,
+but also handling the \kl{impredicativity} of the $\Prop$ sort.}
+Context extension with an assumption, \ie a variable without a body,
+is written \coqe{Γ ,, vass na A}, and used as expected in Rules \coqe{type_Prod}
+and \coqe{type_Lambda}. Finally, \coqe{type_App} is for application. It contains a “paranoid”
+assumption that the product is well-formed, which is not strictly speaking needed once we
+prove \kl{validity}, but is useful in some cases to provide a needed induction hypothesis.
+
+\begin{figure}
+  \ContinuedFloat
+  \coqfile[firstline=23,lastline=27]{./code/PCUICTyping.v}
+  \caption{Local definitions (\pcuicline{Typing}{typing}{188})}
+  \label{fig:meta-typing-letin}
+\end{figure}
+
+The rule for local definitions, given in \cref{fig:meta-typing-letin}, is similar to the one
+for λ-abstractions, with the only difference that the body too is typed, and that the context
+is extended with a definition, \ie a variable with a body.
+
+\begin{figure*}[h!]
+  \ContinuedFloat
+  \coqfile[firstline=28,lastline=42]{./code/PCUICTyping.v}
+  \caption{Globally defined terms (\pcuicline{Typing}{typing}{188})}
+  \label{fig:meta-typing-genv}
+\end{figure*}
+
+Next (\cref{fig:meta-typing-genv}) are the three rules performing look-ups in
+the \kl{global environment}, respectively constants – \coqe{type_Const} –, inductive types –
+\coqe{type_Ind} – and inductive constructors – \coqe{type_Construct}. In all cases the
+term should be declared in the \kl{global environment}, the context well-formed
+– since these are leaves of a term –,
+and the universe instance given should respect the constraints coming from the
+entry in the \kl{environment} – this is the \coqe{consistent_instance_ext} predicate.
+
+\begin{figure*}[h]
+  \ContinuedFloat
+  \coqfile[firstline=43,lastline=58]{./code/PCUICTyping.v}
+  \caption{(Co-)inductive destructors (\pcuicline{Typing}{typing}{188})}
+  \label{fig:meta-typing-idest}
+\end{figure*}
+
+The rules of \cref{fig:meta-typing-idest} are the ones for the destructors of (co-)inductive
+types. Rule \coqe{type_Case} is somewhat similar to \eg \ruleref{rule:bool-ind}: the \kl{scrutinee}
+should be of an inductive type, and the \kl{predicate} and \kl{branches} should all be well-typed
+in the appropriate context. The main complexities are to build these contexts, and
+\coqe{case_side_conditions}, which handles universe instances, checks
+that the elimination is allowed%
+\sidenote{This is where \kl{PCUIC} enforces \kl{proof irrelevance}, by imposing the so-called
+“singleton elimination” criterion, which ensures that only inductive
+types of a certain specific shape – sub-singletons – can be matched on to build proof relevant
+content, so that that content cannot actually depend on the value of a proof.}…
+The second rule, \coqe{type_Proj} is somewhat similar, albeit a bit simpler: the \kl{scrutinee}
+should still be some applied co-inductive/record type, and the type is constructed by
+substitution from the projection information.
+
+\begin{figure}[h]
+  \ContinuedFloat
+  \coqfile[firstline=59,lastline=74]{./code/PCUICTyping.v}
+  \caption{(Co-)fixed-points (\pcuicline{Typing}{typing}{188})}
+  \label{fig:meta-typing-fix}
+\end{figure}
+
+The last typing rules for terms are those for (co-)fixed-points,
+given in \cref{fig:meta-typing-fix}. They are almost identical,
+the main part amounts to checking that the types and bodies of all
+the mutually definitions are well-typed.
+The \coqe{wf_fixpoint} and \coqe{wf_cofixpoint} both check that the mutual definitions are on
+the same block of mutually-defined (co-)inductive types, and that these are of the right kind –
+inductives for \coqe{tFix} and co-inductives for \coqe{tCoFix}.
+Finally, the \coqe{fix_guard} and \coqe{cofix_guard} predicates correspond to the guard condition,
+ensuring that the definitions do not endanger \kl{normalization}. We come back to those in
+\cref{sec:meta-normalization}.
+
+\begin{figure}[h]
+  \ContinuedFloat
+  \coqfile[firstline=75,lastline=79]{./code/PCUICTyping.v}
+  \caption{Cumulativity (\pcuicline{Typing}{typing}{188})}
+  \label{fig:meta-typing-cumul}
+\end{figure}
+
+The final rule is that which uses \kl{cumulativity} as just defined
+to change the type of the term, \eg \ruleref{rule:cic-cum}.
+
+From the definition of \pcuicline{Typing}{typing}{188}, two more pervasively used definitions
+follow. We have already encountered \pcuicline{PCUICTyping}{wf\_local}{284},
+asserting that a local context is well-formed.
+Its sibling predicate \pcuicline{PCUICTyping}{wf}{439}%
+\sidenote{Sometimes replaced by \pcuicline{PCUICTyping}{wf\_ext}{444},
+an extension that takes into account the universes of the current definitions.}
+asserts that the \kl{global environment} is well-formed. It ensures not only that all definitions
+are properly typed, but also of the validity of various information
+related to inductive types – in particular the positivity criterion which ensures that inductive
+definitions are well-founded – and universe polymorphism.
 
 \section[Stabilities]{The Easy Properties: Stabilities}
 \label{sec:pcuic-stabilities}
@@ -48,8 +334,9 @@ Finally, we discuss the place of normalization.
 \section[Confluence]{Things Get Serious: Confluence}
 \label{sec:pcuic-confluence}
 
+
 \section[Properties of Typing]{Reaping the Fruits: Properties of Typing}
-\label{sec:pcuic-typing-prop}
+\label{sec:meta-typing-prop}
 
 \section[Normalization]{Gödel’s Thorn in the Side: Normalization}
-\label{sec:pcuic-normalization}
+\label{sec:meta-normalization}

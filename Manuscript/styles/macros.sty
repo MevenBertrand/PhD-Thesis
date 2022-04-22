@@ -84,7 +84,7 @@
 % Third mandatory argument: line
 \NewDocumentCommand{\pcuicline}{o O{PCUIC} m m m}{%
   {\href{https://github.com/MetaCoq/metacoq/blob/coq-8.14/pcuic/theories/%
-    \IfValueT{#1}{#1/}#2#3.v\#L#5}{#4}}%
+    \IfValueT{#1}{#1/}#2#3.v\#L#5}{\firacode #4}}%
 }
 
 

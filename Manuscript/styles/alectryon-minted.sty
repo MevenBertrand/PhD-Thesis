@@ -6,7 +6,7 @@
 % See https://tex.stackexchange.com/questions/515641/minted-error-when-using-customized-fontfamily
 \newfontfamily\firacode{Fira Code}
   [BoldFont={Fira Code Medium},Contextuals={Alternate},
-  NFSSFamily=FiraCode,Scale=MatchLowercase]%
+  NFSSFamily=FiraCode,Scale=MatchLowercase,ScaleAgain=0.95]%
 \RequirePackage{lstfiracode}
 \ActivateVerbatimLigatures
 
@@ -21,6 +21,11 @@
 \newmintinline[coqe]
   {/home/meven/.local/lib/python3.8/site-packages/alectryon/pygments_lexer.py:CoqLexer -x}
   {}
+
+\newmintedfile[coqfile]
+  {/home/meven/.local/lib/python3.8/site-packages/alectryon/pygments_lexer.py:CoqLexer -x}
+  {}
+
 
 \ExplSyntaxOn
 \NewDocumentCommand{\mintedstring}{mv}
