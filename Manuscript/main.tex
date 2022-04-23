@@ -36,7 +36,7 @@
 \usepackage{styles/macros}
 \usepackage{styles/alectryon-minted}
 
-\includeonly{technical-intro,metacoq-intro,metacoq-tour}
+% \includeonly{header,intro-fr,toc,intro-en,technical-intro}
 
 \graphicspath{{./figures/}} % Paths where images are looked for
 
@@ -51,7 +51,6 @@
 %----------------------------------------------------------------------------------------
 
 \mainmatter % Denotes the start of the main document content, resets page numbering and uses arabic numbers
-\setchapterstyle{kao} % Choose the default chapter heading style
 
 \selectlanguage{french}
 
@@ -123,5 +122,9 @@
 % The index needs to be compiled on the command line with 'makeindex main' from the template directory
 
 % \printindex % Output the index
+
+\newpage \mbox{}
+\cleardoubleevenemptypage
+\includepdf[pages=2]{../MathSTICTemplate/main.pdf}
 
 \end{document}

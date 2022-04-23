@@ -1,10 +1,10 @@
-\chapter{Introduction (English)}
+\chapter{Introduction}
 \label{chap:intro-en}
 
 \margintoc
 
 This thesis belongs to the domain of \kl[dependent type]{type theory}, itself
-at the crossroads between computer science and mathematical logics.
+at the crossroads between computer science and mathematical logic.
 One of its goals is to give theoretical and practical foundations
 for software tools helping humans in constructing and verifying proofs –
 in the mathematical sense.
@@ -12,19 +12,19 @@ Such tools are called \kl{proof assistants}, and in this thesis one of them, on
 which my work was mainly focused, is central: \kl{Coq}.
 
 To replace this work in its larger context, this introduction begins with a very
-short history of mathematical logics (\cref{sec:logic-history}), which exposes the
-main questions of the field. Follows a presentation of the links between logics and
+short history of mathematical logic (\cref{sec:logic-history}), which exposes the
+main questions of the field. Follows a presentation of the links between logic and
 computer science, through \kl{proof assistants} (\cref{sec:proof-assistants}).
 Next, \cref{sec:intro-coq-en} focuses more closely on the research questions I worked on.
 Finally, \cref{sec:this-thesis} summarizes the contributions appearing in the rest of
 this thesis.
 
-\section{A very short history of logics}
+\section{A very short history of logic}
 \label{sec:logic-history}
 
 \subsection{Syllogisms}
 
-The main question that logics looks to answer is that of finding criteria in order to determine
+The main question that logic looks to answer is that of finding criteria in order to determine
 if a reasoning is valid. In Western tradition, this challenge can be traced back to the
 Antiquity, and particularly to Aristotle's \textit{Organon}.
 The main contribution of this work is to introduce the notion of syllogism.
@@ -36,7 +36,7 @@ If complex reasoning is built from assembling such syllogisms, it must necessari
 a whole, since every assembled fragment is. There are here two important ideas.
 
 The first is that reasoning can be valid or not, depending only on its structure,
-independently of its content. Indeed, the whole focus of logics as a discipline from that
+independently of its content. Indeed, the whole focus of logic as a discipline from that
 point on will concentrate on this structure which underlies reasoning.
 It can be syllogisms, but many other systems. We will come across a certain number of them
 in this thesis!
@@ -47,26 +47,26 @@ one has identified as valid \textit{a priori}, we have a means to ensure the val
 of potentially very complex reasoning. In order to do so, it suffices to verify that these
 can be decomposed into the base components.
 
-At that time already, logics was conceived as a means towards communication.
+At that time already, logic was conceived as a means towards communication.
 The aim was of course to check one’s own reasoning, but also to be able to convey
 it, by fixing a logical formal system%
 \sidenote{Structural rules reasoning should obey, as those of syllogisms.}.
 A person wanting their conclusion to be accepted by others only has to express their
 reasoning in a perfectly precise way in the framework of such a formal system.
 
-The main challenge of logics is thus to construct such a formal system, adapted to a specific
-field of reasoning. In the case we are interested in, mathematical logics, this
+The main challenge of logic is thus to construct such a formal system, adapted to a specific
+field of reasoning. In the case we are interested in, mathematical logic, this
 enables us to give a precise meaning to what constitutes a valid mathematical proof.
 
 
-\subsection{The beginning of mathematical logics: towards a formal foundation}[Towards a formal foundation]
+\subsection{The beginning of mathematical logic: towards a formal foundation}[Towards a formal foundation]
 
-Following Aristotle, mathematicians seized logics in order to build a formal system
+Following Aristotle, mathematicians seized logic in order to build a formal system
 able to serve as a rigorous foundation for mathematics.
-Even though the links between logics and mathematics go back to Greek Antiquity,
+Even though the links between logic and mathematics go back to Greek Antiquity,
 important progress was made during the 19\textsuperscript{th} century, on two main aspects.
 
-The first consisted in freeing mathematical logics from natural languages%
+The first consisted in freeing mathematical logic from natural languages%
 \sidenote{By opposition with the formal languages which appear in mathematics,
   computer science, etc.},
 unsuited to a formal description of deduction, and to instead design a new form of language
@@ -148,7 +148,7 @@ only about provability \emph{relatively to a given system}.
 \subsection{A satisfying situation ?}
 
 Despite the difficulties put into light in the beginning of the 20\textsuperscript{th}
-century, the research in mathematical logics came to a globally satisfying situation.
+century, the research in mathematical logic came to a globally satisfying situation.
 First, ZFC is a reasonable formal system on which mathematics can be founded. Moreover,
 the mathematical community is globally convinced it would be \emph{theoretically} possible
 to write down all mathematics using ZFC. This is enough for most of its members,
@@ -225,11 +225,11 @@ This mathematical certainty is much more reliable than any test set!
 In this field, numerous projects have already achieved large scale programs, entirely proven
 correct: compiler for the C language \sidecite{Kaestner2017}, cryptographic protocols \sidecite{Bhargavan2017}, ODE solving \sidecite{Immler2018}…
 
-\subsection{Logics, programming and type theory}
+\subsection{logic, programming and type theory}
 
 In order to work, proof assistants must be founded on a formal system, corresponding to
 the “rules” of the mathematical “game” they are supposed to enforce.
-Thus, they require a renewed study of mathematical logics, but with the practical aim of
+Thus, they require a renewed study of mathematical logic, but with the practical aim of
 building tools that are at the same time practical, powerful and easy to use.
 There are multiple families of proof assistants, based on relatively different formal systems.
 The one I am interested in in this thesis relies on the \kl{Curry-Howard correspondence}
@@ -284,7 +284,7 @@ based upon previous remarks by Curry \cite{Curry1958}.}%
 \margincite{Curry1958}
 Rather than a precise theorem,
 it is more of a very general concept, according to which two worlds closely resemble each
-other: on the one hand, that of logics and proofs, on the other that of programs
+other: on the one hand, that of logic and proofs, on the other that of programs
 and their types.
 
 A short example says more than a long abstract talk, so let’s look at the correspondence
@@ -329,7 +329,7 @@ example from the point of view of programming is the type $\Vect(A,n)$
 of vectors of length $n$. These are lists that contain exactly $n$ elements of type $A$ – with
 $n$ an integer.
 This type depends on $n$, in the sense that its inhabitants differ depending on its value.
-From the point of view of logics, this dependency corresponds to quantification: if we
+From the point of view of logic, this dependency corresponds to quantification: if we
 wish to express a universal property “for all $x$, the property $P(x)$ holds”, then we need
 the property $P$ to depend on $x$.
 Thanks to this ability to express quantification, dependent types are rich and powerful enough

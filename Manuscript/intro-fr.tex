@@ -1,4 +1,4 @@
-\chapter{Introduction (Français)}
+\chapter{Résumé en Français}
 \label{chap:intro-fr}
 
 \margintoc
@@ -407,13 +407,13 @@ preuve dont il sera le plus question dans cette thèse : \kl{Coq}.
 \subsection[Le noyau]{Le noyau, clé de voûte du système}
 
 \begin{figure}[h]
-
   \centering
   \includegraphics{./figures/coq-kernel-fr.pdf}
 
   \caption{L’architecture schématique de \kl{Coq}}
   \label{fig:coq}
 \end{figure}
+
 
 \kl{Coq} est basé sur la \kl{correspondance de Curry-Howard} : les preuves sont vues comme des programmes dans un langage appelé \intro(fr){Gallina},
 et leur vérification est effectuée par un algorithme proche
@@ -422,7 +422,12 @@ Cependant, si, dans les premières versions des années 80, \kl{Coq} ressemblait
 La raison est que la majeure partie de l’outil dans ses versions actuelles a
 pour but d’aider l’utilisatrice à générer une preuve correcte. C’est un véritable
 \kl[assistant à la preuve]{\emph{assistant} à la preuve} !
-Ce fonctionnement est illustré en \cref{fig:coq} : l’utilisatrice échange interactivement avec \kl{Coq}, qui utilise cette interaction pour générer un terme de preuve. Celui-ci est ensuite envoyé à une partie bien spécifique de l’outil, appelée \intro{noyau}.
+% \begin{marginfigure}
+%   \begin{center}
+%     \includegraphics[width=\textwidth]{coq-kernel-fr.pdf}
+%   \end{center}
+% \end{marginfigure}
+Ce fonctionnement est illustré ci-contre : l’utilisatrice échange interactivement avec \kl{Coq}, qui utilise cette interaction pour générer un terme de preuve. Celui-ci est ensuite envoyé à une partie bien spécifique de l’outil, appelée \intro{noyau}.
 C’est lui qui implémente l’algorithme de vérification de type, et s’assure ainsi de la correction des termes de preuve construits interactivement.
 Le \kl{noyau} est donc l’élément crucial de \kl{Coq}, car c’est lui – et lui seul – qui est responsable en dernier lieu de la validation des preuves.
 
@@ -537,7 +542,7 @@ au cadre de la logique.
 Mon travail de doctorat lui-même
 est centré principalement autour du typage bidirectionnel, sous
 trois aspects, correspondant aux trois parties de cette thèse.
-Elles sont précédées par le \cref{chap:intro-en}, traduction en anglais
+Elles sont précédées par le \cref{chap:intro-en}, version anglophone
 de ce chapitre, et le \cref{chap:tech-intro}, qui introduit les principales
 notions techniques utilisées dans la suite.
 

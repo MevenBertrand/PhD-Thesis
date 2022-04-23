@@ -4,7 +4,7 @@
 
 % \titlehead{Document Template}
 \title[Bidirectional Typing in the Calculus of Inductive Constructions]{Bidirectional Typing in the Calculus of Inductive Constructions}
-\subtitle{PhD Thesis}
+\subtitle{Doctoral Thesis}
 \author[M. Lennon-Bertrand]{Meven Lennon-Bertrand}
 \date{\today}
 % \publishers{An Awesome Publisher}
@@ -47,14 +47,16 @@
 %	DEDICATION
 %----------------------------------------------------------------------------------------
 
-\dedication{
-	% The harmony of the world is made manifest in Form and Number, and the heart and soul and all the poetry of Natural Philosophy are embodied in the concept of mathematical beauty.\\
-	% \flushright -- D'Arcy Wentworth Thompson
-}
+% \dedication{
+% 	% The harmony of the world is made manifest in Form and Number, and the heart and soul and all the poetry of Natural Philosophy are embodied in the concept of mathematical beauty.\\
+% 	% \flushright -- D'Arcy Wentworth Thompson
+% }
 
 %----------------------------------------------------------------------------------------
 %	OUTPUT TITLE PAGE AND PREVIOUS
 %----------------------------------------------------------------------------------------
+
+\includepdf[pages=1]{../MathSTICTemplate/main.pdf}
 
 % Note that \maketitle outputs the pages before here
 \maketitle
@@ -65,26 +67,27 @@
 
 \addchap{Abstract}
 
-“\kl{Coq} is an old man now, and it has a lot of scars”
+\emph{“\kl{Coq} is an old man now, and it has a lot of scars”}
 \cite[citing Assia Mahboubi]{QuantaPA}.
-Proof assistants have been around for 50 years now, and they have become a more and
-more established technology over time. This history is both a blessing and a curse: as
+
+Proof assistants have been around for 50 years now, and over time they have
+turned into an established technology. This history is both a blessing and a curse: as
 the field matured, the tools have become more and more complex, making them more and more
 powerful, but also more and more prone to critical bugs hiding in dark corners. At a time
-when they are gaining traction in an increasing number of communities,
-especially those concerned with high safety and security guarantees, this simply cannot be.
+when they are gaining traction in an increasing number of communities
+concerned with high safety and security guarantees, this simply cannot be.
 The historical solution of keeping a small, trusted \kl{kernel}
 – the so-called de Bruijn criterion –
-is  simply not enough if we wish to keep moving on and integrate more new complex features
+is  simply not enough if we wish to keep moving on and integrate new, powerful features
 to keep up with the needs of users.
 
 There is a straightforward solution to this:
-proof assistants have been used for decades to prove
-programs correct. Why could they not prove \emph{themselves} correct? After all, if this is
+proof assistants have been used for decades to certify programs correctness.
+Why could they not prove \emph{themselves} correct? After all, if this is
 the golden standard we demand for software, it should apply first and foremost to the ones
 used to justify that trust. For the proof assistant \kl{Coq},
 this is the ambition of the \kl{MetaCoq} project,
-which aims at providing a drop-in replacement for \kl{Coq}’s \kl{kernel}, but one that has been
+which aims at providing a drop-in replacement for \kl{Coq}’s \kl{kernel} that has been
 fully proven correct, even though it handles all the subtleties and quirks of said \kl{kernel}.
 No more trusting a complex and ever-evolving implementation, trust the formally validated
 \emph{proofs} instead!
@@ -98,15 +101,15 @@ it has been rather little studied in the context of the \kl{Calculus of Inductiv
 (\kl{CIC}), the theoretical foundation of \kl{Coq} – but also of the closely related
 \kl{Agda}, \kl{Lean}…
 
-This thesis aims at filling that gap, by providing a thorough study of this bidirectional
-structure, formalized in the setting of the \kl{MetaCoq} project. This is a key
+This thesis aims at filling that gap, by providing a thorough study of bidirectional CIC,
+formalized in the framework offered by \kl{MetaCoq} project. This is a key
 ingredient in the first formal proof of correctness and completeness of a type-checking
-algorithm for (a significant subset of) \kl{Coq}, which was able to catch bugs that had gone
-unnoticed until then.
-But it is also an interesting theoretical tool in its own right, giving a form of control
-over computation that turns out to be crucial in quite a few situations.
+algorithm for a realistic proof assistant kernel.
+It was also able to catch bugs in \kl{Coq}’s kernel that had gone unnoticed until then.
 
-In particular, bidirectional typing is a necessary piece in the design of a gradual extension of
+But bidirectional typing is also an interesting theoretical tool in its own right,
+giving a valuable form of control over computation, that can turn out to be crucial.
+In particular, it is a necessary piece in the design of a gradual extension of
 \kl{CIC}, \kl{GCIC}.
 \kl{Gradual typing} aims at giving programmers in one and the same system the flexibility of
 development offered by dynamic typing, and the strong guarantees offered
@@ -116,7 +119,7 @@ and, by using the power of the \kl{Curry-Howard correspondence}, to proof writin
 But this flexibility comes with subtle difficulties, that can only be solved in a bidirectional
 setting.
 
-The first part of the thesis gives a theoretical account of bidirectional typing; the second
+The first part of the thesis thus gives a theoretical account of bidirectional typing; the second
 describes the formalization of the ideas of the first section in the setting of \kl{MetaCoq};
 the third and last introduces \kl{GCIC} and its properties.
 
