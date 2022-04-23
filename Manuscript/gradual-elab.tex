@@ -368,7 +368,7 @@ error type.
       \tcol{\List(A)} \noteq \tcol{\stalkCIC{j}{I}} \text{ for  $j \geq i$}
     }{
       \tcol{\castrev{t}{\List(A)}{\?[\uni[i]]}} \tred
-      \tcol{\cast{\List(A)}{\?[\uni[i]]} \Leftarrow \stalkCIC{i}{\List}}{t}
+      \tcol{\cast{\List(A)}{\?[\uni[i]] \Leftarrow \stalkCIC{i}{\List}}{t}}
     } \label{rule:ind-germ} \and
   %
     \inferdef{Up-Down}{
@@ -467,7 +467,7 @@ give rise to a \kl{neutral form}.
     \inferrule{
       \tcol{T} \in \{ \tcol{\uni},\tcol{\List(A)}, \tcol{\?[\uni]}, \tcol{\err[\uni]} \}
     }{\nm \tcol{\?[T]}} \and
-		\inferrule{\ne \tcol{t}}{\ne \tcol{\?[t]}} \and
+		\inferrule{\ne \tcol{t}}{\ne \tcol{\?[t]}} \\
     \inferrule{
       \tcol{T} \in \{ \tcol{\uni},\tcol{\List(A)}, \tcol{\?[\uni]}, \tcol{\err[\uni]} \}
     }{\nm \tcol{\err[T]}} \and
@@ -483,8 +483,9 @@ and is canonical when $\tcol{t}$ is a canonical type – one of the canonical ty
 or the \kl{unknown} or \kl{error} types, but not a Π-type.
 This is detailed in \cref{fig:ccic-nor-exc}.
 This is because exception-like terms reduce on Π-types – see \ruleref{rule:red-prod-unk},
-and \sidetextcite{Pedrot2018}.
+and \sidetextcite[0em]{Pedrot2018}.
 
+Second come the canonical form for inhabitants of $\tcol{\?[\uni]}$:%
 \begin{marginfigure}
   \ContinuedFloat
   \begin{mathpar}
@@ -493,12 +494,11 @@ and \sidetextcite{Pedrot2018}.
   \caption{Cast as a canonical form of the unknown type}
   \label{fig:ccic-cast-nor}
 \end{marginfigure}
-
-Second come the canonical form for inhabitants of $\tcol{\?[\uni]}$:
 these are upcasts from a germ, which can be seen as a term tagged
 with the head constructor of its type, in a matter reminiscent of
 actual implementations of dynamic typing using type tags.
 These canonical forms work as constructors for $\tcol{\?[\uni]}$.
+
 
 \begin{figure}[h]
   \ContinuedFloat

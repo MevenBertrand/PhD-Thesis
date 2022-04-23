@@ -126,7 +126,9 @@ The search for a formal system adequate as a foundation for mathematics however 
 second major difficulty: Gödel’s incompleteness theorem \sidecite{Goedel1931}. It asserts
 that a formal system in which one can construct integers such as those of Peano – and so
 \textit{a fortiori} any system rich enough to serve mathematician’s needs – cannot
-prove its own consistency. Thus, no formal system can serve as a basis for mathematics
+prove its own consistency%
+\sidenote{Unless the system is inconsistent, in which case it can prove \emph{everything}.}.
+Thus, no formal system can serve as a basis for mathematics
 with a formal certitude as to its adequacy.
 Indeed, as we cannot prove the consistency of the system in itself, it could very well
 turn out to be inconsistent, ruining all the efforts put into its use – just like what
@@ -393,7 +395,7 @@ consists in implementing a type-checking algorithm as close as possible to the o
 \sidenote{Indeed, thanks to the \kl{Curry-Howard correspondence}, \kl{Gallina} is of
 course a proof language, but also a true programming language!}.
 We show, while defining the algorithm, that it is indeed \reintro(bidir){correct}%
-\sidenote{If the algorithm pretends that a term is well-typed, then it is the case.}
+\sidenote{If the algorithm claims that a term is well-typed, then it is the case.}
 and \reintro(bidir){complete}%
 \sidenote{The algorithm answers positively on all well-typed programs.}.
 Finally, in a third step, we extract out of this certified \kl{Gallina} program another

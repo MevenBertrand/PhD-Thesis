@@ -235,7 +235,8 @@ and then any other type: for instance, $\z \ascop \? \ascop \Bool$ is a
 well-typed closed term of type $\Bool$.%
 \sidenote{
   We write $\intro*\asc{a}{A}$ for a type \intro{ascription}, which we define as syntactic sugar
-  for $(\l x:A.\ x)\ a$ \cite{Siek2006}; in
+  for $(\l x:A.\ x)\ a$ \cite{Siek2006}, used to “force” the term $a$ to inhabit type $A$ –
+  so $\z \ascop \? \ascop \Bool$ is $(\z \ascop \?) \ascop \Bool$. In
   other systems, it is taken as a primitive notion \cite{Garcia2016}.}%
 \margincite{Siek2006}%
 \margincite{Garcia2016}
@@ -248,7 +249,7 @@ of canonical forms must be extended.
 \AP Second, \kl{normalization} is endangered.
 The quintessential example of non-termination in the untyped lambda calculus is the
 term $\Omega$, defined as $\delta~\delta$
-where $\delta$ is $\l x.\ x\ x)$.
+where $\delta$ is $\l x.(\ x\ x)$.
 In the \intro{simply-typed lambda calculus}%
   \sidenote{Hereafter abbreviated as \intro{STLC}.},
 as in \kl{CIC}, \emph{self-applications} like $\delta\ \delta$ and $x\ x$ are ill-typed.
@@ -276,7 +277,7 @@ an axiom for any term (be it a program or a proof) that one does not feel like p
 
 \AP Indeed, we can augment \kl{CIC} with a wildcard axiom $\intro*\axiom \ty \P A : \uni.\ A$.
 The resulting system, called \intro{CICax}, has an obvious practical benefit: we can use
-$\axiom A$%
+$\axiom A$
 %\sidenote{Hereafter written $\axiom[A]$.}
 as a wildcard whenever we are
 asked to exhibit an inhabitant of some type $A$ and we do not (yet) want to.
@@ -318,7 +319,7 @@ Because \kl{CICax} amounts to working in \kl{CIC}
 with an initial context extended with $\axiom$, this theory
 satisfies \kl{normalization} as much as \kl{CIC}, so conversion remains decidable.
 However, \kl{CICax} lacks a satisfying notion of \kl{safety}, because 
-there is an \emph{infinite} number \emph{stuck} terms
+there is an \emph{infinite} number of \emph{stuck} terms
 that inhabit any type \coqe{A}.
 %
 For instance, in $\Bool$, we not only have the normal forms $\true$,
@@ -346,7 +347,7 @@ For instance, in \kl{ExTT} the following conversion holds:
 \AP Notably, such exceptions are \intro{call-by-name} exceptions, so one can only
 discriminate exceptions on positive types – \ie inductive types –, not on negative
 types – \ie function types. In particular, in \kl{ExTT}, $\rai[A \to B]$ reduces to
-$\l x : A.\ \rai[B]$ are \kl{convertible}.
+$\l x : A.\ \rai[B]$.
 So $\rai[A]$ is a normal form of $A$ only if $A$ is a positive type.
 
 \kl{ExTT} has a number of interesting properties. It is
@@ -490,7 +491,9 @@ However, \sidetextcite{Siek2015} observed that this characterization left too ma
 possibilities for the impact of type information on program behaviour,
 compared to what was originally intended \sidecite{Siek2006}.
 %
-Consequently, \textcite{Siek2015} brought forth type \intro{precision} – denoted $\intro*\pre$ –
+Consequently, \textcite{Siek2015} brought forth type \intro{precision}%
+\sidenote{Denoted $\intro*\pre$: $A \pre B$ means that $A$ is more precise than $B$,
+\ie that $A$ contains more static information than $B$.}
 as the key notion, from which consistency can be derived: two types $A$ and $B$
 are consistent if and only if there exists $T$ such that $T \pre A$ and $T \pre B$.
 The \kl{unknown type} $\?$ is the most imprecise type of all,
@@ -526,7 +529,7 @@ over as-yet-untyped terms: typeability is the \emph{consequence} of the \kl{SGG}
 \AP The \kl{dynamic gradual guarantee} (\intro{DGG}) is the key result that
 links the syntactic notion of precision to reduction:
 if $t \pre t'$ and $t$ reduces to some value $v$, then
-$t'$ reduces to some value $v'$ such that $v precise v'$;
+$t'$ reduces to some value $v'$ such that $v \pre v'$;
 and if $t$ diverges, then so does $t'$.
 This  entails that $t \pre t'$ means that $t$ may \kl{error} more than $t'$,
 but otherwise they should behave the same.
@@ -609,7 +612,7 @@ Technically, the adjunction part states that if we have $A \pre B$, a term $a$ o
 and a term $b$ of type $B$, then $a \pre \asc{b}{A}$ if and only if $\asc{a}{B} \pre b$.
 %
 \AP The retraction part further states that $a$ is not only more \kl{precise}
-than$\asc{\asc{a}{B}}{A}$ – which is given by the unit of the adjunction –
+than $\asc{\asc{a}{B}}{A}$ – which is given by the unit of the adjunction –
 but is \reintro{equi-precise} to it – noted $t \intro*\equiprecise \asc{\asc{t}{B}}{A}$.
 Because the \kl{DGG} dictates that precision implies \kl{observational error-approximation},
 \kl{equi-precision} implies \kl{observational equivalence},
@@ -660,7 +663,7 @@ requires reconsidering several aspects.
 %
 In the simply-typed setting, there is a clear stratification: $\?$ is at the type level,
 $\err$ is at the term level. Likewise, type \kl{precision}, with $\?$ as greatest element,
-is separate from term \kl{precision}, with $\err$ as least element.
+is distinct from term \kl{precision}, with $\err$ as least element.
 In the absence of a type/term syntactic distinction as in \kl{CIC},
 this stratification is untenable.
 
@@ -728,7 +731,7 @@ not syntactic equality.
 for a binary type predicate $P$, its \intro{consistent lifting} $\mathop{\tilde{P}}(A,B)$ holds
 if there exist static types $A'$ and $B'$ in the denotation%
 \sidenote{Concretization, in abstract interpretation parlance.}
-of $A$ and $B$, respectively, such that $\mathop{P}(A,B)$.
+of $A$ and $B$, respectively, such that $\mathop{P}(A',B')$.
 As observed by \sidecite{Castagna2019}, when applied to equality,
 this defines \kl(grad){consistency} as a unification problem.
 Therefore, the \kl{consistent lifting} of \kl{conversion} ought to be that two terms
@@ -1060,7 +1063,7 @@ its role is to control universe levels during the reduction of type casts betwee
 We only allow this reduction parameter to be loose – \ie~using maximum –
 if the typing parameter is also loose. Indeed, letting the typing parameter be strict 
 – \ie using successor of the maximum – while the reduction parameter is loose
-breaks subject reduction, and hence \kl{safety}
+breaks subject reduction, and hence \kl{safety}.
 
 \paragraph{… and three meaningful theories.}
 
