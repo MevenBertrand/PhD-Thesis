@@ -15,12 +15,17 @@
 \subsection{McBride’s discipline}
 
 \AP To design our bidirectional type system, we follow a discipline exposed by McBride
-\sidecite[3em]{McBride2018,McBride2019}.
+\sidecite[1em]{McBride2018,McBride2019}.%
+\sidenote[][5em]{
+  \textcite[Section 4]{Dunfield2021} report on a more involved approach that they call
+”Pfenning’s recipe”. But their main criterion is \emph{mode-correctness}, related
+closely to McBride’s discipline.}%
+\margincite[12em]{Dunfield2021}
 The central point is to distinguish in a judgement between three \intro{modes}:
 the \reintro{subject},
 whose well-formedness is under scrutiny, \reintro{inputs},
-whose well-formedness is a condition for it to be meaningful,
-and \reintro{outputs}, whose well-formedness is a consequence of it.
+whose well-formedness is a condition for the judgement to be meaningful,
+and \reintro{outputs}, whose well-formedness should be a consequence of the judgement.
 By \intro{well-formed}, which we use indistinctly for contexts, terms and types,
 we mean:
 \begin{itemize}
