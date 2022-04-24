@@ -362,7 +362,7 @@ error type.
     }{
       \tcol{\castrev{f}{\P x:A.\ B}{\?[\uni[i]]}} \tred
       \tcol{\cast{\P x:A.\ B}{\?[\uni[i]] \Leftarrow \stalkCIC{i}{\P}}{f}}
-    }[Π-Germ] \label{rule:prod-germ} \and
+    } \label{rule:prod-germ} \and
   %
     \inferdef{List-Germ}{
       \tcol{\List(A)} \noteq \tcol{\stalkCIC{j}{I}} \text{ for  $j \geq i$}
@@ -668,7 +668,8 @@ how \kl{algorithmic conversion} in \cref{fig:cic-algo-conv} is built upon \kl{α
 It is very important at this point to extend \kl{algorithmic conversion}, rather than
 \kl{declarative conversion}, because we do \emph{not} want \kl(grad){consistency}
 to be transitive,
-since we wish to have $\tcol{t} \cons \?$ for any $\tcol{t}$, which would turn $\cons$ into
+since we wish to have $\tcol{t} \cons \tcol{\?}$ for any $\tcol{t}$,
+which would turn $\cons$ into
 the full relation if it were to be transitive. Thus, we must extend a relation where
 transitivity is not baked in.
 Also note that this formulation of \kl{consistent conversion} makes no assumption of
@@ -1682,7 +1683,8 @@ such that in particular the elaboration of a \kl{static} term is always erasable
 
 \begin{definition}[Erasure, erasability]
   \label{def:erasure}
-	\intro{Erasure} $\eras$ is a partial function from the syntax of \kl{CCIC} to the syntax of
+	\intro{Erasure} $\mathord{\eras}$ is a partial function from the syntax of \kl{CCIC}
+  to the syntax of
   \kl{CIC}, which is undefined on $\tcol{\?}$ and $\tcol{\err}$,
   is such that $\eras(\tcol{\cast{A}{B}{t}}) = \eras(\tcol{t})$,
   and is a congruence for all other term constructors.
