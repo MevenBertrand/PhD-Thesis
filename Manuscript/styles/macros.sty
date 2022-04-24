@@ -76,6 +76,10 @@
   {\href{https://github.com/MetaCoq/metacoq/blob/coq-8.14/pcuic/theories/%
     \IfValueT{#1}{#1/}#2#3.v}{#2#3}}%
 }
+\NewDocumentCommand{\safefile}{O{PCUIC} m}{%
+  {\href{https://github.com/MetaCoq/metacoq/blob/coq-8.14/safechecker/theories/%
+    #1#2.v}{#1#2}}%
+}
 
 % First optional argument: subfolder
 % Second optional argument: prefix (usually PCUIC)
@@ -85,6 +89,11 @@
 \NewDocumentCommand{\pcuicline}{o O{PCUIC} m m m}{%
   {\href{https://github.com/MetaCoq/metacoq/blob/coq-8.14/pcuic/theories/%
     \IfValueT{#1}{#1/}#2#3.v\#L#5}{\firacode #4}}%
+}
+
+\NewDocumentCommand{\safeline}{O{PCUIC} m m m}{%
+  {\href{https://github.com/MetaCoq/metacoq/blob/coq-8.14/pcuic/theories/%
+    #1#2.v\#L#4}{\firacode #3}}%
 }
 
 
@@ -265,6 +274,10 @@
 
 \newcommand{\ocored}{\reflectbox{$\basered^{\reflectbox{$1$}}$}}
 \newcommand{\nored}{\not \basered^{1}}
+
+\knowledgenewrobustcmd{\parred}{\mathrel{\cmdkl{\Rrightarrow}}}
+\knowledgenewrobustcmd{\bestredop}{\mathop{\cmdkl{\symup{\rho}}}}
+\newcommand{\bestred}[1]{\bestredop(#1)}
 
 % Neutral/normal forms
 

@@ -46,4 +46,9 @@
     \tikzcdarrowdimens{0.06494140625em}{0.285888671875em}%
 }
 
+
+% For triple arrows, see https://tex.stackexchange.com/questions/504558/triple-arrows-in-tikz-and-tikz-cd
+\tikzset{Rightarrow/.style={double equal sign distance,>={Implies},->},
+triple/.style={-,preaction={draw,Rightarrow}}}
+
 \ProcessOptions\relax

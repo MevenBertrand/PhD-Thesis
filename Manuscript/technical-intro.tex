@@ -98,7 +98,7 @@ there is no shadowing whatsoever and identifying α-equal terms when needed.%
 use de Bruijn variables.}
 
 \AP \phantomintro{\into}
-A final important building block of all our type theories is substitution,
+A final important building block of all our type theories is \intro{substitution},
 that we write $\intro*\subs{t}{x}{u}$. This replaces every occurrence of $x$ in $t$ by the term
 $u$. Once again, we treat this operation informally, assuming it never creates
 shadowing – what is sometimes called “capture-avoiding” substitution.
@@ -317,7 +317,7 @@ is for: it allows to replace a type $T$ with one that is related to it by
 \intro{conversion} – written $\intro*\conv$.
 As usual, there are two ways to look at this relation. From the point of view of programs,
 it incorporates a computational aspect directly inside the type system.
-From the point of view of logics, it corresponds to types being the same “by definition”
+From the point of view of logic, it corresponds to types being the same “by definition”
 rather than due to some reasoning
 – which is why conversion is also called definitional equality or judgemental equality.
 In our vector example, for instance, the two types are the same by the definition of addition.
@@ -1077,7 +1077,7 @@ The last one is a way to use those canonical inhabitants.
 For booleans, this corresponds to a conditional,
 taking one branch or another depending on the value of the term being used,
 whose typing rule is given in \ruleref{rule:bool-ind}.%
-\sidenote[][0em]{We call $s$ the \intro{scrutinee}, $P$ the \reintro{predicate}
+\sidenote{We call $s$ the \intro{scrutinee}, $P$ the \reintro{predicate}
 and $b_{\false}$, $b_{\true}$ the \reintro{branches}.}
 As was the case for dependent functions, here also there is a generalization with respect to
 conditionals in usual programming languages: the return type itself can depend on the scrutinee.
@@ -1237,7 +1237,7 @@ in part due to concerns raised while working on this thesis that are detailed in
 
 \AP A second direction for enhancement is the ability to have inductive types with parameters.
 The main use of this is for type constructors, for instance the pair type $A \times B$
-that appears in \cref{chap:intro-fr,chap:intro-en}. As is probably not very surprising by
+that appears in \cref{chap:intro-en}. As is probably not very surprising by
 now, this type is a restricted instance of a more general type, the
 dependent pair type $\intro*\Sb x : A.\ B$.
 Logically, its dependency on $A$ means that if we see $B$ as a property,
@@ -1388,7 +1388,7 @@ not any term of any arbitrary type – as in the case of equality –,
 but inhabitants of an inductive type.
 Such a case is easier to handle, and is often sufficient, especially for
 dependently-typed programming. The prototypical example here is that of vectors, which
-we have already encountered in \cref{chap:intro-fr,chap:intro-en}, and is described in
+we have already encountered in \cref{chap:intro-en}, and is described in
 detail in \cref{fig:vect}. They are similar to
 lists, but with a natural number index which records the length of the vector in its type.
 This allows for finely-grained specification, for instance a head function that takes as input 
@@ -1532,7 +1532,6 @@ to $t'$.
 
 \subsection{The sort of propositions}
 
-
 A second addition in \kl{PCUIC}, and one that has been a distinctive feature of \kl{Coq}
 for a very long time – it is already present in \sidetextcite{Coquand1988} –
 is the sort $\intro*\Prop$.
@@ -1673,6 +1672,7 @@ and still be able to define the category – at level $j$ – of all categories
 – at a level $i < j$ –, by instantiating the definition at the two different levels $i$ and $j$.
 
 \subsection{Enhanced inductive types}
+\label{sec:pcuic-ind}
 
 Of course inductive types in \kl{PCUIC} are also affected by those extensions.
 Not only can they be polymorphic, as definitions, they also feature a form of 
@@ -1702,10 +1702,13 @@ to how a recursive function
 can be defined, which amounts to checking that recursive calls are made on
 structurally smaller sub-terms – by means of pattern-matching. This guard condition
 theoretically ensures that fixed-points and pattern-matching can always be reduced to
-\kl{recursors} \sidecite{Gimenez1995}. However, in practise the former give more
+\kl{recursors} \sidecite{Gimenez1995}, which are what proof of \kl{normalization} and/or
+consistency consider.
+However, in practise the former give more
 flexible and natural definitions than the latter.
 
 \subsection{Records and co-inductive types}
+\label{sec:pcuic-records}
 
 The last ingredient in \kl{PCUIC} goes beyond inductive types, by adding more primitive types
 to the theory.

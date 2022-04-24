@@ -3,7 +3,7 @@
   french,english,
 	fontsize=10pt, % Base font size
 	twoside=true, % Use different layouts for even and odd pages (in particular, if twoside=true, the margin column will be always on the outside)
-	open=any, % If twoside=true, uncomment this to force new chapters to start on any page, not only on right (odd) pages
+	%open=any, % If twoside=true, uncomment this to force new chapters to start on any page, not only on right (odd) pages
 	secnumdepth=2, % How deep to number headings. Defaults to 1 (sections)
   numbers=enddot,
 ]{kaobook/kaobook}
@@ -36,7 +36,7 @@
 \usepackage{styles/macros}
 \usepackage{styles/alectryon-minted}
 
-% \includeonly{header,intro-fr,toc,intro-en,technical-intro}
+% \includeonly{technical-intro,metacoq-tour}
 
 \graphicspath{{./figures/}} % Paths where images are looked for
 
@@ -63,7 +63,7 @@
 \include{technical-intro}
 
 \pagelayout{wide} % No margins
-\addpart{Bidirectional typing for dependent types}
+\addpart{Bidirectional Calculus of Inductive Constructions}
 \label{part:bidir}
 \pagelayout{margin} % Restore margins
 

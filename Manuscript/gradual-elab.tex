@@ -639,7 +639,7 @@ to compare \kl{CCIC} terms, rather than usual conversion relation.
   \[\begin{tikzcd}
     \tcol{s} \arrow[d, dashed, "\star" very near end] \arrow[r, phantom, "\cons" description] &
     \tcol{t} \arrow[d, dashed, "\star" very near end] \\
-    \tcol{s'} \arrow[r,phantom,"\acons" description] & \tcol{s'}
+    \tcol{s'} \arrow[r,phantom,"\acons" description] & \tcol{t'}
   \end{tikzcd}\]
   \caption{\kl{Consistent conversion}, as a diagram}
 \end{marginfigure}
@@ -1565,7 +1565,7 @@ It needs to be stated – and proven – mutually for \kl(pre){structural} and
   %
 	For the case of structural precision, the hardest point is of course that of
   \kl(red){top-level}, where we use \cref{lem:catchup-lambda,lem:catchup-cons},
-  to show that a similar reductions can also happen in $\tcol{t'}$, once the destructed
+  to show that a similar reduction can also happen in $\tcol{t'}$, once the destructed
   term has properly caught up.
 
 	We must also take care when handling the premises of precision where typing is involved.
