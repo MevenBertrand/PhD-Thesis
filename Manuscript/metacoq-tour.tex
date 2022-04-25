@@ -61,7 +61,7 @@ There are also local definitions, in the form of the \coqe{tLetIn} constructor,
 binding the term \coqe{b} of type \coqe{B} in \coqe{t}.
 
 The \coqe{tSort} constructor is for sorts – what we have called universe earlier.
-Its argument \coqe{Universe.t} represents its \kl{universe level}, which can be either $\Prop$
+Its \coqe{Universe.t} argument represents its \kl{universe level}, which can be either $\Prop$
 or an algebraic expression based on universe variables, in order to handle \kl{typical ambiguity}.
 
 Next come \coqe{tVar} and \coqe{tEvar}, which
@@ -143,7 +143,7 @@ since only \kl{conversion} should be symmetric. Using this rule twice shows that
 \kl{conversion} is included inside \kl{cumulativity}.
 Another important thing to note is that transitivity is somewhat restricted:
 the middle term is required to be \intro{well-scoped},%
-\sidenote{Expressed by the \coqe{is_open_term} predicate.}
+\sidenote{Expressed by the \pcuicline{OnFreeVars}{is\_open\_term}{253} predicate.}
 \ie that all its variables refer correctly
 to either a binder or to the context \coqe{Γ}.
 This is key in proving the equivalence between this notion of \kl{cumulativity} and the
@@ -244,8 +244,9 @@ The first set of typing rules, given in \cref{fig:meta-typing-ccw},
 pertain to the \kl{CCω} fragment. There are not many differences
 there with respect to \cref{fig:ccw-typing}. Rule \coqe{type_Rel} looks up the type of the
 variable in the context, and ensures that said context is well-formed:
-the \coqe{wf_local} predicate corresponds to $\vdash \Gamma$, but here as everything else it is
-relative to a global environment. Rule \coqe{type_Sort} uses the \coqe{super} function to compute
+the \pcuicline{Typing}{wf\_local}{284} predicate corresponds to $\vdash \Gamma$,
+but here as everything else it is relative to a global environment.
+Rule \coqe{type_Sort} uses the \coqe{super} function to compute
 the successor of an algebraic universe, and similarly Rule \coqe{type_Prod} uses
 \coqe{sort_of product} to compute the universe level of a Π-type.%
 \sidenote{This not only includes computing the maximum of two algebraic universes expressions,
@@ -280,7 +281,8 @@ the \kl{global environment}, respectively constants – \coqe{type_Const} –, i
 term should be declared in the \kl{global environment}, the context well-formed
 – since these are leaves of a term –,
 and the universe instance given should respect the constraints coming from the
-entry in the \kl{environment} – this is the \coqe{consistent_instance_ext} predicate.
+entry in the \kl{environment} – this is the
+\pcuicline{EnvironmentTyping}{consistent\_instance\_ext}{154} predicate.
 
 \begin{figure*}
   \ContinuedFloat
@@ -296,7 +298,7 @@ Next, the \kl{predicate} and \kl{branches} should all be well-typed
 in the appropriate context – obtained by combining the information stored in
 \coqe{p} or \coqe{brs}, with that retrieved from the entry in the environment corresponding to
 the \kl{scrutinee}'s type,.
-Finally, \coqe{case_side_conditions} handles universe instances, checks
+Finally, \pcuicline{Typing}{case\_side\_conditions}{159} handles universe instances, checks
 that the elimination is allowed%
 \sidenote{This is where \kl{PCUIC} enforces \kl{proof irrelevance}, by imposing the so-called
 “singleton elimination” criterion, which ensures that only inductive
@@ -317,7 +319,8 @@ The last typing rules for terms are those for (co-)fixed-points,
 given in \cref{fig:meta-typing-fix}. They are almost identical,
 the main part amounts to checking that the types and bodies of all
 the mutual definitions are well-typed.
-The \coqe{wf_fixpoint} and \coqe{wf_cofixpoint} both check that the definitions are on
+The \pcuicline{Typing}{wf\_fixpoint}{118} and \pcuicline{Typing}{wf\_cofixpoint}{145}
+prediates both check that the definitions are on
 the same block of mutually-defined (co-)inductive types, and that these are of the right kind –
 inductive for \coqe{tFix} and co-inductive for \coqe{tCoFix}.
 Finally, the \coqe{fix_guard} and \coqe{cofix_guard} predicates correspond to the guard condition,

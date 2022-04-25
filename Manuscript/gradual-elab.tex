@@ -206,10 +206,10 @@ equivalence class of types that are locally the same.
 The exact design of the \kl{reduction} rules is mostly dictated by
 the models of \kl{CCIC} presented later in~\cref{sec:realizing-cast-calculus}.
 Nevertheless, we now provide some intuition about their meaning. We only present here the
-rules for \kl{top-level reduction}%
+rules for \kl{top-level reduction}:%
 \sidenote{As all our reduction rules have empty premises, we spare the needless
 bar to make them more readable.}
-: the congruence closure to obtain \kl{full reduction}
+the congruence closure to obtain \kl{full reduction}
 is completely standard. As for \kl{weak-head reduction}, we give the adequate
 contextual closure later on when we prove \kl{progress}.
 
@@ -579,9 +579,9 @@ This definition of typing using elaboration is required because of the intricate
 \paragraph{Syntax.}
 \label{gcic-syntax}
 The syntax of \intro{GCIC}%
-\sidenote{We use \sourcecolor{teal} for terms of
+\sidenote{We use \sourcecolor{purple} for terms of
   \kl{GCIC}. To maintain a distinction in the absence of colours, we also
-  use tildes – like this: $\scol{\tilde{t}}$ – for terms in \kl{GCIC}
+  use tildes – like so $\scol{\tilde{t}}$ – for terms in \kl{GCIC}
   in expressions mixing both source and target terms.}
 extends that of \kl{CIC} with a single new term constructor $\scol{\?[i]}$,
 where $i$ is a universe level. From a user perspective,
@@ -632,7 +632,7 @@ those only arise through uses of $\scol{\?}$.
   \label{fig:acons}
 \end{figure*}
 
-Before we can describe typing, we should focus on conversion. Indeed, to account for the imprecision introduced by $\tcol{\?}$, elaboration employs \kl{consistent conversion}
+Before we can describe typing, we should focus on conversion. Indeed, to account for the imprecision introduced by the \kl{unknown term}, elaboration employs \kl{consistent conversion}
 to compare \kl{CCIC} terms, rather than usual conversion relation.
 
 \begin{marginfigure}[4em]
