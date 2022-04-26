@@ -5,7 +5,6 @@ Inductive red1 (Σ : global_env) (Γ : context) : term -> term -> Type :=
 
 | red_zeta na b t b' :
   Σ ;;; Γ |- tLetIn na b t b' ~> b' {0 := b}
-
 …
 (** Congruences*)
 | app_red_l M1 N1 M2 : Σ ;;; Γ |- M1 ~> N1 -> Σ ;;; Γ |- tApp M1 M2 ~> tApp N1 M2

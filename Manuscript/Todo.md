@@ -1,2 +1,2 @@
 - hack continued floats for references
-- import Matthieu’s fix to projections
+- once chapter 6 is written: refer to it in the note on names at the beginning of chapter 3

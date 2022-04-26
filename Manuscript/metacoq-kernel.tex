@@ -3,12 +3,370 @@
 
 \margintoc
 
-\section{Bidirectional Typing, Formalized}
+With the meta-theory set down, we can turn to building a kernel – and proving that it is
+correct. The first step (\cref{sec:kernel-bidir})
+is to move from the declarative specification of
+\cref{chap:metacoq-general} to a bidirectional presentation,
+closer to the kernel we wish to implement.
+Once this specification is set down, we can get to the kernel properly said.
+\cref{sec:kernel-subroutines} goes over the implementation of the
+\kl{cumulativity} check, and \cref{sec:kernel-typing} describes the type-checker properly said.
+\Cref{sec:kernel-beyond-typing} describes two extra functions belonging to the safe
+\kl{kernel}: re-typing, and checking of \kl{global environment}.
 
-\section{Environment Querying and Conversion Checking}
+I personally contributed the formalizations of \cref{sec:kernel-bidir}, the completeness part of
+\cref{sec:kernel-typing} – by modifying the pre-existing proven-correct type-checker –,
+and heavily modified re-typing – part of \cref{sec:kernel-beyond-typing}.
+
+\section{Formalized Bidirectional Typing}
+  [Bidirectional Typing, Formalized]
+\label{sec:kernel-bidir}
+
+We already saw the important theoretical ideas around our approach to bidirectional typing in
+\arefpart{bidir}, so let us get to their implementation in the formalization, file by file.
+
+\subsection{Definitions}
+
+Before we can get to the definition of typing, we must go through the small
+\pcuicfile[Bidirectional][BD]{EnvironmentTyping}, which is dedicated to refining a few
+definitions on contexts in the bidirectional setting. Indeed,
+in the case of a definition \coqe{Γ,, vdef na b T},
+\coqe{wf_local} enforces that \coqe{T} is a well-formed type, and that
+\coqe{b} has type \coqe{T}. In the bidirectional setting we want to use constrained inference
+$\pity{\uni}$ for the first, and checking for the second, but the generic definition
+on which \coqe{wf_local} is built%
+\sidenote{Called \coqe{All_local_env}.}
+only allows for a single parameter – instantiated with \coqe{typing} in the case
+of \coqe{wf_local}.
+Similarly, we need a definition expression that a context $\Delta$ is well-formed
+\emph{over another context $\Gamma$}, but which does not enforce $\Gamma$ to be well-formed
+\textit{a priori} – \eg something more precise than simply $\vdash \Gamma , \Delta$. This
+allows to stay faithful to McBride’s discipline when typing context extensions,
+by only demanding that the extension is well-formed, but not the initial segment.%
+\sidenote{Which is an input, and thus should not be re-checked.}
+
+Bidirectional typing is given in
+\pcuicfile[Bidirectional][BD]{Typing}, as a set mutual defined inductive predicates:
+one for inference, one for checking, and three for constrained inference, respectively for
+sorts, Π-types and inductive types. The definition of the predicates themselves
+is very close to that of \cref{fig:ccw-bidir-infer,fig:bidir-ccw-other} for the
+\kl{CCω} fragment, the main innovation being the fact that constrained inference – 
+written \coqe{Σ ;;; Γ |- t |>Π (na,A,B)} for products –
+takes the variable name, domain and codomain of the inductive type as three separate arguments,
+which our pen-and-paper notation did not make explicit.
+The predicates defined in \pcuicfile[Bidirectional][BD]{EnvironmentTyping} are used in the
+definition of inference for the \coqe{tCase} node, where we want to ensure that the
+context extensions used to type the \kl{predicate} and \kl{branches} are well-formed.
+
+Regarding the notions of computation, the definitions of \kl{constrained inference} use
+\kl{full reduction} rather than \kl{weak-head reduction}, mainly because MetaCoq currently
+lacks an adequate treatment of the latter for our needs.%
+\sidenote{In particular, a standardization theorem which would be needed to show the analogous
+of \cref{lem:conv-red-tycons} for weak-head reduction.}
+As for \kl{cumulativity}, the \kl(conv){algorithmic} variant is used in the \kl{checking} rule, but
+this is relatively irrelevant, since the equivalence between both presentations of \kl{cumulativity} is
+appears much earlier in the development than bidirectional typing.
+
+Maybe more interesting from the formalization point of view is how we obtain a usable
+induction principle. Indeed, this predicate reaches the limit of expressiveness offered by
+\kl{Coq}’s inductive types: it is both mutual, and nested – due to the presence of lists,
+records and contexts which recursively containing terms.
+While \kl{Coq} is able to detect the definition to be well-founded,
+the default generation is unable to derive a sensible induction principle, and neither are
+the \coqe{Scheme} specialized commands. Thus, we have to prove a good induction principle by
+hand. To do so, we introduce a notion of “generic” typing object
+\pcuicline[Bidirectional][BD]{Typing}{typing\_sum}{256}, together with a notion of size for such
+a typing object, and finally show the induction principle
+\pcuicline[Bidirectional][BD]{Typing}{bidir\_ind\_env}{312}
+by well-founded induction on that size.
+
+This induction principle is not as strong as we might expect, as it does not provide the extra induction hypothesis on inputs that would go with McBride's discipline.
+Ideally, the induction principle could use the fact that McBride’s discipline is
+respected in order to thread the well-formedness invariants, giving stronger induction
+hypothesis. I did not try to take this path and prove such a strong induction principle,
+as it seemed not so easy, as it would effectively correspond to an inline proof
+of \kl{validity}.
+Instead, the discipline is reflected in the choice of the predicates proven by induction.
+For instance, in the case of correctness, the predicate proven mutually for inference
+is \coqe{wf_local Σ Γ -> Σ ;;; Γ |- t : T}, and more generally
+assumptions are added as pre-condition for all inputs.
+Still, I conjecture that such a strong induction principle should be provable, if the need
+would arise, and might be nice in order to factor proofs, by showing once and for all that
+the rules follow the discipline correctly.
+
+\subsection{Equivalence with Undirected Typing}
+
+\kl(bidir){correctness}%
+\sidenote{Bidirectional typing implies undirected typing, akin to \cref{thm:corr-ccomega}.}
+is shown in \pcuicfile[Bidirectional][BD]{ToPCUIC}.
+The main proof is by induction on the derivation,
+its key point being to show that well-formedness invariants are preserved, and in particular
+that all contexts that are used are valid.
+
+There is one particular difficulty linked to the \coqe{tCase} constructor, and the question
+of its representation evoked at the very end of \cref{sec:bidir-pcuic-inductives}.
+More precisely, the issue is related to the fact that case nodes store the universe
+instance and parameters of the inductive type being matched upon, in order to be able to
+construct the context in which the \kl{predicate} and \kl{branches} are typed.
+In undirected typing, the hypothesis on the \kl{scrutinee} is that it should be of some type
+\coqline|mkApps (tInd ci.(ci_ind) p.(puinst)) (p.(pparams) ++ indices)|
+where \coqe{ci.(ci_ind)}, \coqe{p.(puinst)} and \coqe{p.(pparams)}
+are respectively the inductive type being matched upon, its universe instance, and its
+parameters – all stored in the case node –, and \coqe{indices}
+are free. From the point of view of bidirectional typing, this rule is invalid:%
+\sidenote{It is not mode correct \cite{Dunfield2021}.}%
+\margincite{Dunfield2021}
+because \coqe{indices} is free, this cannot be turned into a checking premise, but it also
+cannot be directly turned into inference, or even constrained inference, because it is
+not free enough.
+The solution is still to turn it into an inference premise
+\coqe/Σ ;;; Γ |- c |>{ci} (u,args)/, and to compare the inferred universe instance \coqe{u}
+and parameters – the first part of the list \coqe{args}. But it requires some reasoning to
+show that this relation between both lists of parameters is enough to use the second part
+of \coqe{args}, the inferred indices, in place of \coqe{indices} above.
+
+In the opposite direction, \kl(bidir){completeness}%
+\sidenote{Undirected typing implies bidirectional typing, akin to \cref{thm:compl-ccomega}.}
+is also by a direct induction, once we have used
+the injectivity properties of \pcuicfile{Conversion} to relate inference of a type
+in \kl{cumulativity} with a sort, Π- or inductive type and constrained inference.
+In order to simplify proofs in the case of projections, \kl(bidir){correctness} is used in conjunction
+with \kl{validity}, but this could probably be avoided, making the two proofs independent.
+
+\subsection{Properties of Bidirectional Typing}
+
+As we did in \cref{thm:unique-inf}, we show that two inferred types have a common reduct in
+\pcuicfile[Bidirectional][BD]{Unique}. While the proof requires some playing with
+well-scoping predicates,%
+\sidenote{
+  To relate the reduction used to defined \kl{constrained inference} and the one on which most lemmas
+  around confluence are stated, which is defined directly on well-scoped terms.}
+it is conceptually \emph{much} simpler than the direct proof of \pcuicfile{Principality},
+which shows the existence of \kl{principal types} without going through bidirectional typing.
+Indeed, for quite some time only the weaker version saying that if $T$ and $T'$ are both types
+for the same term $t$ then there exists a third $T''$ which is both a type for $t$ and smaller than 
+$T$ and $T'$ for cumulativity.
+
+Finally, \pcuicfile[Bidirectional][BD]{Strengthening} shows strengthening.
+Its first important property is that if $\Gamma \vdash t \ity T$ then
+$T$ can only use variables appearing in either $t$ or in the types of $\Gamma$
+(\pcuicline[Bidirectional][BD]{Strengthening}{infering\_on\_free\_vars}{487}),
+which is \emph{not} true in general in undirected typing.%
+\sidenote{Consider for instance $n : \Nat \vdash 0 : (\l x : \Nat.\ \Nat)\ n$: $n$ appears in the
+type, but neither in the body of the term nor any types in the context.}
+It then goes on with the proof that bidirectional typing is stable under any renaming, while
+\pcuicfile{RenameTyp} only shows stability of undirected typing under unconditional renaming.
+Finally, we get to the proof of \pcuicline[Bidirectional][BD]{Strengthening}{strengthening}{989}
+\textit{per se}, once we have shown that strengthening is indeed a well-formed renaming.
+
+\section{Before Typing: Environment Querying and Cumulativity Checking}[Before Typing]
+\label{sec:kernel-subroutines}
+
+Before we can get to typing, we need to look at its two main sub-routines:
+querying the \kl{global environment}, and \kl{cumulativity} check.
+
+\subsection{Abstract Environment}
+
+The type and \kl{cumulativity} checking algorithms both need to query the \kl{global environment},
+for two main purposes: retrieving information about previous definitions of constants and inductive
+types, and checking that (in)equalities between universes hold.
+
+While this might seem anecdotal,
+a surprisingly important amount of time is spent in the actual checker on the second problem, which
+requires a form of shortest-path algorithm on a graph obtained from the universe constraints, in order
+to detect the presence of negative cycles.
+These correspond to violations of the universe stratification.
+\kl{MetaCoq} implements such an algorithm, with a proof that it is correct and complete, meaning that
+the algorithm answers “yes” exactly when there is a mapping from universe levels to integers satisfying
+all constraints declared in the environment.
+More details on this can be found in \sidetextcite[][Section 3.3]{Sozeau2020}.
+
+Sadly, said algorithm is too naive to be actually run on reasonable examples: it is currently the main
+performance bottleneck of the extracted program. Similarly, the representation of the
+\kl{global environment} as a list of definitions is too naive to allow for efficient look-ups –
+\kl{Coq} uses hash maps instead.
+While we hope to replace that naive implementation with a more efficient but still certified one,
+for the moment it is convenient to be able to plug an uncertified but efficient implementation
+into the extracted type-checker. To do so, we rely on abstract interfaces for the
+\kl{global environment}, containing all the possible queries we need to perform,
+presented in \safefile{WfEnv}. The naive implementation is shown to be a valid implementation of
+that interface in \safefile{WfEnvImpl}.
+
+\subsection{Cumulativity Checking}
+
+The most important sub-routine of the type-checker is the test of \kl{cumulativity} between two terms.
+The naive way to perform this, since we assume \kl{normalization}, would be to brutally normalize terms,
+and compare normal forms up to \coqe{leq_term}.%
+\sidenote{The extension of \kl{α-equality} to handle \kl{cumulativity}.}
+But this strategy does not scale as soon as definitions are present, because it
+eagerly unfolds all of these, resulting in a very inefficient test.
+\kl{MetaCoq} implements a more practical strategy, which coarsely does the following:
+\begin{enumerate}
+  \item reduce both terms to compare to \kl(red){weak-head} normal form
+    \emph{without unfolding any definition};
+  \item if the two heads match, recursively compare sub-terms;
+  \item if the two heads do not match, or if the recursive sub-term comparison failed, check if
+    an unfolding is possible which would unblock one of the terms, and if yes, unfold it and
+    go back to the first step.
+\end{enumerate}
+This means that the \kl{cumulativity} test must itself resort to a \kl{weak-head reduction}
+function.
+
+The difficulty with those functions is that they do not operate by a simple structural induction on
+terms. Rather, they are defined using a complex abstract machine, operating on terms decomposed into
+a sub-term and a stack. The termination of that abstract machine is shown using a
+dependent lexicographic pre-order, which handles both the well-founded reduction order given by
+\kl{normalization}, a structural order on sub-terms and stacks corresponding to a given term, and
+the different phases of the algorithm.
+A detailed description of this algorithm and its formalization%
+\sidenote{In files \safefile{SafeReduce} for the implementation of \kl{weak-head reduction}, and
+\safefile{SafeConversion} for the cumulativity checker.} is given by Théo Winterhalter,
+who implemented it, in his PhD thesis \sidecite[][Chapters 21-24]{Winterhalter2020}.
+
+An interesting point that the test of \kl{cumulativity} and that of typing have in
+common, is the way they handle their propositional content. First, because
+we do not want at that point to bump into issues having to do with proof-irrelevance,
+in most of the formalization definitions are in \coqe{Type},
+including the reduction, conversion and typing relation. But in the verified \kl{kernel} we want that
+separation between propositional and relevant content. Thus, we use explicit squashing —
+written $\| T \|$ – to cast a type into a proposition.%
+\sidenote{Technically,
+  $\| T \|$ is defined as a record of type $\Prop$ with a single field of type $T$.}
+The only elimination of propositional content into the relevant world we rely on is of course that
+of accessibility, so that we can define \kl{reduction} and \kl{cumulativity} by well-founded induction.
+
+Second, we write code using the \kl{Equations} plugin, which lets us write the
+relevant part of the definition in direct style, but to leave proofs to be filled-in using the
+proof-mode. The definitions are given in monadic style, relying on what looks like the error monad:%
+\sidenote{Given a type of errors $E$, the functor associated with that monad is $T \mapsto T + E$,
+its unit is the left injection, and its bind $x >>= f$ either propagates $x$ if it is an error, or applies $f$ otherwise.}
+the \kl{cumulativity}- and type-checker return a valid output, or an error message. However, since
+we wish the functions to be correct by constructions, they must also return a proof, either a
+witness for the positive answer, or a proof of impossibility in the negative case.
+This means that the bind of the monad must actually perform a proof when re-raising the error,
+which propagates the impossibility proof.%
+\sidenote{For instance, if we are typing some \coqe{tProd na A B} and the call to typing for \coqe{A} 
+fails we must transform a proof that \coqe{A} cannot be well-typed into a proof that \coqe{tProd na A B}
+as a whole also cannot.}
+At function definition, this is hidden by notations, so this feels like we are actually using a
+monad, but under the hood proof obligations are generated each time we use a bind.
 
 \section{Correct and Complete Inference}
+\label{sec:kernel-typing}
+
+Given the work already done in \cref{sec:kernel-bidir}, the definition of a
+type checking algorithm \safefile{TypeChecker}
+itself is rather straightforward: it follows closely
+the structure laid out by the mutually defined bidirectional judgments, and
+poses no termination issue as \kl{cumulativity} does, since it
+operates by induction on the structure of the term.
+Actually, rather than a type-checker, the main function we define is
+\safeline{SafeChecker}{infer}{1323}, which performs type inference.%
+\sidenote{
+  Which is decidable due to our \kl{Church-style} syntax.},
+from which we can easily define type-checking.
+
+\begin{figure}[h]
+  \coqfile[firstline=1,lastline=4]{./code/PCUICSafeTyping.v}
+  \caption{The “error monad” used for \safeline{SafeChecker}{infer}{1323}’s return type}
+  \label{fig:meta-error-mon}
+\end{figure}
+
+In more details, the function takes as inputs:
+\begin{enumerate}
+  \item an abstract environment implementation;
+  \item a \kl{global environment} following that implementation;
+  \item a context, and a squashed proof that it is well-formed;
+  \item a term
+\end{enumerate}
+and it returns either a type and a (squashed) proof that the term infers that type, or
+an error and a proof that the term cannot infer any type, using the inductive type presented in
+\cref{fig:meta-error-mon}.
+Thus, the function is correct and complete by construction.
+In fact, we cannot separate
+the definition from the correctness proof, since the conversion checker
+expects a well-typed term as input in order to be terminating when it is called.
+
+\begin{figure*}
+  \coqfile[firstline=6]{./code/PCUICSafeTyping.v}
+  \caption{Definition of \safeline{SafeChecker}{infer}{1323} (excerpt)}
+  \label{fig:meta-infer}
+\end{figure*}
+
+\cref{fig:meta-infer} describes (an excerpt of) the algorithm.
+%
+For a variable \coqe{tRel n}, it checks that the variable is bound in
+\coqe{Gamma}, returns its type when it is, and fails otherwise.
+%
+For sorts \coqe{tSort u}, it checks that the universe is well-formed in the current
+environment, and returns a sort at level above when it is.
+%
+For dependent products \coqe{tProd na A B}, it computes the sort of
+\coqe{A} and \coqe{B} – in the context extended by
+\coqe{na:A}–  using the \coqe{infer_type} sub-routine,%
+\sidenote{Defined beforehand in an “open recursion” flavour, \eg as a function taking \coqe{infer}
+as argument.}
+and builds from those the sort of the product using \coqe{sort_of_product}.
+Functions are similar.
+%
+The cases of \coqe{tLetIn} and \coqe{tApp} clearly show the bidirectional
+structure. For instance in
+\coqe{tApp t u}, one needs to infer the type \coqe{ty} of \coqe{t},
+then reduce it to some \coqe{tProd na A B} using the
+\coqe{reduce_to_prod} function, and finally check that \coqe{u} as
+type \coqe{A}.
+%
+All underscores \coqe{_} in the terms denote proof obligations that are filled using
+tactics. Although they are hidden, the monadic notations \coqe{;;}
+and \coqe{raise} also contain underscores for the propagation of completeness
+information.%
+\sidenote{For instance, \coqe{raise e} is syntactic sugar for \coqe{TypeError_comp e _}.}
+
+Interestingly, the proofs of \kl(bidir){completeness} use uniqueness of inferred types a lot.
+To see why, consider \eg the case of an application $t\ u$ where the recursive call succeeds on $t$
+– say it infers a product type $\P x : A.\ B$ – but it fails on $u$ – giving us a proof $p$
+that $u \cty A$ is absurd. We want to raise an error, and thus need to prove
+that $t\ u \ity T$ for any $T$ is absurd.
+An inversion on that last hypothesis gives some $A'$ and $B'$ such that
+$t \pity{\P} \P x : A'.\ B'$ and $u \cty A'$.
+But this second property cannot be directly fed $p$, because the type against which $u$ checks is
+different! We thus need to use the two inference judgments and uniqueness to conclude that in
+fact $A \conv A'$, and thus that $u \cty A$,
+which this time we can the use to derive a contradiction from $p$.
 
 \section{Beyond Typing: Environment Checking and Re-Typing}
+\label{sec:kernel-beyond-typing}
 
-\section{A Realistic Kernel}
+There are two more functionalities defined in \kl{MetaCoq}
+that are very related to the type-checker.
+
+\subsection{Re-Typing}
+
+The first, which is defined in \safefile{SafeRetyping}, aims at computing a type for a term
+which is known to be well-typed. While this seems tautological, it is not: the aim is
+to extract relevant content out of propositional one. This is useful in practice in \eg
+the extraction procedure, which maintains the invariant that it operates on well-typed terms,
+but needs to actually compute types to decide whether terms should be erased.
+
+This is also different from standard inference,
+because knowing \textit{a priori} that the term under consideration is well-typed allows to
+skip a lot of checks. For instance, to re-type an application $t\ u$, it suffices to infer a
+product type $\P x : A.\ B$ for $t$, and to return $\subs{B}{x}{u}$, since we know that $u$
+has type $A$.
+
+In order to be useful, this re-typing procedure needs to compute a \kl{principal type}, and
+thus its definition was quite complex prior to the formalization of bidirectional typing,
+effectively inlining a proof of uniqueness of types. Instead, bidirectional typing
+simplifies greatly both the definition of re-typing and its proof of correctness, by
+simplifying the specification of re-typing.
+Instead of computing a principal type out of any type,
+the function needs to compute an unsquashed inferred type out of a squashed one.
+
+\subsection{Environment Checking}
+
+The second thing we need to handle is the verification that a whole \kl{global environment}
+is well-formed. While the main thing to check is that all definitions are well-typed,
+there is quite a few more things to be done: checking universes constraints, that inductive
+definitions are strictly positive, that the variance information used by universe polymorphism is
+valid… All these are covered in \safefile{SafeChecker}.
+

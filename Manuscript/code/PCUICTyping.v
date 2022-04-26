@@ -53,7 +53,7 @@ Inductive typing `{checker_flags} (Σ : global_env_ext) (Γ : context) : term ->
   Σ ;;; Γ |- tCase ci p c brs : mkApps ptm (indices ++ [c])
 | type_Proj : forall p c u mdecl idecl cdecl pdecl args,
   declared_projection Σ p mdecl idecl cdecl pdecl ->
-  Σ ;;; Γ |- c : mkApps (tInd (fst (fst p)) u) args ->
+  Σ ;;; Γ |- c : mkApps (tInd p.(proj_ind) u) args ->
   #|args| = ind_npars mdecl ->
   Σ ;;; Γ |- tProj p c : subst0 (c :: List.rev args) (snd pdecl)@[u]
 | type_Fix : forall mfix n decl,

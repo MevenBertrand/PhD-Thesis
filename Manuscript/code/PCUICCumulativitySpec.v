@@ -91,8 +91,8 @@ Inductive cumulSpec0 {cf : checker_flags} (Σ : global_env_ext) Γ (pb : conv_pb
   #|args| = (ci.(ci_npar) + context_assumptions br.(bcontext))%nat ->
   Σ ;;; Γ ⊢ tCase ci p (mkApps (tConstruct ci.(ci_ind) c u) args) brs  ≤s[pb]
       iota_red ci.(ci_npar) p args br
-| cumul_proj : forall i pars narg args u arg,
-  nth_error args (pars + narg) = Some arg ->
+| cumul_proj : forall p args u arg,
+  nth_error args (p.(proj_npars) + p.(proj_arg)) = Some arg ->
   Σ ;;; Γ ⊢ tProj (i, pars, narg) (mkApps (tConstruct i 0 u) args) ≤s[pb] arg
 
 (** Definitions *)
