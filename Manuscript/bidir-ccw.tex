@@ -14,13 +14,9 @@
 
 \subsection{McBride’s discipline}
 
+
 \AP To design our bidirectional type system, we follow a discipline exposed by McBride
-\sidecite[1em]{McBride2018,McBride2019}.%
-\sidenote[][5em]{
-  \textcite[Section 4]{Dunfield2021} report on a more involved approach that they call
-”Pfenning’s recipe”. But their main criterion is \emph{mode-correctness}, related
-closely to McBride’s discipline.}%
-\margincite[12em]{Dunfield2021}
+\sidecite[1em]{McBride2018,McBride2019}.
 The central point is to distinguish in a judgement between three \intro{modes}:
 the \reintro{subject},
 whose well-formedness is under scrutiny, \reintro{inputs},
@@ -59,36 +55,87 @@ of previous ones.
 Finally, information goes to the conclusion again, and now not only the subject but also
 the output should be well-formed if all those of the premises are.
 
-This distinction also applies to computation-related judgements, although those have no subject – instead, what is under scrutiny is the computational content of the rule.
-For conversion $\Gamma \vdash T \conv T' : \uni$, 
-both $T$ and $T'$ are inputs and thus should be known to be well-formed beforehand.
-For reduction $T \red T'$, on the contrary, $T$ is an input,
-but $T'$ is an output. Hence, only $T$ needs to be well-formed \textit{a priori},
-and we rely on the \kl{subject reduction} property to ensure
-that the output $T'$ also is.
+\begin{figure*}
+  % \hfsetfillcolor{black!8}
+  \begin{mathpar}
+  \inferrule[(1)]
+    {\phantom{\Gamma \vdash t \pity{\P} \P x : A. B}}
+    {\Gamma \vdash \tikzmarkin{s1} t\ u \tikzmarkend{s1} \ity \phantom{\subs{B}{x}{u}}} \and
+  \inferrule[(2)]
+    {\Gamma \vdash \tikzmarkin{p1} t \tikzmarkend{p1} \pity{\P} \phantom{\P x : A. B}}
+    {\Gamma \vdash t\ u \ity \phantom{\subs{B}{x}{u}}} \and
+  \inferrule[(3)]{\Gamma \vdash t \pity{\P} \P x : A. B}
+  {\Gamma \vdash t\ u \ity \subs{B}{x}{u}} \and
+  \inferrule[(4)]
+  {\Gamma \vdash t \pity{\P} \P x : A. B \\
+    \Gamma \vdash \tikzmarkin{p2} u \tikzmarkend{p2} \cty A}
+  {\Gamma \vdash t\ u \ity \subs{B}{x}{u}} \and
+  \inferrule[(5)]
+  {\Gamma \vdash t \pity{\P} \P x : A. B \\ \Gamma \vdash u \cty A}
+  {\Gamma \vdash \tikzmarkin{s2} t\ u \tikzmarkend{s2} \ity} \and
+  \inferrule[(6)]
+  {\Gamma \vdash t \pity{\P} \P x : A. B \\ \Gamma \vdash u \cty A}
+  {\Gamma \vdash t\ u \ity \subs{B}{x}{u}}
+  \end{mathpar}
+  \caption{An illustration of McBride’s discipline}
+  \label{fig:bidir-mcbride}
+\end{figure*}
 
-\AP A somewhat similar discipline has appeared independently in \sidetextcite{Bauer2020}.
-The authors introduce the notions of a (weakly) presuppositive type theory
-\cite[Def.~5.6]{Bauer2020} and of well-presented premise-family and rule-boundary
+This can be seen at work in \cref{fig:bidir-mcbride} – ignoring for an instant the exact
+meaning of the judgement $\mathord{\pity{\P}}$.
+The subject under focus has a greyed out background. 
+First, $\Gamma$ is well-formed, as an input to the conclusion, and $t\ u$ is the subject
+under focus (1).
+Then we move to the first premise, where $t$ is the subject, and $\Gamma$ can be used since
+it is well-formed (2). From this premise, we get a type $\P x : A.\ B$ as an output (3), so
+we can assume it is well-formed, and use it to check $u$ against (4). Finally, we learn
+that $u$ is well-formed, and so $t\ u$ is too (5).
+But to output $\subs{B}{x}{u}$ (6), we must ensure it is well-formed. Fortunately,
+it is, since $\P x : A.\ B$ is, so $B$ is too – in $\Gamma, x : A$ –,
+and so $\subs{B}{x}{u}$ is as well since $\Gamma \vdash u \cty A$.
+
+Interestingly, a somewhat similar discipline has appeared independently in
+\sidetextcite[][Section 4]{Dunfield2021}, where it is called ”Pfenning’s recipe”.
+The main criterion is \emph{mode-correctness}, which demands
+an information flow similar to McBride’s, but is coarser, as it does not
+consider well-formedness of the objects, only their knownledge. For instance, that criterion
+would allow for $\l x : A.\ t$ to directly extend a context with $A$ to infer a type for
+$t$, because it is known, but McBride’s discipline forbids it, because $A$’s well-formedness
+is not established.
+Another related condition is also used in \sidetextcite{Bauer2020}.
+The authors introduce the notions of a \emph{(weakly) presuppositive type theory}
+\cite[Def.~5.6]{Bauer2020} and of \emph{well-presented} premise-family and rule-boundary
 \cite[Def.~6.16 and 6.17]{Bauer2020}, using what they call the \intro{boundary} of a judgement
 as the analogue of our \kl{inputs} and \kl{outputs}.
-Due to their setting being undirected, this is however somewhat more restrictive,
+Due to their setting being undirected, this is however more restrictive,
 because they are not able to distinguish inputs from outputs and thus cannot relax the
 condition to only demand inputs to be well-formed but not outputs.
 
-\AP Beyond the already mentioned inference and checking judgements,
-we need to introduce a third one: \intro{constrained inference}, written
+\AP Due to our dependently typed setting, we need to introduce a third judgement,
+beyond the already mentioned \kl{inference} and \kl{checking}:
+\intro{constrained inference}, written
 $\intro*\pinferty{h}{\Gamma}{t}{T}$, where $h$ is either $\Pi$ or $\uni$.%
 \sidenote{These are the only type formers in \kl{CCω}, but
 in \kl{PCUIC}, $h$ can also be \eg an inductive type.}
-Constrained inference is a judgement – or, rather, a family of judgements indexed by $h$ –
+Constrained inference is a judgement%
+\sidenote{Or, rather, a family of judgements indexed by $h$.}
 with the exact same \kl{modes} as \kl{inference},
 but where the type output is not completely free.
 Rather, as the name suggests, a constraint is imposed on it, namely that its head constructor can only be the corresponding element of $h$.
 This is needed to handle the behaviour absent in simple types that some terms might not have a desired type “on the nose”. Take for instance the first premise
 $\Gamma \vdash t \ty \P x : A .\ B$ of \ruleref{rule:cic-app}.
 What bidirectional judgement should replace it?
-It would be too much to ask $t$ to directly infer a $\Pi$-type, as some reduction might be needed to uncover this $\Pi$. Checking also cannot be used, because the domain and codomain of the tentative $\Pi$-type are not known at that point: they are to be inferred from $t$.
+It would be too much to ask $t$ to directly infer a Π-type, as some reduction might be needed to uncover this $\P$. Checking also cannot be used, because the domain and codomain of the tentative Π-type are not known at that point: they are to be inferred from $t$.
+
+Finally, this mode distinction also applies to computation-related judgements,
+although those have no subject.
+Instead, what is under scrutiny is the “computational content” of the rule.
+For conversion $\Gamma \vdash T \conv T' : \uni$, 
+both $T$ and $T'$ are inputs and thus should be known to be well-formed beforehand.
+For reduction $T \red T'$, on the contrary, $T$ is an input,
+but $T'$ is an output. Hence, only $T$ needs to be well-formed \textit{a priori},
+and we rely on the \kl{subject reduction} property to ensure
+that the output $T'$ also is.
 
 \subsection{The typing rules}
 

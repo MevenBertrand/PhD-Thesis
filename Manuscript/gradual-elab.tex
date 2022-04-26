@@ -9,7 +9,7 @@ cast calculus \kl{CCIC}. We start with \kl{CCIC}, describing its typing, reducti
 and metatheoretical properties (\cref{sec:cast-calculus}).
 %
 Next, we describe \kl{GCIC} and its bidirectional elaboration to
-\kl{CCIC}, along with few direct properties (\cref{sec:elaboration}).
+\kl{CCIC}, along with a few direct properties (\cref{sec:elaboration}).
 This elaboration can be seen as an extension of the bidirectional presentation of
 \kl{CIC}.
 %
@@ -485,7 +485,8 @@ This is detailed in \cref{fig:ccic-nor-exc}.
 This is because exception-like terms reduce on Π-types – see \ruleref{rule:red-prod-unk},
 and \sidetextcite[0em]{Pedrot2018}.
 
-Second come the canonical form for inhabitants of $\tcol{\?[\uni]}$:%
+Second come the canonical form for inhabitants of $\tcol{\?[\uni]}$
+(\cref{fig:ccic-cast-nor}):%
 \begin{marginfigure}
   \ContinuedFloat
   \begin{mathpar}
@@ -846,7 +847,7 @@ alleviating the user from the need to give any annotations when using $\scol{\?}
   \inferdef{Inf-Prod?}{
     \inferelab{\Gamma}{\tilde{t}}{t}{T} \\ \tcol{T} \red \tcol{\?[\uni[i]]} \\
     \castOfPi{i} \geq 0}
-  {\pinferelab{\uni}{\Gamma}{\tilde{t}}{\cast{T}{\stalkCIC{i}{\P}}{t}}{\stalkCIC{i}{\Pi}}}
+  {\pinferelab{\P}{\Gamma}{\tilde{t}}{\cast{T}{\stalkCIC{i}{\P}}{t}}{\stalkCIC{i}{\Pi}}}
   \label{rule:gcic-prod-unk} \\
   %
   \inferdef{Inf-List}{
@@ -856,7 +857,7 @@ alleviating the user from the need to give any annotations when using $\scol{\?}
   %
   \inferdef{Inf-List?}{
     \inferelab{\Gamma}{\tilde{t}}{t}{T} \\ \tcol{T} \red \tcol{\?[\uni[i]]}}
-  {\pinferelab{\uni}{\Gamma}{\tilde{t}}{\cast{T}{\stalkCIC{i}{I}}{t}}{\stalkCIC{i}{I}}}
+  {\pinferelab{\List}{\Gamma}{\tilde{t}}{\cast{T}{\stalkCIC{i}{\List}}{t}}{\stalkCIC{i}{\List}}}
   \label{rule:gcic-list-unk}
 %
   \end{mathpar}
@@ -940,8 +941,9 @@ and outputs are unique – up to \kl{conversion} if no strategy is fixed.
 
 \begin{theorem}[Decidability of elaboration]
 	\label{thm:decidability}
-	The relation elaboration of \cref{fig:gcic-infer-stat,fig:gcic-infer-unk,fig:gcic-check-pinfer}
-  are decidable in \kl{GCICT} and \kl{GCICs}. They are semi-decidable in \kl{GCICP}.
+	The elaboration relation of
+  \cref{fig:gcic-infer-stat,fig:gcic-infer-unk,fig:gcic-check-pinfer}
+  is decidable in \kl{GCICT} and \kl{GCICs}. It is semi-decidable in \kl{GCICP}.
 \end{theorem}
 
 \begin{proof}
@@ -1159,7 +1161,7 @@ $\tcol{\z} \capre \tcol{\cast{\Nat}{\Bool}{\z}}$.
 Thus, the definition of structural precision relies on typing, and to do this we need to record the contexts of the two compared terms.
 To denote such contexts where each variable is given two types, we use bold letters, writing $\tcol{\GG , x : A \mid  A'}$ for context extensions.
 \AP \phantomintro{\fs}\phantomintro{\sn}
-We use $\tcol{\GG_i}$ for projections, \ie $\tcol{\fs{(\GG, x : A \mid A')}} \coloneqq \tcol{\fs{\GG}, x : A}$, and write $\tcol{\Gamma \mid \Gamma'}$ for the converse pairing operation.
+We use $\tcol{\GG._i}$ for projections, \ie $\tcol{\fs{(\GG, x : A \mid A')}} \coloneqq \tcol{\fs{\GG}, x : A}$, and write $\tcol{\Gamma \mid \Gamma'}$ for the converse pairing operation.
 
 \begin{figure*}[ht]
   \ContinuedFloat*
@@ -1412,7 +1414,7 @@ apart from \cref{lem:catchup-univ}, where an induction hypothesis is used instea
       such that $\tcol{\GG} \vdash \tcol{\P x : A .\ B} \capre \tcol{\P x :A' . B'}$;
 		\item if $\tcol{\GG} \vdash \tcol{\List(A)} \capre \tcol{T'}$,
       $\cinferty{\fs{\GG}}{\List(A)}{\uni[i]}$ and
-      $\pinferty{\uni}{\sn{\GG}}{T'}{\uni[j]}$,
+      $\cpinferty{\uni}{\sn{\GG}}{T'}{\uni[j]}$,
       then either $\tcol{T'} \hred \tcol{\?[\uni[j]]}$ and $i \leq j$,
       or $\tcol{T'} \hred \tcol{\List(A')}$ for some $\tcol{a'}$
       such that $\tcol{\GG} \vdash \tcol{\List(A)} \capre \tcol{\List(A')}$.
@@ -1554,9 +1556,9 @@ It needs to be stated – and proven – mutually for \kl(pre){structural} and
   \end{itemize}
   This holds in \kl{CCICP}, \kl{CCICs} and for terms without $\tcol{\?}$ in \kl{CCICT}.
 
-  Moreover, if $\red$ is replaced by $\hred$ in the hypothesis –
-  \ie $\tcol{t} \hred \tcol{t'}$ –, then it can be replaced by $\hred$ in the conclusion –
-  \ie $\tcol{u} \hred \tcol{u'}$.
+  Moreover, if $\tcol{t} \red \tcol{t'}$ is replaced by $\tcol{t} \hred \tcol{t'}$
+  in the hypotheses, then $\tcol{u} \red \tcol{u'}$ can be replaced by
+  $\tcol{u} \hred \tcol{u'}$ in the conclusion.
 \end{theorem}
 
 \pagebreak
@@ -1760,7 +1762,7 @@ full \kl{CIC} for \kl{GCICP} and \kl{GCICT}, and \kl{CICs} for \kl{GCICs}.
     \\ \scol{l} \apre \scol{l'}}{\scol{\lcons[A]{a}{l}} \apre \scol{\lcons[A']{a'}{l'}}} \and
 		\inferrule{\scol{s} \apre \scol{s'} \\ \scol{P} \apre \scol{P'} \\ \scol{b_{\lnil}} \apre \scol{b'_{\lnil}} \\ \scol{b_{\lconsop}} \apre \scol{b'_{\lconsop}}}
 		{\scol{\ind{\List}{s}{z.P}{b_{\lnil},y_1.y_2.p_{y_2}.b_{\lconsop}}} \apre 
-    \scol{\ind{\List}{s'}{z.P'}{b'_{\lnil},y_1.y_2.p_{y_2}.b'_{\lconsop}}}}
+    \scol{\ind{\List}{s'}{z.P'}{b'_{\lnil},y_1.y_2.p_{y_2}.b'_{\lconsop}}}} \\
 		\inferrule{ }
 		{\scol{t} \apre \scol{\?[i]}}
 	\end{mathpar}
@@ -1793,7 +1795,7 @@ requires an additional hypothesis relating elaboration and precision judgements.
   More generally, $\scol{\tilde{t}} \apre \scol{\tilde{s}}$ and
   $\inferelab{\Gamma}{\tilde{t}}{t}{T}$ are \reintro{universe adequate} if for any
   sub-term $\scol{\tilde{t}_0}$ of $\scol{\tilde{t}}$ inducing judgements $\scol{\tilde{t}_0}
-  \apre \scol{\?[i]}$ and $\inferelab{\Gamma_0}{\tilde{t}_0}{t}{T}$,
+  \apre \scol{\?[i]}$ and $\inferelab{\Gamma_0}{\tilde{t}_0}{t_0}{T}$,
   those are \kl{universe adequate} in the previous sense.
 \end{definition}
 

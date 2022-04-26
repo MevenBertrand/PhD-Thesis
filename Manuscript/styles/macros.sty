@@ -44,7 +44,7 @@
 \RequirePackage[Libertinus]{./styles/fontcd}
 \usetikzlibrary[patterns]
 \usepackage[customcolors]{hf-tikz}
-\hfsetfillcolor{black!8}
+\hfsetfillcolor{black!10}
 \hfsetbordercolor{white}
 
 % Colors in math mode, with correct spacing
@@ -152,9 +152,9 @@
 
 % Syntax
 
-\newcommand{\terms}[1]{\operatorname{Term}_{\text{#1}}}
-\knowledgenewrobustcmd{\types}[1]{\cmdkl{\operatorname{Type}}_{\text{#1}}}
-\knowledgenewrobustcmd{\Hd}{\cmdkl{\operatorname{Head}}}
+\newcommand{\terms}[1]{\mathord{\symup{Term}_{\text{#1}}}}
+\knowledgenewrobustcmd{\types}[1]{\mathord{\cmdkl{\symup{Type}}_{\text{#1}}}}
+\knowledgenewrobustcmd{\Hd}{\mathord{\cmdkl{\symup{Head}}}}
 
 % Typing
 
@@ -342,7 +342,7 @@
 % Elaboration and colored typing
 
 \newcommand{\comp}{\leadsto}
-\newcommand{\sourcecolor}[1]{\mathcolor{DarkRed}{#1}}
+\newcommand{\sourcecolor}[1]{\mathcolor{Purple}{#1}}
 \newcommand{\scol}[1]{\sourcecolor{#1}}
 \newcommand{\targetcolor}[1]{\mathcolor{DarkBlue}{#1}}
 \newcommand{\tcol}[1]{\targetcolor{#1}}
@@ -371,14 +371,14 @@
 \newcommand{\castOfPi}[1]{\castOfPiName(#1)}
 \knowledgenewrobustcmd{\stalk}{\mathop{\cmdkl{\symup{germ}}}}
 \newcommand{\stalkCIC}[2]{\stalk_{#1} #2}
-\knowledgenewrobustcmd{\hd}{\mathop{\cmdkl{head}}}
+\knowledgenewrobustcmd{\hd}{\mathop{\cmdkl{\mathup{head}}}}
 
 %Relational contexts
 
-\newcommand{\GG}{\symbf{\Gamma}}
-\newcommand{\DD}{\symbf{\Delta}}
-\knowledgenewrobustcmd{\fs}[1]{#1_{\cmdkl{1}}}
-\knowledgenewrobustcmd{\sn}[1]{#1_{\cmdkl{2}}}
+\newcommand{\GG}{\symbb{\Gamma}}
+\newcommand{\DD}{\symbb{\Delta}}
+\knowledgenewrobustcmd{\fs}[1]{#1\cmdkl{._{1}}}
+\knowledgenewrobustcmd{\sn}[1]{#1\cmdkl{._{2}}}
 
 %Models
 

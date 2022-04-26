@@ -18,10 +18,12 @@ and this is by design: there is no single better choice,
 instead one has to adapt to the setting.
 
 For the impatient specialists, let me say now that with \kl{CIC}, I
-mean an intentional type theory, with Church-style abstractions,
+mean an intensional type theory, with Church-style abstractions,
 a predicative hierarchy of universes%
 \sidenote[][14em]{
-  And only those: by default I do \emph{not} include an impredicative sort of propositions, a feature often associated with the name \kl{CIC}.}
+  And only those: by default I do \emph{not} include an impredicative sort of propositions, a feature often associated with the name \kl{CIC}. I still use that name because of
+  another feature that I feel sets apart the tradition around \kl{CIC} from that around
+  Martin-Löf type theory: the definition of \kl{conversion} as an \emph{untyped} relation.}
 \textit{à la} Russell, and any amount of inductive types presented by recursors.
 % – the ones appearing most often in what comes next being the empty and
 % unit types, booleans, natural numbers, dependent sums, lists, vectors and the equality.
@@ -35,7 +37,7 @@ systems and properties which we will refer to in the rest of the text.
 the \kl[CCω]{Calculus of Constructions} (\kl{CCω}),
 the purely functional core all our systems rely on;
 \cref{sec:tech-conversion} defines the various notions of \kl{conversion} and
-\kl{reduction} encountered in the remaining of the thesis;
+\kl{reduction} encountered in the rest of the thesis;
 \cref{sec:tech-properties} introduces the main properties our systems should satisfy;
 \cref{sec:tech-cic} adds inductive types to \kl{CCω} to build
 \kl{CIC}; finally \cref{sec:tech-pcuic} discusses the extra additions to go from
@@ -141,7 +143,7 @@ Conversely, function application is denoted by simple juxtaposition, as in $t\ u
 The type of functions is written $\to$, as in ordinary mathematics.
 You can see those at work in \cref{fig:cic-nondep-fun}: an abstraction builds a term of arrow
 type, and application needs its function to be of an arrow type,
-whose domain must moreover correspond to that of the argument.
+whose domain must moreover correspond to the type of the argument.
 The side-condition $\Gamma \vdash A \ty \uni$ ensures that the annotation is a valid type,
 we will introduce it shortly.
 Logically, those rules make sense if $\to$ is read as implication:
@@ -268,11 +270,11 @@ are indeed types. Note that in \ruleref{rule:cic-cons-con}, we did not write dow
 \end{marginfigure}
 
 \AP One last important point regarding universes is the kind of \kl{levels} used.
-The simplest solution is to rely on natural number (of the meta-theory),
+A simple solution is to rely on natural numbers (of the meta-theory),
 with the $\intro*\unextsymb$
 and $\intro*\umaxsymb$ operations interpreted by the usual ones.
 This is however not strictly necessary: we need levels
-to form an order so as to ensure we avoid inconsistency, and operations
+to form a (well-founded) pre-order to avoid inconsistency, and operations
 such as $\unextsymb$ and $\umaxsymb$, but levels could very well be something
 different from natural numbers.
 In particular, the natural number approach fixes at which level a particular construction
@@ -282,7 +284,7 @@ A more flexible approach, introduced under the name \intro{typical ambiguity} by
 uses level expressions based on level variables, rather than numbers.
 This way, one can collect exactly the constraints between levels required for a
 term to type-check in a consistent system, without artificially enforcing a
-rigid interpretation by fixing their to a precise number once and for all.
+rigid interpretation by fixing their value to a precise number once and for all.
 To simplify the presentation, our default \kl{CCω}/\kl{CIC} nonetheless use integers,
 but \kl{typical ambiguity} appears at multiple points in this thesis.
 
@@ -305,7 +307,7 @@ but \kl{typical ambiguity} appears at multiple points in this thesis.
 dependent types, and that those can contain terms, which in turn can be seen as programs.
 In the case for instance of the vector type we used in the introduction (and that we are
 about to introduce formally), what happens if a function expects an argument of type
-$\Vect(A,3)$, but it is given an argument the output of a concatenation function,
+$\Vect(A,3)$, but it is given as argument the output of a concatenation function,
 which naturally has type $\Vect(A,(2+1))$?
 Surely we must have a way to relate both, since after all
 the small program $2+1$ ought to compute $3$! This is exactly what
@@ -378,7 +380,7 @@ On one side, conversion is seen as an intrinsically typed relation: terms are on
 that does not presuppose any form of typing. \Cref{fig:typed-untyped-conv} gives an
 example of the computation rule for functions in both systems.
 The “content” of the two rules is the same – they equate $(\l x : A.\ t)\ u$
-and $\subs{t}{x}{u}$ – only the side-conditions differ wildly.
+and $\subs{t}{x}{u}$ – only the side-conditions differ substantially.
 \kl{Typed conversion} goes back to the type theory of
 \sidetextcite{MartinLoef1972}, and is a recurring feature in its many descendants.
 \AP \kl{Untyped conversion} relates strongly to (untyped) λ-calculus – Barendregt
@@ -537,7 +539,7 @@ which can be seen as a generalized form of reflexivity.
 \phantomintro{\aconv}
 
 \AP Before we can describe \kl{algorithmic conversion}, we first need
-to give a look at \intro{reduction}. Reduction is in some way an operational version of
+to have a look at \intro{reduction}. Reduction is in some way an operational version of
 conversion. The main difference is that it is oriented, in the direction
 corresponding to program evaluation. It itself decomposes into three components.
 
@@ -821,7 +823,7 @@ Note that in the case where the relation $\sqsubseteq$ is symmetric and transiti
 (in particular, \kl{conversion}), \kl{uniqueness of types up to} $\sqsubseteq$ simplifies
 to the fact that whenever $\Gamma \vdash t \ty T$ and $\Gamma \vdash t \ty T'$,
 we have $T \sqsubseteq T'$. However, in \kl{PCUIC} we wish to replace \kl{conversion} with
-\kl{cumulativity}, which is not symmetric – it is a pre-order –, so that the more involved
+\kl{cumulativity}, which is not symmetric – it is a pre-order –, so the more involved
 definition is needed.
 
 This property is not so easy to establish%
@@ -1032,13 +1034,21 @@ or prove it relatively to that of another, simpler theory.
 \label{sec:tech-cic}
 
 \AP Of course, not everything in mathematics or programming is a function.
-Although \kl{CCω} is powerful enough to encode many constructions,
+Although \kl{CCω} is powerful enough to encode many constructions,%
+\sidenote[][-2em]{At least if one extends its universe hierarchy with an impredicative
+universe.}
 such encodings are not fully satisfactory: \sidetextcite{Geuvers2001} shows
 that it is impossible to construct a type of natural numbers
 satisfying an induction principle, which is their defining characteristic!
 Because of such limitations of encodings, and in order to faithfully
 represent the use of induction in mathematics and pattern-matching in programming languages,
-\intro{inductive types} have been introduced by \sidetextcite{PaulinMohring1993}.
+the general class of \intro{inductive types} have been introduced
+by \sidetextcite{PaulinMohring1993}.%
+\sidenote{
+  Earlier type theories, such as \cite{MartinLoef1972,MartinLoef1984}, presented specific
+  instances of that class, but not a general scheme.
+}%
+\margincite{MartinLoef1972,MartinLoef1984}
 Adding these to \kl{CCω} results in \intro{CIC},
 the \intro{Calculus of Inductive Constructions}.
 
@@ -1048,7 +1058,7 @@ the \intro{Calculus of Inductive Constructions}.
   \ContinuedFloat*
   \begin{mathpar}
     \inferdef{BoolTy}{\vdash \Gamma}{\Gamma \vdash \Bool \ty \uni[0]}
-    \label{rule:bool-type}
+    \label{rule:bool-type} \and
   \end{mathpar}
   \caption{The type of booleans}
   \label{fig:bool-type}
@@ -1057,12 +1067,12 @@ the \intro{Calculus of Inductive Constructions}.
 \begin{marginfigure}
   \ContinuedFloat
   \begin{mathpar}
-    \inferdef{False}{\vdash \Gamma}{\Gamma \vdash \false \ty \Bool} \and
-    \label{rule:false}
+    \inferdef{False}{\vdash \Gamma}{\Gamma \vdash \false \ty \Bool}
+    \label{rule:false} \and
     \inferdef{True}{\vdash \Gamma}{\Gamma \vdash \true \ty \Bool}
     \label{rule:true}
   \end{mathpar}
-  \caption{Boolean constructors}
+  \caption{The boolean constructors}
   \label{fig:bool-cons}
 \end{marginfigure}
 
@@ -1094,7 +1104,7 @@ as soon as the inductive type itself is recursive.
 We also use the name \reintro{recursor} interchangeably with induction principle,
 but especially when we want to emphasize the programming point of view.
 
-\begin{figure}
+\begin{figure}[h]
   \ContinuedFloat
   \begin{mathpar}
     \inferdef{BoolInd}
@@ -1109,7 +1119,7 @@ but especially when we want to emphasize the programming point of view.
   \label{fig:bool-typ}
 \end{figure}
 
-\begin{marginfigure}
+\begin{marginfigure}[1em]
   \ContinuedFloat
   \begin{mathpar}
     \inferdef{ιFalse}
@@ -1138,7 +1148,7 @@ reduction of the scrutinee. This is similar to functions, we allow reduction onl
 position in the term that triggers a computation if it is a canonical form – in the case
 of $\indop$, in the scrutinee.
 
-\begin{figure*}[ht]
+\begin{figure*}
   \ContinuedFloat
   \begin{mathpar}
     \inferrule
@@ -1174,20 +1184,6 @@ of $\indop$, in the scrutinee.
 
 \subsection{Recursion}
 
-Booleans are very simple, but we of course want more. The first thing to add is recursion.
-The simplest example is that of natural numbers, given in \cref{fig:nat}.
-The rules are more verbose than those for booleans, but the general idea is very similar:
-\ruleref{rule:nat-type} introduces a new type, \ruleref{rule:zero-type}
-and \ruleref{rule:succ-type} its constructors, and \ruleref{rule:nat-ind} its induction
-principle. This time said induction principle is a real one, as we can see in
-the second branch, where an induction hypothesis $p_{y}$ on the predecessor $y$ is available.
-As for booleans, the induction principle reduces when its scrutinee is a constructor.
-But, again, since we have real recursion,
-a recursive call appears in the reduct of \ruleref{rule:iota-succ}.
-We do not repeat the congruence rules, as they are similar to those for booleans
-(\cref{fig:bool-cong}). The only difference is that now there is also a need for congruence
-rules for the term former $\Sop$, since it has a sub-term.
-
 \begin{figure}[h]
   \AP
   \begin{mathpar}
@@ -1218,6 +1214,20 @@ rules for the term former $\Sop$, since it has a sub-term.
   \label{fig:nat}
 \end{figure}
 
+Booleans are very simple, but we of course want more. The first thing to add is recursion.
+The simplest example is that of natural numbers, given in \cref{fig:nat}.
+The rules are more verbose than those for booleans, but the general idea is very similar:
+\ruleref{rule:nat-type} introduces a new type, \ruleref{rule:zero-type}
+and \ruleref{rule:succ-type} its constructors, and \ruleref{rule:nat-ind} its induction
+principle. This time said induction principle is a real one, as we can see in
+the second branch, where an induction hypothesis $p_{y}$ on the predecessor $y$ is available.
+As for booleans, the induction principle reduces when its scrutinee is a constructor.
+But, again, since we have real recursion,
+a recursive call appears in the reduct of \ruleref{rule:iota-succ}.
+We do not repeat the congruence rules, as they are similar to those for booleans
+(\cref{fig:bool-cong}). The only difference is that now there is also a need for congruence
+rules for the term former $\Sop$, since it has a sub-term.
+
 At this point, it might be good to add a note on the way we represent constructors:
 we enforce them to be \intro{fully applied}, meaning $\Sop$ does not make sense on its own
 as a term. \kl{Coq} is slightly more permissive, and allows $\Sop \ty \Nat \to \Nat$.
@@ -1235,21 +1245,7 @@ in part due to concerns raised while working on this thesis that are detailed in
 
 \subsection{Parameters}
 
-\AP A second direction for enhancement is the ability to have inductive types with parameters.
-The main use of this is for type constructors, for instance the pair type $A \times B$
-that appears in \cref{chap:intro-en}. As is probably not very surprising by
-now, this type is a restricted instance of a more general type, the
-dependent pair type $\intro*\Sb x : A.\ B$.
-Logically, its dependency on $A$ means that if we see $B$ as a property,
-the whole pair type describes a subset of $A$ – those elements
-which validate $B$. The rules are given in \cref{fig:sig}.
-As for functions we need an annotation on
-the pair constructor, for the exact same reason: we want to ensure that any term can
-infer a type. We also omit congruence rules, as they are again similar to those of
-\cref{fig:bool-cong}, although now not only the pair constructor but also the type constructor
-$\Sb$ get their congruence rules, since both have sub-terms.
-
-\begin{figure}
+\begin{figure}[h]
   \AP
   \begin{mathpar}
     \inferdef{PairTy}
@@ -1276,10 +1272,19 @@ $\Sb$ get their congruence rules, since both have sub-terms.
   \label{fig:sig}
 \end{figure}
 
-\AP As an example which combines both recursion and parameters, we have the polymorphic list
-type $\intro*\List$, which mainly combines what
-we already covered for natural numbers and pairs. The typing and reduction rules are
-given in \cref{fig:list}.
+\AP A second direction for enhancement is the ability to have inductive types with parameters.
+The main use of this is for type constructors, for instance the pair type $A \times B$
+that appears in \cref{chap:intro-en}. As is probably not very surprising by
+now, this type is a restricted instance of a more general type, the
+dependent pair type $\intro*\Sb x : A.\ B$.
+Logically, its dependency on $A$ means that if we see $B$ as a property,
+the whole pair type describes a subset of $A$ – those elements
+which validate $B$. The rules are given in \cref{fig:sig}.
+As for functions we need an annotation on
+the pair constructor, for the exact same reason: we want to ensure that any term can
+infer a type. We also omit congruence rules, as they are again similar to those of
+\cref{fig:bool-cong}, although now not only the pair constructor but also the type constructor
+$\Sb$ get their congruence rules, since both have sub-terms.
 
 \begin{figure}
   \AP
@@ -1320,6 +1325,11 @@ given in \cref{fig:list}.
 \label{fig:list}
 \end{figure}
 
+\AP As an example which combines both recursion and parameters, we have the polymorphic list
+type $\intro*\List$, which mainly combines what
+we already covered for natural numbers and pairs. The typing and reduction rules are
+given in \cref{fig:list}.
+
 % Inductive types using recursion and parameters we call \intro{datatypes},
 % as they roughly correspond to what one can find in usual programming languages.
 % For instance, they are closely related to the algebraic types of the \kl{OCaml} language.
@@ -1328,7 +1338,7 @@ given in \cref{fig:list}.
 
 There is one feature missing in the previous inductive types. Indeed, in all of them
 the return types of constructors are always the same. In some way, they do not exploit
-the possibilities dependent types. What if we wanted constructors
+the possibilities of dependent types. What if we wanted constructors
 to specify that they inhabit a type at some specific value? This is exactly the point of
 \intro{indexed inductive types}.
 
@@ -1702,9 +1712,9 @@ to how a recursive function
 can be defined, which amounts to checking that recursive calls are made on
 structurally smaller sub-terms – by means of pattern-matching. This guard condition
 theoretically ensures that fixed-points and pattern-matching can always be reduced to
-\kl{recursors} \sidecite{Gimenez1995}, which are what proof of \kl{normalization} and/or
-consistency consider.
-However, in practise the former give more
+\kl{recursors} \sidecite{Gimenez1995}, which are what proofs of \kl{normalization} and/or
+consistency usually consider.
+However, in practice the former give more
 flexible and natural definitions than the latter.
 
 \subsection{Records and co-inductive types}

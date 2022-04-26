@@ -12,17 +12,15 @@
 \newfontfamily\checksymbol{DejaVu Sans} % because the checkmark is missing is Libertinus
 
 \setmathfont[Scale=MatchLowercase]{Libertinus Math}
-% because the Libertinus mathcal is ugly, see https://tex.stackexchange.com/questions/67881/resetting-mathcal-font-to-default
-\DeclareMathAlphabet{\mathcal}{OMS}{cmsy}{m}{n}
+% Reset the mathcal and blackboard bold to the ones from computer modern
+\setmathfont[Scale=MatchUppercase,range={cal}]{Latin Modern Math}
+\setmathfont[Scale=MatchUppercase,ScaleAgain=1.07,range=bb]{Latin Modern Math}
 
 %% Colors
 
 \definecolor{LightOrange}{HTML}{F48C06}
 \definecolor{DarkGreen}{HTML}{228833}
 \definecolor{LightGreen}{HTML}{3e8914}
-% \colorlet{DarkBlue}{Blue}
-% \colorlet{LightBlue}{TealBlue}
-
 \definecolor{DarkBlue}{HTML}{0077BB}
 \definecolor{LightBlue}{HTML}{33BBEE}
 \definecolor{Teal}{HTML}{009988}

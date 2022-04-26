@@ -241,7 +241,7 @@ cannot possibly reduce to $\tcol{\refl}$, and
 thus would need to reduce either to $\tcol{\err}$ or $\tcol{\?}$;
 and so does $\tcol{\test \addz}$.
 %
-This means that the theory would be very intentional, by being able to distinguish between
+This means that the theory would be very intensional, by being able to distinguish between
 any two functions that are not \kl{convertible}, even if they are pointwise equal.
 
 More generally, the issue is the following: given a constructor $\tcol{c}$
@@ -254,7 +254,7 @@ If $\tcol{I}$ has indices, however, this might not be possible due to typing con
 as in the example of $\tcol{\refl}$.
 But we still need to provide an inhabitant of that type as redex for the cast! If we resort to
 the wildcards $\tcol{\?}$ or $\tcol{\err}$,
-then we expose a very intentional behaviour such as the one above.
+then we expose a very intensional behaviour such as the one above.
 However, in the setting of a generic inductive type
 – such as that of the equality –, deciding whether it is inhabited by a “valid”,
 non-wildcard, term in a given non-empty context is undecidable,
