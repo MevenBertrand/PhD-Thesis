@@ -46,53 +46,68 @@ preserve it as an invariant.%
   \textit{A rule is a server for its conclusion and a client for its premises.
   Servers receive promises about inputs and make promises about outputs, clients make
   promises about inputs and receive promises about outputs.}}
-More precisely, information flows in a clockwise manner. First, one can assume that inputs
-to the conclusion are well-formed – they are inputs to the rule. Next, we move to the
+More precisely, information flows in a clockwise manner. First, we can assume that inputs
+to the conclusion are well-formed, as inputs to the whole rule. Next, we move to the
 premises. Here the constraint is reversed: we should ensure that inputs to a premise are
-well-formed, but can assume that its outputs and subjects are. In particular,
-the well-formedness of inputs can rely on that of subjects or outputs
-of previous ones.
+well-formed, but can assume that its outputs and subjects are. We might need to use
+the well-formation of subjects or outputs of previous ones for that.
 Finally, information goes to the conclusion again, and now not only the subject but also
 the output should be well-formed if all those of the premises are.
 
 \begin{figure*}
-  % \hfsetfillcolor{black!8}
   \begin{mathpar}
+  % \inferrule[(1)]
+  %   {\phantom{\Gamma \vdash t \pity{\P} \P x : A. B}}
+  %   {\Gamma \vdash \tikzmarkin{s1} t\ u \tikzmarkend{s1} \ity \phantom{\subs{B}{x}{u}}} \and
   \inferrule[(1)]
-    {\phantom{\Gamma \vdash t \pity{\P} \P x : A. B}}
-    {\Gamma \vdash \tikzmarkin{s1} t\ u \tikzmarkend{s1} \ity \phantom{\subs{B}{x}{u}}} \and
+    {\tikzmarkin[ch]{p2}\Gamma \tikzmarkend{p2} \vdash
+      \tikzmarkin[uc]{p23} t \pity{\P} \P x : A. B \tikzmarkend{p23}\\
+      \tikzmarkin[ch]{p21}\Gamma\tikzmarkend{p21} \vdash
+      \tikzmarkin[uc]{p22} u \cty A\tikzmarkend{p22}}
+    {\tikzmarkin[ch]{c2}\Gamma\tikzmarkend{c2} \vdash
+      \tikzmarkin[uc]{c21}t\ u \ity \subs{B}{x}{u}\tikzmarkend{c21}} \and
   \inferrule[(2)]
-    {\Gamma \vdash \tikzmarkin{p1} t \tikzmarkend{p1} \pity{\P} \phantom{\P x : A. B}}
-    {\Gamma \vdash t\ u \ity \phantom{\subs{B}{x}{u}}} \and
-  \inferrule[(3)]{\Gamma \vdash t \pity{\P} \P x : A. B}
-  {\Gamma \vdash t\ u \ity \subs{B}{x}{u}} \and
+  {\tikzmarkin[ch]{p3}\Gamma \vdash t \pity{\P} \P x : A. B \tikzmarkend{p3}\\
+    \tikzmarkin[ch]{p31}\Gamma\tikzmarkend{p31} \vdash
+    \tikzmarkin[uc]{p32} u \cty A\tikzmarkend{p32}}
+  {\tikzmarkin[ch]{c3}\Gamma\tikzmarkend{c3} \vdash
+    \tikzmarkin[uc]{c31}t\ u \ity \subs{B}{x}{u}\tikzmarkend{c31}} \and
+  \inferrule[(3)]
+  {\tikzmarkin[ch]{p4}\Gamma \vdash t \pity{\P} \P x : A. B \tikzmarkend{p4}\\
+    \tikzmarkin[ch]{p41}\Gamma\tikzmarkend{p41} \vdash
+    \tikzmarkin[uc]{p42} u \tikzmarkend{p42} \cty \tikzmarkin[ch]{p43}A\tikzmarkend{p43}}
+  {\tikzmarkin[ch]{c4}\Gamma\tikzmarkend{c4} \vdash
+    \tikzmarkin[uc]{c41}t\ u \ity \subs{B}{x}{u}\tikzmarkend{c41}} \and
   \inferrule[(4)]
-  {\Gamma \vdash t \pity{\P} \P x : A. B \\
-    \Gamma \vdash \tikzmarkin{p2} u \tikzmarkend{p2} \cty A}
-  {\Gamma \vdash t\ u \ity \subs{B}{x}{u}} \and
+  {\tikzmarkin[ch]{p5}\Gamma \vdash t \pity{\P} \P x : A. B \tikzmarkend{p5}\\
+    \tikzmarkin[ch]{p51}\Gamma \vdash u \cty A\tikzmarkend{p51}}
+  {\tikzmarkin[ch]{c5}\Gamma\tikzmarkend{c5} \vdash
+    \tikzmarkin[uc]{c51}t\ u \ity \subs{B}{x}{u}\tikzmarkend{c51}} \and
   \inferrule[(5)]
-  {\Gamma \vdash t \pity{\P} \P x : A. B \\ \Gamma \vdash u \cty A}
-  {\Gamma \vdash \tikzmarkin{s2} t\ u \tikzmarkend{s2} \ity} \and
-  \inferrule[(6)]
-  {\Gamma \vdash t \pity{\P} \P x : A. B \\ \Gamma \vdash u \cty A}
-  {\Gamma \vdash t\ u \ity \subs{B}{x}{u}}
+  {\tikzmarkin[ch]{p6}\Gamma \vdash t \pity{\P} \P x : A. B \tikzmarkend{p6}\\
+    \tikzmarkin[ch]{p61}\Gamma \vdash u \cty A\tikzmarkend{p61}}
+  {\tikzmarkin[ch]{c6}\Gamma \vdash t\ u \ity \subs{B}{x}{u}\tikzmarkend{c6}}
   \end{mathpar}
-  \caption{An illustration of McBride’s discipline}
+  \caption{An illustration of McBride’s discipline (well-formed objects are in blue, those not known to be so are in red)}
   \label{fig:bidir-mcbride}
 \end{figure*}
 
-This can be seen at work in \cref{fig:bidir-mcbride} – ignoring for an instant the exact
-meaning of the judgement $\mathord{\pity{\P}}$.
-The subject under focus has a greyed out background. 
-First, $\Gamma$ is well-formed, as an input to the conclusion, and $t\ u$ is the subject
-under focus (1).
-Then we move to the first premise, where $t$ is the subject, and $\Gamma$ can be used since
-it is well-formed (2). From this premise, we get a type $\P x : A.\ B$ as an output (3), so
-we can assume it is well-formed, and use it to check $u$ against (4). Finally, we learn
-that $u$ is well-formed, and so $t\ u$ is too (5).
-But to output $\subs{B}{x}{u}$ (6), we must ensure it is well-formed. Fortunately,
+As an illustration, an example of a rule that does respect this discipline – that
+for application – is given in \cref{fig:bidir-mcbride}.
+Let us ignore for an instant the exact meaning of the judgement $\mathord{\pity{\P}}$
+which we introduce soon, and focus on well-formation: objects known to be well-formed
+are on a blue background, those which are not are on a red one.
+First, $\Gamma$ is well-formed, as an input to the conclusion (1), and
+We can thus move to the first premise, since its only input is $\Gamma$.
+From that premise holding, we learn that $t$ and $\P x : A.\ B$ are well-formed (2).
+Therefore, $A$ is in particular well-formed, and we can move to the second premise
+whose two inputs are now known to be well-formed (3). From it, we learn
+that $u$ is well-formed (4). Now we can deduce that $t\ u$ is well-formed. But this is
+not enough: since $\subs{B}{x}{u}$ is an output to the conclusion,
+we must ensure it is well-formed too. Fortunately,
 it is, since $\P x : A.\ B$ is, so $B$ is too – in $\Gamma, x : A$ –,
-and so $\subs{B}{x}{u}$ is as well since $\Gamma \vdash u \cty A$.
+and so $\subs{B}{x}{u}$ is as well, since $\Gamma \vdash u \cty A$.
+Thus we can move back to the conclusion (5), which ends our roundtrip.
 
 Interestingly, a somewhat similar discipline has appeared independently in
 \sidetextcite[][Section 4]{Dunfield2021}, where it is called ”Pfenning’s recipe”.
