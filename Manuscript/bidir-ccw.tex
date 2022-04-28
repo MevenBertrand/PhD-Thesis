@@ -214,9 +214,9 @@ even if the domain and codomain are.%
 \sidenote{\kl{PTS} where this is true are called \intro{full}.}
 However, this premise is problematic in the bidirectional setting. Indeed, $B$ can only be
 inferred as a type for the body of the abstraction $t$. But to infer a type for $t$, the
-context $\Gamma, x : A$ needs to be well-formed, which is not know if this premise is
+context $\Gamma, x : A$ needs to be well-formed, which is not known if this premise is
 the first one.
-This issue has been identified by \sidetextcite{Pollack1992}, who remarks that the
+This issue has been identified by \sidetextcite{Pollack1992}, who remarked that the
 bidirectional structure we present here is only equivalent to the undirected one
 in semi-full \kl{PTS} – a slight generalization of the full ones.
 In a full \kl{PTS}, the opposite path of simply removing the first premise altogether
@@ -280,7 +280,7 @@ However, as soon as conversion is extended or modified,
 % or graduality \sidecite{LennonBertrand2022},
 reduction is often not enough any more.
 Putting constrained inference forward explains some ideas that recurrently appear in
-such settings:  they are not ad-hoc workaround,
+such settings:  they are not ad-hoc workarounds,
 but are based on the need to account for constrained inference.
 
 We already mentioned \sidetextcite{Pollack1992}, where $\Gamma \vdash t \ty T$ is used
@@ -377,7 +377,7 @@ Thus, we get the following correctness theorem – note how McBride’s discipli
   that typing premise is obtained by combining the induction hypothesis,
   validity and \kl{subject reduction}.
 
-  Alternatively, the appeal validity could be removed by
+  Alternatively, the appeal to validity could be removed by
   strengthening the theorem to incorporate the well-formation of outputs on top of that of
   the subject. Here we follow the proofs in \kl{MetaCoq}, which establishes
   meta-theoretical properties of the undirected system – including validity –,
@@ -608,7 +608,7 @@ while \kl(bidir){correctness} and \kl(bidir){completeness} ensure the results
 can be carried to the undirected system.
 One way to understand this is to see completeness followed by correctness as a
 normalization procedure on derivations, producing a canonical derivation
-which is more structure, and thus more amenable to proofs.
+which is more structured, and thus more amenable to proofs.
 
 An example of this is the \kl{strengthening} property, a consequence of
 \kl{conditional stability under renaming}. We explained in \cref{sec:tech-properties}

@@ -62,10 +62,10 @@ By completeness, we mean that any term that is typeable in the undirected system
 infer a type in the bidirectional one.
 This feature is very desirable when implementing kernels for proof assistants,
 whose algorithms should correspond to their undirected specification –
-even on terms not in normal forms. Indeed, reduction is only normalizing
+even on terms not in normal form. Indeed, reduction is only normalizing
 on well-typed terms, so it should not be called on a term that is not known to be
 well-typed. So if a developer wishes to generate a term using tactics, they cannot use
-reduction before knowing that it is well-typed, but might no be able to type-check it
+reduction before knowing that it is well-typed, but might not be able to type-check it
 because it is not a normal form… And ensuring that a tactic only returns normal forms
 might be a complex feat.
 

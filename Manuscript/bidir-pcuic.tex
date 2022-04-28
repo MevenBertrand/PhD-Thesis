@@ -10,7 +10,7 @@ scale very well to these extensions.
 There are two areas, though, where some care needs to be taken.
 The first is cumulativity, which in particular forces us to reconsider the statement
 of the completeness and uniqueness properties, see \cref{sec:bidir-pcuic-cumulativity}.
-But the main is the introduction of inductive types. In particular, there is a subtle
+But the main one is the introduction of inductive types. In particular, there is a subtle
 interplay with cumulativity in the treatment of pattern-matching.
 Working on the formalized proof of completeness in \kl{MetaCoq} led to the discovery of
 an incompleteness bug in the kernel of \kl{Coq} linked to this.
@@ -18,7 +18,7 @@ In \cref{sec:bidir-pcuic-inductives} we show how the bidirectional setting adapt
 inductive types, and try and give an intuition of the origin of the completeness issue.
 
 We do not give precise proofs in this chapter,
-instead relying on the formalisation in \kl{MetaCoq} as described in \arefpart{metacoq}.
+instead relying on the formalization in \kl{MetaCoq} as described in \arefpart{metacoq}.
 
   % The first area of difference are the universes. While on paper those are simply integer, to handle typical ambiguity and polymorphic (co)-inductive types, PCUIC uses algebraic universes, containing level variables, algebraic $\vee$ and $+1$ operators, and a special level for the sort Prop. Moreover, those universes are cumulative, that is they behave as if smaller universes were included in larger ones. The precise handling of the algebraic universes is abstracted away in MetaCoq, and quite similar in the directed and undirected systems, so it did not prove too difficult to handle. Cumulativity, however, introduces some not-so-small differences with the previous presentation, so we spend some time on it in \cref{sec:pcuic-cumul}.
 
@@ -90,7 +90,7 @@ type} of its \kl{principal type}. This means that there is a good separation bet
 propositions – those terms whose smallest universe is $\Prop$ – and relevant terms
 – those whose smallest universe is some $\uni[i]$ –, and that this stays true even in
 presence of cumulativity, and even if $\Prop \cum \uni[i]$. If this were not the case,
-the erasure of propositional content – which is one of the important use case of $\Prop$ –
+the erasure of propositional content – which is one of the important use cases of $\Prop$ –
 would not make sense.
 
 \section{Inductive Types}
@@ -205,7 +205,7 @@ is close to the following:
 Note that the domain and codomain are compared using \kl{cumulativity}. This is crucial
 to retain \kl{subject reduction}. Indeed, reduction of the scrutinee might make its inferred
 type decrease. For instance in
-  \[ \left( \l y : (\uni[1] \times \uni[1]) \right)\ \pair[\uni[0]][\uni[0]]{\Nat}{\Nat}
+  \[ \left( \l y : (\uni[1] \times \uni[1]).\ y \right)\ \pair[\uni[0]][\uni[0]]{\Nat}{\Nat}
     \red \pair[\uni[0]][\uni[0]]{\Nat}{\Nat} \]
 the redex infers type $\uni[1] \times \uni[1]$ while the reduct infers $\uni[0] \times \uni[0]$. Thus, if such a term is plugged as scrutinee in the previous pattern-matching with
 parameters $\uni[1]$ and $\uni[1]$, the whole term still is typeable after the reduction of
