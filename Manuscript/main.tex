@@ -36,7 +36,7 @@
 \usepackage{styles/macros}
 \usepackage{styles/alectryon-minted}
 
-% \includeonly{gradual-elab}
+\includeonly{future-work}
 
 \graphicspath{{./figures/}} % Paths where images are looked for
 
@@ -91,15 +91,15 @@
 \include{gradual-elab}
 \include{beyond-gcic}
 
-% \appendix % From here onwards, chapters are numbered with letters, as is the appendix convention
+\include{future-work}
 
-% \pagelayout{wide} % No margins
-% \addpart{Appendix}
-% \pagelayout{margin} % Restore margins
+\appendix % From here onwards, chapters are numbered with letters, as is the appendix convention
 
-% \chapter{Some more blindtext}
+\pagelayout{wide} % No margins
+\addpart{Appendix}
+\pagelayout{margin} % Restore margins
 
-% \blindtext
+\include{appendix}
 
 %----------------------------------------------------------------------------------------
 

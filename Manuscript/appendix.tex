@@ -1,0 +1,82 @@
+\chapter{On Names for Type Systems}
+\label{chap:names}
+
+\subsection*{MLTT and CIC}
+
+Dependent type theory is a vast field, and as in any other field there are numerous
+variations in the objects considered, both due to advances in their understanding,
+and to diverging purposes and techniques. In the end, when 
+choosing a particular type system to investigate, there are many more parameters to 
+fix than names available for them, so that the same name is bound to be used for
+different systems.
+
+In the dependently typed setting, I think we can safely delineate two main schools,
+with different histories and cultures. The first goes back to Martin-Löf –
+in particular \sidetextcite{MartinLoef1972} –, and is strongly linked to the \kl{Agda}
+proof assistant. The second is tied to the proof assistant \kl{Coq}, in the filiation of
+Coquand and Huet – since \sidetextcite{Coquand1988}.
+The umbrella name “MLTT”, for Martin-Löf Type Theory is the one usually used for systems
+in the first school, while ones in the second tend to use “CIC” – Calculus of Inductive
+Constructions –, or variants thereof.
+
+This separation is not a strict one, and researchers from both schools interact, exchange
+theoretical and implementation ideas, and move forward together. But still, this cultural
+difference is not anecdotal, as seemingly small differences between the approaches on both
+sides lead to wildly different behaviours between the systems, so that  some techniques
+that are very successful on one side can prove unusable on the other.
+
+I tried to prompt the community of proof assistants%
+\sidenote{Using a \href{https://proofassistants.stackexchange.com/questions/267/what-are-the-differences-between-mltt-and-cic}{question} on the proof assistant
+stack exchange.}
+which led to quite different answers. I tried to summarize them in \cref{fig:mltt-cic},
+although this is very approximate: \kl{Agda} has a general scheme for inductive types
+(including cubical ones in the cubical library) while many articles on \kl{CIC} only
+consider a few example inductive types – as was the case in parts of this thesis, etc.
+The one feature which is maybe the more prominent in the distinction between MLTT and
+CIC is the presence of an impredicative sort of propositions, which immensely augments the
+logical power of the theory, and makes it much harder to prove normalization.
+
+\begin{figure*}[h]
+  \begin{tabular}{cccccc}
+    \rule{0pt}{4ex} & Philosophy & Universes & Inductive Types & Pattern-matching & Conversion \\
+    \hline
+    MLTT \rule{0pt}{4ex} & Constructivism & Predicative hierarchy & $0$, $1$, $W$ and $Id$ & Top-level clauses & Typed \\
+    CIC \rule{0pt}{4ex} & None/Formalism & Impredicative $\Prop$ & General scheme & First-class terms & Untyped
+  \end{tabular}
+  \caption{General characteristics of MLTT and CIC}
+  \label{fig:mltt-cic}
+\end{figure*}
+
+\subsection*{Why “CIC”?}
+
+Despite the inclusion of propositions, I chose to use the name \kl{CIC} in this thesis, for
+multiple reasons. First, regarding all other columns in the table, the system fits more
+in the bottom line than the top one. In particular, the general spirit of studying
+conversion using tools from rewriting theory which appears as a repeated pattern throughout
+the thesis is incompatible – or, at the very least, must be heavily amended –
+with a typed conversion.
+Moreover, apart from \arefpart{gradual}, the absence of
+treatment of $\Prop$ on the paper presentation was done mostly due to simplification concerns
+than to theoretical issues, as the formalization of \kl{PCUIC} as a whole illustrates.
+This also applies to \cref{chap:bidir-gradual-elab}, even though the models quickly presented
+in \cref{chap:beyond-gcic} do not scale to $\Prop$, meaning that the target
+of \cref{chap:bidir-gradual-elab} would then be on a precarious foundation.
+
+But more importantly, in the bidirectional approach,
+there is again a clear cultural difference between
+\kl{Agda}/MLTT and \kl{Coq}/CIC. The former have used the bidirectional ideas for a long
+time in order to allow for a lightweight syntax using Curry-style abstractions,
+at the cost of losing completeness of typing on non-normal forms.%
+\sidenote{This was a deliberate trade-off, at least in the case of \kl{Agda}
+  \cite[p.~19]{Norell2007}.}%
+\margincite{Norell2007}
+The latter insist on keeping enough annotations in the kernel syntax by using Church-style
+abstractions, and using a mechanism of implicit arguments to lighten the weight of
+for users.
+This means that the completeness theorem \cref{thm:compl-ccomega} does \emph{not} apply
+to any of the standard presentations of MLTT, while it does to CIC’s, as this thesis shows.
+
+\chapter{\kl{MetaCoq} Contributors}
+\label{chap:meta-contrib}
+
+Where I list the contributors and contributions to \kl{MetaCoq}.
