@@ -67,62 +67,26 @@
 
 \addchap{Abstract}
 
-\emph{“\kl{Coq} is an old man now, and it has a lot of scars”}
-\cite[citing Assia Mahboubi]{QuantaPA}.
+This thesis broadly considers the question of giving a bidirectional treatment of the
+Calculus of Constructions (CIC), which underpins the proof assistant \kl{Coq}. It is broadly
+divided in three parts.
 
-Proof assistants have been around for 50 years now, and over time they have
-turned into an established technology. This history is both a blessing and a curse: as
-the field matured, the tools have become more and more complex, making them more and more
-powerful, but also more and more prone to critical bugs hiding in dark corners. At a time
-when they are gaining traction in an increasing number of communities
-concerned with high safety and security guarantees, this simply cannot be.
-The historical solution of keeping a small, trusted \kl{kernel}
-– the so-called de Bruijn criterion –
-is  simply not enough if we wish to keep moving on and integrate new, powerful features
-to keep up with the needs of users.
+The first considers the question of giving a bidirectional account of CIC from a theoretical point
+of view. It contains the exposition of such a bidirectional presentation of CIC, with the
+general discipline that led to it. Follow a proof of equivalence between this presentation
+and the standard one. This equivalence is then used to establish properties of CIC that
+are hard to obtain in the standard setting.
 
-There is a straightforward solution to this:
-proof assistants have been used for decades to certify programs correctness.
-Why could they not prove \emph{themselves} correct? After all, if this is
-the golden standard we demand for software, it should apply first and foremost to the ones
-used to justify that trust. For the proof assistant \kl{Coq},
-this is the ambition of the \kl{MetaCoq} project,
-which aims at providing a drop-in replacement for \kl{Coq}’s \kl{kernel} that has been
-fully proven correct, even though it handles all the subtleties and quirks of said \kl{kernel}.
-No more trusting a complex and ever-evolving implementation, trust the formally validated
-\emph{proofs} instead!
+The second part sets on to formalize the idea of the first one, in the setting of the \kl{MetaCoq}
+project. This project aims at formalizing the meta-theory CIC in \kl{Coq}, and to implement
+a kernel that is proven correct and complete. The formalized bidirectional structure supplies
+an intermediate between the high-level specification and the algorithm, which is key in
+order to prove that the kernel is complete.
 
-But before we can hope to achieve that goal, we need more study of the structures at work
-in the \kl{kernel}. In particular, its typing algorithm is \emph{bidirectional}, meaning that
-it constantly alternates between the two problems of type \emph{inference} – finding a type for
-a term – and type \emph{checking} – verifying that a type is adequate for a term. While this
-structure is crucial in relating the specification of the type system to its implementation,
-it has been rather little studied in the context of the \kl{Calculus of Inductive Constructions}
-(\kl{CIC}), the theoretical foundation of \kl{Coq} – but also of the closely related
-\kl{Agda}, \kl{Lean}…
-
-This thesis aims at filling that gap, by providing a thorough study of bidirectional CIC,
-formalized in the framework offered by \kl{MetaCoq} project. This is a key
-ingredient in the first formal proof of correctness and completeness of a type-checking
-algorithm for a realistic proof assistant kernel.
-It was also able to catch bugs in \kl{Coq}’s kernel that had gone unnoticed until then.
-
-But bidirectional typing is also an interesting theoretical tool in its own right,
-giving a valuable form of control over computation, that can turn out to be crucial.
-In particular, it is a necessary piece in the design of a gradual extension of
-\kl{CIC}, \kl{GCIC}.
-\kl{Gradual typing} aims at giving programmers in one and the same system the flexibility of
-development offered by dynamic typing, and the strong guarantees offered
-by static typing. \kl{GCIC} intends
-to bring that flexibility to dependently-typed programming,
-and, by using the power of the \kl{Curry-Howard correspondence}, to proof writing.
-But this flexibility comes with subtle difficulties, that can only be solved in a bidirectional
-setting.
-
-The first part of the thesis thus gives a theoretical account of bidirectional typing; the second
-describes the formalization of the ideas of the first section in the setting of \kl{MetaCoq};
-the third and last introduces \kl{GCIC} and its properties.
-
+Finally, the last part considers the question of designing an extension of CIC incorporating
+ideas from gradual typing, with the aim of bringing more flexibility to development in \kl{Coq}.
+The gradual structure is once again valuable, as the characteristic of gradual typing 
+make it impossible to base the extension on the standard presentation of CIC.
 
 \addchap{How to read this thesis}
 

@@ -1,8 +1,6 @@
 \chapter{Résumé en Français}
 \label{chap:intro-fr}
 
-\margintoc
-
 \selectlanguage{english}
 \begin{kaobox}[backgroundcolor=Black!10!White,frametitlebackgroundcolor=Black!10!White]
   This \lcnamecref{chap:intro-fr} is an introduction intended for French-speaking readers.
@@ -11,24 +9,80 @@
 \end{kaobox}
 \selectlanguage{french}
 
+\emph{“\kl{Coq} est un vieil homme maintenant, et il a de nombreuses cicatrices.”}
+\vspace{-1.5em}
+\begin{flushright}
+  \sidecite[][citant Assia Mahboubi, traduction personnelle]{QuantaPA}
+\end{flushright}
+
+\margintoc[4em]
+
 Cette thèse se situe dans le domaine de la \kl[type dépendant]{théorie des
 types}, lui-même au croisement entre informatique et logique mathématique.
-Un de ses objectifs est de donner des fondements théoriques et pratiques solides
+Un de ses objectifs est de donner des fondements théoriques et pratiques
 à des outils informatiques assistant les humains dans la construction
 et la vérification de preuves – au sens mathématique du terme.
-De tels outils sont appelés \kl{assistants à la preuve}, et dans cette thèse il sera
-en particulier beaucoup question de l’un d’entre eux, celui
+De tels outils sont appelés \kl{assistants à la preuve}, et, dans cette thèse, il sera
+en particulier beaucoup question de l’un d’entre eux,
 sur lequel mon travail s’est principalement concentré : \kl{Coq}.
+
+Durant leurs plus de 50 ans d’existence, les assistants à la preuve sont devenus une
+technologie établie. Avec l’évolution du domaine, les outils sont devenus de plus en
+plus complexes, ce qui les rend à la fois de plus en plus puissants, mais aussi de plus
+en plus sensibles à des bugs critiques cachés dans des recoins obscurs. Alors que les
+assistants à la preuve sont graduellement adoptés dans un nombre grandissant de communautés
+attachées à un haut niveau de fiabilité, cette situation n’est pas tenable.
+La solution historique consistant à placer sa confiance dans un petit noyau fiable
+– dénommé critère de De Bruijn –, n’est tout simplement pas suffisante si l’on veut avancer
+en intégrant de nouvelles fonctionnalités puissantes pour suivre les besoins des utilisateurs
+et utilisatrices.
+
+Il y a une solution simple à ce problème : les assistants à la preuve sont utilisés depuis
+des décennies pour certifier la correction de programmes. Pourquoi ne pourraient-ils pas
+prouver \emph{leur propre} correction ? Après tout, s’il s’agit là de l’étalon ultime
+pour mesurer la confiance qu’on peut accorder à un logiciel,
+il devrait s’appliquer en premier lieu à ceux utilisés pour justifier cette
+confiance. Pour l’assistant à la preuve \kl{Coq}, cette ambition est celle du projet
+\kl{MetaCoq}, qui vise à construire un nouveau noyau pour \kl{Coq} qui soit entièrement
+prouvé correct. À terme, l’objectif est tout simplement pouvoir remplacer le noyau actuel,
+et on doit donc prendre en compte toute sa complexité.
+
+Mais avant de pouvoir atteindre ce but, il est nécessaire d’étudier plus en profondeur
+les structures à l’œuvre dans le noyau. En particulier, son algorithme de typage est
+\emph{bidirectionnel}, ce qui signifie qu’il alterne systématiquement entre deux problèmes :
+l’\emph{inférence} – trouver un type pour un terme – et la \emph{vérification} –
+vérifier qu’un type donné convient pour un terme. Bien que cette structure soit cruciale pour
+relier la spécification du système de type à son implémentation, elle a été relativement
+peu étudiée dans le contexte du Calcul des Constructions Inductives (CIC), la fondation
+théorique de \kl{Coq} – mais aussi de ses cousins \kl{Lean}, \kl{Agda}…
+
+Cette thèse vise à remplir ce vide, en fournissant une étude rigoureuse d’un CIC
+bidirectionnel, formalisée dans le cadre offert par le projet \kl{MetaCoq}. Celle-ci
+est un ingrédient clé dans la première preuve de correction et de complétude d’un
+algorithme de typage pour un noyau réaliste d’assistant à la preuve.
+Elle a également permis de découvrir des bugs dans le noyau de \kl{Coq} qui étaient
+jusque-là passés inaperçus.
+
+Mais le typage bidirectionnel est également un outil théorique intéressant en lui-même,
+donnant un contrôle précieux sur le calcul. En particulier, c’est une pièce nécessaire
+dans la conception d’une extension graduelle à \kl{CIC}, \kl{GCIC}.
+Le typage graduel vise à apporter aux programmeurs et programmeuses à la fois la flexibilité
+de développement offerte par le typage dynamique, et les garanties fortes données par
+le typage statique, dans un seul et même système. \kl{GCIC} cherche à fournir cette
+flexibilité à la programmation utilisant des types dépendants, et, en utilisant la
+puissance de la correspondance de Curry-Howard, à l’écriture de preuve. Mais cette
+entreprise bute sur de subtiles difficultés, que seul le cadre bidirectionnel permet
+de résoudre.
 
 Pour replacer ce travail dans son contexte large, cette introduction
 commence par une très courte histoire de la logique mathématique
 (\cref{sec:logique-histoire}), qui expose les principales problématiques de ce domaine.
 Suit une présentation des liens entre logique et informatique, par
 l’intermédiaire des \kl{assistants à la preuve} (\cref{sec:assistants-preuve}).
-La \cref{sec:intro-coq} s’intéresse plus particulièrement aux idées et problématiques
-de recherche sur lesquelles j’ai travaillé.
-Enfin la \cref{sec:cette-these} résume les contributions présentées dans la suite de cette
-thèse.
+La \cref{sec:intro-coq} s’intéresse plus particulièrement aux questions
+de recherche sur lesquelles j’ai travaillé: typage bidirectionnel, \kl{MetaCoq} et typage
+graduel.
+Enfin la \cref{sec:cette-these} résume mes contributions à ces questions.
 
 \section{Une très courte histoire de la logique}
 \label{sec:logique-histoire}

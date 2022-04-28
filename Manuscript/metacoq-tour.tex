@@ -54,7 +54,7 @@ First thing first: the syntax of terms, defined in \pcuicfile{Ast} and reproduce
 It of course contains  the term formers introduced in \cref{chap:tech-intro}:
 \coqe{tRel} for variables, \coqe{tAbs} for abstractions,
 \coqe{tApp} for application, and \coqe{tProd} for dependent function types.
-The syntax uses de Bruijn indices for binders – the integer argument of the \coqe{tRel}
+The syntax uses De Bruijn indices for binders – the integer argument of the \coqe{tRel}
 term former –, but names are still recorded, mainly for printing annotations, directly in the
 binders – the \coqe{aname} argument of \coqe{tProp} and \coqe{tAbs}.
 There are also local definitions, in the form of the \coqe{tLetIn} constructor,
@@ -190,7 +190,7 @@ and \coqe{u'}.
 Last are the rules for computation.
 The three rules of \cref{fig:meta-cumul-dest} are for destructors, \ie applied functions,
 pattern-matching on a constructor, and projections. The β rule for functions directly uses
-substitution: \coqe|b{0 := a}| denotes the substitution of \coqe{a} for the variable of de Bruijn
+substitution: \coqe|b{0 := a}| denotes the substitution of \coqe{a} for the variable of De Bruijn
 index \coqe{0} in \coqe{b}. Similarly, the
 \coqe{iota_red} function computes the substitution of the branch \coqe{br} by the arguments
 of the constructor \coqe{args}.

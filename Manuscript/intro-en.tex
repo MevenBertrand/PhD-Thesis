@@ -1,23 +1,83 @@
 \chapter{Introduction}
 \label{chap:intro-en}
 
-\margintoc
+\emph{“\kl{Coq} is an old man now, and it has a lot of scars.”}
+\vspace{-1.5em}
+\begin{flushright}
+  \sidecite[][citing Assia Mahboubi]{QuantaPA}
+\end{flushright}
 
-This thesis belongs to the domain of \kl[dependent type]{type theory}, itself
-at the crossroads between computer science and mathematical logic.
-One of its goals is to give theoretical and practical foundations
+\margintoc[4em]
+
+This thesis belongs to the domain of \kl[dependent type]{type theory},%
+\sidenote{If you do not know what this or any other word in this introduction
+means, read on! They will be explained in due time.}
+itself at the crossroads between computer science and mathematical logic.
+One of the field’s goals is to give theoretical and practical foundations
 for software tools helping humans in constructing and verifying proofs –
 in the mathematical sense.
-Such tools are called \kl{proof assistants}, and in this thesis one of them, on
-which my work was mainly focused, is central: \kl{Coq}.
+Such tools are called \kl{proof assistants}, and in, this thesis, \kl{Coq}, the one
+on which my work was mainly focused is central.
+
+Over their more than 50 years of existence, proof assistants have
+turned into an established technology. This history is both a blessing and a curse: as
+the field matured, the tools have become more and more complex, making them more and more
+powerful, but also more and more prone to critical bugs hiding in dark corners. At a time
+when they are gaining traction in an increasing number of communities
+concerned with high trust levels, this simply cannot be.
+The historical solution of keeping a small, trusted \kl{kernel}
+– the so-called De Bruijn criterion –
+is not enough if we wish to keep moving on and integrate new, powerful features
+to keep up with the needs of users.
+
+There is a straightforward solution to this:
+proof assistants have been used for decades to certify programs correctness.
+Why could they not prove \emph{themselves} correct? After all, if this is
+the gold standard we demand for software, it should apply first and foremost to the ones
+used to justify that trust. For the proof assistant \kl{Coq},
+this is the ambition of the \kl{MetaCoq} project,
+which aims at providing a drop-in replacement for \kl{Coq}’s \kl{kernel} that has been
+fully proven correct,
+even though it handles all the subtleties and quirks of said \kl{kernel}.
+No more trusting a complex and ever-evolving implementation, trust the formally validated
+\emph{proofs} instead!
+
+But before we can hope to achieve that goal, we need a deeper study of the structures at work
+in the \kl{kernel}. In particular, its typing algorithm is \emph{bidirectional}, meaning that
+it constantly alternates between the two problems of type \emph{inference} –
+finding a type for a term – and type \emph{checking} –
+verifying that a type is adequate for a term. While this
+structure is crucial in relating the specification of the type system to its implementation,
+it has been rather little studied in the context of the
+\kl{Calculus of Inductive Constructions} (\kl{CIC}),
+the theoretical foundation of \kl{Coq} – but also of the closely related
+\kl{Lean}, \kl{Agda}…
+
+This thesis aims at filling that gap, by providing a thorough study of bidirectional \kl{CIC},
+formalized in the framework offered by \kl{MetaCoq} project. This is a key
+ingredient in the first formal proof of correctness and completeness of a type-checking
+algorithm for a realistic proof assistant kernel.
+It was also able to uncover bugs in \kl{Coq}’s kernel that had gone unnoticed until then.
+
+But bidirectional typing is also an interesting theoretical tool in its own right,
+giving a valuable form of control over computation.
+In particular, it is a necessary piece in the design of a gradual extension of
+\kl{CIC}, \kl{GCIC}.
+\kl{Gradual typing} aims at bringing to programmers both the flexibility of
+development offered by dynamic typing, and the strong guarantees given
+by static typing, in one and the same system. \kl{GCIC} intends
+to bring that flexibility to dependently-typed programming,
+and, by using the power of the \kl{Curry-Howard correspondence}, to proof writing.
+But this endeavour comes with subtle difficulties,
+that can only be solved in a bidirectional setting.
 
 To replace this work in its larger context, this introduction begins with a very
 short history of mathematical logic (\cref{sec:logic-history}), which exposes the
-main questions of the field. Follows a presentation of the links between logic and
+main questions of that field. Follows a presentation of the links between logic and
 computer science, through \kl{proof assistants} (\cref{sec:proof-assistants}).
-Next, \cref{sec:intro-coq-en} focuses more closely on the research questions I worked on.
-Finally, \cref{sec:this-thesis} summarizes the contributions appearing in the rest of
-this thesis.
+Next, \cref{sec:intro-coq-en} focuses more closely on presenting
+the research questions I worked on: bidirectional typing, \kl{MetaCoq} and gradual typing.
+Finally, \cref{sec:this-thesis} summarizes my contributions to these questions.
 
 \section{A very short history of logic}
 \label{sec:logic-history}
