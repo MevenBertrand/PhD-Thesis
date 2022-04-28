@@ -21,10 +21,11 @@ anticipating what could be achieved in a hypothetical gradual version of \eg \kl
 \subsection{Smoother development with indexed types}
   \label{sec:indices}
   
-\kl{CIC}, which underpins languages and proof assistants such as \kl{Coq},
-\kl{Agda} and \kl{Idris}, among others, is a very powerful system to program in,
+Dependent type systems such as \kl{CIC}, which underpin languages and
+proof assistants such as \kl{Coq},
+\kl{Agda} and \kl{Idris}, among others, are very powerful system to program in,
 but at the same time extremely demanding.
-Mixing programs and their specifications is attractive but challenging.
+Mixing programs and their specifications is attractive, but challenging.
 
 Consider the example of the vector type $\Vect(A,n)$ as defined in \cref{sec:tech-cic}.
 In \kl{Coq}, its definition is the following:
@@ -1252,7 +1253,7 @@ elaboration to \kl{CastCIC}.%
 are first elaborated in order to add implicit arguments, coercions, etc.
 The computation steps required by conversion are
 performed on the elaborated terms, never on the raw input syntax.}%
-\margincite{CoqManual}%
+\margincite{CoqManual}
 
 In order to satisfy \kl{conservativity} with respect to \kl{CIC}, ascriptions in \kl{GCIC}
 are required to satisfy \kl(grad){consistency}. For instance, $\asc{\asc{\true}{\?}}{\Nat}$ is well-typed by \kl(grad){consistency} – used twice –, but $\asc{\true}{\Nat}$ is ill-typed.

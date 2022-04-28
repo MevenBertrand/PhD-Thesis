@@ -13,15 +13,15 @@
 \label{sec:bidir-ccw}
 
 \subsection{McBride’s discipline}
-
+\label{sec:bidir-mcbride}
 
 \AP To design our bidirectional type system, we follow a discipline exposed by McBride
 \sidecite[1em]{McBride2018,McBride2019}.
 The central point is to distinguish in a judgement between three \intro{modes}:
 the \reintro{subject},
-whose well-formedness is under scrutiny, \reintro{inputs},
-whose well-formedness is a condition for the judgement to be meaningful,
-and \reintro{outputs}, whose well-formedness should be a consequence of the judgement.
+whose well-formation is under scrutiny, \reintro{inputs},
+whose well-formation is a condition for the judgement to be meaningful,
+and \reintro{outputs}, whose well-formation should be a consequence of the judgement.
 By \intro{well-formed}, which we use indistinctly for contexts, terms and types,
 we mean:
 \begin{itemize}
@@ -98,9 +98,9 @@ Interestingly, a somewhat similar discipline has appeared independently in
 \sidetextcite[][Section 4]{Dunfield2021}, where it is called ”Pfenning’s recipe”.
 The main criterion is \emph{mode-correctness}, which demands
 an information flow similar to McBride’s, but is coarser, as it does not
-consider well-formedness of the objects, only their knownledge. For instance, that criterion
+consider well-formation of the objects, only their knownledge. For instance, that criterion
 would allow for $\l x : A.\ t$ to directly extend a context with $A$ to infer a type for
-$t$, because it is known, but McBride’s discipline forbids it, because $A$’s well-formedness
+$t$, because it is known, but McBride’s discipline forbids it, because $A$’s well-formation
 is not established.
 Another related condition is also used in \sidetextcite{Bauer2020}.
 The authors introduce the notions of a \emph{(weakly) presuppositive type theory}
@@ -210,9 +210,9 @@ $\Gamma \vdash A : \uni$. But again, in a bidirectional setting,
 this does not respect McBride’s discipline.
 
 The main difference between the bidirectional and undirected rules is that we dropped
-hypotheses of context well-formedness in Rules~\nameref{rule:bd-univ} and
+hypotheses of context well-formation in Rules~\nameref{rule:bd-univ} and
 \nameref{rule:bd-var}. Indeed, as the context is always supposed to be well-formed
-as an input to the conclusion, it is not useful to re-check it. This is also in line with implementations, where the context is not re-checked at leaves of a derivation tree, with performance issues in mind. The well-formedness invariants then ensure that any derivation starting with the (well-formed) empty context will only ever encounter well-formed contexts.
+as an input to the conclusion, it is not useful to re-check it. This is also in line with implementations, where the context is not re-checked at leaves of a derivation tree, with performance issues in mind. The well-formation invariants then ensure that any derivation starting with the (well-formed) empty context will only ever encounter well-formed contexts.
 
 \begin{marginfigure}
 \ContinuedFloat
@@ -330,8 +330,8 @@ by proving it on the bidirectional side.
 A bidirectional derivation can be seen as a refinement of an undirected derivation.
 Indeed, the bidirectional structure can be erased
 – replacing each bidirectional rule with the corresponding undirected rule – to obtain an undirected derivation. This is missing some sub-derivations,
-which can nevertheless be retrieved by using well-formedness invariants.
-Thus, we get the following correctness theorem – note how McBride’s discipline manifests as well-formedness hypothesis on inputs.
+which can nevertheless be retrieved by using well-formation invariants.
+Thus, we get the following correctness theorem – note how McBride’s discipline manifests as well-formation hypothesis on inputs.
 
 \begin{theorem}[\intro{Correctness} of bidirectional typing for \kl{CCω}]
   \label{thm:corr-ccomega}
@@ -356,14 +356,14 @@ Thus, we get the following correctness theorem – note how McBride’s discipli
   In Rules \nameref{rule:cic-univ} and \nameref{rule:cic-var},
   the hypothesis that $\Gamma$ is well-formed is enough to get the required premise.
   For \ruleref{rule:bd-check},
-  the well-formedness hypothesis on the type is needed to get the typing premise of
+  the well-formation hypothesis on the type is needed to get the typing premise of
   \nameref{rule:cic-conv-unty}.
   As for Rules \nameref{rule:bd-pinf-univ} and \nameref{rule:bd-pinf-prod},
   that typing premise is obtained by combining the induction hypothesis,
   validity and \kl{subject reduction}.
 
   Alternatively, the appeal validity could be removed by
-  strengthening the theorem to incorporate the well-formedness of outputs on top of that of
+  strengthening the theorem to incorporate the well-formation of outputs on top of that of
   the subject. Here we follow the proofs in \kl{MetaCoq}, which establishes
   meta-theoretical properties of the undirected system – including validity –,
   rather than those of the bidirectional one – such as \kl{stability under substitution},

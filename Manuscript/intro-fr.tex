@@ -25,7 +25,7 @@ commence par une très courte histoire de la logique mathématique
 (\cref{sec:logique-histoire}), qui expose les principales problématiques de ce domaine.
 Suit une présentation des liens entre logique et informatique, par
 l’intermédiaire des \kl{assistants à la preuve} (\cref{sec:assistants-preuve}).
-La \cref{sec:intro-coq} s’intéresse plus particulièrement les idées et problématiques
+La \cref{sec:intro-coq} s’intéresse plus particulièrement aux idées et problématiques
 de recherche sur lesquelles j’ai travaillé.
 Enfin la \cref{sec:cette-these} résume les contributions présentées dans la suite de cette
 thèse.
@@ -51,8 +51,6 @@ celui-ci pris dans son entier doit nécessairement être valide, puisque
 chacun des fragments assemblés l’est. Il y a ici deux idées importantes.
 
 La première est qu'un raisonnement peut être valide ou non du simple fait de sa structure, indépendamment de son contenu.
-En effet, toute la suite de la logique en tant que discipline va se concentrer sur l’étude
-de cette structure qui sous-tend le raisonnement.
 Il peut s’agir de syllogismes, mais aussi de bien d’autres systèmes. On en rencontrera
 un certain nombre au cours cette thèse !
 
@@ -63,15 +61,18 @@ de raisonnements potentiellement très complexes.
 Il suffit pour cela de vérifier que ceux-ci peuvent être décomposés en un
 assemblage des composantes de base.
 
-Dès cette époque, la logique est également pensée comme un outil de communication.
-Il s’agit bien sûr de vérifier la validité de son propre raisonnement,
+Pour les philosophes grecs,
+la logique est également pensée comme un outil de communication.
+Il s’agit de vérifier la validité de son propre raisonnement,
 mais surtout de se donner le moyen d’échanger celui-ci,
-en fixant un système logique formel%
-\sidenote{Les règles structurelles à respecter, comme celles des syllogismes.}.
+en s’accordant sur un système logique formel.%
+\sidenote{Les règles structurelles à respecter, comme celles des syllogismes.}
 Une personne voulant que ses conclusions soient acceptées par d’autres n’a plus qu’à
 exprimer son raisonnement de manière parfaitement précise dans le cadre d’un tel système.
 
-L’enjeu principal de la logique est donc de construire un tel système formel,
+À partir de cette époque, la logique en tant que discipline se concentre sur l’étude
+de cette structure qui sous-tend le raisonnement.
+L’enjeu principal est donc de construire un système formel,
 adapté à un domaine de raisonnement précis. Dans le cadre qui nous intéresse,
 celui de la logique mathématique, cela permet de donner un sens précis à
 ce qui constitue une preuve mathématique valide.
@@ -81,9 +82,10 @@ ce qui constitue une preuve mathématique valide.
 À la suite d’Aristote, les mathématiciens et mathématiciennes se sont donc emparés
 de la logique, afin de trouver un système formel
 pouvant servir de fondement rigoureux aux mathématiques.
-Bien que les liens entre logique et mathématiques remontent à l’Antiquité grecque,
-d’importants progrès ont eu lieu au cours
-du 19\textsuperscript{e} siècle, sur deux aspects principaux.
+Les liens entre logique et mathématiques remontent à l’Antiquité grecque,
+mais la logique mathématique en tant que discipline indépendante s’établit réellement
+durant le 19\textsuperscript{e} siècle, grâce à d’importants progrès
+sur deux aspects principaux.
 
 Le premier a consisté à se dégager du langage dit
 naturel%
@@ -118,8 +120,9 @@ les objets mathématiques sous la forme d’ensemble d’éléments.
 \subsection{La crise des fondements}
 Hélas, le système proposé dans le \citetitle{Begriffsschrift} est incohérent%
 \sidenote{
-  C’est-à-dire qu’il permet de prouver le faux, et donc qu’il ne peut servir
-  de fondement satisfaisant aux mathématiques.
+  C’est-à-dire qu’il permet de prouver le faux, et, en conséquent, toutes les propositions,
+  faisant s’écrouler le système logique – ce qui est connu sous le nom de principe d’explosion.
+  Il ne peut donc servir de fondement satisfaisant aux mathématiques.
 } !
 Ce constat, fait par Russell en 1903%
 \sidenote{
@@ -133,7 +136,7 @@ celui de Frege, mais surtout ceux de Cantor, affectés par les mêmes difficult�
 Une possible solution est avancée dix ans plus tard
 par Russell et Whitehead dans leur \citetitle{Whitehead1913}~\sidecite{Whitehead1913},
 un énorme travail qui, non seulement, propose un système
-formel qui évite les paradoxes conduisant à l’incohérence du
+formel qui évite l’incohérence du
 \citetitle{Begriffsschrift}, mais qui, de plus, construit
 dans ce système une quantité importante de mathématiques,
 en particulier, une construction des entiers, de l’arithmétique et
@@ -241,21 +244,21 @@ se sont d’ailleurs déjà emparés des assistants à la preuve,
 notamment dans le but de lever les incertitudes
 quant à la solidité de leur propre travail.
 
-Mais le terme d’\emph{assistant} à la preuve n’a pas été choisi au hasard : au-delà
-de la simple vérification, les assistants à la preuve mettent à la disposition des
-utilisateurs et utilisatrices un large éventail de techniques pour
+De plus, le terme d’\emph{assistant} à la preuve n’a pas été choisi au hasard : au-delà
+de la simple vérification, ils mettent à la disposition des
+utilisateurs et utilisatrices un large éventail d’outils pour
 faciliter la conception de preuves formelles.
-Ces techniques permettent généralement d’écrire
-les preuves à haut niveau et de manière interactive%
+Ces outils permettent d’écrire
+les preuves à haut niveau et de manière interactive,%
 \sidenote{Dans la plupart des assistants à la preuve modernes, la preuve finale est
   construite comme le résultat d’un échange entre la programmeuse et l’outil,
   plutôt qu’écrite d’un seul bloc.}
-, en laissant à l’assistant à la preuve le soin de construire les preuves formelles.
+en laissant à l’assistant à la preuve le soin de construire les preuves formelles.
 Il peut s’agir de simples facilités
 comme la possibilité de pouvoir visualiser la structure des
-preuves, de suivre l’utilisation des hypothèses…
+preuves, de suivre l’utilisation des hypothèses, ou de techniques beaucoup plus ambitieuses.
 
-Mais l’informatique est bien plus puissante, elle rend possible
+En effet l’informatique rend possible
 l’automatisation de pans entiers de l’écriture de preuves,
 par exemple via l’utilisation d’un langage de tactiques \sidecite{Delahaye2000},
 qui permet de programmer la génération de preuves.
@@ -263,7 +266,7 @@ La construction automatique de preuve est par ailleurs un domaine de recherche �
 et la question de son intégration dans les assistants à la
 preuve y est un sujet actif \sidecite{Blanchette2016,Ekici2017}.
 L’informatique a également fait ses preuves dans le champ du calcul mathématique
-(calcul formel, analyse numérique), et là encore des connections prometteuses
+(calcul formel, analyse numérique), et là encore des connexions prometteuses
 avec les assistants à la preuve commencent à voir le jour \sidecite{Lewis2022,Mahboubi2019}.
 
 Enfin, si l’utilisation de l’informatique facilite l’écriture de preuve,
@@ -290,8 +293,8 @@ Il existe plusieurs familles d’assistants à la preuve, basées sur des
 systèmes formels relativement différents. Celle qui m’intéresse dans cette thèse
 est fondée sur la \kl{correspondance de Curry-Howard}
 et la \kl[type dépendant]{théorie des types dépendants}.
-C’est à elle qu’appartient l’assistant à la preuve \kl{Coq} qui est au cœur de mon
-travail.
+C’est à elle qu’appartient l’assistant à la preuve \kl{Coq}
+\sidetextcite{CoqDevelopmentTeam2022} qui est au cœur de mon travail.
 
 Si on compare un programme informatique à un texte dans une langue naturelle,
 les \intro(fr){types} sont une sorte d’équivalent des catégories grammaticales.
@@ -491,8 +494,8 @@ c’est-à-dire qu’il alterne en permanence entre ces deux questions
 lorsqu’il vérifie qu’un terme est bien typé.
 % Par exemple, dans le cas d’une application $f~u$, il commence par inférer un type pour $f$, vérifie qu’il s’agit d’un type produit $\P x : A . B$ (une généralisation du type fonctionnel $A \to B$), puis vérifie que $u$ a le type $A$.
 Cette structure bidirectionnelle étant plus proche de l’algorithme,
-la décrire formellement permet de bien diviser les difficultés entre, d’un côté,
-son équivalence avec la présentation
+la décrire formellement mais séparément de l’implémentation
+permet de bien diviser les difficultés entre, d’un côté, son équivalence avec la présentation
 d’origine, et, de l’autre, la partie purement liée aux questions d’implémentation.
 
 Dans le cas spécifique des types dépendants, bien que présent depuis l’origine dans les algorithmes de vérification de type~\sidecite{Huet1989},

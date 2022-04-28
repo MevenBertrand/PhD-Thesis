@@ -1159,7 +1159,8 @@ involved. In particular, we want to ensure that ignored casts
 would not have raised an error: \eg we want to prevent
 $\tcol{\z} \capre \tcol{\cast{\Nat}{\Bool}{\z}}$.
 Thus, the definition of structural precision relies on typing, and to do this we need to record the contexts of the two compared terms.
-To denote such contexts where each variable is given two types, we use bold letters, writing $\tcol{\GG , x : A \mid  A'}$ for context extensions.
+To denote such contexts where each variable is given two types, we use double-struck
+letters, writing $\tcol{\GG , x : A \mid  A'}$ for context extensions.
 \AP \phantomintro{\fs}\phantomintro{\sn}
 We use $\tcol{\GG._i}$ for projections, \ie $\tcol{\fs{(\GG, x : A \mid A')}} \coloneqq \tcol{\fs{\GG}, x : A}$, and write $\tcol{\Gamma \mid \Gamma'}$ for the converse pairing operation.
 
@@ -1788,7 +1789,7 @@ requires an additional hypothesis relating elaboration and precision judgements.
 \begin{definition}[Universe adequacy]
   We say that two judgements $\scol{\tilde{t}} \apre \scol{\?[i]}$ and
   $\inferelab{\Gamma}{\tilde{t}}{t}{T}$ are \intro{universe adequate} if the
-  universe level $j$ given by the well-formedness judgement
+  universe level $j$ given by the well-formation judgement
   $\pinferty{\uni}{\tcol{\Gamma}}{\tcol{T}}{\tcol{\uni[j]}}$
   induced by correction of the elaboration satisfies $i = j$.
   %

@@ -22,7 +22,7 @@ type system’s meta-theory, all the way down to the sophisticated details of th
 Due to the complexity of the endeavour, it is not feasible on paper. Nor is it
 desirable: if in the end we wish to implement a certified kernel, it is natural to do so
 in a proof assistant, so that we can run that certified implementation.
-Instead, the natural framework is the \kl{MetaCoq} project,
+The natural framework is thus the \kl{MetaCoq} project,
 which aims at giving tools to reify and manipulate \kl{Coq} terms%
 \sidenote{Or, maybe more accurately, \kl{Gallina}.}
 inside of \kl{Coq} itself. This gives the possibility to write down and certify
@@ -33,11 +33,12 @@ our implemented kernel.
 
 There are two important caveats to this, though.
 The first pertains to Gödel’s second incompleteness
-theorem. Because of it, it is impossible to prove \kl{Coq}’s consistency inside \kl{Coq} itself,
+theorem. Because of it, it is impossible to prove \kl{Coq}’s consistency
+inside \kl{Coq} itself,
 meaning that the meta-theoretical study can only be partial, since otherwise it would allow
-a proof of consistency contradicting Gödel’s theorem. Indeed, \kl{MetaCoq} relies on an
-axiom, asserting the \kl{normalization} of \kl{PCUIC},
-which is the blind spot we must allow in order to circumvent Gödel’s limitation.
+a proof of consistency contradicting Gödel’s theorem. In
+\kl{MetaCoq}, this blind spot manifests as an axiom assuming the
+\kl{normalization} of \kl{PCUIC}, on which parts of the development relies.
 A second is that writing down a certified kernel is not enough. Indeed, executing directly
 such a kernel in \kl{Coq} would be much too slow to actually type-check
 any reasonably-sized term. Rather, we must rely on extraction, a procedure which erases the

@@ -265,7 +265,7 @@ are indeed types. Note that in \ruleref{rule:cic-cons-con}, we did not write dow
     {\vdash \Gamma \\ \Gamma \vdash A \ty \uni}{\vdash \Gamma, x : A}
     \label{rule:cic-cons-con}
   \end{mathpar}
-  \caption{Context well-formedness}
+  \caption{Context well-formation}
   \label{fig:cic-con}
 \end{marginfigure}
 
@@ -805,7 +805,7 @@ We set up \kl{CCω} so that it satisfies this property, but another approach –
 in the bidirectional setting – is to remove pre-conditions such as $\vdash \Gamma$ in
 \ruleref{rule:cic-var} or $\Gamma \vdash T' \ty \uni$ in \ruleref{rule:cic-conv-unty}.
 This is possible, but in that case a lot of properties have to be prefixed with extra
-hypothesis of context/type well-formedness.
+hypothesis of context/type well-formation.
 
 The second property is \kl{uniqueness of types}, which relates the different types
 of a same term.
@@ -1657,7 +1657,7 @@ This environment is not only used for definitions and assumptions,
 but also to keep track of inductive types.
 It thus effectively implements our somewhat vague assumption that
 \kl{CIC} is extended with “any number of valid inductive types”. Of course, there is a notion
-of environment well-formedness, which accounts for the fact that as for contexts it should
+of environment well-formation, which accounts for the fact that as for contexts it should
 only contain objects that are well-typed, together with other constraints, for instance
 that inductive types respect the strict positivity criterion.
 

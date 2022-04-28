@@ -33,48 +33,50 @@ fixed structure they follow, rather than a specific content.%
 \sidenote{The most well-known is probably the \textit{Barbara} syllogism, and example
 of which is: \emph{all humans are mortals; Socrates is human; so Socrates is mortal.}}
 If complex reasoning is built from assembling such syllogisms, it must necessarily be valid as
-a whole, since every assembled fragment is. There are here two important ideas.
+a whole, since every assembled fragment is. There are two important ideas at work here.
 
 The first is that reasoning can be valid or not, depending only on its structure,
-independently of its content. Indeed, the whole focus of logic as a discipline from that
-point on will concentrate on this structure which underlies reasoning.
+independently of its content.
 It can be syllogisms, but many other systems. We will come across a certain number of them
 in this thesis!
 
 The second idea is that of a construction from elementary components.
 Starting from a set of rules
-one has identified as valid \textit{a priori}, we have a means to ensure the validity
-of potentially very complex reasoning. In order to do so, it suffices to verify that these
+we have identified as valid \textit{a priori}, we have a means to ensure the validity
+of potentially very complex reasoning: it suffices to check that these
 can be decomposed into the base components.
 
-At that time already, logic was conceived as a means towards communication.
-The aim was of course to check one’s own reasoning, but also to be able to convey
-it, by fixing a logical formal system%
-\sidenote{Structural rules reasoning should obey, as those of syllogisms.}.
-A person wanting their conclusion to be accepted by others only has to express their
+For the Greek philosophers, logic was also conceived as a means towards communication.
+The aim was to check one’s own reasoning, but also to be able to convey
+it, by fixing a logical formal system.%
+\sidenote{Structural rules reasoning should obey, as those of syllogisms.}
+A person wanting their conclusion to be accepted by others would only have to express their
 reasoning in a perfectly precise way in the framework of such a formal system.
 
-The main challenge of logic is thus to construct such a formal system, adapted to a specific
+From that point on, the main focus of logic as a discipline
+concentrates on this structure which underlies reasoning.
+The main challenge is to construct a formal system, adapted to a specific
 field of reasoning. In the case we are interested in, mathematical logic, this
-enables us to give a precise meaning to what constitutes a valid mathematical proof.
+allows us to give a precise meaning to what constitutes a valid mathematical proof.
 
 
 \subsection{The beginning of mathematical logic: towards a formal foundation}[Towards a formal foundation]
 
 Following Aristotle, mathematicians seized logic in order to build a formal system
 able to serve as a rigorous foundation for mathematics.
-Even though the links between logic and mathematics go back to Greek Antiquity,
-important progress was made during the 19\textsuperscript{th} century, on two main aspects.
+The links between logic and mathematics go back to Greek Antiquity, but
+mathematical logic as a standalone discipline really established itself
+during the 19\textsuperscript{th} century, thanks to important progress on two main aspects.
 
 The first consisted in freeing mathematical logic from natural languages%
 \sidenote{By opposition with the formal languages which appear in mathematics,
   computer science, etc.},
-unsuited to a formal description of deduction, and to instead design a new form of language
-specific that could serve as a basis for mathematical reasoning.
-An important step here is \citeauthor{Begriffsschrift}'s
+unsuited to a formal description of reasoning, and to instead design a new specific
+form of language that could serve as a basis for mathematical reasoning.
+An important step here was \citeauthor{Begriffsschrift}'s
 \citetitle{Begriffsschrift}~\sidecite{Begriffsschrift}, which, for the first time,
-gives a formal language rich enough to express mathematics satisfyingly. Its
-major addition is the notion of quantifier, essential to the mathematical vernacular,
+gave a formal language rich enough to express mathematics satisfyingly. Its
+major addition was the notion of quantifier, essential to the mathematical vernacular,
 which give a faithful way to account for universal%
 \sidenote{For instance: “Every even integer is the sum of two prime numbers”.}
 and existential%
@@ -86,16 +88,17 @@ few simple properties. An important step was the reduction of analysis to the pr
 of real numbers, followed by constructions of those from arithmetic given almost
 simultaneously in 1872 by \sidetextcite{Dedekind1872} and
 \sidetextcite{Cantor1872}, among others.
-Meanwhile, \sidetextcite{Peano1889} proposes an axiomatization of integers close to the
-one still used today. Finally, Cantor again proposes set theory \sidecite{Cantor1883}
+Meanwhile, \sidetextcite{Peano1889} proposed an axiomatization of natural numbers close to the
+one still used today. Finally, Cantor again proposed set theory \sidecite{Cantor1883}
 as a formalism expressive enough to describe all mathematical object as sets of elements.
 
 \subsection{The foundational crisis of mathematics}[The foundational crisis]
 
 Unfortunately, the system proposed in the \citetitle{Begriffsschrift} is inconsistent%
 \sidenote{
-  That is, it is possible to use it to prove falsity, and so it cannot serve as
-  a satisfactory foundation for mathematics.
+  That is, it is possible to use it to prove falsity, and, from it, all propositions,
+  making the logical system collapse – this is known as the principle of explosion.
+  It thus cannot serve as an adequate foundation for mathematics.
 } !
 This result by Russell%
 \sidenote{
@@ -109,7 +112,7 @@ mainly those of Cantor, which were affected by the same difficulties.
 
 A possible solution is suggested ten years later  by \citeauthor{Whitehead1913} in their
 \citetitle{Whitehead1913} \sidecite{Whitehead1913}. This colossal piece of work
-not only proposes a formal system avoiding the paradoxes leading to the inconsistency
+not only proposes a formal system avoiding the inconsistency
 of \citetitle{Begriffsschrift}. It also builds a significant amount
 of mathematics in this system, including a construction of integers,
 some arithmetic, and finally real numbers.
@@ -145,12 +148,12 @@ Thus, in what follows, I will never refer to truth in an absolute sense – whic
 only be meaningful in a complete system where every statement is true or false –, but
 only about provability \emph{relatively to a given system}.
 
-\subsection{A satisfying situation ?}
+\subsection{A satisfactory situation?}
 
 Despite the difficulties put into light in the beginning of the 20\textsuperscript{th}
-century, the research in mathematical logic came to a globally satisfying situation.
+century, the research in mathematical logic came to a somewhat satisfactory situation.
 First, ZFC is a reasonable formal system on which mathematics can be founded. Moreover,
-the mathematical community is globally convinced it would be \emph{theoretically} possible
+the mathematical community is overall convinced it would be \emph{theoretically} possible
 to write down all mathematics using ZFC. This is enough for most of its members,
 even if those who attempt to actually give it a try, in the vein of the
 \citetitle{Whitehead1913}, are quite few.
@@ -163,7 +166,7 @@ seems both impossible, and unnecessary.
 On the one hand, it would demand a considerable effort, because such mathematics would
 require an extremely high level of precision, both from the author of the formal proof
 and from the reader. At the same time, this would not significantly reduce the risk of
-errors. It would indeed be humanly very hard to check that some reasoning doubtlessly
+errors. It would indeed be very hard for humans to check that some reasoning doubtlessly
 follows the rules of the system: a tiny error can easily creep inside thousands of pages
 of formal reasoning. Finally, describing mathematics in this way would drown the vital
 mathematical intuitions, making communication sterile.
@@ -191,22 +194,22 @@ appear. They are dedicated to writing and verifying formal proofs.
 Through the formalization of proofs and the verification by computers that they
 actually follow the rules of the underlying logical system, proof assistants open the
 door to a level of trust much higher than that allowed by “informal” proofs.
-Renown mathematicians, such as \sidetextcite{Voevodsky2010},
-\sidecite[][Preface, p. xi]{Hales2012}, or \sidetextcite{Scholze2021} have indeed
+Renowned mathematicians, such as \sidetextcite{Voevodsky2010},
+\sidetextcite[][Preface, p. xi]{Hales2012}, or \sidetextcite{Scholze2021} have indeed
 turned to proof assistants, particularly in order to lift uncertainties regarding the
 solidity of their own work.
 
-But the term proof \emph{assistant} has not been chosen randomly : beyond simple verification,
-proof assistant provide users with a large range of techniques to ease the conception of
-formal proofs. These techniques usually enable users to write proofs at a rather
+Moreover, proof \emph{assistant} are not simple proof checkers: beyond simple verification,
+they supply users with a large range of tools to ease the conception of
+formal proofs. These tools allow users to write proofs at a
 high level, and in an interactive manner%
 \sidenote{In most modern proof assistants, the final proof is built as the result of
   an exchange between the programmer and the tool, rather than written as a single block.},
 leaving it to the proof assistant to construct the formal proofs.
-It can be simple facilities, such as the possibility to visualize the structure of proofs,
-the tracking of hypotheses…
+They range from simple facilities, such as the possibility to visualize the structure
+of proofs, or the tracking of hypotheses, to much more ambitious techniques.
 
-But computer science is much more powerful, it enables automatization of entire parts of
+Indeed, computer science lets us automatize entire parts of
 proof writing, for instance through the use of tactic languages \sidecite{Delahaye2000},
 with which one can program proof generation.
 In addition, the automatic construction of proofs is a research field by itself,
@@ -225,7 +228,7 @@ This mathematical certainty is much more reliable than any test set!
 In this field, numerous projects have already achieved large scale programs, entirely proven
 correct: compiler for the C language \sidecite{Kaestner2017}, cryptographic protocols \sidecite{Bhargavan2017}, ODE solving \sidecite{Immler2018}…
 
-\subsection{logic, programming and type theory}
+\subsection{Logic, Programming and Type Theory}
 
 In order to work, proof assistants must be founded on a formal system, corresponding to
 the “rules” of the mathematical “game” they are supposed to enforce.
@@ -233,8 +236,8 @@ Thus, they require a renewed study of mathematical logic, but with the practical
 building tools that are at the same time practical, powerful and easy to use.
 There are multiple families of proof assistants, based on relatively different formal systems.
 The one I am interested in in this thesis relies on the \kl{Curry-Howard correspondence}
-and \kl[dependent type]{dependent type theory}. The proof assistant \kl{Coq},
-which is at the heart of my work, belongs to this family.
+and \kl[dependent type]{dependent type theory}. The proof assistant \kl{Coq}
+\sidecite{CoqDevelopmentTeam2022}, which is at the heart of my work, belongs to this family.
 
 If one compares a computer program with a text in a natural language,
 \intro(en){types}
@@ -387,7 +390,10 @@ is simple: using \kl{Coq} itself to certify the correctness of its \kl{kernel}.
 
 More precisely, the first step is to describe formally the type system on which the \kl{kernel}
 is based, and to show its theoretical properties.
-Once these are established, the second step
+This is already a difficult endeavour: in order to ease its use, \kl{Coq}’s type theory
+incorporates a lot of complex features.
+
+Once this meta-theory is established, the second step
 % \sidenote{This is the one on which I mostly work, and on which we will come back in more
 % length later on.}
 consists in implementing a type-checking algorithm as close as possible to the one of the
@@ -398,6 +404,7 @@ We show, while defining the algorithm, that it is indeed \reintro(bidir){correct
 \sidenote{If the algorithm claims that a term is well-typed, then it is the case.}
 and \reintro(bidir){complete}%
 \sidenote{The algorithm answers positively on all well-typed programs.}.
+
 Finally, in a third step, we extract out of this certified \kl{Gallina} program another
 more efficient program, by erasing the content related to the proof of correctness, in order
 to keep only the algorithmically relevant one.
@@ -409,19 +416,20 @@ once again by programming it in \kl{Gallina}.
 
 \subsection{Checking, inference and bidirectional typing}[Bidirectional typing]
 
-During the second phase, in order to prove that the algorithm is complete, it is
-very useful to go through an intermediate specification, which is more structured
-than the theoretical one of the first phase.
-In particular, it is important to separate two close, but very distinct, questions:
+While proving the correctness of the type-checker is relatively easy once the
+meta-theoretical properties of the type system are established, completeness is harder.
+In order to prove it, it is very useful to go through an intermediate specification,
+which is more structured than the theoretical one.
+In particular, it is important to separate two close but distinct questions:
 on the one side, type-checking, where we try and \emph{check} that a term indeed has a
 given type;
 on the other side, inference, where we try and \emph{find} a type for a term, if such a
 type exists.
 The typing algorithm of \kl{Coq}'s \kl{kernel} is \intro{bidirectional}, that is, it
 alternates constantly between these two processes when it checks that a term is well-typed.
-The closeness of the bidirectional structure to the algorithm allows for a
-clear separation between, on the one side, its equivalence with the original formalization,
-and on the other, the part purely dedicated to implementation questions.
+Separating this bidirectional structure independently from the algorithm allows for a
+clear separation between, on the one side, its equivalence with the original specification,
+and, on the other, the part purely dedicated to implementation questions.
 
 In the specific case of dependent types, even if present in type-checking algorithms since
 the origin – see \eg \sidecite{Huet1989} –, bidirectional typing has been relatively little
@@ -465,14 +473,14 @@ programming languages to the logical one.
 \section{And this thesis?}
 \label{sec:this-thesis}
 
-My doctoral work itself is centered around bidirectional typing, under three main aspects,
+My doctoral work itself is centred around bidirectional typing, under three main aspects,
 corresponding to the three parts of this thesis.
 They are preceded by \cref{chap:tech-intro}, which introduces the main technical notions
 used in what follows.
 
 \subsection{Theory of bidirectional typing}
 
-The first part (\nameref{part:bidir}) proposes to fill a part of the theoretical gap around
+The first part (\nameref{part:bidir}) proposes to (partially) fill the theoretical gap around
 bidirectional typing for dependent types. More precisely, it contains a proof of equivalence
 between the standard presentation of the literature, and a bidirectional one.
 \Cref{chap:bidir-ccw} presents the general ideas that guide this work in a relatively
@@ -522,12 +530,17 @@ previous one, is currently under peer-reviewing. It is quickly summarized in
 This work having shown the relevance of a bidirectional dependent type system and the relative
 scarceness of results on the subject, I focused more closely on it, both on
 paper and by means of a formalization based on \kl{MetaCoq}. This led to a second publication
-\sidecite{LennonBertrand2021}, and corresponds to \cref{chap:bidir-ccw,chap:bidir-pcuic},
-and parts of \cref{chap:kernel-correctness}.
+\sidecite{LennonBertrand2021}, and corresponds to \cref{chap:bidir-ccw,chap:bidir-pcuic}
+for the theoretical part, and \cref{sec:kernel-bidir} for the formalized proof
+of equivalence between bidirectional and undirected typing.
 
-I then turned to the integration of this formalization into \kl{MetaCoq}, and its use
-in order to prove completeness of the \kl{kernel} it implements. This corresponds to the
-rest of \cref{chap:kernel-correctness}. I also took part in the project on more minor points.
+I then turned to the closer integration of this formalization into \kl{MetaCoq}, and its use
+in order to prove completeness of the \kl{kernel} it implements.%
+\sidenote{A definition of a type-checking algorithm proven correct but not complete by
+Simon Boulier was already present, although I had to alter it slightly for the completeness
+proof}
+This is described in \cref{sec:kernel-typing}.
+I also contributed more generally to the project on various more minor points.
 This part of my thesis work has not been published yet, but the other contributors to
 \kl{MetaCoq} and I are currently working on it.
 

@@ -124,8 +124,9 @@ inductive relation, \coqe{Σ ;;; Γ ⊢ t ≤s[pb] u}.
 the two values \coqe{Conv} and \coqe{Cumul}, so that \kl{cumulativity}
 is actually \coqe{≤s[Cumul]} – and \kl{conversion} is
 \coqe{≤s[Conv]}. This has the advantage that a lot of definitions and proofs
-can be factored using \coqe{conv_pb}. Moreover, using a simple boolean allows for case reasoning
-when needed, which would not be possible if the index was \eg a relation.%
+can be factored using \coqe{conv_pb}.
+Moreover, using a simple boolean allows for case reasoning
+when needed, which would be more complex if the index was \eg a relation.%
 \sidenote{This used to be the case prior to the uniform introduction of \coqe{conv_pb}: the
 relation was the one to be used at leaves to compare universes, which differed between 
 \kl{conversion} and \kl{cumulativity}.}
@@ -176,7 +177,7 @@ implement cumulativity of inductive types \sidecite{Timany2017}. The latter two 
 to \emph{fully applied} inductive types and inductive constructors, that can be considered equal
 if their arguments are one-to-one convertible, and their universe levels are correctly related.
 This means that \eg the \coqe{nil} constructor of polymorphic lists \emph{always} satisfies that
-\coqe{nil@{u} A} is convertible \coqe{nil@{u'} A}, irrespective of the universe levels \coqe{u}
+\coqe{nil@{u} A} is convertible to \coqe{nil@{u'} A}, irrespective of the universe levels \coqe{u}
 and \coqe{u'}.
 
 \begin{figure*}
@@ -186,7 +187,7 @@ and \coqe{u'}.
   \label{fig:meta-cumul-dest}
 \end{figure*}
 
-Last, but not least, are the rules for computation.
+Last are the rules for computation.
 The three rules of \cref{fig:meta-cumul-dest} are for destructors, \ie applied functions,
 pattern-matching on a constructor, and projections. The β rule for functions directly uses
 substitution: \coqe|b{0 := a}| denotes the substitution of \coqe{a} for the variable of de Bruijn
@@ -204,7 +205,7 @@ Finally, the rule for projections simply selects the right field of the record.
 
 The next three rules deal with definitions (\cref{fig:meta-cumul-defs}).
 Rule \coqe{cumul_zeta} directly reduces a
-let-binder into a substitution, while definitions are unfolde using \coqe{cumul_rel} and \coqe{cumul_delta},
+let-binder into a substitution, while definitions are unfolded using \coqe{cumul_rel} and \coqe{cumul_delta},
 respectively those of the local context or the \kl{global environment}. In the latter
 case, the definition must be instantiated with a universe instance, which is denoted \coqe{@[u]}.
 
@@ -300,7 +301,8 @@ in the appropriate context – obtained by combining the information stored in
 the \kl{scrutinee}'s type,.
 Finally, \pcuicline{Typing}{case\_side\_conditions}{159} handles universe instances, checks
 that the elimination is allowed%
-\sidenote{This is where \kl{PCUIC} enforces \kl{proof irrelevance}, by imposing the so-called
+\sidenote{This is where \kl{PCUIC} enforces computational irrelevance of proofs,
+by imposing the so-called
 “singleton elimination” criterion, which ensures that only inductive
 types of a certain specific shape – sub-singletons – can be matched on to build proof relevant
 content, so that that content cannot actually depend on the value of a proof.}…

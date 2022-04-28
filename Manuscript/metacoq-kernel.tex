@@ -8,14 +8,15 @@ correct. The first step (\cref{sec:kernel-bidir})
 is to move from the declarative specification of
 \cref{chap:metacoq-general} to a bidirectional presentation,
 closer to the kernel we wish to implement.
-Once this specification is set down, we can get to the kernel properly said.
+Once this specification is set down, we can get to the kernel itself.
 \cref{sec:kernel-subroutines} goes over the implementation of the
-\kl{cumulativity} check, and \cref{sec:kernel-typing} describes the type-checker properly said.
-\Cref{sec:kernel-beyond-typing} describes two extra functions belonging to the safe
+\kl{cumulativity} check, and \cref{sec:kernel-typing} describes the type-checker.
+Finally, \cref{sec:kernel-beyond-typing} describes two extra functions belonging to the safe
 \kl{kernel}: re-typing, and checking of \kl{global environment}.
 
-I personally contributed the formalizations of \cref{sec:kernel-bidir}, the completeness part of
-\cref{sec:kernel-typing} – by modifying the pre-existing proven-correct type-checker –,
+I personally contributed the formalizations of \cref{sec:kernel-bidir},
+the completeness part of \cref{sec:kernel-typing} –
+by modifying the pre-existing proven-correct type-checker –,
 and heavily modified re-typing – part of \cref{sec:kernel-beyond-typing}.
 
 \section{Formalized Bidirectional Typing}
@@ -41,7 +42,10 @@ of \coqe{wf_local}.
 Similarly, we need a definition expression that a context $\Delta$ is well-formed
 \emph{over another context $\Gamma$}, but which does not enforce $\Gamma$ to be well-formed
 \textit{a priori} – \eg something more precise than simply $\vdash \Gamma , \Delta$. This
-allows to stay faithful to McBride’s discipline when typing context extensions,
+allows to stay faithful to McBride’s discipline%
+\sidenote{Taken from \textcite{McBride2018}, see the explanation in \cref{sec:bidir-mcbride}.}%
+\margincite{McBride2018}
+when typing context extensions,
 by only demanding that the extension is well-formed, but not the initial segment.%
 \sidenote{Which is an input, and thus should not be re-checked.}
 
@@ -68,26 +72,31 @@ this is relatively irrelevant, since the equivalence between both presentations 
 appears much earlier in the development than bidirectional typing.
 
 Maybe more interesting from the formalization point of view is how we obtain a usable
-induction principle. Indeed, this predicate reaches the limit of expressiveness offered by
-\kl{Coq}’s inductive types: it is both mutual, and nested – due to the presence of lists,
-records and contexts which recursively containing terms.
-While \kl{Coq} is able to detect the definition to be well-founded,
-the default generation is unable to derive a sensible induction principle, and neither are
-the \coqe{Scheme} specialized commands. Thus, we have to prove a good induction principle by
+induction principle. This is a common issue in \kl{MetaCoq}: while
+\kl{Coq} is able to detect that our inductive definitions are well-founded,
+the default generation is often unable to derive a sensible induction principle,
+and neither are the \coqe{Scheme} specialized commands. This is due to their nested
+character, \ie the presence of lists and records containing recursive instances
+of the inductive types as arguments to the type constructors.
+The bidirectional typing predicate is the paroxistic example of this, as it
+reaches the limit of expressiveness offered by
+\kl{Coq}’s inductive types: it is not only nested, but also mutual.
+We thus have to prove our desired induction principle by
 hand. To do so, we introduce a notion of “generic” typing object
-\pcuicline[Bidirectional][BD]{Typing}{typing\_sum}{256}, together with a notion of size for such
-a typing object, and finally show the induction principle
+\pcuicline[Bidirectional][BD]{Typing}{typing\_sum}{256},
+together with a notion of size for such a typing object,
+and finally show the induction principle
 \pcuicline[Bidirectional][BD]{Typing}{bidir\_ind\_env}{312}
 by well-founded induction on that size.
 
 This induction principle is not as strong as we might expect, as it does not provide the extra induction hypothesis on inputs that would go with McBride's discipline.
-Ideally, the induction principle could use the fact that McBride’s discipline is
-respected in order to thread the well-formedness invariants, giving stronger induction
-hypothesis. I did not try to take this path and prove such a strong induction principle,
-as it seemed not so easy, as it would effectively correspond to an inline proof
+Ideally, we could use this discipline
+in order to thread the well-formation invariants, giving stronger induction
+hypotheses. I did not try to take this path and prove such a strong induction principle,
+as it did not seem so easy: it would effectively correspond to an inline proof
 of \kl{validity}.
 Instead, the discipline is reflected in the choice of the predicates proven by induction.
-For instance, in the case of correctness, the predicate proven mutually for inference
+For instance, in the case of correctness, the mutually-proven predicate for inference
 is \coqe{wf_local Σ Γ -> Σ ;;; Γ |- t : T}, and more generally
 assumptions are added as pre-condition for all inputs.
 Still, I conjecture that such a strong induction principle should be provable, if the need
@@ -96,11 +105,11 @@ the rules follow the discipline correctly.
 
 \subsection{Equivalence with Undirected Typing}
 
-\kl(bidir){correctness}%
+\kl(bidir){Correctness}%
 \sidenote{Bidirectional typing implies undirected typing, akin to \cref{thm:corr-ccomega}.}
 is shown in \pcuicfile[Bidirectional][BD]{ToPCUIC}.
 The main proof is by induction on the derivation,
-its key point being to show that well-formedness invariants are preserved, and in particular
+its key point being to show that well-formation invariants are preserved, and in particular
 that all contexts that are used are valid.
 
 There is one particular difficulty linked to the \coqe{tCase} constructor, and the question
