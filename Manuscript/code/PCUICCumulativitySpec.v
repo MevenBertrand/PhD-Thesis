@@ -19,9 +19,9 @@ Inductive cumulSpec0 {cf : checker_flags} (Σ : global_env_ext) Γ (pb : conv_pb
 | cumul_Construct : forall i k u u' args args',
   cumul_Construct_univ Σ pb i k #|args| u u' ->
   All2 (fun t u => Σ ;;; Γ ⊢ t ≤s[Conv] u) args args' ->
-  Σ ;;; Γ ⊢ mkApps (tConstruct i k u) args ≤s[pb]
-      mkApps (tConstruct i k u') args'
-  | cumul_Sort : forall s s',
+  Σ ;;; Γ ⊢ mkApps (tConstruct i k u) args
+     ≤s[pb] mkApps (tConstruct i k u') args'
+| cumul_Sort : forall s s',
   compare_universe pb Σ s s' ->
   Σ ;;; Γ ⊢ tSort s ≤s[pb] tSort s'
 | cumul_Const : forall c u u',
@@ -113,11 +113,11 @@ Inductive cumulSpec0 {cf : checker_flags} (Σ : global_env_ext) Γ (pb : conv_pb
 | cumul_cofix_case : forall ip p mfix idx args narg fn brs,
   unfold_cofix mfix idx = Some (narg, fn) ->
   Σ ;;; Γ ⊢ tCase ip p (mkApps (tCoFix mfix idx) args) brs 
-      ≤s[pb] tCase ip p (mkApps fn args) brs
+     ≤s[pb] tCase ip p (mkApps fn args) brs
 | cumul_cofix_proj : forall p mfix idx args narg fn,
   unfold_cofix mfix idx = Some (narg, fn) ->
   Σ ;;; Γ ⊢ tProj p (mkApps (tCoFix mfix idx) args)
-      ≤s[pb] tProj p (mkApps fn args)
+     ≤s[pb] tProj p (mkApps fn args)
 
 where " Σ ;;; Γ ⊢ t ≤s[ pb ] u " := (@cumulSpec0 _ Σ Γ pb t u) : type_scope.
 

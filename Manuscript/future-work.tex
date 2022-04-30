@@ -2,22 +2,21 @@
 \chapter{Perspectives}
 \label{chap:future-work}
 
-I hope that this thesis gives compelling arguments for bidirectional typing, but
-not only.
+I hope that this thesis gives compelling arguments for the adoption of bidirectional typing,
+but there is more.
 
-\arefpart{bidir} shows that one does not need to leave their favourite declarative
+\arefpart{bidir} shows that one can use the valuable bidirectional structure,
+without having to  leave their favourite declarative
 system behind. Indeed, it can most likely  be shown equivalent to a bidirectional one
-– at least if it has some good properties, but given it’s their favourite system,
-it does for sure. Moreover, moving over to the bidirectional world gives access
-to a valuable structure.
+– given it is one’s favourite system, it does surely satisfy the good properties
+needed for that.
 
-In \arefpart{metacoq}, we enter the real world, and see how this can play out
+In \arefpart{metacoq}, we enter the real world, and see how this plays out
 on a complex type system: bidirectionalism gives good guidelines to analyse
-our typing rules,
-and provides a precise specification to prove the implementation correct,
+typing rules, and provides a precise specification to prove the implementation correct,
 while allowing separation of concerns. If this is enough
 to catch bugs in \kl{Coq}, it should prove useful in finding those in other kernels, too.
-But \kl{MetaCoq} is much more than bidirectional typing: its certified kernel opens
+Yet, \kl{MetaCoq} is much more than bidirectional typing: its certified kernel opens
 up a new era for proof assistants, with a previously unreached trust level.
 
 Finally,
@@ -28,33 +27,38 @@ example. As it enables the transition of programmers from the soft realms of
 dynamic typing to the discipline of static typing, so it could open the door of
 dependently typed programming to more than a fraction of fanatic enthusiasts.
 
-But as most thesis, this one opens up at least as many questions as it answers,
+Still, as most thesis, this one opens up at least as many questions as it answers,
 in all its three broad directions.
 
 \section{Bidirectional Typing for Dependent Types}
 
-The formal study of bidirectional typing is the setting of dependent types still begs for
+The formal study of bidirectional typing in the setting of dependent types still begs for
 more investigations. While I hope the present work gives a robust answer in the setting
 of Curry-style syntax, where every term infers a type,
-the case of Church-style syntax is somewhat more subtle. In the case of normal forms,
-a proof similar to the one presented in this thesis should be doable. But if we wish to
-go beyond normal forms, we must consider the use of annotations in terms, as is done in
-\sidetextcite{McBride2022,Gratzer2019,Dunfield2021}. Moreover, due to the dependently-typed
+the case of Church-style syntax is quite different. In the case of normal forms,
+the proof ideas presented in this thesis should be easily adapted.
+But if we wish to go beyond normal forms, we must consider the use of annotations in terms,
+as is done in \eg \sidetextcite{McBride2022} \sidetextcite{Gratzer2019} or
+\sidetextcite{Dunfield2021}.
+However, due to the dependently-typed
 setting, we have to investigate how these annotations play out with conversion and/or reduction.
 To the best of my knowledge, only \citeauthor{McBride2022} has taken that question up,
-but does not arrive – yet – at a definitive solution, so there is matter left for investigations.
+but does not arrive – yet – at a definitive solution, so there is
+matter left for further research.
 
 Another thread to pull is the relation with Generalized Type Systems, as presented in
-\sidetextcite{Bauer2020,Bauer2022}. Here as in McBride’s discipline we find ideas
-of well-formation invariants to be preserved,
-and of carefully chosen rules that should respect those invariants. Re-casting
+\sidetextcite{Bauer2020,Bauer2022}. Here as in McBride’s discipline we find
+well-formation invariants to be preserved,
+and carefully structured rules that should respect them. Re-casting
 the bidirectional ideas in such a setting could allow for a better understanding both of the
-general ideas at work in bidirectional typing,
-yielding a proper formal account of McBride’s discipline, together with a proof that it ensures
+ideas at work in bidirectional typing,
+yielding a proper formal account of McBride’s discipline
+together with a general proof that it ensures
 good properties of the system, and of the well-formation conditions already explored in
 \textcite{Bauer2020} on judgment boundaries.
 
-Since Generalized Type Systems put conversion and typing on the same footing, it also seems natural
+Since Generalized Type Systems put conversion and typing on the same footing,
+it also seems natural
 to question how we can marry conversion and bidirectionalism. Here again there are ingredients in
 the air: \sidetextcite{Abel2017} show a notion of conversion geared towards proving decidability
 of typing, but which is clearly bidirectional, and could serve as a basis to give a general
@@ -66,49 +70,51 @@ notion of bidirectional conversion.
 where the formalization can really
 serve as a tool to move \kl{Coq} forward.
 
-We have already talked in
-\cref{chap:bidir-pcuic} the question of the representation of pattern-matching.
+We have already evoked in \cref{chap:bidir-pcuic} the question of the representation of pattern-matching.
 This is a relatively minor question, but more complex ones – \eg 
 the integration of a sort $\SProp$ of strict propositions, or subject reduction for
 co-inductive types –
-can now be investigated in \kl{MetaCoq}, providing an important guidance and guarantees 
-for their implementation in \kl{Coq}.
+can now be investigated in \kl{MetaCoq}, providing a valuable guidance 
+to their implementation in \kl{Coq}.
 
 However, \kl{MetaCoq} is still quite some distance away from type-checking realistic developments
 in \kl{Coq}, as it lacks some important features present in the latter’s kernel. Barring
 template polymorphism,%
-\sidenote{A restricted form of universe polymorphism, which the latter should hopefully be able to
-replace.}
+\sidenote{A restricted form of universe polymorphism, which the latter should hopefully
+be able to replace.}
 there are two main lacking elements that are to be integrated if we wish to really reach the
 project’s goal.
 
-The first are the extensionality conversion rules: η laws for functions and records,
-and definitional proof irrelevance.
-The η conversion laws are basic features, present in virtually any modern proof assistant. However,
+The first are extensionality conversion rules: definitional proof irrelevance,
+and η laws for functions and records.
+The η conversion laws are basic features, present in virtually
+any modern proof assistant. However,
 in the precise context of \kl{MetaCoq}, they pose subtle questions.%
-\sidenote{For an overview of those, see \textcite{LennonBertrand2022a}.}%
+\sidenote{For an overview of these, see \textcite{LennonBertrand2022a}.}%
 \margincite{LennonBertrand2022a}
 Broadly, giving a specification of such η laws is easy in the setting of typed conversion, but
 much trickier in that of untyped conversion. However, the whole structure of \kl{MetaCoq} is built
-around that untyped notion of conversion, and could not be easily adapted to a typed notion of
+around that untyped notion of conversion, and could not be so easily adapted to a typed
 conversion. This makes the integration of η laws challenging. The case of strict propositions is
 less well-known, being much more recent, but poses similar challenges.
 
 The second lacking feature are modules and functors.
 While these are less pervasive than η laws, they are still important in a number of developments.
 Here again the difficulty is not simply to show that an implementation is faithful to a given
-semantic, but to precisely pin down said semantic. This is tricky in the case of modules, which,
-contrarily to records, their first-class counterpart, have interactions with global environments.
-This unclear semantic is probably one of the reason modules are not used so much, and so putting
-them on a stabler ground might give users more confidence to use them.
+semantic, but to precisely pin down said semantic. This is tricky in the case of modules, which
+have interactions with global environments, contrarily to records – their first-class counterpart.
+This unclear semantic is probably one of the reason modules are not used more, and so putting
+them on a stabler ground might also give users more confidence to use them.
 
 A last important investigation to make \kl{MetaCoq} closer to the real kernel is that of
 guard conditions. The impossibility to prove full \kl{normalization} of \kl{PCUIC}
-does not mean that we should not completely abandon the question of the guard condition. We
-can at least implement one, and show that it fulfils the conditions we abstractly ask for
+does not mean that we should not completely abandon this question. We
+can at least implement a guard condition,
+and show that it fulfils the conditions we abstractly ask for
 in the current development. More ambitious, the complex guard condition implemented in \kl{Coq}
-was designed in order to allow a translation back to eliminators. This gives a much stronger
-validity criterion for the guard, and would not be a simple project. But as for modules, reaching
+was designed \sidecite{Gimenez1995} in order to allow a translation back to eliminators.
+This gives a much stronger validity criterion for the guard, and would not be a simple project.
+But as for modules, reaching
 that goal would make the guard much more trustworthy than it currently is. Moreover,
 it could open the door to extending it, with the formalization
 as a safeguard as to the validity of those extensions.
@@ -128,6 +134,7 @@ so the main missing piece now is an implementation.
 Such an implementation of course is no small feat: integrating a new feature to \kl{CIC} is
 never easy, even more so one of this scale.
 Moreover, it raises subtle questions. For instance, while almost all reduction rules of
-\kl{CIC} are parametric over the universe levels, reduction in \kl{CastCIC} crucially
-depends on those. In a setting where these universe levels are not mere integers,
+dependent type theories are parametric over the universe levels,
+reduction in \kl{CastCIC} crucially depends on those.
+In a setting where these universe levels are not mere integers,
 what becomes of those? How do we handle a non-total order between universe levels?

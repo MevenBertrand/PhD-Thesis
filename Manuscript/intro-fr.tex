@@ -1,4 +1,4 @@
-\chapter{Résumé en Français}
+\chapter{Résumé en français}
 \label{chap:intro-fr}
 
 \selectlanguage{english}
@@ -15,10 +15,14 @@
   \sidecite[][citant Assia Mahboubi, traduction personnelle]{QuantaPA}
 \end{flushright}
 
-\margintoc[4em]
+\margintoc[6em]
 
 Cette thèse se situe dans le domaine de la \kl[type dépendant]{théorie des
-types}, lui-même au croisement entre informatique et logique mathématique.
+types},%
+\sidenote{
+  Si vous ne connaissez pas la signification de ce terme, ou d’un autre qui apparait dans
+  cette introduction, continuez votre lecture ! Ils seront expliqués en temps voulu.}
+lui-même au croisement entre informatique et logique mathématique.
 Un de ses objectifs est de donner des fondements théoriques et pratiques
 à des outils informatiques assistant les humains dans la construction
 et la vérification de preuves – au sens mathématique du terme.
@@ -27,33 +31,35 @@ en particulier beaucoup question de l’un d’entre eux,
 sur lequel mon travail s’est principalement concentré : \kl{Coq}.
 
 Durant leurs plus de 50 ans d’existence, les assistants à la preuve sont devenus une
-technologie établie. Avec l’évolution du domaine, les outils sont devenus de plus en
+technologie bien établie. Avec l’évolution du domaine, les outils sont devenus de plus en
 plus complexes, ce qui les rend à la fois de plus en plus puissants, mais aussi de plus
-en plus sensibles à des bugs critiques cachés dans des recoins obscurs. Alors que les
+en plus susceptibles de contenir des bugs critiques, cachés dans des recoins obscurs.
+Alors que les
 assistants à la preuve sont graduellement adoptés dans un nombre grandissant de communautés
 attachées à un haut niveau de fiabilité, cette situation n’est pas tenable.
 La solution historique consistant à placer sa confiance dans un petit noyau fiable
-– dénommé critère de De Bruijn –, n’est tout simplement pas suffisante si l’on veut avancer
-en intégrant de nouvelles fonctionnalités puissantes pour suivre les besoins des utilisateurs
+– dénommée critère de De Bruijn –, n’est tout simplement pas suffisante si l’on veut avancer
+en intégrant de nouvelles fonctionnalités pour suivre les besoins des utilisateurs
 et utilisatrices.
 
 Il y a une solution simple à ce problème : les assistants à la preuve sont utilisés depuis
 des décennies pour certifier la correction de programmes. Pourquoi ne pourraient-ils pas
-prouver \emph{leur propre} correction ? Après tout, s’il s’agit là de l’étalon ultime
-pour mesurer la confiance qu’on peut accorder à un logiciel,
-il devrait s’appliquer en premier lieu à ceux utilisés pour justifier cette
-confiance. Pour l’assistant à la preuve \kl{Coq}, cette ambition est celle du projet
+prouver \emph{leur propre correction} ? Après tout, s’il s’agit là du critère
+le plus restrictif pour mesurer la confiance qu’on peut accorder à un logiciel,
+il devrait s’appliquer en premier lieu aux logiciels utilisés pour justifier cette
+confiance. Pour l’assistant à la preuve \kl{Coq}, cette ambition est portée par le projet
 \kl{MetaCoq}, qui vise à construire un nouveau noyau pour \kl{Coq} qui soit entièrement
-prouvé correct. À terme, l’objectif est tout simplement pouvoir remplacer le noyau actuel,
+prouvé correct. À terme, l’objectif est de pouvoir tout simplement remplacer le noyau actuel,
 et on doit donc prendre en compte toute sa complexité.
 
-Mais avant de pouvoir atteindre ce but, il est nécessaire d’étudier plus en profondeur
+Afin de pouvoir atteindre ce but, il est nécessaire d’étudier plus en profondeur
 les structures à l’œuvre dans le noyau. En particulier, son algorithme de typage est
-\emph{bidirectionnel}, ce qui signifie qu’il alterne systématiquement entre deux problèmes :
+\emph{bidirectionnel}, ce qui signifie qu’il alterne en permanence entre
+la résolution de deux problèmes proches, mais distincts :
 l’\emph{inférence} – trouver un type pour un terme – et la \emph{vérification} –
 vérifier qu’un type donné convient pour un terme. Bien que cette structure soit cruciale pour
 relier la spécification du système de type à son implémentation, elle a été relativement
-peu étudiée dans le contexte du Calcul des Constructions Inductives (CIC), la fondation
+peu étudiée dans le contexte du Calcul des Constructions Inductives (CIC), le fondement
 théorique de \kl{Coq} – mais aussi de ses cousins \kl{Lean}, \kl{Agda}…
 
 Cette thèse vise à remplir ce vide, en fournissant une étude rigoureuse d’un CIC
@@ -68,13 +74,13 @@ donnant un contrôle précieux sur le calcul. En particulier, c’est une pièce
 dans la conception d’une extension graduelle à \kl{CIC}, \kl{GCIC}.
 Le typage graduel vise à apporter aux programmeurs et programmeuses à la fois la flexibilité
 de développement offerte par le typage dynamique, et les garanties fortes données par
-le typage statique, dans un seul et même système. \kl{GCIC} cherche à fournir cette
-flexibilité à la programmation utilisant des types dépendants, et, en utilisant la
+le typage statique, dans un seul et même langage. \kl{GCIC} cherche à fournir cette
+flexibilité aux types dépendants, et, en utilisant la
 puissance de la correspondance de Curry-Howard, à l’écriture de preuve. Mais cette
-entreprise bute sur de subtiles difficultés, que seul le cadre bidirectionnel permet
+entreprise bute sur des difficultés que seul le cadre bidirectionnel permet
 de résoudre.
 
-Pour replacer ce travail dans son contexte large, cette introduction
+Pour replacer ce travail dans son contexte large, le reste de cette introduction
 commence par une très courte histoire de la logique mathématique
 (\cref{sec:logique-histoire}), qui expose les principales problématiques de ce domaine.
 Suit une présentation des liens entre logique et informatique, par
@@ -82,7 +88,7 @@ l’intermédiaire des \kl{assistants à la preuve} (\cref{sec:assistants-preuve
 La \cref{sec:intro-coq} s’intéresse plus particulièrement aux questions
 de recherche sur lesquelles j’ai travaillé: typage bidirectionnel, \kl{MetaCoq} et typage
 graduel.
-Enfin la \cref{sec:cette-these} résume mes contributions à ces questions.
+Enfin la \cref{sec:cette-these} résume mes contributions par cette thèse.
 
 \section{Une très courte histoire de la logique}
 \label{sec:logique-histoire}
@@ -108,8 +114,8 @@ La première est qu'un raisonnement peut être valide ou non du simple fait de s
 Il peut s’agir de syllogismes, mais aussi de bien d’autres systèmes. On en rencontrera
 un certain nombre au cours cette thèse !
 
-La seconde est celle de la construction à partir de composantes élémentaires. À
-partir d’un système de règles de base qu’on a identifiées comme valides 
+La seconde est celle de la construction à partir de composantes élémentaires. En
+partant d’un système de règles de base qu’on a identifiées comme valides 
 \textit{a priori}, on a un moyen de s’assurer de la validité
 de raisonnements potentiellement très complexes.
 Il suffit pour cela de vérifier que ceux-ci peuvent être décomposés en un
@@ -134,10 +140,10 @@ ce qui constitue une preuve mathématique valide.
 \subsection{Les débuts de la logique mathématique : vers un fondement formel}
 
 À la suite d’Aristote, les mathématiciens et mathématiciennes se sont donc emparés
-de la logique, afin de trouver un système formel
+de la logique, à la recherche d’un système formel
 pouvant servir de fondement rigoureux aux mathématiques.
 Les liens entre logique et mathématiques remontent à l’Antiquité grecque,
-mais la logique mathématique en tant que discipline indépendante s’établit réellement
+mais la logique mathématique en tant que discipline indépendante s’est réellement établie
 durant le 19\textsuperscript{e} siècle, grâce à d’importants progrès
 sur deux aspects principaux.
 
@@ -147,7 +153,7 @@ naturel%
   Par opposition aux langages formels qui apparaissent
   en mathématiques, informatique, etc.
 }, inadapté à une description formellement précise de la déduction, et à
-concevoir à la place une nouvelle forme de langage spécifique qui puisse servir de
+concevoir à la place une nouvelle forme de langage spécifique à même servir de
 base au raisonnement mathématique.
 Une étape importante ici est le \citetitle{Begriffsschrift} de
 \citeauthor{Begriffsschrift}~\sidecite{Begriffsschrift},
@@ -159,29 +165,31 @@ car ils permettent de fidèlement rendre compte des propriétés universelles%
 et existentielles%
 \sidenote{Par exemple : « Il existe un réel dont le carré vaut 2 ».}.
 
-Le second a eu pour but de montrer que les mathématiques dans leur entier peuvent
+Le second aspect a eu pour but de montrer que les mathématiques dans leur entier pouvaient
 être reconstruites à partir d’un petit nombre de propriétés simples. Une étape
-importante a été la réduction de l’analyse aux propriétés
+importante est la réduction de l’analyse aux propriétés
 des nombres réels, puis les constructions de ceux-ci à partir
-de l’arithmétique données quasiment simultanément en 1872 par entre autres
-Dedekind~\sidecite{Dedekind1872} et Cantor~\sidecite{Cantor1872}.
-De son côté, Peano~\sidecite{Peano1889} propose
+de l’arithmétique, données quasiment simultanément par entre autres
+Dedekind~\sidecite{Dedekind1872} et Cantor~\sidecite{Cantor1872} en 1872.
+De son côté, Peano \sidecite{Peano1889} propose
 une axiomatisation des nombres entiers proche de celle encore utilisée aujourd’hui.
-Enfin, Cantor à nouveau propose la théorie des ensembles~\sidecite{Cantor1883}
+Enfin, Cantor à nouveau introduit la théorie des ensembles \sidecite{Cantor1883}
 comme un formalisme permettant de décrire tous
-les objets mathématiques sous la forme d’ensemble d’éléments.
+les objets mathématiques sous la forme d’ensembles d’éléments.
 
 \subsection{La crise des fondements}
-Hélas, le système proposé dans le \citetitle{Begriffsschrift} est incohérent%
+Hélas, le système proposé dans le \citetitle{Begriffsschrift} est incohérent !
+C’est-à-dire qu’il permet de prouver le faux, faisant s’écrouler le système logique.%
 \sidenote{
-  C’est-à-dire qu’il permet de prouver le faux, et, en conséquent, toutes les propositions,
-  faisant s’écrouler le système logique – ce qui est connu sous le nom de principe d’explosion.
-  Il ne peut donc servir de fondement satisfaisant aux mathématiques.
-} !
-Ce constat, fait par Russell en 1903%
+  Dans un système où le faux est prouvable, toutes les propositions le sont,
+  ce qui est connu sous le nom de principe d’explosion. Un tel système
+  où tout – et son contraire ! – est prouvable
+  ne peut évidemment pas servir de fondement satisfaisant aux mathématiques.
+  }
+Ce constat, fait par Russell en 1902%
 \sidenote{
-  Dans une lettre à Frege dont ce dernier rend les résultats
-  publics~\cite[Nachwort p.~253]{Frege1903}.}%
+  Dans une lettre à Frege dont ce dernier a rendu le contenu public dans
+  \textcite[Nachwort, p.~253]{Frege1903}.}%
 \margincite{Frege1903}
 ouvre une période de crise, en remettant en doute les systèmes qui avaient commencé à
 s’imposer comme de bons candidats pour servir de fondements aux mathématiques –
@@ -212,24 +220,27 @@ mathématiques.
 
 La recherche d’un système formel adéquat pour servir de fondement aux mathématiques 
 se heurte cependant à une seconde difficulté majeure : le théorème d’incomplétude de
-Gödel~\sidecite{Goedel1931}. Celui-ci affirme que tout système formel
+Gödel \sidecite{Goedel1931}. Celui-ci affirme que tout système formel
 dans lequel on peut construire des nombres entiers comme ceux de Peano – donc
 \textit{a fortiori} tout système suffisamment riche pour fonder les mathématiques –
-ne peut pas démontrer sa propre cohérence%
-\sidenote{À moins qu’il ne soit incohérent, auquel cas il peut \emph{tout} démontrer.}.
+ne peut pas démontrer sa propre cohérence.%
+\sidenote{À moins qu’il ne soit incohérent, auquel cas il peut \emph{tout} démontrer, par
+le principe d’explosion, dont sa cohérence… et son incohérence !}
 De ce fait, il n’existe pas de
 système qui puisse servir de base aux mathématiques
 avec une certitude formelle sur son adéquation.
 En effet, puisqu’on ne peut pas prouver la cohérence du
 système dans lui-même, il pourrait finalement s’avérer incohérent, ruinant les
 efforts fournis – exactement ce qui est arrivé au \citetitle{Begriffsschrift} de Frege.
+Et si on utilise un second système pour démontrer la cohérence du premier, on n’a fait que
+déplacer le problème : c’est maintenant sur la cohérence de ce second système que l’on repose.
 
-Une conséquence de ce théorème est qu’un système suffisamment riche
+Une conséquence importante de ce théorème est qu’un système suffisamment riche
 pour fonder les mathématiques est nécessairement incomplet.%
 \sidenote{
   Cela signifie qu’il
-  existe des énoncés indépendants, à savoir des assertions qui ne sont ni démontrables,
-  ni réfutable – c’est-à-dire dont la négation est démontrable.
+  existe des énoncés indépendants, à savoir des assertions qui ne sont pas démontrables,
+  et dont la négation ne l’est pas non plus.
   La cohérence du système considéré en est un exemple.
 }
 Ainsi, dans la suite, il ne sera jamais question de vérité dans un sens absolu –
@@ -240,7 +251,7 @@ uniquement de prouvabilité \emph{relativement à un système donné}.
 \subsection{Une situation satisfaisante ?}
 
 Malgré les difficultés mises à jour au début du 20\textsuperscript{e}
-siècle, les recherches en logique mathématique ont abouti à une situation
+siècle, les recherches en logique mathématique ont abouti au milieu du siècle à une situation
 globalement assez satisfaisante. D’abord, ZFC fournit un système formel raisonnable sur
 lequel fonder les mathématiques. Ensuite,
 la communauté mathématique est globalement convaincue qu’il serait
@@ -253,9 +264,9 @@ En \emph{pratique}, les choses sont toutes autres.
 Le développement et la vérification humaine de mathématiques
 formalisées%
 \sidenote{C’est-à-dire effectivement exprimées dans un système formel fixé.}
-semble à la fois impossible et inutile.
+semble à la fois impossible et inintéressant.
 D’un côté, cela demanderait un effort considérable, car de telles mathématiques
-nécessiteraient un niveau de précision extrêmement élevée, tant de la part de l’autrice
+nécessitent un niveau de précision extrêmement élevée, tant de la part de l’autrice
 de la preuve formelle que de sa lectrice.
 Dans le même temps, cela ne permettrait pas de réduire de manière significative
 les risques d’erreurs. Il serait en effet
@@ -265,8 +276,9 @@ milliers de pages de raisonnement formel.
 Enfin, décrire les mathématiques de cette façon noierait
 les intuitions mathématiques importantes, rendant la communication stérile.
 
-Si on veut rendre les mathématiques formelles praticables, il faut donc développer
-de nouveaux outils.
+Si on veut rendre les mathématiques formelles praticables et bénéficier des
+garanties qu’elles apportent en éliminant ces défauts rédhibitoires,
+il faut donc développer de nouveaux outils.
 
 \section{Les ordinateurs entrent en scène}
 \label{sec:assistants-preuve}
@@ -286,7 +298,7 @@ le début des années 70%
 ou Mizar~\cite{Rudnicki1992}.}%
 \margincite{DeBruijn1970}%
 \margincite{Rudnicki1992}
-ont commencé à apparaître des outils informatiques servant à écrire et vérifier ces
+commencent à apparaître des outils informatiques servant à écrire et vérifier ces
 preuves formelles, que l’on appelle collectivement des \intro{assistants à la preuve}.
 Via la formalisation des preuves et la vérification par l’ordinateur qu’elles
 suivent bien les règles du système logique sous-jacent, les assistants à la preuve
@@ -294,8 +306,8 @@ donnent accès à une fiabilité bien plus élevée que celle permise par les pr
 “informelles”.
 Des mathématiciens reconnus, comme \sidetextcite{Voevodsky2010},
 \sidetextcite[][Preface, p. xi]{Hales2012}, ou \sidetextcite{Scholze2021}
-se sont d’ailleurs déjà emparés des assistants à la preuve,
-notamment dans le but de lever les incertitudes
+se sont d’ailleurs déjà emparés de cette technologie,
+en particulier dans le but de lever les incertitudes
 quant à la solidité de leur propre travail.
 
 De plus, le terme d’\emph{assistant} à la preuve n’a pas été choisi au hasard : au-delà
@@ -309,8 +321,9 @@ les preuves à haut niveau et de manière interactive,%
   plutôt qu’écrite d’un seul bloc.}
 en laissant à l’assistant à la preuve le soin de construire les preuves formelles.
 Il peut s’agir de simples facilités
-comme la possibilité de pouvoir visualiser la structure des
-preuves, de suivre l’utilisation des hypothèses, ou de techniques beaucoup plus ambitieuses.
+comme la possibilité de visualiser la structure des
+preuves, de suivre l’utilisation des hypothèses, mais aussi
+de techniques beaucoup plus ambitieuses.
 
 En effet l’informatique rend possible
 l’automatisation de pans entiers de l’écriture de preuves,
@@ -333,7 +346,7 @@ programme s’exécute correctement, sans rencontrer de bug.
 Cette certitude mathématique est bien plus fiable que n’importe quelle batterie de tests !
 Dans ce domaine, de nombreux projets ont déjà abouti à des programmes d’envergure,
 entièrement prouvés corrects : compilateur pour le langage C \sidecite{Kaestner2017},
-protocoles cryptographiques \sidecite{Bhargavan2017},
+implémentation du protocole \textsc{Https} \sidecite{Bhargavan2017},
 résolution d’équations différentielles \sidecite{Immler2018}…
 
 \subsection{Logique, programmation et théorie des types}
@@ -348,7 +361,7 @@ systèmes formels relativement différents. Celle qui m’intéresse dans cette 
 est fondée sur la \kl{correspondance de Curry-Howard}
 et la \kl[type dépendant]{théorie des types dépendants}.
 C’est à elle qu’appartient l’assistant à la preuve \kl{Coq}
-\sidetextcite{CoqDevelopmentTeam2022} qui est au cœur de mon travail.
+\sidecite{CoqDevelopmentTeam2022} qui est au cœur de mon travail.
 
 Si on compare un programme informatique à un texte dans une langue naturelle,
 les \intro(fr){types} sont une sorte d’équivalent des catégories grammaticales.
@@ -367,6 +380,17 @@ Mais les types sont très versatiles, et leur capacité à encoder
 des propriétés des programmes sous-jacents peut servir à la compilation, la
 documentation, et bien d’autres choses.
 Dans notre cadre, par exemple, les types correspondent à la validité d’un raisonnement logique.
+
+Cette idée est celle de la \intro{correspondance de Curry-Howard}.%
+\sidenote{Explicitée la première fois dans des notes informelles de Howard datant de 1969
+mais publiées seulement bien plus tard \cite{Howard1980},
+qui reprenaient des remarques antérieures de Curry \cite{Curry1958}.}%
+\margincite{Howard1980}%
+\margincite{Curry1958}
+Plutôt qu’un théorème précis, il s’agit d’un concept très général,
+selon lequel il existe une ressemblance forte entre d’un côté le monde de la
+logique et des preuves, et de l’autre celui des programmes et de leurs types.
+On parle aussi d’ailleurs également de \reintro{correspondance preuves-programmes}.
 
 \begin{marginfigure}
 
@@ -393,17 +417,6 @@ Dans notre cadre, par exemple, les types correspondent à la validité d’un ra
   \label{fig:curry-howard-exemple}
 \end{marginfigure}
 
-Cette idée est celle de la \intro{correspondance de Curry-Howard}.%
-\sidenote{Explicitée la première fois dans des notes informelles de Howard datant de 1969,
-publiées bien plus tard \cite{Howard1980},
-reprenant des remarques antérieures de Curry \cite{Curry1958}.}%
-\margincite{Howard1980}%
-\margincite{Curry1958}
-Plutôt qu’un théorème précis, il s’agit d’un concept très général,
-selon lequel il existe une ressemblance forte entre d’un côté le monde de la
-logique et des preuves, et de l’autre celui des programmes et de leurs types.
-On parle aussi d’ailleurs également de \reintro{correspondance preuves-programmes}.
-
 Un exemple valant mieux qu’un discours abstrait, on peut voir la correspondance à l’œuvre dans la \cref{fig:curry-howard-exemple}, sous la forme de règles d’inférence
 ou de typage : chaque bloc présente une règle, avec au-dessus de la barre les
 hypothèses, et en dessous la conclusion.
@@ -416,18 +429,18 @@ Une paire $(a,b)$ construite à partir d’un premier objet $a$ de type $A$%
 \sidenote{Ce qui est noté $a \ty A$.}
  et d’un second objet $b$ de type $B$ a le type $A \times B$.
 À l’inverse si $p$ est de type $A \times B$, alors on peut en récupérer la première composante
-$p.1$, qui est de type $A$ et sa seconde $p.2$, de type $B$.
+$p.1$, qui est de type $A$, et la seconde $p.2$, de type $B$.
 Si on efface les termes\sidenote{
   Dans ce contexte, on parle souvent de \emph{termes} plutôt que de programmes,
   mais les deux sont synonymes.
 } des règles du bas, on obtient \emph{exactement} les règles du haut !
-Ainsi, la concept de paire en programmation correspond directement à celui de conjonction
+Ainsi, le concept de paire en programmation correspond directement à celui de conjonction
 en logique : la preuve d’une conjonction est une paire de preuves.
 
 Ceci s’étend bien au-delà du cas de la conjonction,
 à une correspondance générale entre d’une part les énoncés de la logique et leurs preuves,
 et d’autre part les types et les programmes. On peut voir les énoncés comme des types,
-et une preuve d’un énoncé comme un programme ayant le type qui lui correspond – ou l’inverse !
+et une preuve d’un énoncé comme un programme ayant le type qui lui correspond – ou l’inverse.
 Au-delà de la simple analogie entre formalismes d’origines différentes, cette correspondance est un outil puissant pour faire dialoguer deux mondes.
 En particulier, elle permet de relier deux problèmes \textit{a priori} éloignés :
 vérifier qu’une preuve est correcte, et vérifier qu’un terme est bien typé.
@@ -446,8 +459,8 @@ caractéristique principale est d’autoriser les types à dépendre de termes.
 L’exemple archétypique du point de vue de la  programmation est le type
 $\Vect(A,n)$ des vecteurs de longueurs $n$,
 les listes contenant exactement $n$ éléments de type $A$ – avec $n$ un entier.
-Ce type dépend de $n$, au sens où ses habitants diffèrent suivant ses valeurs.
-Du point de vue de la logique, cette
+Ce type dépend de $n$, au sens où les habitants du type diffèrent suivant les valeurs de
+l’entier. Du point de vue de la logique, cette
 dépendance correspond à la quantification : si on veut exprimer
 une propriété universelle « pour tout $x$, on a $P(x)$ », on a besoin que la propriété $P$
 puisse dépendre de $x$.
@@ -475,7 +488,9 @@ preuve dont il sera le plus question dans cette thèse : \kl{Coq}.
 \kl{Coq} est basé sur la \kl{correspondance de Curry-Howard} : les preuves sont vues comme des programmes dans un langage appelé \intro(fr){Gallina},
 et leur vérification est effectuée par un algorithme proche
 de ceux utilisés pour les types des langages conventionnels.
-Cependant, si, dans les premières versions des années 80, \kl{Coq} ressemblait à un langage de programmation un peu étrange, ce n’est actuellement plus du tout le cas.
+Cependant, si, dans les premières versions des années 80, les preuves \kl{Coq} étaient
+écrite quasiment directement en \kl{Gallina},
+ce n’est actuellement plus du tout le cas.
 La raison est que la majeure partie de l’outil dans ses versions actuelles a
 pour but d’aider l’utilisatrice à générer une preuve correcte. C’est un véritable
 \kl[assistant à la preuve]{\emph{assistant} à la preuve} !
@@ -487,21 +502,20 @@ pour but d’aider l’utilisatrice à générer une preuve correcte. C’est un
 Ce fonctionnement est illustré ci-contre : l’utilisatrice échange interactivement avec \kl{Coq}, qui utilise cette interaction pour générer un terme de preuve. Celui-ci est ensuite envoyé à une partie bien spécifique de l’outil, appelée \intro{noyau}.
 C’est lui qui implémente l’algorithme de vérification de type, et s’assure ainsi de la correction des termes de preuve construits interactivement.
 Le \kl{noyau} est donc l’élément crucial de \kl{Coq}, car c’est lui – et lui seul – qui est responsable en dernier lieu de la validation des preuves.
-
 Cette architecture, qui isole clairement la partie critique du système,
 est appelée \intro{critère de De Bruijn}~\sidecite{Barendregt2001} en 
 hommage à l’un des pionniers des assistants à la preuve.
-% Elle a permis de mener à bien des projets de grande ampleur, parmi lesquels CompCert~\sidecite{Kaestner2017} – un compilateur optimisant pour le langage C entièrement prouvé correct –, ou les preuves du théorème des quatre couleurs~\sidecite{Gonthier2007} et du théorème de l’ordre impair~\sidecite{Gonthier2013}, deux théorèmes importants et difficiles respectivement de la théorie des graphes et des groupes.
-Si le reste de l’écosystème s’est beaucoup plus développé que le \kl{noyau} depuis les débuts, celui-ci a également évolué, en se complexifiant graduellement.
+
+Si le reste de l’écosystème s’est beaucoup plus développé que le \kl{noyau} depuis les débuts, celui-ci a cependant également évolué, en se complexifiant graduellement.
 Et comme tout développement logiciel, il n’est pas à l’abri de bugs\sidenote{De l’ordre d’un bug détecté par an, une liste est maintenue à l’adresse suivante : \url{https://github.com/coq/coq/blob/master/dev/doc/critical-bugs}.}.
-Ceux-ci sont en général difficilement exploitables par une utilisatrice,
+Ceux-ci sont en général difficilement exploitables,
 encore plus sans s’en rendre compte.
 Néanmoins, ils existent,
 et le \kl{noyau} tendant à toujours plus se complexifier
 ils risquent de continuer à apparaître.
 
 \subsection{\kl{MetaCoq}, une formalisation en \kl{Coq}, pour \kl{Coq}}[\kl{MetaCoq}]
-\label{sec:intro-metacoq}
+\label{sec:intro-metacoq-en}
 
 
 Si on veut garantir un niveau de fiabilité le plus élevé possible, il faut donc de nouvelles idées.
@@ -509,31 +523,33 @@ Le projet \intro{MetaCoq}, a pour but de répondre à cette problématique.
 L’approche est simple : il s’agit d’utiliser \kl{Coq} lui-même pour certifier la correction de son \kl{noyau}.
 
 Plus précisément, la première étape est de décrire le système de type sur lequel est basé le \kl{noyau}, puis de démontrer ses propriétés théoriques.
-% , comme la confluence de la réduction, la préservation du typage par cette même réduction, etc.
+Il s’agit déjà d’une entreprise difficile: pour faciliter son utilisation, la théorie
+des types de \kl{Coq} incorpore de nombreuses particularités complexes à traiter.
+
 Une fois ces propriétés établies, la deuxième étape
-% \sidenote{C’est celle sur laquelle j’ai principalement travaillé, et sur laquelle 
-% on reviendra plus longuement.}
-consiste à implémenter un algorithme de vérification de type ressemblant au maximum à celui du \kl{noyau}, directement en \kl(fr){Gallina}\sidenote{
+consiste à implémenter un algorithme de vérification de type ressemblant au maximum à celui
+du \kl{noyau}, directement en \kl(fr){Gallina}.\sidenote{
   En effet, grâce à la \kl{correspondance de Curry-Howard}, \kl(fr){Gallina} est certes un langage
-  de preuve, mais aussi un véritable langage de programmation !}.
+  de preuve, mais aussi un véritable langage de programmation !}
 On démontre en même temps qu’il est bien \reintro(bidir){correct}%
 \sidenote{
   Si l’algorithme prétend qu’un terme est bien typé, alors c’est bien le cas.}
-et \reintro[Completeness]{complet}%
-\sidenote{L’algorithme répond bien affirmativement sur tous les termes bien typés.}.
+et \reintro[Completeness]{complet}.%
+\sidenote{L’algorithme répond bien affirmativement sur tous les termes bien typés.}
+
 Enfin, lors d’une troisième étape, on extrait de ce programme \kl(fr){Gallina} certifié
 un autre programme plus efficace, en effaçant le contenu lié à la preuve de correction
 pour ne garder que celui qui est algorithmiquement intéressant.
 Cette extraction est une étape complexe,
 mais cruciale si on veut remplacer le \kl{noyau} actuel en conservant une
 efficacité raisonnable.
-C’est pourquoi on prouve là encore que ladite extraction est correcte%
+C’est pourquoi on prouve là encore qu’elle est correcte%
 \sidenote{C’est-à-dire qu’elle préserve la sémantique des programmes.},
 en la programmant à nouveau en \kl(fr){Gallina}.
 
 \subsection{Vérification, inférence et typage bidirectionnel}[Typage bidirectionnel]
 
-Durant la deuxième étape, afin de prouver que l’algorithme de typage est complet,
+Afin de prouver que l’algorithme de typage de la deuxième étape est complet,
 il est très utile de
 passer par une spécification intermédiaire plus structurée que la description
 théorique de la première étape.
@@ -542,7 +558,7 @@ bien distinctes :
 d’une part, la vérification, où on cherche à \emph{vérifier}
 qu’un terme a bien un type donné ;
 d’autre part, l’inférence, où on cherche à \emph{trouver}
-un type pour un terme, s’il existe.
+un type pour un terme, s’il en existe un.
 L’algorithme de typage du \kl{noyau} de \kl{Coq} est \intro{bidirectionnel},
 c’est-à-dire qu’il alterne en permanence entre ces deux questions
 lorsqu’il vérifie qu’un terme est bien typé.
@@ -553,7 +569,7 @@ permet de bien diviser les difficultés entre, d’un côté, son équivalence a
 d’origine, et, de l’autre, la partie purement liée aux questions d’implémentation.
 
 Dans le cas spécifique des types dépendants, bien que présent depuis l’origine dans les algorithmes de vérification de type~\sidecite{Huet1989},
-le typage bidirectionnel a été relativement peu étudié.
+le typage bidirectionnel a été relativement peu étudié pour lui-même.
 Pourtant, au-delà de son lien fort avec les algorithmes,
 cette approche présente également des avantages théoriques : elle permet,
 par sa structure plus contrainte que la présentation standard,
@@ -564,10 +580,11 @@ d’obtenir des propriétés difficiles à démontrer dans ce cadre.
 \label{sec:intro-graduel}
 
 Il existe deux grandes approches de la vérification du type des programmes.
-Dans l’approche statique\sidenote{Qui est celle sur laquelle est basée \kl{Coq}.},
+Dans l’approche statique,\sidenote{Qui est celle sur laquelle est basée \kl{Coq}.}
 les types sont vérifiés en amont de l’exécution, alors que, dans l’approche dynamique, le bon typage des opérations est vérifié à la volée lors de cette même exécution.
 La discipline dynamique est plus flexible, parce qu’elle permet de vérifier exactement ce qui est nécessaire à la bonne exécution d’un programme.
 La rigidité du typage statique permet, elle, de détecter des erreurs plus tôt dans le développement, et impose des invariants utiles pour optimiser la compilation ou l’exécution.
+
 Plutôt que d’opter exclusivement pour l’une de ces deux approches,
 le \intro{typage graduel}~\sidecite{Siek2015} vise à intégrer
 dans un même langage disciplines statiques et dynamiques.
@@ -583,13 +600,12 @@ Comme le cas de \kl{MetaCoq} l’illustre, \kl{Coq} peut être utilisé comme un
 de programmation. Mieux : son système de type 
 permet d’exprimer des propriétés très complexes des programmes, et ainsi de vérifier
 avant même leur exécution que celles-ci sont bien respectées par le code.
-Hélas, cette impossibilité d’écrire du code imparfait peut
+Hélas, ces très fortes contraintes peuvent
 se retourner contre l’utilisatrice, en rendant plus difficile la phase de développement.
-En effet, personne n’écrit du code totalement correct au premier essai,
-et il serait parfois bon de pouvoir lever temporairement
+En effet, il serait parfois bon de pouvoir lever temporairement
 les garanties très fortes du typage afin de faciliter l’expérimentation.
-L’idée serait alors de s’inspirer des idées du typage graduel, pour permettre un développement
-logiciel ou logique plus flexible. Ici encore, la \kl{correspondance de Curry-Howard}
+Pour ce faire, on peut s’inspirer des idées du typage graduel, pour permettre un développement
+logiciel ou logique plus flexible. À nouveau, la \kl{correspondance de Curry-Howard}
 est à l’œuvre, puisqu’on adapte des concepts venant du monde de la programmation
 au cadre de la logique.
 
@@ -601,12 +617,12 @@ est centré principalement autour du typage bidirectionnel, sous
 trois aspects, correspondant aux trois parties de cette thèse.
 Elles sont précédées par le \cref{chap:intro-en}, version anglophone
 de ce chapitre, et le \cref{chap:tech-intro}, qui introduit les principales
-notions techniques utilisées dans la suite.
+notions techniques utilisées par la suite.
 
 \subsection{Théorie du typage bidirectionnel}
 
 La première partie (\nameref{part:bidir}) propose de combler une partie du
-manque de travail théorique autour du typage bidirectionnel pour les types dépendants.
+manque théorique autour du typage bidirectionnel pour les types dépendants.
 Elle contient en particulier une
 preuve d’équivalence entre la présentation standard de la littérature
 et une présentation bidirectionnelle.
@@ -622,11 +638,12 @@ et des liens entre certains travaux récents sur ce sujet et le typage bidirecti
 \subsection{Typage bidirectionnel dans \kl{MetaCoq}}
 
 La seconde partie de cette thèse (\nameref{part:metacoq})
-concerne le projet \kl{MetaCoq},
-et en particulier la formalisation en \kl{Coq} des idées présentées dans la
+s’intéresse au projet \kl{MetaCoq},
+et en particulier à la formalisation en \kl{Coq} des idées présentées dans la
 première partie. Le \cref{chap:metacoq-general} donne une présentation générale du
 projet, tandis que le \cref{chap:kernel-correctness} se concentre spécifiquement
-sur la preuve que le \kl{noyau} implémenté par \kl{MetaCoq} respecte sa spécification.
+sur la preuve que le \kl{noyau} implémenté par \kl{MetaCoq} respecte sa spécification,
+et en particulier la preuve de complétude qui nécessite d’utiliser le typage bidirectionnel.
 
 \subsection{Élaboration bidirectionnelle pour le typage graduel}
 
@@ -634,49 +651,60 @@ Enfin la troisième et dernière partie (\nameref{part:gradual})
 présente mon travail dans le domaine des \kl{types graduels}.
 Les types dépendants formant déjà des systèmes
 complexes, l’adaptation de ceux-ci à l’approche graduelle est particulièrement
-délicate. Un résumé des possibilités et problématiques associées est présenté
+délicate. Un résumé des possibilités et difficultés est présenté
 en \cref{chap:gradual-dependent}.
 Un point intéressant à souligner est que la présentation habituelle
 des types dépendants s’avère inadaptée, car trop flexible.
-La structure additionnelle apportée par le typage bidirectionnel est donc importante.
-Elle est de plus apparue comme pertinente pour présenter
+Au contraire, la structure additionnelle apportée par le typage bidirectionnel permet de résoudre
+ces problèmes.
+Elle est de plus pertinente pour présenter
 l’élaboration de termes depuis un langage source dans un langage cible, une
 caractéristique importante des \kl[graduel]{langages graduels}.
 L’utilisation d’une élaboration bidirectionnelle, et les propriétés qu’elle
 permet d’obtenir, sont décrites en \cref{chap:bidir-gradual-elab}.
-Enfin le \cref{chap:beyond-gcic} décrit succinctement le reste des travaux auxquels
-j’ai participé dans le cadre des types graduel, mais qui n’est pas directement lié
-au typage bidirectionnel.
+Enfin le \cref{chap:beyond-gcic} décrit un travail dans la continuité de celui du
+\cref{chap:bidir-gradual-elab}, mais qui n’est pas directement lié au typage bidirectionnel.
 
-\subsection{Contributions techniques}
+\subsection{Contributions techniques et publications}
 
-Mon travail de doctorat a débuté avec l’étude des types \kl(typ){dépendants} \kl{graduels}.
+Mon doctorat a débuté avec l’étude des types \kl(typ){dépendants} \kl{graduels}.
 J’ai contribué avec Kenji Maillard, Nicolas Tabareau et Éric Tanter à
 \sidetextcite{LennonBertrand2022}, où nous étudions une extension graduelle
 pour le Calcul des Constructions Inductives. Ma contribution technique principale
 dans ce cadre correspond au \cref{chap:bidir-gradual-elab}.
-Le \cref{chap:gradual-dependent} est également tiré de cette publication.
-Un second article, avec les mêmes auteurs et dans la continuité du précédent,
-est actuellement en phase de relecture. Il en sera rapidement question au
-\cref{chap:beyond-gcic}, ainsi que de la seconde partie technique de
-\textcite{LennonBertrand2022}, dont le contributeur principal est Kenji Maillard.
+L’étude fine de la littérature et le théorème d’impossibilité du \cref{chap:gradual-dependent}
+auquel elle amène sont également tiré de cette publication.
+La seconde partie technique de \textcite{LennonBertrand2022},
+à laquelle j’ai participé mais dont l’auteur principal est Kenji Maillard,
+ainsi qu’un second article avec les mêmes auteurs et dans la continuité du précédent%
+\sidenote{\textcite{Maillard2022}, actuellement en phase de relecture.}%
+\margincite{Maillard2022}
+sont présentés au \cref{chap:beyond-gcic}.
 
 Ce travail ayant montré l’utilité d’un système de type bidirectionnel dépendant
 et le manque de résultats sur le sujet, j’ai choisi de l’étudier
 plus en détail, à la fois sur papier et par le biais d’une
 formalisation se basant sur \kl{MetaCoq}.
 Ceci a donné lieu à une seconde publication~\sidecite{LennonBertrand2021},
-et correspond aux \cref{chap:bidir-ccw,chap:bidir-pcuic}, ainsi qu’à une partie du
-\cref{chap:kernel-correctness}.
+et correspond aux \cref{chap:bidir-ccw,chap:bidir-pcuic} pour la partie théorique,
+ainsi qu’à la \cref{sec:kernel-bidir} pour la formalisation.
+Le bug de complétude du noyau de \kl{Coq} découvert
+au cours de cette formalisation, ainsi que l’impact de cette découverte sur
+l’implémentation de \kl{Coq} est présentée dans \sidetextcite{Sozeau2022}.
 
 J’ai ensuite travaillé à l’intégration de cette formalisation à
-\kl{MetaCoq}, et à son utilisation dans l’optique de montrer la complétude du \kl{noyau}
-qui y est implémenté. Ceci correspond au reste du \cref{chap:kernel-correctness}.
+\kl{MetaCoq}, et à son utilisation pour montrer la complétude du \kl{noyau}
+qui y est implémenté.%
+\sidenote{Une définition – dûe à Simon Boulier – d’un algorithme de typage
+  dont la correction était établie mais pas la complétude y était déjà présent,
+  même si j’ai eu à la modifier pour ma preuve de complétude.}
+Ceci correspond à la \cref{sec:kernel-typing}.
 Au-delà de cette contribution principale,
 j’ai également participé à ce projet sur d’autres points plus mineurs.
 Cette partie de mon travail de thèse n’a pas encore été publiée, mais
 les autres contributeurs de \kl{MetaCoq} et moi-même y œuvrons actuellement.
 
 Enfin le \cref{chap:bidir-conv} correspond à un projet que j’ai entamé dans
-le but d’étendre \kl{MetaCoq}, mais qui n’a pas encore atteint le stade de la
-publication.
+le but d’étendre \kl{MetaCoq} pour intégrer des règles η d’extensionalité à la conversion,
+mais qui n’a pas encore atteint le stade de la publication. J’ai en revanche
+présenté les difficultés soulevées dans \sidetextcite{LennonBertrand2022a}.

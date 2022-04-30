@@ -8,7 +8,7 @@
 \margintoc
 
 Before we can attempt to build a certified kernel, we need a thorough meta-theoretical study
-of the type system. This is necessary in order to show that the invariants used by the kernel – typically, well-typedness of the objects it manipulates – 
+of the type system. This is necessary in order to show that the invariants used by the kernel – typically, well-formation of the objects it manipulates – 
 are preserved during the type-checking algorithm.
 The use of these invariants goes beyond correctness:
 the cumulativity test used as a sub-routine by the \kl{kernel} needs to reduce terms, and,
@@ -18,7 +18,7 @@ of well-typed terms.
 Since evaluation is not normalizing on ill-typed terms, the mere \emph{definition} of the
 cumulativity check relies on \kl{subject reduction} to be able to iterate reduction steps.
 
-The properties under scrutinee in this chapter are not new,
+The properties under scrutiny in this chapter are not new,
 and neither are the basic strategy of most proofs.
 Indeed, the development roughly follows the architecture we already exposed in
 \cref{sec:tech-properties}. The main difficulty is the scale: due to the
@@ -38,7 +38,7 @@ Next comes the first important proof, that of confluence, and its multiple conse
 with subject reduction (\cref{sec:meta-typing-prop}).
 Finally, we discuss the place of normalization (\cref{sec:meta-normalization}).
 
-\section[Terms, Cumulativity and Types]{Setting up the Definitions: Terms, Cumulativity and Types}
+\section{Setting up the Definitions: Terms, Cumulativity and Types}[Setting up the Definitions]
 \label{sec:meta-defs}
 
 \subsection{Terms}
@@ -55,12 +55,12 @@ It of course contains  the term formers introduced in \cref{chap:tech-intro}:
 \coqe{tRel} for variables, \coqe{tAbs} for abstractions,
 \coqe{tApp} for application, and \coqe{tProd} for dependent function types.
 The syntax uses De Bruijn indices for binders – the integer argument of the \coqe{tRel}
-term former –, but names are still recorded, mainly for printing annotations, directly in the
+term former –, but names are still recorded, mainly for printing purposes, directly in the
 binders – the \coqe{aname} argument of \coqe{tProp} and \coqe{tAbs}.
 There are also local definitions, in the form of the \coqe{tLetIn} constructor,
 binding the term \coqe{b} of type \coqe{B} in \coqe{t}.
 
-The \coqe{tSort} constructor is for sorts – what we have called universe earlier.
+The \coqe{tSort} constructor is for sorts – what we have called universes earlier.
 Its \coqe{Universe.t} argument represents its \kl{universe level}, which can be either $\Prop$
 or an algebraic expression based on universe variables, in order to handle \kl{typical ambiguity}.
 
@@ -144,10 +144,10 @@ since only \kl{conversion} should be symmetric. Using this rule twice shows that
 \kl{conversion} is included inside \kl{cumulativity}.
 Another important thing to note is that transitivity is somewhat restricted:
 the middle term is required to be \intro{well-scoped},%
-\sidenote{Expressed by the \pcuicline{OnFreeVars}{is\_open\_term}{253} predicate.}
-\ie that all its variables refer correctly
+\sidenote{Expressed by the \pcuicline[Syntax]{OnFreeVars}{is\_open\_term}{253} predicate.}
+\ie all its variables refer correctly
 to either a binder or to the context \coqe{Γ}.
-This is key in proving the equivalence between this notion of \kl{cumulativity} and the
+This is key when proving the equivalence between this notion of \kl{cumulativity} and the
 algorithmic version that appears later on. Indeed, this equivalence relies on \kl{confluence},
 which is only true on \kl{well-scoped} terms in \kl{PCUIC}. Thus, we need to know that
 \kl(conv){declarative} \kl{cumulativity} only ever goes through \kl{well-scoped} terms,
@@ -198,7 +198,7 @@ Finally, the rule for projections simply selects the right field of the record.
 
 \begin{figure*}
   \ContinuedFloat
-  \coqfile[firstline=99,lastline=105]{./code/PCUICCumulativitySpec.v}
+  \coqfile[firstline=99,lastline=106]{./code/PCUICCumulativitySpec.v}
   \caption{Computation rules for definitions (\pcuicline{CumulativitySpec}{cumulSpec0}{29})}
   \label{fig:meta-cumul-defs}
 \end{figure*}
@@ -207,7 +207,9 @@ The next three rules deal with definitions (\cref{fig:meta-cumul-defs}).
 Rule \coqe{cumul_zeta} directly reduces a
 let-binder into a substitution, while definitions are unfolded using \coqe{cumul_rel} and \coqe{cumul_delta},
 respectively those of the local context or the \kl{global environment}. In the latter
-case, the definition must be instantiated with a universe instance, which is denoted \coqe{@[u]}.
+case, the definition must be instantiated with a universe instance,%
+\sidenote{A list of universe levels, corresponding to its polymorphic universe variables.}
+which is denoted \coqe{@[u]}.
 
 \begin{figure}[h]
   \ContinuedFloat
@@ -229,7 +231,7 @@ that forced the unfolding.
 \subsection{Typing}
 
 With the \kl{cumulativity} relation defined, we can turn to typing, defined in \pcuicfile{Typing}.
-As for \kl{cumulativity}, \pcuicline{Typing}{typing}{188}
+Similarly to \kl{cumulativity}, \pcuicline{Typing}{typing}{188}
 is an inductively defined relation \coqe{Σ ;;; Γ |- t : T},
 relative to a global environment \coqe{Σ} and a local context \coqe{Γ}.
 The rules correspond roughly to ones we already went over in \cref{chap:tech-intro}.
@@ -237,13 +239,13 @@ The rules correspond roughly to ones we already went over in \cref{chap:tech-int
 \begin{figure}
   \ContinuedFloat*
   \coqfile[firstline=2,lastline=22]{./code/PCUICTyping.v}
-  \caption{\kl{CCω} fragment (\pcuicline{Typing}{typing}{188})}
+  \caption{Functional fragment (\pcuicline{Typing}{typing}{188})}
   \label{fig:meta-typing-ccw}
 \end{figure}
 
 The first set of typing rules, given in \cref{fig:meta-typing-ccw},
-pertain to the \kl{CCω} fragment. There are not many differences
-there with respect to \cref{fig:ccw-typing}. Rule \coqe{type_Rel} looks up the type of the
+pertain to the purely functional fragment. There are not many differences
+there with respect to \cref{fig:ccw-typing}. Rule \coqe{type_Rel} looks up for the type of a
 variable in the context, and ensures that said context is well-formed:
 the \pcuicline{Typing}{wf\_local}{284} predicate corresponds to $\vdash \Gamma$,
 but here as everything else it is relative to a global environment.
@@ -251,7 +253,7 @@ Rule \coqe{type_Sort} uses the \coqe{super} function to compute
 the successor of an algebraic universe, and similarly Rule \coqe{type_Prod} uses
 \coqe{sort_of product} to compute the universe level of a Π-type.%
 \sidenote{This not only includes computing the maximum of two algebraic universes expressions,
-but also handling the \kl{impredicativity} of the $\Prop$ sort.}
+but also handling the \kl{impredicativity} of the sort $\Prop$.}
 Context extension with an assumption, \ie a variable without a body,
 is written \coqe{Γ ,, vass na A}, and used as expected in Rules \coqe{type_Prod}
 and \coqe{type_Lambda}. Finally, \coqe{type_App} is for application. It contains an
@@ -282,8 +284,7 @@ the \kl{global environment}, respectively constants – \coqe{type_Const} –, i
 term should be declared in the \kl{global environment}, the context well-formed
 – since these are leaves of a term –,
 and the universe instance given should respect the constraints coming from the
-entry in the \kl{environment} – this is the
-\pcuicline{EnvironmentTyping}{consistent\_instance\_ext}{154} predicate.
+entry in the \kl{environment} – this is the \coqe{consistent\_instance\_ext} predicate.
 
 \begin{figure*}
   \ContinuedFloat
@@ -298,7 +299,7 @@ the \kl{scrutinee} should be of an inductive type, declared in the global enviro
 Next, the \kl{predicate} and \kl{branches} should all be well-typed
 in the appropriate context – obtained by combining the information stored in
 \coqe{p} or \coqe{brs}, with that retrieved from the entry in the environment corresponding to
-the \kl{scrutinee}'s type,.
+the \kl{scrutinee}'s type.
 Finally, \pcuicline{Typing}{case\_side\_conditions}{159} handles universe instances, checks
 that the elimination is allowed%
 \sidenote{This is where \kl{PCUIC} enforces computational irrelevance of proofs,
@@ -312,7 +313,7 @@ substitution from the projection information.
 
 \begin{figure}
   \ContinuedFloat
-  \coqfile[firstline=59,lastline=74]{./code/PCUICTyping.v}
+  \coqfile[firstline=59,lastline=76]{./code/PCUICTyping.v}
   \caption{(Co-)fixed-points (\pcuicline{Typing}{typing}{188})}
   \label{fig:meta-typing-fix}
 \end{figure}
@@ -322,7 +323,7 @@ given in \cref{fig:meta-typing-fix}. They are almost identical,
 the main part amounts to checking that the types and bodies of all
 the mutual definitions are well-typed.
 The \pcuicline{Typing}{wf\_fixpoint}{118} and \pcuicline{Typing}{wf\_cofixpoint}{145}
-prediates both check that the definitions are on
+predicates both check that the definitions are on
 the same block of mutually-defined (co-)inductive types, and that these are of the right kind –
 inductive for \coqe{tFix} and co-inductive for \coqe{tCoFix}.
 Finally, the \coqe{fix_guard} and \coqe{cofix_guard} predicates correspond to the guard condition,
@@ -331,7 +332,7 @@ ensuring that the definitions do not endanger \kl{normalization}. We come back t
 
 \begin{figure}
   \ContinuedFloat
-  \coqfile[firstline=75,lastline=79]{./code/PCUICTyping.v}
+  \coqfile[firstline=77,lastline=81]{./code/PCUICTyping.v}
   \caption{Cumulativity (\pcuicline{Typing}{typing}{188})}
   \label{fig:meta-typing-cumul}
 \end{figure}
@@ -343,7 +344,7 @@ From the definition of \pcuicline{Typing}{typing}{188}, two more pervasively use
 follow. We have already encountered \pcuicline{PCUICTyping}{wf\_local}{284},
 asserting that a local context is well-formed.
 Its sibling predicate \pcuicline{PCUICTyping}{wf}{439}%
-\sidenote{Sometimes replaced by \pcuicline{PCUICTyping}{wf\_ext}{444},
+\sidenote{Often replaced by \pcuicline{PCUICTyping}{wf\_ext}{444},
 an extension that in addition takes into account the universes of the current definition.}
 asserts that the \kl{global environment} is well-formed. It ensures not only that all definitions
 are properly typed, but also of the validity of various information
@@ -365,34 +366,36 @@ but also for universe variables.%
 \sidenote{\pcuicfile[Conversion]{UnivSubstitutionConv} and \pcuicfile[Typing]{UnivSubstitutionTyp}}
 
 \AP One last property falling in the section of low-hanging fruits as well
-is the fact that well-typed terms are \kl{well-scoped}%
+is the fact that well-typed terms are \kl{well-scoped}.%
 \sidenote{\pcuicfile{ClosedTyp}.}
 %, that is that if \coqe{Σ ;;; Γ |- t : T}
 %then all free variables of \coqe{t} appear in \coqe{Γ}.
 This \kl{well-scoping} conditions appears
 in the transitivity rule for \kl{cumulativity}
-(\cref{fig:meta-cumul-struct}) and is an hypothesis for many lemmas to hold.
+(\cref{fig:meta-cumul-struct}) and is a hypothesis for many lemmas.
 
 All of these are proven by induction on the typing derivation.
-However, while the proof by themselves are not very surprising, the formalization of the definitions
+While the proof by themselves are not very surprising, the formalization of the definitions
 deserves a few comments.
 
 The first point to note is that while the weakening and substitution operations are defined
 directly by induction on the syntax of terms, the proofs are not done directly
 on those definitions. Rather, \kl{MetaCoq} uses notions of renaming and instantiation inspired
-by the σ-calculus \sidecite{Abadi1991,Schaefer2015}, as functions from integers to integers for
-renamings, and to terms for instantiations.
+by the σ-calculus \sidecite{Abadi1991,Schaefer2015}, as functions from natural numbers
+to natural numbers for renamings, and to terms for instantiations.
 \kl{Weakening} and \kl{substitution} then correspond respectively to a specific form of
-renaming and of instantiation, and the stability for those follows from
-more general versions. For instance \kl{weakening} is but a consequence of general stability by
+renaming and of instantiation, and the stability for the former those follows from
+more general versions for the latter.
+For instance, \kl{weakening} is but a consequence of general stability by
 (unconditional) renaming, as presented in \cref{prop:stab-renaming}.
 This approach makes it easier to handle the complex binding structures
-present in the syntax of \kl{PCUIC}, which require parallel substitution, lifting by a whole context
-at once, operations that are easier to handle in the general framework of the σ-calculus.
+present in the syntax of \kl{PCUIC}, which require parallel substitution or
+lifting by a whole context at once,
+operations that are easier to handle in the general framework of the σ-calculus.
 
-More interestingly, the same approach is taken also for \kl{well-scoping}:
+More interestingly and novel, the same approach is taken also for \kl{well-scoping}:
 \kl{MetaCoq} generalizes that predicate into a way of lifting
-any boolean function on integers – a property of variables – to a boolean function
+any boolean function on natural numbers – seen as a property of variables – to a boolean function
 on terms.\sidenote{This is \pcuicline[Syntax]{OnFreeVars}{on\_free\_vars}{71}.}
 This makes it easy to relate the σ-calculus
 to \kl{well-scoping} assumptions, \eg to show that if two substitutions \coqe{σ} and \coqe{σ'}
@@ -435,10 +438,12 @@ The former is written \coqe{Σ ;;; Γ |- t ~>* u}, and the latter
 \coqe{Σ ;;; Γ |- t ~> u}.
 
 \subsection{Parallel reduction}
+\label{sec:metacoq-parred}
 
 \AP The proof of \kl{confluence} follows the standard Tait-Martin-Löf approach as exposed by
 \sidetextcite{Takahashi1995}. It relies on a notion of \intro{parallel reduction}
-$\intro*\parred$, which can reduce multiple redexes present in a term $t$ in parallel.
+$\mathord{\intro*\parred}$, which can reduce multiple redexes present in a term $t$ in parallel.
+As an example, the rules for application are given in \cref{fig:parred-app}.
 \begin{marginfigure}
   \begin{mathpar}
   \inferrule
@@ -451,7 +456,7 @@ $\intro*\parred$, which can reduce multiple redexes present in a term $t$ in par
   \caption{Parallel reduction for application}
   \label{fig:parred-app}
 \end{marginfigure}
-As an example, the rules for application are given in \cref{fig:parred-app}. The generic congruence
+The generic congruence
 rule allows reduction to happen in parallel in both the function and argument. Moreover,
 if the function is an abstraction, a β step can also be fired simultaneously 
 with those. Note that this does \emph{not} allow reducing further redexes
@@ -463,6 +468,7 @@ because the redex $(\l x : \Nat. x)\ 0$ only appears after a first step of subst
 is related to \kl[reduction]{standard reduction}.
 
 \begin{lemma}[Parallel reduction and reduction]
+  \label{lem:parred-red}
   We have $\ored \subset \mathord{\parred} \subset \mathord{\fred}$.
 
   This implies that if \kl{parallel reduction} is \kl{confluent}, then so is \kl{reduction}.
@@ -470,12 +476,12 @@ is related to \kl[reduction]{standard reduction}.
 
 \AP But the interesting characteristic of \kl{parallel reduction}, which \kl{reduction}
 does not satisfy, is the
-\intro{diamond property}, a strong version of local confluence%
+\intro{diamond property}, a strong version of local confluence,%
 \sidenote{
   Which says that if $t \ored t_1$ and $t \ored t_2$ then there exists $t'$ such that $t_1 \red t'$
-  and $t_2 \red t'$.},
-which contrarily to it implies \kl{confluence}. Thanks to the lemma above,
-in order to establish \kl{confluence} of 
+  and $t_2 \red t'$.}
+which contrarily to it implies \kl{confluence} even in the absence of \kl{normalization}.
+Thanks to \cref{lem:parred-red} above, in order to establish \kl{confluence} of 
 \kl{reduction}, it suffices to show this \kl{diamond property}.
 
 The proof idea goes as follows. First, show that \kl{parallel reduction} is substitutive, in
@@ -484,10 +490,10 @@ the following sense.
   If $t \parred t'$ and $u \parred u'$ then
   $\subs{t}{x}{u} \parred \subs{t'}{x}{u'}$.
 \end{lemma}
-\AP This allows for the definition of a \intro{best parallel reduct} $\intro*\bestredop$ by induction
-on a term which reduces \emph{all} possible redexes in parallel%
+\AP This allows to define a \intro{best parallel reduct} $\intro*\bestredop$,
+which reduces \emph{all} possible redexes in parallel,%
 \sidenote{ For instance $\bestred{(\l x : A.\ t)\ u}$ is $\subs{\bestred{t}}{x}{\bestred{u}}$.
-},
+}
 and to show that it is really a best reduct.
 \begin{lemma}[Triangle property]
   Given a term $t$, if $t \parred t'$ then $t' \parred \bestred{t}$.
@@ -512,18 +518,22 @@ This is enough to get the diamond property, because any two parallel reducts of 
 both reduce to $\bestred{t}$ \emph{in one step}. This basically amounts to firing in both reducts
 all the redexes that could have been triggered but have not been.
 
+\begin{minipage}{\textwidth}
 \begin{lemma}[Diamond property]
   Given a term $t$ and $t_1$, $t_2$ such that $t \parred t_1$ and $t \parred t_2$, there exists
   $t'$ such that $t_1 \parred t'$ and $t_2 \parred t'$.
 \end{lemma}
+\end{minipage}
 
 From this, it follows by a bit of diagram chasing that \kl{parallel reduction} is confluent,
 and thus that \kl{reduction} is.
 
+\begin{minipage}{\textwidth}
 \begin{theorem}[\kl{Confluence} of \kl{reduction}]
   \kl{Reduction} is \kl{confluent}, that is if $t \red t_1$ and $t \red t_2$ then there exists
   $t'$ such that $t_1 \red t'$ and $t_2 \red t'$.
 \end{theorem}
+\end{minipage}
 
 Note that it can directly be shown without resorting to \kl{parallel reduction} that \kl{reduction}
 is \emph{locally} confluent. However, in the absence of \kl{normalization}
@@ -550,7 +560,6 @@ the plan can be followed quite closely.
 \kl{Parallel reduction} is defined as \pcuicline{ParallelReduction}{pred1}{241} in
 \pcuicfile{ParallelReduction}. Then the diamond property is proven in \pcuicfile{ParallelReductionConfluence} – $\bestredop$ is \pcuicline{ParallelReductionConfluence}{rho}{697},
 and the diamond property itself is \pcuicline{ParallelReductionConfluence}{pred1\_diamond}{4421}.
-
 Finally, \pcuicfile{Confluence} goes back from this to properties of \kl{reduction}, concluding
 with its \kl{confluence} (\pcuicline{Confluence}{red\_confluence}{3959}).
 
@@ -563,7 +572,7 @@ as used to define typing, can be related to \kl(conv){algorithmic} \kl{cumulativ
 many useful consequences, including \kl{injectivity of type constructors}.
 A series of important properties then follow, culminating with \kl{subject reduction}.
 
-\subsection{Algorithmic Cumulativity}
+\subsection{Algorithmic cumulativity}
 
 The first use of confluence is to relate \kl(conv){declarative} \kl{cumulativity}
 as used to define typing to \kl(conv){algorithmic} \kl{cumulativity} –
@@ -574,11 +583,14 @@ But in the setting of \kl{PCUIC} this relation, called \pcuicline{Equality}{leq\
 the formalization, is far from being trivial to define!
 It needs to handle algebraic universe levels, but also polymorphic inductive types. Moreover,
 it is parameterized over the relation used to compare universes, so that it can also be used
-to express “pure” \kl{α-equality} when instantiated with equality rather than
-universe comparison.
+to express “pure” \kl{α-equality}%
+\sidenote{Meaning that the terms can differ only on binder names, but that their universe
+must be syntactically the same rather than related using the constraints present in the
+environment.}
+when instantiated with equality rather than universe comparison.
 
 To show that \kl{algorithmic conversion} is equivalent to \kl{declarative conversion},
-\kl{confluence} is the major ingredient, but it is not enough. Instead, one also need to show
+\kl{confluence} is the major ingredient, but it is not enough. Instead, we also need to show
 that \kl{reduction} interacts well with this \kl{α-pre-order}.
 
 \begin{lemma}[The \kl{α-pre-order} is a simulation
@@ -598,7 +610,7 @@ that \kl{reduction} interacts well with this \kl{α-pre-order}.
 \end{lemma}
 
 While the proof
-is still relatively straightforward since $t$ and $t'$ have a very similar structure, it becomes
+is still relatively straightforward since $t$ and $t'$ have the same structure, it becomes
 much more challenging if we wish to integrate extensionality rules such as η-equality or 
 strict propositions%
 \sidenote{Two features present in \kl{Coq} but not yet in \kl{MetaCoq}, exactly due to this
@@ -613,8 +625,8 @@ and finally its equivalence with \kl(conv){declarative} \kl{cumulativity}.
   \kl(conv){Algorithmic} and \kl(conv){declarative} \kl{cumulativity} are equivalent.
 \end{theorem}
 
-This is the main theorem of \pcuicfile{Conversion} – 
-one implication is \pcuicline{Conversion}{cumulSpec\_cumulAlgo}{3680},
+This equivalence is the main theorem of \pcuicfile{Conversion} – 
+one direction is \pcuicline{Conversion}{cumulSpec\_cumulAlgo}{3680},
 and the other is \pcuicline{Conversion}{cumulAlgo\_cumulSpec}{190}.
 That central file also proves multiple variants of
 \kl{injectivity of type constructors}.
@@ -645,15 +657,15 @@ In practice, this means
 that the typing rule \pcuicline{Typing}{type\_case}{241} of \cref{fig:meta-typing-idest}
 forbids the \kl{scrutinee} from being of a co-inductive type.%
 \sidenote{This is part of the \pcuicline{Typing}{case\_side\_conditions}{159}.}
-Thus, while \kl{reduction} and \kl{conversion} take this presentation into account,%
+Hence, while \kl{reduction} and \kl{conversion} take this presentation into account,%
 \sidenote{See the \pcuicline{CumulativitySpec}{cumul\_cofix\_case}{158}
 constructor in \cref{fig:meta-cumul-fix}.}
-thus showing that it is at least confluent, it can never appear in a well-typed term.
+thus showing at least that it is confluent, it can never appear in a well-typed term.
 
 An alternative solution, which would allow an easier transition away from today’s positive
 co-inductive types, is to see co-inductive scrutinees as effectful terms
 and restricts predicates allowed
-for dependent elimination to be linear, following \sidetextcite{Pedrot2017}.
+for dependent elimination to be linear, following \sidetextcite[0em]{Pedrot2017}.
 This approach is not formalized in \kl{MetaCoq} – yet –, but the project
 provides a natural setting to explore this kind of questions in all their gritty details
 before working towards an actual implementation in \kl{Coq}.
@@ -661,7 +673,7 @@ before working towards an actual implementation in \kl{Coq}.
 \section[Normalization]{Gödel’s Thorn in the Side: Normalization}
 \label{sec:meta-normalization}
 
-An important property remains, though: \kl{normalization}. In \kl{PCUIC}, the key constraint to
+One last important property remains: \kl{normalization}. In \kl{PCUIC}, the key constraint to
 ensure it is the \kl{guard condition}, to which (co-)fixed-points are subject in order to
 ensure that they are well-founded – see \cref{sec:pcuic-ind}.
 However, due to Gödel’s second incompleteness theorem, if \kl{PCUIC} is \kl(log){consistent}
@@ -695,9 +707,9 @@ for typing to be well-behaved.
 In particular, since the trivial guard condition
 that is always true fulfils the requirements, none of the aforementioned
 properties rely on \kl{normalization} – or \kl(log){consistency} of the theory.
-Thus, \kl{PCUIC} is a reasonable programming language, \emph{unconditionally}.
+Thus, \kl{PCUIC} is a \kl[safety]{safe} programming language, \emph{unconditionally}.
 
-\subsection{The Normalization Axiom}
+\subsection{The normalization axiom}
 
 \begin{figure}[h]
   \coqfile{./code/PCUICSN.v}
@@ -711,19 +723,19 @@ we must know that reduction is terminating. Once again, we axiomatize the necess
 axiom of (strong) \kl{normalization}, as given in \cref{fig:meta-sn}.
 Note that this axiom takes exactly the form we gave to \kl{normalization}
 in \cref{prop:normalization}, as the accessibility of any well-typed term for
-co-reduction – under the assumption that the global context is well-formed, otherwise
-it could contain \eg non-positive inductive types which can be used to define non-terminating terms.
+co-reduction. This is done under the assumption that the global context is well-formed,
+otherwise it could contain \eg non-positive inductive types which
+could be used to define non-terminating terms.
 
 Using this axiom, it is possible to prove \kl(log){consistency} of \kl{PCUIC}, as shown in
 \safefile{Consistency}. The rough idea of the proof is that given for \cref{prop:log-cons},
 \ie to deduce \kl(log){consistency} from \kl{canonicity}.
 However, instead of proving \kl{progress} directly we rely on a proven-complete function 
-computing a \kl(red){weak-head} normal form from a term%
+computing \kl(red){weak-head} normal forms implemented as part of the type-checker.%
 \sidenote{Which can be seen as a constructive witness of \kl{canonicity}!}
-implemented as part of the type-checker.
-Assuming an inhabitant \coqe{t} of $\P P : \Prop.\ P$%
+Assuming an inhabitant \coqe{t} of $\P b : \Prop.\ b$%
 \sidenote{Corresponding to the \kl{MetaCoq} term
 \coqe{tProd b (tSort Prop_univ) (tRel 0)}.}
-in any axiom-free global environment \coqe{Σ},
-we extend \coqe{Σ} with the empty inductive type $\Empty$, use \coqe{t} to construct a
+in any axiom-free global environment \coqe{Σ}, the proof extends
+\coqe{Σ} with the empty inductive type $\Empty$, use \coqe{t} to construct a
 \kl(red){weak-head} normal inhabitant of that type, and from this finally derive a contradiction.

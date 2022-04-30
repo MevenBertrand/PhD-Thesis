@@ -19,7 +19,7 @@
 \sidecite[1em]{McBride2018,McBride2019}.
 The central point is to distinguish in a judgement between three \intro{modes}:
 the \reintro{subject},
-whose well-formation is under scrutiny, \reintro{inputs},
+whose well-formation is under examination, \reintro{inputs},
 whose well-formation is a condition for the judgement to be meaningful,
 and \reintro{outputs}, whose well-formation should be a consequence of the judgement.
 By \intro{well-formed}, which we use indistinctly for contexts, terms and types,
@@ -29,6 +29,7 @@ we mean:
   \item $\Gamma \vdash T \ty \uni$ in the case of a type $T$,
   \item the existence of some $T$ such that $\Gamma \vdash t \ty T$ in the case of a term $t$.
 \end{itemize}
+For the last two, this is relative to an implicit context $\Gamma$.
 We also use \reintro{well-typed} for a term, with the same meaning as \kl{well-formed}.
 
 \AP In the case of \intro{inference} $\intro*\inferty{\Gamma}{t}{T}$, the subject is $t$,
@@ -92,31 +93,33 @@ the output should be well-formed if all those of the premises are.
   \label{fig:bidir-mcbride}
 \end{figure*}
 
-As an illustration, an example of a rule that does respect this discipline – that
+As an illustration, an example of a rule that respects this discipline – that
 for application – is given in \cref{fig:bidir-mcbride}.
 Let us ignore for an instant the exact meaning of the judgement $\mathord{\pity{\P}}$
-which we introduce soon, and focus on well-formation: objects known to be well-formed
+which we introduce soon, and whose modes are the same as inference.
+Instead, focus on well-formation: objects known to be well-formed
 are on a blue background, those which are not are on a red one.
-First, $\Gamma$ is well-formed, as an input to the conclusion (1), and
-We can thus move to the first premise, since its only input is $\Gamma$.
+First, $\Gamma$ is well-formed, as an input to the conclusion (1). Thus
+we can thus move to the first premise, since its only input is $\Gamma$.
 From that premise holding, we learn that $t$ and $\P x : A.\ B$ are well-formed (2).
 Therefore, $A$ is in particular well-formed, and we can move to the second premise
 whose two inputs are now known to be well-formed (3). From it, we learn
 that $u$ is well-formed (4). Now we can deduce that $t\ u$ is well-formed. But this is
-not enough: since $\subs{B}{x}{u}$ is an output to the conclusion,
+not enough: since $\subs{B}{x}{u}$ is an output of the conclusion,
 we must ensure it is well-formed too. Fortunately,
-it is, since $\P x : A.\ B$ is, so $B$ is too – in $\Gamma, x : A$ –,
+it is, since $\P x : A.\ B$ is, so $B$ is too,%
+\sidenote{In the extended context $\Gamma, x : A$.}
 and so $\subs{B}{x}{u}$ is as well, since $\Gamma \vdash u \cty A$.
-Thus we can move back to the conclusion (5), which ends our roundtrip.
+Thus, we can move back to the conclusion (5), which ends our roundtrip.
 
-Interestingly, a somewhat similar discipline has appeared independently in
+A somewhat similar discipline has appeared independently in
 \sidetextcite[][Section 4]{Dunfield2021}, where it is called ”Pfenning’s recipe”.
 The main criterion is \emph{mode-correctness}, which demands
 an information flow similar to McBride’s, but is coarser, as it does not
-consider well-formation of the objects, only their knownledge. For instance, that criterion
-would allow for $\l x : A.\ t$ to directly extend a context with $A$ to infer a type for
-$t$, because it is known, but McBride’s discipline forbids it, because $A$’s well-formation
-is not established.
+consider well-formation of the objects, only their knowledge. For instance,
+in the case of $\l x : A.\ t$, that criterion allows to directly extend a context
+with $A$ to infer a type for $t$, because it is known,
+but McBride’s discipline forbids it, because $A$’s well-formation is not established.
 Another related condition is also used in \sidetextcite{Bauer2020}.
 The authors introduce the notions of a \emph{(weakly) presuppositive type theory}
 \cite[Def.~5.6]{Bauer2020} and of \emph{well-presented} premise-family and rule-boundary
@@ -126,7 +129,7 @@ Due to their setting being undirected, this is however more restrictive,
 because they are not able to distinguish inputs from outputs and thus cannot relax the
 condition to only demand inputs to be well-formed but not outputs.
 
-\AP Due to our dependently typed setting, we need to introduce a third judgement,
+\AP Because of our dependently typed setting, we actually need to introduce a third judgement,
 beyond the already mentioned \kl{inference} and \kl{checking}:
 \intro{constrained inference}, written
 $\intro*\pinferty{h}{\Gamma}{t}{T}$, where $h$ is either $\Pi$ or $\uni$.%
@@ -140,7 +143,7 @@ Rather, as the name suggests, a constraint is imposed on it, namely that its hea
 This is needed to handle the behaviour absent in simple types that some terms might not have a desired type “on the nose”. Take for instance the first premise
 $\Gamma \vdash t \ty \P x : A .\ B$ of \ruleref{rule:cic-app}.
 What bidirectional judgement should replace it?
-It would be too much to ask $t$ to directly infer a Π-type, as some reduction might be needed to uncover this $\P$. Checking also cannot be used, because the domain and codomain of the tentative Π-type are not known at that point: they are to be inferred from $t$.
+It would be too much to ask $t$ to directly infer a Π-type, as some reduction might be needed to uncover this $\P$. Checking also cannot be used, because the domain and codomain of the tentative Π-type are not known at that point: they should be inferred from $t$.
 
 Finally, this mode distinction also applies to computation-related judgements,
 although those have no subject.
@@ -162,7 +165,7 @@ should give rise to a rule with \kl{inference} as a conclusion.
 It thus remains to choose the judgements for the premises,
 which amounts to determining their \kl{modes}.
 If a term in a premise appears as input in the conclusion or output of a previous premise, then it can be considered an input, otherwise it must be an output. Moreover, if a type output is unconstrained, then \kl{inference} can be used, otherwise we must resort to
-\kl{constrained inference}.
+\kl{constrained inference}. This transformation leads to the rules of \cref{fig:ccw-bidir-infer}.
 
 \begin{figure}[ht]
   \ContinuedFloat*
@@ -196,7 +199,7 @@ If a term in a premise appears as input in the conclusion or output of a previou
 In anticipation, we set the typing rules for \kl{CCω} so that this transformation would be
 direct. This particularly applies to the undirected \ruleref{rule:cic-abs},
 recalled opposite.
-Indeed, there are at least two other ways to write this rule, which do not lead to a valid
+Indeed, there are at least two other ways to write it, which do not lead to a valid
 bidirectional presentation.
 \marginnote{
   \normalsize
@@ -206,10 +209,11 @@ bidirectional presentation.
   {\Gamma \vdash \l x : A.\ t \ty \P x : A.\ B}
   \end{mathpar}
 }
-The first, which is the usual one in \kl{Pure Type Systems} – \kl{PTS}, see
-\sidetextcite{Barendregt1991} –,
-is to have $\Gamma \vdash \P x : A.\ B \ty \uni$ instead of simply $\Gamma \vdash A \ty \uni$.
-In the setting of a general \kl{PTS}, this is needed, because not every Π-type is well-formed,
+The first, which is the usual one in \kl{Pure Type Systems} (\kl{PTS})
+\sidecite{Barendregt1991},
+is to have $\Gamma \vdash \P x : A.\ B \ty \uni$ as a premise
+instead of $\Gamma \vdash A \ty \uni$. In the setting of a general \kl{PTS},
+this is needed, because not every Π-type is well-formed,
 even if the domain and codomain are.%
 \sidenote{\kl{PTS} where this is true are called \intro{full}.}
 However, this premise is problematic in the bidirectional setting. Indeed, $B$ can only be
@@ -226,43 +230,46 @@ this does not respect McBride’s discipline.
 
 The main difference between the bidirectional and undirected rules is that we dropped
 hypotheses of context well-formation in Rules~\nameref{rule:bd-univ} and
-\nameref{rule:bd-var}. Indeed, as the context is always supposed to be well-formed
-as an input to the conclusion, it is not useful to re-check it. This is also in line with implementations, where the context is not re-checked at leaves of a derivation tree, with performance issues in mind. The well-formation invariants then ensure that any derivation starting with the (well-formed) empty context will only ever encounter well-formed contexts.
-
-\begin{marginfigure}
-\ContinuedFloat
-\begin{mathpar}
-  \inferdef{Check}
-    {\inferty{\Gamma}{t}{T'} \\ T' \conv T}
-    {\checkty{\Gamma}{t}{T}}
-  \label{rule:bd-check} \and
-  \inferdef{UnivInf}
-    {\inferty{\Gamma}{t}{T} \\ T \fred \uni[i]}
-    {\pinferty{\uni}{\Gamma}{t}{\uni[i]}}
-    \label{rule:bd-pinf-univ} \and
-  \inferdef{ΠInf}
-    {\inferty{\Gamma}{t}{T} \\ T \fred \P x : A. B}
-    {\pinferty{\P}{\Gamma}{t}{\P x : A . B}}
-    \label{rule:bd-pinf-prod}
-\end{mathpar}
-\caption{Computation rules for bidirectional \kl{CCω}}
-\label{fig:bidir-ccw-other}
-\end{marginfigure}
+\nameref{rule:bd-var}. Indeed, since the context is always supposed to be well-formed
+as an input to the conclusion, it is not useful to re-check it. This is also in line with implementations, where the context is not checked at leaves of a derivation tree, with performance issues in mind. The well-formation invariants then ensure that any derivation starting with the (well-formed) empty context will only ever encounter well-formed contexts.
 
 With the rules for term formers taken care of,
 we are left with the single \ruleref{rule:cic-conv}.
+\begin{marginfigure}
+  \ContinuedFloat
+  \begin{mathpar}
+    \inferdef{Check}
+      {\inferty{\Gamma}{t}{T'} \\ T' \conv T}
+      {\checkty{\Gamma}{t}{T}}
+    \label{rule:bd-check} \and
+    \inferdef{UnivInf}
+      {\inferty{\Gamma}{t}{T} \\ T \fred \uni[i]}
+      {\pinferty{\uni}{\Gamma}{t}{\uni[i]}}
+      \label{rule:bd-pinf-univ} \and
+    \inferdef{ΠInf}
+      {\inferty{\Gamma}{t}{T} \\ T \fred \P x : A. B}
+      {\pinferty{\P}{\Gamma}{t}{\P x : A . B}}
+      \label{rule:bd-pinf-prod}
+  \end{mathpar}
+  \caption{Computation rules for bidirectional \kl{CCω}}
+  \label{fig:bidir-ccw-other}
+  \end{marginfigure}
 There are two different possible adaptations of this rule, depending on
 \kl{modes} for computation.
-In the case of \kl{checking} the target type is an input, so
+In the case of \kl{checking}, the target type is an input, so
 it can be compared to the inferred one using \kl{conversion}.
 But in the case of \kl{constrained inference} it is unknown, and so
 we must resort to \kl{reduction} to obtain it from the inferred one.
+Using \kl{conversion} would not respect modes, since it has two inputs.
 This eventually leads to the decomposition of \ruleref{rule:cic-conv} into
 \ruleref{rule:bd-check} in the first case, while
 \nameref{rule:bd-pinf-univ} and \nameref{rule:bd-pinf-prod} correspond to the second case.
 Note that while the way conversion and reduction can be used in derivations have changed,
 those relations themselves remain untouched,
 we only refined them by giving them an explicit mode.
+We also do not need to choose one or the other notion of \kl{conversion} yet. Instead, we can
+stay abstract, only listing the properties we need from it in order to establish the
+equivalence.
 
 \subsection{Constrained inference in disguise}
 
@@ -289,6 +296,8 @@ denoting type inference followed by reduction –
 is used to effectively inline the two hypothesis of our constrained inference rules.
 Checking is also inlined.
 Similarly, \sidetextcite{Abel2008} use a judgement written $\Delta \vdash V \delta \Uparrow \operatorname{Set} \rightsquigarrow i$, where a type $V$ is checked to be well-formed, but with its exact level $i$ free. This corresponds very closely to our use of $\pity{\uni}$.
+\sidetextcite{Gratzer2019} similarly use a judgement $\Xi \vdash T \Leftarrow type$,
+but they do not bother inferring the level as they never have any need for it.
 
 But the main area where constrained inference repeatedly becomes apparent is that of
 elaboration. For instance,
@@ -319,7 +328,7 @@ As \citeauthor{Saibi1997} and \citeauthor{Sozeau2007}, they also
 need to handle coercions for terms in function position. However, their solution is different:
 they introduce new meta-variables for the domain and codomain,
 and rely on unification, which is available in their setting, to find values for those.
-Regarding $\pity{\uni}$, they introduce a special judgement they call
+They also need to introduce a special judgement they call
 \intro{type-level enforcing}, which corresponds to our $\pity{\uni}$ judgement.
 The solution they take for Π-types is not viable there, as one would need a kind of universe
 meta-variable. Instead, they rely on backtracking to test multiple possible universe choices.
@@ -343,28 +352,34 @@ by proving it on the bidirectional side.
 \subsection{Correctness}
 
 A bidirectional derivation can be seen as a refinement of an undirected derivation.
-Indeed, the bidirectional structure can be erased
-– replacing each bidirectional rule with the corresponding undirected rule – to obtain an undirected derivation. This is missing some sub-derivations,
-which can nevertheless be retrieved by using well-formation invariants.
-Thus, we get the following correctness theorem – note how McBride’s discipline manifests as well-formation hypothesis on inputs.
+Indeed, the bidirectional structure can be erased to obtain an undirected derivation, 
+replacing each bidirectional rule with the corresponding undirected rule.
+As bidirectional rules lack some premises of the undirected ones, missing some sub-derivations
+must be retrieved by relying on the well-formation invariants going with McBride’s discipline.
+Thus, we get the following correctness theorem – note how the
+discipline manifests as well-formation hypothesis on inputs.
 
+\begin{minipage}{\textwidth}
 \begin{theorem}[\intro{Correctness} of bidirectional typing for \kl{CCω}]
   \label{thm:corr-ccomega}
   If $\Gamma$ is well-formed and $\inferty{\Gamma}{t}{T}$ or $\pinferty{h}{\Gamma}{t}{T}$,
   then $\Gamma \vdash t \ty T$.
   If both $\Gamma$ and $T$ are well-formed and
   $\checkty{\Gamma}{t}{T}$, then $\Gamma \vdash t \ty T$. 
-\end{theorem}
+\end{theorem}  
+\end{minipage}
+
   
+\begin{minipage}{\textwidth}
 \begin{proof}
   By mutual induction on the bidirectional typing derivation.
 
   Each rule of the bidirectional system can be replaced by the corresponding rule of the
-  undirected system, with all three Rules \nameref{rule:bd-check}, \nameref{rule:bd-pinf-univ} and \nameref{rule:bd-pinf-prod} replaced by
+  undirected system, with all three rules \nameref{rule:bd-check}, \nameref{rule:bd-pinf-univ} and \nameref{rule:bd-pinf-prod} replaced by
   \nameref{rule:cic-conv}. In all cases, the induction hypothesis can be used on sub-derivations of the bidirectional judgement, because context extensions and checking are
-  done with types that are known to be well-formed,
-  by induction hypothesis on previous premises and possibly \kl{validity}.%
+  done with types that are known to be well-formed,%
   \sidenote{This is the point where following McBride’s discipline is crucial!}
+  by induction hypothesis on previous premises and possibly \kl{validity}.
 
   Some sub-derivations of the undirected rules that have no counterpart
   in the bidirectional ones are however missing.
@@ -380,29 +395,28 @@ Thus, we get the following correctness theorem – note how McBride’s discipli
   Alternatively, the appeal to validity could be removed by
   strengthening the theorem to incorporate the well-formation of outputs on top of that of
   the subject. Here we follow the proofs in \kl{MetaCoq}, which establishes
-  meta-theoretical properties of the undirected system – including validity –,
-  rather than those of the bidirectional one – such as \kl{stability under substitution},
-  which would be needed for this strengthened version.
-
+  meta-theoretical properties of the undirected system first – including validity –,
+  so we can exploit these.
 \end{proof}
+\end{minipage}
 
 \subsection{Completeness}
 
 Contrarily to correctness, which keeps the structure of a derivation,
 completeness is of a different nature.
 Because in bidirectional derivations the computation rules are much less liberal than in
-undirected derivations, the structure of derivations must be altered.
-The crux of the proof is to ensure that all uses of \ruleref{rule:cic-conv}
+undirected ones, the structure of derivations must be altered.
+The crux of the proof is thus to ensure that all uses of \ruleref{rule:cic-conv}
 can be permuted down through the other rules,
 in order to concentrate them in the places where they are authorized in the bidirectional
 derivation.
 In a way, composing completeness with correctness gives a kind of normalization procedure
-which produces a canonical undirected derivation by pushing conversion
+on undirected derivations, which produces a canonical one by pushing conversion
 down as much as possible.
 
 The proof mainly relies on the following lemma,
-which can be seen as a form of \kl{injectivity of type constructors} – which is a direct
-consequence of it.
+which can be seen as a strong form of \kl{injectivity of type constructors} – 
+the version of \cref{prop:prod-inj} is a direct consequence.
 
 \begin{lemma}[Conversion implies reduction for type constructors]
   \label{lem:conv-red-tycons}
@@ -416,6 +430,7 @@ consequence of it.
   \end{itemize}
 \end{lemma}
 
+\begin{minipage}{\textwidth}
 \begin{proof}
   Let us spell out the proof on Π-types – the case of $\uni$ is similar, but easier.
 
@@ -428,8 +443,11 @@ consequence of it.
   Combining these, we obtain that $A' \conv A$ and $B' \conv B$, as expected.
 
   For \kl{declarative conversion}, we can go through the
-  equivalence with algorithmic conversion – and thus use \kl{confluence}.
-\end{proof}
+  equivalence with algorithmic conversion – and thus use \kl{confluence} under
+  the hood.
+\end{proof}  
+\end{minipage}
+
 
 \begin{theorem}[\intro{Completeness} of bidirectional typing for \kl{CCω}]
   \label{thm:compl-ccomega}
@@ -483,10 +501,10 @@ by \sidetextcite{Norell2007}, and most of the work by Abel
 and McBride \sidecite{McBride2016,McBride2018,McBride2019}.
 In such systems, λ-abstractions can only be checked against a given type, but cannot infer one,
 which implies that only terms with no redexes are typeable.
-\textcite{Norell2007} argues that such
+\textcite{Norell2007} argues that explicit
 redexes are uncommon in real-life programs, so that being unable to type them is not a strong
 limitation in practice. Another solution, taken by \textcite{McBride2022}, is to add
-type annotations so as to regain the ability to check non-normal terms,
+type annotations in order regain the ability to check non-normal terms,
 at the cost of inserting annotations at the right place.
 In all cases, however, the fact that all terms well-typed in the declarative system infer
 a type is irremediably lost. Weaker forms of completeness should still hold for such systems,
@@ -522,11 +540,12 @@ But there is still some indeterminacy.
 Indeed, in rules involving reduction no strategy is fixed, thus two different reducts can be used with the same rule, resulting in different inferred types.
 However, inferred types are still related:
 
-\begin{theorem}[Uniqueness of inferred type]
+\begin{theorem}[Uniqueness of inferred type up to joinability]
   \label{thm:unique-inf}
   If $\Gamma$ is well-formed,
   $\inferty{\Gamma}{t}{T}$ and $\inferty{\Gamma}{t}{T'}$ then $T$ and $T'$ both reduce to a
-  common $T''$, \eg $T \red T''$ and $T \red T''$. In particular, $T \conv T'$.
+  common $T''$, \eg $T \red T''$ and $T \red T''$.
+  In particular, $T \conv T'$.
 \end{theorem}
 
 \begin{proof}
@@ -546,13 +565,16 @@ we get \kl{uniqueness of types} for the undirected system.
   If $\Gamma \vdash t \ty T$ and $\Gamma \vdash t \ty S$ then $T \conv S$.
 \end{theorem}
 
+\begin{minipage}{\textwidth}
 \begin{proof}
   Since $\Gamma \vdash t \ty T$, by correctness
   there exists some $T'$ such that $\inferty{\Gamma}{t}{T'}$ and moreover $T' \conv T$.
   Similarly, there exists some $S'$ such that $\inferty{\Gamma}{t}{S'}$
   and moreover $S' \conv S$.
   But by uniqueness $T' \conv S'$, and thus $T \conv S$.
-\end{proof}
+\end{proof}  
+\end{minipage}
+
 
 \begin{marginfigure}
 \begin{mathpar}
@@ -570,7 +592,8 @@ we get \kl{uniqueness of types} for the undirected system.
 \end{marginfigure}
 
 In order to completely eliminate indeterminacy, a reduction strategy can be fixed.
-This amounts to replacing \kl{full reduction} with \kl{weak-head reduction}, see
+This amounts to replacing \kl{full reduction} with \kl{weak-head reduction},
+\eg to replace the two reduction rules in \cref{fig:bidir-ccw-other} by those of
 \cref{fig:wh-pinf}.
 This is still \kl(bidir){correct} and \kl(bidir){complete}.
 Correctness follows exactly the same proof as
@@ -581,7 +604,7 @@ to \cref{lem:conv-red-tycons} for weak-head reduction.
   \label{thm:red-strat}
 
   If Rules \nameref{rule:bd-pinf-univ} and \nameref{rule:bd-pinf-prod} are replaced by
-  Rules \nameref{rule:bd-pinf-wh-univ} and \nameref{rule:bd-pinf-wh-prod},
+  \nameref{rule:bd-pinf-wh-univ} and \nameref{rule:bd-pinf-wh-prod},
   then given a well-formed context $\Gamma$ and a term $t$ there is at most one $T$
   such that $\inferty{\Gamma}{t}{T}$, and at most one $T'$ such that
   $\pinferty{h}{\Gamma}{t}{T'}$.
@@ -606,9 +629,8 @@ to \cref{lem:conv-red-tycons} for weak-head reduction.
 Reasoning on the bidirectional derivation makes proofs easier,
 while \kl(bidir){correctness} and \kl(bidir){completeness} ensure the results
 can be carried to the undirected system.
-One way to understand this is to see completeness followed by correctness as a
-normalization procedure on derivations, producing a canonical derivation
-which is more structured, and thus more amenable to proofs.
+One way to understand this is that the canonical derivation obtained by combining
+correctness and completeness is more structured, and thus more amenable to proofs.
 
 An example of this is the \kl{strengthening} property, a consequence of
 \kl{conditional stability under renaming}. We explained in \cref{sec:tech-properties}
@@ -617,22 +639,25 @@ computation is too unconstrained, so that derivations might make use of needless
 Bidirectional typing, however, does not have this defect, since no type is ever "invented".
 Rather, they are obtained either by reduction of previously inferred types, or as inputs.
 This means that types in a bidirectional derivation never mention useless variables, and thus
-that we have:
+that the following holds.
 
+\begin{minipage}{\textwidth}
 \begin{theorem}[Conditional stability under renaming – bidirectional]
   \label{thm:strong-stab-renaming-bidir}
   Whenever we have 
   \begin{itemize}
     \item $\inferty{x_1 : A_1 \dots x_n : A_n}{t}{T}$
-    \item $\vdash \Delta$
     \item for all $i$ such that $x_i$ appears in $t$,
       there is a variable $y_i$ such that $(y_i : \multisubs{A_i}{x_1 \into y_1 \dots x_n \into y_n}) \in \Delta$
   \end{itemize} 
   it also holds that $\inferty{\Delta}{\multisubs{t}{x_1 \into y_1 \dots x_n \into y_n}}{\multisubs{T}{x_1 \into y_1 \dots x_n \into y_n}}$.
 \end{theorem}
+\end{minipage}
 
 \begin{proof}
   By a direct induction on the typing derivation.
+
+  Note that we do not even need $\Delta$ to be well-formed.
 \end{proof}
 
 And as a special case, \kl{strengthening} follows.
@@ -644,4 +669,4 @@ And as a special case, \kl{strengthening} follows.
 \end{theorem}
 
 From those, \kl{conditional stability under renaming} and \kl{strengthening} for
-the undirected system follow without any difficulty.
+the undirected system can be obtained without any difficulty.

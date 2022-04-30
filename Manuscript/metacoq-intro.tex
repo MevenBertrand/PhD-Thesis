@@ -13,9 +13,9 @@ is not enough if one wants to trust \kl{Coq}.
 Indeed, while \kl{CIC} is well-understood and has been widely studied,
 this is much less true of the type theory actually implemented, \kl{PCUIC}.
 Bugs therefore often creep in with the extra level of complexity coming with the implementation,
-rather than coming from a defect of pen-and-paper proofs.%
+rather than being the consequence of a defect of pen-and-paper proofs.%
 \sidenote{This is for instance the case of the completeness issue
-  explained in \cref{sec:bidir-pcuic-inductives}.}
+  exposed in \cref{sec:bidir-pcuic-inductives}.}
 
 These difficulties beg for a precise investigation of \kl{PCUIC}, from the heights of the
 type system’s meta-theory, all the way down to the sophisticated details of the implementation.
@@ -26,7 +26,7 @@ The natural framework is thus the \kl{MetaCoq} project,
 which aims at giving tools to reify and manipulate \kl{Coq} terms%
 \sidenote{Or, maybe more accurately, \kl{Gallina}.}
 inside \kl{Coq} itself. This gives the possibility to write down and certify
-all kinds of procedures operating on these terms – the first to come to mind being of course
+all kinds of procedures operating on these terms, the first to come to mind being of course
 a type-checker. This way, we can have both the help and guarantees offered by
 formal proofs inside a \kl{proof assistant}, and the possibility to execute
 our implemented kernel.
@@ -39,9 +39,10 @@ meaning that the meta-theoretical study can only be partial, since otherwise it 
 a proof of consistency contradicting Gödel’s theorem. In
 \kl{MetaCoq}, this blind spot manifests as an axiom assuming the
 \kl{normalization} of \kl{PCUIC}, on which parts of the development relies.
-A second is that writing down a certified kernel is not enough. Indeed, executing directly
-such a kernel in \kl{Coq} would be much too slow to actually type-check
-any reasonably-sized term. Rather, we must rely on extraction, a procedure which erases the
+The second caveat is that writing down a certified kernel is not enough.
+Indeed, executing directly such a kernel in \kl{Coq}
+would be much too slow to actually type-check any reasonably-sized term.
+Rather, we must rely on extraction, a procedure which erases the
 proof-related content of a certified program to only keep the algorithmically relevant one.
 As this erasure itself is a complex transformation, \kl{MetaCoq} also incorporates a certified
 erasure procedure.
@@ -52,7 +53,7 @@ I shall describe the portion of \kl{MetaCoq} which is relevant to it.
 the meta-theory of \kl{PCUIC}, with the main definitions, properties, and proof ideas.
 My technical contributions to this part of the development is relatively minor,
 mainly consisting of small patches. However, since I rely on that formalization
-in my main contributions, it seems fitting to at least say a word on it.
+in my main contributions, it seems fitting to go over it.
 
 \Cref{chap:kernel-correctness} concentrates on the formalization of bidirectional typing, as
 presented in \arefpart{bidir}, and on the proof of correctness and completeness of
@@ -60,25 +61,23 @@ the kernel implementation based on it. This is my main technical
 contributions to the \kl{MetaCoq} project.
 
 Although I will not describe it here, there is more to \kl{MetaCoq}. The two main components
-I will omit are Template \kl{Coq}, and a certified extraction procedure.
-The first faithfully represents the actual \kl{Coq} abstract
-syntax tree and a typing predicate for it, gives a translation to the syntax used in
-the main theoretical development of \kl{PCUIC},%
+I will omit are Template \kl{Coq}, and the certified extraction procedure.
+The first faithfully represents the actual abstract
+syntax tree of \kl{Gallina} and a typing predicate for it,
+gives a translation to the syntax used in the main theoretical development of \kl{PCUIC},%
 \sidenote{Described in \cref{fig:metacoq-ast}.}
 and shows that both notions of typing are equivalent.
 It also provides facilities for quoting and unquoting of terms from
 \kl{Coq} to \kl{MetaCoq}’s AST and back, in order to provide the possibility to write operation
 on \kl{Coq} terms directly in \kl{MetaCoq} – including, of course, the certified kernel of
 \cref{chap:kernel-correctness}.
-The second component aims at writing an extraction procedure,
-which erases the propositional components of a definition to only keep the algorithmically relevant
-parts, and generate a reasonably efficient program out of it. This extraction should be certified,
+The second component aims at certifyng the extraction procedure,
 relating the semantics of the original and extracted programs.
-The end goal is not only to improve \kl{Coq}’s current extraction, but also to be able to extract
-the certified type-checker itself to an efficient one – execution in \kl{Coq} is too inefficient
-if we wish to type-check realistic examples.
+The goal is to be able to extract the certified type-checker itself to an efficient one –
+execution in \kl{Coq} is too inefficient if we wish to type-check realistic examples –,
+but also more generally to improve \kl{Coq}’s current extraction.
 
 Throughout the part, source files of the \kl{MetaCoq} project
 and specific definitions or theorems are referenced respectively as follows:
 \pcuicfile{Typing}, and \pcuicline{Typing}{typing}{188}. They link directly to the source
-code of the project on \kl{GitHub}.
+code of the project on \kl{GitHub} – on a branch dedicated to this thesis.

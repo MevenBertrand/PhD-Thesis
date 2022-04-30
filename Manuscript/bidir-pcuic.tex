@@ -18,7 +18,7 @@ In \cref{sec:bidir-pcuic-inductives} we show how the bidirectional setting adapt
 inductive types, and try and give an intuition of the origin of the completeness issue.
 
 We do not give precise proofs in this chapter,
-instead relying on the formalization in \kl{MetaCoq} as described in \arefpart{metacoq}.
+instead relying on the formalization in \kl{MetaCoq} described in \arefpart{metacoq}.
 
   % The first area of difference are the universes. While on paper those are simply integer, to handle typical ambiguity and polymorphic (co)-inductive types, PCUIC uses algebraic universes, containing level variables, algebraic $\vee$ and $+1$ operators, and a special level for the sort Prop. Moreover, those universes are cumulative, that is they behave as if smaller universes were included in larger ones. The precise handling of the algebraic universes is abstracted away in MetaCoq, and quite similar in the directed and undirected systems, so it did not prove too difficult to handle. Cumulativity, however, introduces some not-so-small differences with the previous presentation, so we spend some time on it in \cref{sec:pcuic-cumul}.
 
@@ -44,7 +44,7 @@ Intuitively, this is because there is no reason to degrade a type to a larger on
 unless it is forced by a given target type in the checking judgment.
 
 The statement of completeness also needs to account for cumulativity,
-and becomes the following:
+and becomes the following one.
 
 \begin{theorem}[Completeness, with cumulativity]
   \label{thm:comp-cumul}
@@ -55,7 +55,7 @@ and becomes the following:
 This also means that in the setting of \kl{PCUIC},
 \kl{uniqueness of types} up to \kl{conversion} is not true any more.
 For instance, we both have $\Gamma \vdash \uni[0] \ty \uni[1]$ and $\Gamma \vdash \uni[0] \ty \uni[2]$, but $\uni[1]$ and $\uni[2]$ are not convertible. In that context, however,
-the type $\uni[1]$ still has a special property: it is minimal amongst all types, what
+the type $\uni[1]$ still has a special property: it is minimal among all types, what
 we call a \kl{principal type}.
 
 \begin{definition}[Principal type]
@@ -65,10 +65,12 @@ we call a \kl{principal type}.
 \end{definition}
 
 The existence of such a principal type is the same as \kl{uniqueness of types} 
-up to cumulativity. Moreover, even in the cumulative setting, \cref{thm:unique-inf}
-stays true – intuitively, because it only relies on properties of reduction, but not of
-conversion. Thus, following the same proof as that of \cref{thm:unique-undir},
-we obtain the following:
+up to cumulativity. Moreover, even in the cumulative setting, \cref{thm:unique-inf}%
+\sidenote{Uniqueness of inferred types up to joinability.}
+stays true. Intuitively, this is because it only relies on properties of reduction, but not of
+conversion. Thus, following the same proof as that of \cref{thm:unique-undir},%
+\sidenote{Uniqueness of types for undirected typing.}
+we obtain that inferred types are principal.
 
 \begin{theorem}[Inferred types are principal]
   \label{thm:princ-types}
@@ -96,7 +98,7 @@ would not make sense.
 \section{Inductive Types}
 \label{sec:bidir-pcuic-inductives}
 
-\subsection{An example: the pair type}
+\subsection{An example: the pair type}[The pair type]
 
 \begin{figure}
     
@@ -133,7 +135,8 @@ would not make sense.
 
 To set ideas straight, let us look at how we can adapt the dependent pair type of
 \cref{fig:sig} to the bidirectional setting: see \cref{fig:bidir-pair}.
-To obtain these rules, first notice that all rules of \cref{fig:sig}
+To obtain these rules, first notice that all undirected typing rules for the
+pair type (\cref{fig:sig})
 must become inference rules if we want the resulting system to be complete.
 The question therefore is once again to choose modes for the premises.
 Rules \nameref{rule:pair-type-bd} and \nameref{rule:sig-inf} are
@@ -142,11 +145,13 @@ very similar to the rule for Π-types, there is not much surprise there.
 \ruleref{rule:pair-bd} shows why we insisted in the undirected system
 on recording the types $A$ and $B$ in the pair. Indeed, they are needed to
 know which type to infer for the pair. Without the annotation, one could infer a
-type $A$ for $t$ and a type $B'$ for $u$, but there are potentially many incomparable types $B$ that would be correct for the whole pair, depending on which instances of $t$ in $B'$ are abstracted to $x$. This impossibility to invert a substitution is a general source of need
+type $A$ for $t$ and a type $B'$ for $u$, but there are potentially many incomparable types $B$ that would be correct for the whole pair, depending on which instances of $t$ in $B'$ are abstracted to $x$. We only know that $B'$ is $\subs{B}{x}{t}$,
+but this is not enough to inambiguously determine $B$.
+This impossibility to invert a substitution is a general source of need
 for annotations, which is not specific to pair types!
 
 Finally, \ruleref{rule:pair-ind-bd} is the most complex.
-In usual presentations of \kl{recursors}, the predicate appears first, then the branches,
+In presentations of \kl{recursors}, often the predicate appears first, then the branches,
 and finally the scrutinee. But this is not possible here, as the parameters of the inductive
 type are needed to construct the context in which the predicate is typed.
 Instead, those parameters can be inferred from the scrutinee.
@@ -160,7 +165,7 @@ This same approach can be readily extended to the other inductive types of
 \cref{sec:tech-cic}, with recursion or indices posing no specific problems.
 %, see \cref{fig:bidir-indu-other}.
 
-\subsection{Polymorphic Inductive Types}
+\subsection{Polymorphic inductive types}
 
 The account of general inductive types in \kl{PCUIC} is slightly different from
 the one we just gave. The reason for this is that giving a general account of rules
@@ -170,19 +175,21 @@ be of a type much more complex than simply $\uni$, and in that general setting d
 type variable can be inferred is a non-trivial problem.
 Instead, the polymorphic inductive types as implemented in \kl{Coq} store explicit universe
 levels on inductive types and constructors. The  pair type of \cref{fig:bidir-pair},
-for instance, would contain explicit universe levels $i,j$, so that both $A$ and $B$
+for instance, would contain universe levels $i,j$, so that both $A$ and $B$
 would be checked rather than having their level inferred.
 The rule for the type constructor in that context is given opposite.
 \begin{marginfigure}
+  \begin{mathpar}
   \inferrule{
     \checkty{\Gamma}{A}{\uni[i]} \\ 
     \checkty{\Gamma, x : A}{B}{\uni[j]}}
     {\inferty{\Gamma}{\Sb\ulev{i,j} x : A .\ B}{\uni[\umax{i}{j}]}}
+  \end{mathpar}
 \end{marginfigure}
 This makes the treatment of complex inductive types possible by using checking uniformly –
 rather than relying on constrained inference to infer universe levels –
 at the cost of possibly needless annotations, as here with Σ-types.
-This is mostly invisible for the end user hough, as she does very seldom write universe
+This is mostly invisible for the end user though, as she does very seldom write universe
 levels thanks to \kl{typical ambiguity} anyway.
 
 In the same spirit, pattern-matching in \kl{Coq} – and its counterpart in \kl{PCUIC} –
@@ -190,7 +197,7 @@ also stores enough information to easily reconstruct the context
 in which the predicate and branches are typed. This information consists in universe levels
 – for polymorphic inductive types – and parameters of the inductive type.
 Thus, the actual typing rule for pattern-matching in the case of Σ-types
-is close to the following:
+is closer to the following one:
 
 \begin{mathpar}
   \inferrule{
@@ -204,29 +211,34 @@ is close to the following:
 
 Note that the domain and codomain are compared using \kl{cumulativity}. This is crucial
 to retain \kl{subject reduction}. Indeed, reduction of the scrutinee might make its inferred
-type decrease. For instance in
-  \[ \left( \l y : (\uni[1] \times \uni[1]).\ y \right)\ \pair[\uni[0]][\uni[0]]{\Nat}{\Nat}
-    \red \pair[\uni[0]][\uni[0]]{\Nat}{\Nat} \]
-the redex infers type $\uni[1] \times \uni[1]$ while the reduct infers $\uni[0] \times \uni[0]$. Thus, if such a term is plugged as scrutinee in the previous pattern-matching with
-parameters $\uni[1]$ and $\uni[1]$, the whole term still is typeable after the reduction of
-the scrutinee precisely because $\uni[0] \cum \uni[1]$.
+type decrease. For instance, suppose we have a polymorphic inductive $I\ulev{i}$ with a single
+constructor $c$ such that $A : \uni[i] \vdash c\ulev{i}(A)$. Now consider
+  \[ \left( \l y : I\ulev{1}.\ y \right)\ c\ulev{0}(\Nat)
+    \ored c\ulev{0}(\Nat) \]
+the redex infers type $I\ulev{1}$, while the reduct infers
+$I\ulev{0}$. Thus, if such a term is plugged as scrutinee in a pattern-matching,
+the whole term is still typeable after the reduction of
+the scrutinee because we allow inequalities rather than equalities between levels.
 
 But here lies a subtle issue: in pen-and-paper accounts of recursors,
 the predicate and branches are often
-represented respectively as Π-types and λ-abstractions. This is also how old versions of
-\kl{Coq} represented pattern-matching. But recall that in \kl{PCUIC}, cumulativity is
+represented respectively as Π-types and λ-abstractions. This is also how previous versions of
+\kl{Coq} represented pattern-matching.%
+\sidenote{Until version 8.14 to be precise.}
+But recall that in \kl{PCUIC}, cumulativity is
 equivariant on the domain of Π-types. This led to an implementation that wrongly compared
-the context of parameters using conversion rather than cumulativity, leading to a completeness
+the universe levels using equality rather than inequality, leading to a completeness
 bug that manifested as a failure of subject reduction in situations such as the one above.%
-\sidenote{An example and precise description of the problem in the kernel
-  are given in issue \coqIssue{13495}.}
-This prompted subsequent work, both on the theory of \kl{PCUIC} and in the implementation, to
+\sidenote{A precise description of the problem in the kernel and an example similar to the
+  one above are given in issue \coqIssue{13495}.}
+This prompted subsequent work, both on the theory of \kl{PCUIC} and on the implementation, to
 remove the use of Π- and λ-abstractions completely from pattern-matching%
 \sidenote{This was carried out by Pierre-Marie Pédrot starting with pull-request \coqPR{13563},
-following ideas that had been laid down earlier by Hugo Herbelin in the \kl{Coq} enhancement
-proposal \href{https://github.com/coq/ceps/blob/master/text/inductive-branch-predicate-representation-and-reduction.md}{\#34}.},
+following ideas that had been laid down earlier by Hugo Herbelin in the
+\href{https://github.com/coq/ceps/blob/master/text/inductive-branch-predicate-representation-and-reduction.md}{\kl{Coq} enhancement
+proposal \#34}.},
 making both the implementation less ad-hoc, and the theory cleaner.
-A detailed summary has been given by Matthieu Sozeau \sidecite{Sozeau2022}.
+A detailed summary has been given in \sidetextcite{Sozeau2022}.
 
 Further investigations in that area might still be valuable though, in particular in order
 to determine what kind of annotations are actually needed for pattern-matching, both

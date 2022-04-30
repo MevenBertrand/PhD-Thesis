@@ -73,11 +73,11 @@
 % Second optional argument: prefix (usually PCUIC)
 % Mandatory argument: name of the file
 \NewDocumentCommand{\pcuicfile}{o O{PCUIC} m}{%
-  {\href{https://github.com/MetaCoq/metacoq/blob/coq-8.14/pcuic/theories/%
+  {\href{https://github.com/MevenBertrand/metacoq/blob/phd-thesis/pcuic/theories/%
     \IfValueT{#1}{#1/}#2#3.v}{#2#3}}%
 }
 \NewDocumentCommand{\safefile}{O{PCUIC} m}{%
-  {\href{https://github.com/MetaCoq/metacoq/blob/coq-8.14/safechecker/theories/%
+  {\href{https://github.com/MevenBertrand/metacoq/blob/phd-thesis/safechecker/theories/%
     #1#2.v}{#1#2}}%
 }
 
@@ -87,12 +87,12 @@
 % Second mandatory argument: name of the definition/lemma/whatever
 % Third mandatory argument: line
 \NewDocumentCommand{\pcuicline}{o O{PCUIC} m m m}{%
-  {\href{https://github.com/MetaCoq/metacoq/blob/coq-8.14/pcuic/theories/%
+  {\href{https://github.com/MevenBertrand/metacoq/blob/phd-thesis/pcuic/theories/%
     \IfValueT{#1}{#1/}#2#3.v\#L#5}{\firacode #4}}%
 }
 
 \NewDocumentCommand{\safeline}{O{PCUIC} m m m}{%
-  {\href{https://github.com/MetaCoq/metacoq/blob/coq-8.14/pcuic/theories/%
+  {\href{https://github.com/MevenBertrand/metacoq/blob/phd-thesis/pcuic/theories/%
     #1#2.v\#L#4}{\firacode #3}}%
 }
 
@@ -220,16 +220,17 @@
 \knowledgenewrobustcmd{\Nat}{\cmdkl{\symup{\symbf{N}}}}
 \knowledgenewrobustcmd{\z}{\cmdkl{0}}
 \let\S\relax
-\knowledgenewrobustcmd{\Sop}{\cmdkl{\symup{s}}}
+\knowledgenewrobustcmd{\Sop}{\cmdkl{\symup{S}}}
 \DeclareDocumentCommand\S{m}{\Sop(#1)}
 
 \knowledgenewrobustcmd{\Sb}{\mathop{\cmdkl{\symup{Σ}}}}
-\NewDocumentCommand\pair{o o m m}{\withkl{\kl[\pair]}{\cmdkl{(}#3\cmdkl{,}#4\cmdkl{)}\IfValueT{#1}{_{(#1,#2)}}}}
+\NewDocumentCommand\pair{o o o m m}{
+  \withkl{\kl[\pair]}{\cmdkl{(}#4\cmdkl{,}#5\cmdkl{)}\IfValueT{#1}{_{(#1,#2)}}\IfValueT{#3}{\ulev{#3}}}}
 
 \knowledgenewrobustcmd{\List}{\mathop{\cmdkl{\symup{\symbf{Li}}}}}
 \NewDocumentCommand\lnil{o}{\withkl{\kl[\lnil]}{\cmdkl{\varepsilon}\IfValueT{#1}{_{#1}}}}
-\knowledgenewrobustcmd{\lconsop}{\mathop{\cmdkl{\mathord{;};}}}
-\NewDocumentCommand\lcons{o m m}{#2 \lconsop\IfValueT{#1}{_{#1}} #3}
+\knowledgenewrobustcmd{\lconsop}{\cmdkl{\mathord{;};}}
+\NewDocumentCommand\lcons{o m m}{#2 \mathop{\lconsop\IfValueT{#1}{_{#1}}} #3}
 
 \knowledgenewrobustcmd{\eqtyop}{\mathop{\cmdkl{=}}}
 \NewDocumentCommand\eqty{o m m}{#2 \eqtyop\IfValueT{#1}{_{#1}} #3}
@@ -300,7 +301,7 @@
 
 % Bad Approaches
 
-\knowledgenewrobustcmd{\axiom}{\cmdkl{\symup{ax}}}
+\knowledgenewrobustcmd{\axiom}{\mathop{\cmdkl{\symup{ax}}}}
 \DeclareDocumentCommand{\rai}{o}{\withkl{\kl[\rai]}
   {\operatorname{\cmdkl{raise}}\IfValueT{#1}{_{#1}}}}
 

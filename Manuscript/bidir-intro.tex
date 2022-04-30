@@ -9,7 +9,7 @@ some rules might seem fine when writing them down on paper, but trying to give t
 sensible mode fails, indicating they are not suited for an implementation.
 In the case of the typing judgement $\Gamma \vdash t \ty T$,
 usually both the term $t$ under inspection and the context $\Gamma$ are inputs –
-although some depart from this, see \sidetextcite{Jim1996}.
+although some depart from this \sidetextcite{Jim1996}.
 The mode of the type $T$, however, is much less clear: should it be inferred based upon
 $\Gamma$ and $t$, or do we merely want to check whether $t$ conforms to a given $T$?
 Both are sensible questions, and in fact typing algorithms for complex type systems usually 
@@ -26,8 +26,8 @@ $\Rightarrow$ and $\Leftarrow$ to avoid confusion with implication and with the
 that differ only by their \kl{modes}. The type is an
 \kl{input} in inference, but an \kl{output} in checking.
 Following this decomposition%
-\sidenote{Pioneered by \textcite{Pierce2000}, a nice survey can be found
-in \textcite{Dunfield2021}}%
+\sidenote{Pioneered by \textcite{Pierce2000}, a general survey can be found
+in \textcite{Dunfield2021}.}%
 \margincite{Pierce2000}%
 \margincite{Dunfield2021}
 leads to type systems that are more structured and directly amenable to implementations,
@@ -35,13 +35,13 @@ and to good quality algorithms.%
 \sidenote{\textcite{Pierce2000} for instance stress good error reporting as an important 
 property of their approach.}
 
-This is appealing, but despite advocacy by \eg
+This is appealing, but in the dependently typed world, despite advocacy by \eg
 \sidetextcite{McBride2018,McBride2019} to adopt this approach during
 the design of type systems on paper rather than in their implementations only,
-most of the theoretical work on dependent typing to this day remains undirected.
+most of the theoretical work to this day remains undirected.
 Bidirectionality appears mostly
-in articles concentrating on the description of typing algorithms – for instance
-\sidetextcite{Huet1989}, \sidetextcite{Coquand1996}, or \sidetextcite{Norell2007}…
+in articles concentrating on the description of typing algorithms, for instance
+\sidetextcite{Huet1989}, \sidetextcite{Coquand1996}, or \sidetextcite{Norell2007}.
 However, since these primarily insist on the algorithmic aspect, they do not consider the
 bidirectional structure for itself. Moreover, in the case of
 \textcite{Coquand1996} and \textcite{Norell2007}, they concentrate on bidirectional typing
@@ -64,17 +64,18 @@ This feature is very desirable when implementing kernels for proof assistants,
 whose algorithms should correspond to their undirected specification –
 even on terms not in normal form. Indeed, reduction is only normalizing
 on well-typed terms, so it should not be called on a term that is not known to be
-well-typed. So if a developer wishes to generate a term using tactics, they cannot use
+well-typed. Thus if a developer wishes to generate a term using tactics, they cannot use
 reduction before knowing that it is well-typed, but might not be able to type-check it
-because it is not a normal form… And ensuring that a tactic only returns normal forms
-might be a complex feat.
+because it is not a normal form… And ensuring that a tactic returns normal forms only
+might be unfeasable, and should not be a concern.
 
 The bidirectional system we present naturally forms an intermediate
 step between actual algorithms and undirected type systems, something we exploit
 in \arefpart{metacoq}.
 But its interest is not limited to the relation with implementations.
 Indeed, the structure of a bidirectional derivation is more constrained than that of
-an undirected one, especially restraining the uses of computation.
+an undirected one, especially controlling the usage of computation – \eg the conversion rule
+\refname{rule:cic-conv}.
 This finer structure can make proofs easier,
 while the equivalence ensures that they can be transported to the undirected world.
 We show this by providing straightforward proofs of \kl{uniqueness of types up to}
@@ -85,7 +86,7 @@ We show this by providing straightforward proofs of \kl{uniqueness of types up t
 % This step has proven useful in an ongoing completeness proof of MetaCoq's \cite{Sozeau2020a} type-checking algorithm\footnote{A completeness bug in that algorithm – also present in the Coq kernel – has already been found, see \cref{sec:to-pcuic} for details.}: rather than proving the algorithm complete directly, the idea is to prove it equivalent to the bidirectional type system, separating the implementation problems from the ones regarding the bidirectional structure.
 
 As we did in \cref{chap:tech-intro}, we start by exposing the main ideas in the
-simpler setting of \kl{CCω} in \cref{chap:bidir-ccw}.
+simpler setting of \kl{CCω}, in \cref{chap:bidir-ccw}.
 With those set clear, we go on with their adaptation to \kl{PCUIC}, and the subtle
 issues that arose in that context, in \cref{chap:bidir-pcuic}.
 Finally, \cref{chap:bidir-conv} describes early investigations into giving a

@@ -29,7 +29,7 @@ $\List$ to ease readability.
 \section{\kl(tit){CastCIC}}
 \label{sec:cast-calculus}
 
-\subsection{System Definition}
+\subsection{System definition}
 
 \paragraph{Syntax.}
 \AP The syntax of \intro{CCIC}%
@@ -135,7 +135,6 @@ no consistency premise is required for a cast to be well-typed.
 Here, consistency only plays a role in \kl{GCIC}, but completely disappears after elaboration. 
 Instead, \kl{CCIC} relies only on standard (\kl(conv){algorithmic}) \kl(algo){conversion}.
 
-\paragraph{Reduction.}
 \AP
 \begin{figure}[h]
   \begin{mathpar}
@@ -170,6 +169,8 @@ Instead, \kl{CCIC} relies only on standard (\kl(conv){algorithmic}) \kl(algo){co
 	\caption{\kl{Head constructor} and \kl{germ}}
 	\label{fig:head-germ}
 \end{figure}
+
+\paragraph{Reduction.}
 
 The typing rules provide little insight on the new primitives; the interesting
 part really lie in their \kl{reduction} behaviour.
@@ -439,7 +440,7 @@ The crucial lemma is, as before, \kl{confluence}:
 \begin{proof}
 
   We follow again the Tait-Martin-Löf proof, as exposed by \sidetextcite{Takahashi1995},
-  extending the notion of parallel reduction from \cref{thm:pcuic-confluence}
+  extending the notion of parallel reduction from \cref{sec:metacoq-parred}
   to account for our additional reduction. The triangle property still holds,
   because as before there is no real critical pair between our rules – we carefully set
   them up to that effect!
@@ -559,10 +560,12 @@ Equipped with the notion of canonical forms, we can state \kl{progress} for \kl{
   term can reduce. 
 \end{proof}
 
+\begin{minipage}{\textwidth}
 \begin{theorem}[\kl{Safety} for \kl{CCIC}]
   \label{thm:ccic-psafe}
   All three variants of \kl{CCIC} enjoy \kl{safety}.
 \end{theorem}
+\end{minipage}
 
 \section{Bidirectional Elaboration: from \kl(tit){GCIC} to \kl(tit){CCIC}}
 [Bidirectional Elaboration]
@@ -575,7 +578,7 @@ that of \arefpart{bidir}, but
 augmenting all judgements with an extra output: the elaborated \kl{CCIC} term.
 This definition of typing using elaboration is required because of the intricate interdependency between typing and reduction exposed in \cref{sec:gcic-overview}.
 
-\subsection{System Definition}
+\subsection{System definition}
 
 \paragraph{Syntax.}
 \label{gcic-syntax}
@@ -589,7 +592,7 @@ where $i$ is a universe level. From a user perspective,
 one is not given direct access to the failure and cast primitives,
 those only arise through uses of $\scol{\?}$.
 
-\paragraph{Consistent Conversion.}
+\paragraph{Consistent conversion.}
 
 \begin{figure*}
   \begin{mathpar}
@@ -1006,7 +1009,7 @@ The second is a strengthening if a \kl{weak-head reduction} strategy is imposed 
   The reasoning is similar for the other constrained inference judgements.
 \end{proof}
 
-\subsection{Illustration: Back to Ω}
+\subsection{Illustration: back to Ω}
 \label{sec:back-to-omega}
 
 Now that \kl{GCIC} has been entirely presented,
@@ -1093,7 +1096,7 @@ then the β-rule, and finally \ruleref{rule:red-down-err},
 \ruleref{rule:red-prod-err} and a last β step.
 At a high-level, the error can be seen as a dynamic universe inconsistency, triggered by the invalid downcast $\tcol{\castbg{m4}{\?_i}{\?_{i-1}}{}}$ highlighted on the first line.
 
-\section{Precision is a simulation for reduction}
+\section{Precision is a Simulation for Reduction}[Simulation]
 \label{sec:gcic-simulation}
 
 Establishing \kl{elaboration graduality} – the formulation of
@@ -1140,7 +1143,7 @@ We only state and discuss the various lemmas and
 theorems on a rather high level, and refer the reader to
 \sidetextcite[][Appendix B]{LennonBertrand2022} for the detailed proofs.
 
-\subsection{\kl{Structural precision} for \kl(tit){CCIC}}
+\subsection{\kl{Structural precision} for \kl(tit){CCIC}}[Structural precision]
 
 As emphasized already, the key property we want to establish is that precision
 is a \kl{simulation} for reduction,
@@ -1562,7 +1565,6 @@ It needs to be stated – and proven – mutually for \kl(pre){structural} and
   $\tcol{u} \hred \tcol{u'}$ in the conclusion.
 \end{theorem}
 
-\pagebreak
 \begin{proof}
   The case of \kl{definitional precision} holds by \kl{confluence} of
   reduction.
@@ -1670,10 +1672,10 @@ them more readable, but they are of course corollaries of similar
 statements including contexts, proven by mutual induction. The complete
 statements and proofs can be found in \sidetextcite{LennonBertrand2022}.
 
-\subsection{Conservativity with respect to \kl(tit){CIC}}
+\subsection{Conservativity with respect to \kl(tit){CIC}}[Conservativity]
 
 Elaboration systematically inserts casts during checking, thus even
-\kl{static} terms are not elaborated to themselves. Therefore we use a (partial) erasure function $\intro*\eras$ to relate terms of \kl{CCIC} to terms of \kl{CIC} by erasing all casts.
+\kl{static} terms are not elaborated to themselves. Therefore, we use a (partial) erasure function $\intro*\eras$ to relate terms of \kl{CCIC} to terms of \kl{CIC} by erasing all casts.
 We also introduce the notion of \kl{erasability},
 characterizing terms that contain only ”harmless“ casts,
 such that in particular the elaboration of a \kl{static} term is always erasable.

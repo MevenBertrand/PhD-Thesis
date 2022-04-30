@@ -16,8 +16,8 @@ itself at the crossroads between computer science and mathematical logic.
 One of the field’s goals is to give theoretical and practical foundations
 for software tools helping humans in constructing and verifying proofs –
 in the mathematical sense.
-Such tools are called \kl{proof assistants}, and in, this thesis, \kl{Coq}, the one
-on which my work was mainly focused is central.
+Such tools are called \kl{proof assistants}, and \kl{Coq}, the one
+on which my work was mainly focused, is central in this thesis.
 
 Over their more than 50 years of existence, proof assistants have
 turned into an established technology. This history is both a blessing and a curse: as
@@ -37,7 +37,7 @@ the gold standard we demand for software, it should apply first and foremost to 
 used to justify that trust. For the proof assistant \kl{Coq},
 this is the ambition of the \kl{MetaCoq} project,
 which aims at providing a drop-in replacement for \kl{Coq}’s \kl{kernel} that has been
-fully proven correct,
+proven correct,
 even though it handles all the subtleties and quirks of said \kl{kernel}.
 No more trusting a complex and ever-evolving implementation, trust the formally validated
 \emph{proofs} instead!
@@ -79,16 +79,16 @@ Next, \cref{sec:intro-coq-en} focuses more closely on presenting
 the research questions I worked on: bidirectional typing, \kl{MetaCoq} and gradual typing.
 Finally, \cref{sec:this-thesis} summarizes my contributions to these questions.
 
-\section{A very short history of logic}
+\section{A Very Short History of Logic}
 \label{sec:logic-history}
 
 \subsection{Syllogisms}
 
-The main question that logic looks to answer is that of finding criteria in order to determine
+The main question that logic seeks to answer is that of finding criteria in order to determine
 if a reasoning is valid. In Western tradition, this challenge can be traced back to the
 Antiquity, and particularly to Aristotle's \textit{Organon}.
 The main contribution of this work is to introduce the notion of syllogism.
-These are simple fragments of reasoning, which validity stems from the
+These are simple fragments of reasoning, whose validity stems from the
 fixed structure they follow, rather than a specific content.%
 \sidenote{The most well-known is probably the \textit{Barbara} syllogism, and example
 of which is: \emph{all humans are mortals; Socrates is human; so Socrates is mortal.}}
@@ -137,72 +137,81 @@ An important step here was \citeauthor{Begriffsschrift}'s
 \citetitle{Begriffsschrift}~\sidecite{Begriffsschrift}, which, for the first time,
 gave a formal language rich enough to express mathematics satisfyingly. Its
 major addition was the notion of quantifier, essential to the mathematical vernacular,
-which give a faithful way to account for universal%
-\sidenote{For instance: “Every even integer is the sum of two prime numbers”.}
+as they give a faithful way to account for universal%
+\sidenote{For instance: “Every even natural number is the sum of two prime numbers”.}
 and existential%
-\sidenote{For instance: “There exists an integer whose square is 2”.}
+\sidenote{For instance: “There exists a real whose square is 2”.}
 properties.
 
 The second aimed at showing that mathematics as a whole could be reconstructed from a
 few simple properties. An important step was the reduction of analysis to the properties
 of real numbers, followed by constructions of those from arithmetic given almost
-simultaneously in 1872 by \sidetextcite{Dedekind1872} and
-\sidetextcite{Cantor1872}, among others.
+simultaneously by – among others – \sidetextcite{Dedekind1872} and
+\sidetextcite{Cantor1872} in 1872.
 Meanwhile, \sidetextcite{Peano1889} proposed an axiomatization of natural numbers close to the
 one still used today. Finally, Cantor again proposed set theory \sidecite{Cantor1883}
 as a formalism expressive enough to describe all mathematical object as sets of elements.
 
 \subsection{The foundational crisis of mathematics}[The foundational crisis]
 
-Unfortunately, the system proposed in the \citetitle{Begriffsschrift} is inconsistent%
+Unfortunately, the system proposed in the \citetitle{Begriffsschrift} is inconsistent !
+That is, it is possible to use it to prove falsity, 
+making the logical system collapse.%
+\sidenote{In a system where falsity is provable, all propositions are,
+  which is known as the principle of explosion.
+  Such a system, where everything – and its negation – is provable can obviously not
+  serve as an adequate foundation for mathematics.
+}
+This result, due to Russell%
 \sidenote{
-  That is, it is possible to use it to prove falsity, and, from it, all propositions,
-  making the logical system collapse – this is known as the principle of explosion.
-  It thus cannot serve as an adequate foundation for mathematics.
-} !
-This result by Russell%
-\sidenote{
-  Remarked by Russel in 1902, in a letter to Frege he made public
+  In a letter to Frege in 1902 the latter made made public
   in \textcite[Nachwort p.~253]{Frege1903}.}%
 \margincite{Frege1903}
-marks the opening of a crisis period.
+marked the opening of a crisis period.
 Indeed, it cast doubt upon the systems that had started to establish
 themselves as good candidates to serve as foundations – that of Frege, but
 mainly those of Cantor, which were affected by the same difficulties.
 
-A possible solution is suggested ten years later  by \citeauthor{Whitehead1913} in their
+A possible solution has been suggested ten years later  by \citeauthor{Whitehead1913} in their
 \citetitle{Whitehead1913} \sidecite{Whitehead1913}. This colossal piece of work
-not only proposes a formal system avoiding the inconsistency
-of \citetitle{Begriffsschrift}. It also builds a significant amount
+not only proposed a formal system avoiding the inconsistency
+of \citetitle{Begriffsschrift}. It also built a significant amount
 of mathematics in this system, including a construction of integers,
 some arithmetic, and finally real numbers.
 
 In parallel, in the continuity of Cantor’s work, \sidetextcite{Zermelo1908} and others
-work towards giving a version of Cantor’s set theory that is consistent. This leads to what
+worked towards giving a version of Cantor’s set theory that is consistent. This lead to what
 is colloquially referred to as Zermelo-Fraenkel set theory – ZF, or ZFC when the
-axiom of choice \sidecite{Zermelo1904} is added –, which also seems able to serve as a
+axiom of choice%
+\sidenote{An axiom very useful in numerous branches of mathematics, but which is often treated
+separately, as it is both less crucial than the other axioms of ZF and at the root of
+counter-intuitive results.}
+\sidecite{Zermelo1904} is added –, which also seemed able to serve as a
 solid foundation for mathematics.
 
 \subsection{Incompleteness}
 
-The search for a formal system adequate as a foundation for mathematics however hits a
+The search for a formal system adequate as a foundation for mathematics however hit a
 second major difficulty: Gödel’s incompleteness theorem \sidecite{Goedel1931}. It asserts
 that a formal system in which one can construct integers such as those of Peano – and so
 \textit{a fortiori} any system rich enough to serve mathematician’s needs – cannot
-prove its own consistency%
-\sidenote{Unless the system is inconsistent, in which case it can prove \emph{everything}.}.
+prove its own consistency.%
+\sidenote{Unless the system is inconsistent, in which case it can prove \emph{everything},
+by virtue on the explosion principle, including its own consistency… and inconsistency!}
 Thus, no formal system can serve as a basis for mathematics
 with a formal certitude as to its adequacy.
 Indeed, as we cannot prove the consistency of the system in itself, it could very well
 turn out to be inconsistent, ruining all the efforts put into its use – just like what
-happened with Frege’s \citetitle{Begriffsschrift}.
+happened with Frege’s \citetitle{Begriffsschrift}. And if we were to use a second system
+to prove the first consistent, we would only shift the prolem: now we rely on the
+consistency of the second system.
 
 A consequence of this theorem is that a system rich enough to found mathematics is
 necessarily incomplete.%
 \sidenote{
   This means that there exist independent statements, that is assertions which
-  can neither be proven nor disproven – meaning that their negation is proven.
-  The consistency of the system under consideration is one of many examples.
+  cannot be proven, and whose negation cannot be proven either.
+  The consistency of the system under consideration is one example of such a statement.
 }
 Thus, in what follows, I will never refer to truth in an absolute sense – which could
 only be meaningful in a complete system where every statement is true or false –, but
@@ -211,7 +220,8 @@ only about provability \emph{relatively to a given system}.
 \subsection{A satisfactory situation?}
 
 Despite the difficulties put into light in the beginning of the 20\textsuperscript{th}
-century, the research in mathematical logic came to a somewhat satisfactory situation.
+century, the research in mathematical logic reached a somewhat satisfactory situation
+a few decades later.
 First, ZFC is a reasonable formal system on which mathematics can be founded. Moreover,
 the mathematical community is overall convinced it would be \emph{theoretically} possible
 to write down all mathematics using ZFC. This is enough for most of its members,
@@ -231,9 +241,10 @@ follows the rules of the system: a tiny error can easily creep inside thousands 
 of formal reasoning. Finally, describing mathematics in this way would drown the vital
 mathematical intuitions, making communication sterile.
 
-If we wish to make formal mathematics practicable, we thus need new tools.
+If we wish to make formal mathematics practicable, and benefit from the guarantees
+they bring while eliminating these crippling defaults, we thus need new tools.
 
-\section{Computers enter the scene}
+\section{Computers Enter the Scene}
 \label{sec:proof-assistants}
 
 A new element however radically modifies the previous situation: the advent of computers.
@@ -244,13 +255,13 @@ and attracting.
 
 Computers excel where humans are weak: their speciality is to treat large volumes of
 information in a very precise way, exactly the kind of needs brought up when manipulating
-formalized mathematics. Therefore, already at the beginning of the 70s%
+formalized mathematics. Therefore, already at the beginning of the 70s,%
 \sidenote{With systems like Automath \cite{DeBruijn1970}, or Mizar
   \cite{Rudnicki1992}.}%
 \margincite{DeBruijn1970}%
-\margincite{Rudnicki1992},
-software tools, collectively called \intro{proof assistants}, had started to
-appear. They are dedicated to writing and verifying formal proofs.
+\margincite{Rudnicki1992}
+software tools, collectively called \intro{proof assistants}, start to
+appear, that are dedicated to writing and verifying formal proofs.
 Through the formalization of proofs and the verification by computers that they
 actually follow the rules of the underlying logical system, proof assistants open the
 door to a level of trust much higher than that allowed by “informal” proofs.
@@ -259,12 +270,12 @@ Renowned mathematicians, such as \sidetextcite{Voevodsky2010},
 turned to proof assistants, particularly in order to lift uncertainties regarding the
 solidity of their own work.
 
-Moreover, proof \emph{assistant} are not simple proof checkers: beyond simple verification,
+Moreover, proof \emph{assistants} are not simply proof checkers: beyond verification,
 they supply users with a large range of tools to ease the conception of
 formal proofs. These tools allow users to write proofs at a
-high level, and in an interactive manner%
+high level, and in an interactive manner,%
 \sidenote{In most modern proof assistants, the final proof is built as the result of
-  an exchange between the programmer and the tool, rather than written as a single block.},
+  an exchange between the programmer and the tool, rather than written as a single block.}
 leaving it to the proof assistant to construct the formal proofs.
 They range from simple facilities, such as the possibility to visualize the structure
 of proofs, or the tracking of hypotheses, to much more ambitious techniques.
@@ -286,15 +297,17 @@ former fulfils the latter. This way, we can \emph{prove} that the program runs c
 without encountering any bugs.
 This mathematical certainty is much more reliable than any test set!
 In this field, numerous projects have already achieved large scale programs, entirely proven
-correct: compiler for the C language \sidecite{Kaestner2017}, cryptographic protocols \sidecite{Bhargavan2017}, ODE solving \sidecite{Immler2018}…
+correct: compiler for the C language \sidecite{Kaestner2017}, implementation of the
+\textsc{Https} protocol \sidecite{Bhargavan2017}, differential equations solving
+\sidecite{Immler2018}…
 
 \subsection{Logic, Programming and Type Theory}
 
 In order to work, proof assistants must be founded on a formal system, corresponding to
 the “rules” of the mathematical “game” they are supposed to enforce.
 Thus, they require a renewed study of mathematical logic, but with the practical aim of
-building tools that are at the same time practical, powerful and easy to use.
-There are multiple families of proof assistants, based on relatively different formal systems.
+building tools that are at the same time powerful and easy to use.
+There are multiple families of proof assistants, based on very different formal systems.
 The one I am interested in in this thesis relies on the \kl{Curry-Howard correspondence}
 and \kl[dependent type]{dependent type theory}. The proof assistant \kl{Coq}
 \sidecite{CoqDevelopmentTeam2022}, which is at the heart of my work, belongs to this family.
@@ -311,8 +324,19 @@ an error can be reported to the programmer.%
 “Well-typed programs cannot go wrong.”}%
 \margincite{Milner1978}
 But types are very versatile, and their capacity to encode properties of the underlying
-programs can be used for compilation, documentation, and many other things. In our
+programs can be used for compilation, documentation, and many other applications. In our
 framework, for instance, types correspond to the validity of a logical reasoning.
+
+This idea is that of the \intro{Curry-Howard correspondence}.%
+\sidenote{Made explicit for the first time in informal notes by Howard dating back to 1969,
+but published only much later \cite{Howard1980},
+themselves based upon previous remarks by Curry \cite{Curry1958}.}%
+\margincite{Howard1980}%
+\margincite{Curry1958}
+Rather than a precise theorem,
+it is more of a very general concept, according to which two worlds closely resemble each
+other: on the one hand, that of logic and proofs, on the other that of programs
+and their types.
 
 \begin{marginfigure}
 
@@ -339,22 +363,11 @@ framework, for instance, types correspond to the validity of a logical reasoning
   \label{fig:curry-howard-example-en}
 \end{marginfigure}
 
-This idea is that of the \intro{Curry-Howard correspondence}.%
-\sidenote{Made explicit for the first time in informal notes by Howard in 1969,
-published only much later \cite{Howard1980},
-based upon previous remarks by Curry \cite{Curry1958}.}%
-\margincite{Howard1980}%
-\margincite{Curry1958}
-Rather than a precise theorem,
-it is more of a very general concept, according to which two worlds closely resemble each
-other: on the one hand, that of logic and proofs, on the other that of programs
-and their types.
-
 A short example says more than a long abstract talk, so let’s look at the correspondence
 at work in \cref{fig:curry-howard-example-en}, in the form of inference/typing rules:
 each bloc presents a rule, with above the bar the hypotheses, and below the conclusion.
-The first three rules govern the logical conjuction “and”, written $\wedge$.
-The first means that to deduce the proposition $A \wedge B$ (“$A$ and $B$”), it is enoguh
+The first three rules govern the logical conjunction “and”, written $\wedge$.
+The first means that to deduce the proposition $A \wedge B$ (“$A$ and $B$”), it is enough
 to deduce $A$ and $B$ taken individually.
 Conversely, if we have as hypothesis $A \wedge B$, then we can deduce both $A$ (second rule),
 and $B$ (third rule).
@@ -385,23 +398,24 @@ rules guaranteeing it is well-formed.
 The \kl{Curry-Howard correspondence} is therefore ideal to serve as a foundation for
 \kl{proof assistants}, since it gives access, when studying formal logical systems,
 to the rich literature on programming languages, in particular on the theory and
-implementation of type systems. In this framework, the
+implementation of types. In this framework, the
 \intro[dependent types]{dependent type systems} are a specific family of type systems,
 whose main characteristic is the ability for types to depend on terms. The archetypical
 example from the point of view of programming is the type $\Vect(A,n)$
 of vectors of length $n$. These are lists that contain exactly $n$ elements of type $A$ – with
-$n$ an integer.
-This type depends on $n$, in the sense that its inhabitants differ depending on its value.
+$n$ a natural number.
+This type depends on $n$, in the sense that the type’s inhabitants differ depending on the
+integer’s value.
 From the point of view of logic, this dependency corresponds to quantification: if we
 wish to express a universal property “for all $x$, the property $P(x)$ holds”, then we need
 the property $P$ to depend on $x$.
-Thanks to this ability to express quantification, dependent types are rich and powerful enough
+Thanks to this ability to express quantification, dependent types are rich enough
 to serve as foundations for mathematics.
 
-\section{\kl{Coq} and its kernel}
+\section{\kl{Coq} and Its Kernel}
 \label{sec:intro-coq-en}
 
-Let us focus a bit more on the proof assistant which we will consider mainly in this
+Let us now focus a bit more on the proof assistant which we will consider mainly in this
 thesis: \kl{Coq}.
 
 \subsection[The kernel]{The kernel, cornerstone of the system}
@@ -415,10 +429,10 @@ thesis: \kl{Coq}.
   \label{fig:coq-en}
 \end{figure}
 
-\kl{Coq} is based upon the \kl{Curry-Howard correspondence}: proofs are seen as programs,
+\kl{Coq} is based on the \kl{Curry-Howard correspondence}: proofs are seen as programs,
 in a language called \intro{Gallina}, and their verification is done using an algorithm
 close to those used for types in conventional languages. However, if, in the first versions
-from the 80s, \kl{Coq} looked like a somewhat esoteric programming language, it is
+from the 80s, \kl{Coq} proof were mostly written directly in \kl{Gallina}, it is
 no longer the case at all. The reason is that the major part of the tool in its
 current versions aims at helping the user in generating a correct proof. It is a true
 \kl[proof assistant]{proof \emph{assistant}}!
@@ -429,24 +443,25 @@ This is the part implementing the type-checking algorithm, and thus responsible 
 that the proof terms built interactively are correct.
 The \kl{kernel} is thus the crucial part of \kl{Coq}, because it is the one – and only –
 ultimately responsible for proof-checking.
-
 This architecture, which clearly isolates the critical part of the system, is called
 \intro{De Bruijn criterion} \sidecite{Barendregt2001}, in tribute to one of the pioneer
 of proof assistants.
+
 If the rest of the ecosystem has grown much more than the \kl{kernel} since the beginning,
 the latter has also evolved, becoming gradually more complex.
-And, as any other software development, it is not safe from bugs%
+And, as any other software development, it is not safe from bugs.%
 \sidenote{ The magnitude is that of one critical bug found every year, a list is maintained
-at the following address: \url{https://github.com/coq/coq/blob/master/dev/doc/critical-bugs}.}.
-These are in general hard to exploit by a user, even more so without noticing.
+at the following address: \url{https://github.com/coq/coq/blob/master/dev/doc/critical-bugs}.}
+These are in general hard to exploit for a user, even more so without noticing.
 But still, they exist, and since the \kl{kernel} tends to get more and more complex, they
 are likely to continue appearing.
 
 \subsection{\kl{MetaCoq}, a formalization in \kl{Coq}, for \kl{Coq}}[\kl{MetaCoq}]
+\label{sec:intro-metacoq-fr}
 
 If we wish to guarantee a trust level as high as possible in the \kl{kernel}, we must
-resort to new ideas. That is what the \kl{MetaCoq} project is all about. The idea
-is simple: using \kl{Coq} itself to certify the correctness of its \kl{kernel}.
+resort to new ideas. This is what the \kl{MetaCoq} project is all about. The idea
+is simple: use \kl{Coq} itself to certify the correctness of its \kl{kernel}.
 
 More precisely, the first step is to describe formally the type system on which the \kl{kernel}
 is based, and to show its theoretical properties.
@@ -458,8 +473,8 @@ Once this meta-theory is established, the second step
 % length later on.}
 consists in implementing a type-checking algorithm as close as possible to the one of the
 \kl{kernel}, directly in \kl{Gallina}%
-\sidenote{Indeed, thanks to the \kl{Curry-Howard correspondence}, \kl{Gallina} is of
-course a proof language, but also a true programming language!}.
+\sidenote{Indeed, thanks to the \kl{Curry-Howard correspondence}, \kl{Gallina} is not
+only a proof language, but also a true programming language!}.
 We show, while defining the algorithm, that it is indeed \reintro(bidir){correct}%
 \sidenote{If the algorithm claims that a term is well-typed, then it is the case.}
 and \reintro(bidir){complete}%
@@ -468,26 +483,26 @@ and \reintro(bidir){complete}%
 Finally, in a third step, we extract out of this certified \kl{Gallina} program another
 more efficient program, by erasing the content related to the proof of correctness, in order
 to keep only the algorithmically relevant one.
-This extraction is a complex step, but crucial if we wish to replace the current \kl{kernel}
-while keeping a reasonable efficiency. Therefore, we prove that said extraction
-is correct%
-\sidenote{Meaning that it preserves the semantics of programs.},
+This extraction is a complex but cructial step if we wish to replace the current \kl{kernel}
+while keeping a reasonable efficiency. Therefore, we also prove that said extraction
+is correct,%
+\sidenote{Meaning that it preserves the semantics of programs.}
 once again by programming it in \kl{Gallina}.
 
 \subsection{Checking, inference and bidirectional typing}[Bidirectional typing]
 
 While proving the correctness of the type-checker is relatively easy once the
-meta-theoretical properties of the type system are established, completeness is harder.
+meta-theoretical properties of the type system have been established, completeness is harder.
 In order to prove it, it is very useful to go through an intermediate specification,
 which is more structured than the theoretical one.
 In particular, it is important to separate two close but distinct questions:
-on the one side, type-checking, where we try and \emph{check} that a term indeed has a
+on the one side, type-checking, where we \emph{check} that a term indeed has a
 given type;
 on the other side, inference, where we try and \emph{find} a type for a term, if such a
 type exists.
-The typing algorithm of \kl{Coq}'s \kl{kernel} is \intro{bidirectional}, that is, it
+The typing algorithm of \kl{Coq}'s \kl{kernel} is \intro{bidirectional}, meaning that it
 alternates constantly between these two processes when it checks that a term is well-typed.
-Separating this bidirectional structure independently from the algorithm allows for a
+Describing this bidirectional structure independently of the algorithm allows for a
 clear separation between, on the one side, its equivalence with the original specification,
 and, on the other, the part purely dedicated to implementation questions.
 
@@ -501,18 +516,23 @@ to obtain properties that are difficult to obtain in the standard context.
   [Gradual types]
 \label{sec:intro-graduel-en}
 
-There are two main approaches to program type-checking. In the static approach%
-\sidenote{On which \kl{Coq} is based.},
+There are two main approaches to program type-checking. In the static approach,%
+\sidenote{On which \kl{Coq} is based.}
 types are verified prior to the execution, whereas, in the dynamic approach, the well-typedness
-of the operations is verified on the fly during that same execution.
-The dynamic discipline is more flexible, as it verifies exactly what is necessary
+of operations is verified on the fly during that same execution.
+The dynamic discipline is more flexible, as it checks exactly what is necessary
 for the good execution of a program.
 The strictness of static typing, conversely, allows for error detection earlier in the
 development, and imposes invariants useful to optimize compilation or execution.
+
 Instead of opting exclusively for one of the two approaches,
 \reintro{gradual typing} \sidecite{Siek2015} aims at integrating
 the static and dynamic disciplines in one and the
-same language. This gives access to a whole spectrum of options, from a rigid completely static
+same language.
+The main idea is to have a first pass of verification before the execution, as in static typing,
+while leaving the possibility to defer parts of the verification to the execution, as in
+dynamic typing.
+This gives access to a whole spectrum of options, from a rigid completely static
 discipline to a flexible dynamic one. It particularly allows for a fine-grained, local choice
 of how each part of a program is type-checked.
 One can thus evolve the discipline during software development, benefiting from
@@ -522,15 +542,15 @@ later on.
 As the case of \kl{MetaCoq} illustrates, \kl{Coq} can be used as a true programming language.
 Even better: its type system can express very complex properties of programs, and thus
 verify even before their execution that the code indeed enforces them.
-Sadly, this impossibility to write imperfect code can turn against the user, by making the
+Sadly, these reinforced constraints can turn against the user, by making the
 early development phase more difficult. Indeed, nobody writes correct code on the first try,
 and it would often be nice to temporarily lift the strong guarantees of typing to
-facilitate experimentation. The idea would then be to take inspiration from gradual typing,
-in order to pave the way for a more flexible logical or software development. Once again,
+facilitate experimentation. The idea then is to take inspiration from gradual typing,
+in order to pave the way for a more flexible logical or software development. Once again, the
 \kl{Curry-Howard correspondence} is at work, since we adapt concepts from the world of
 programming languages to the logical one.
 
-\section{And this thesis?}
+\section{And this Thesis?}
 \label{sec:this-thesis}
 
 My doctoral work itself is centred around bidirectional typing, under three main aspects,
@@ -540,10 +560,10 @@ used in what follows.
 
 \subsection{Theory of bidirectional typing}
 
-The first part (\nameref{part:bidir}) proposes to (partially) fill the theoretical gap around
+The first part (\nameref{part:bidir}) proposes to – partially – fill the theoretical gap around
 bidirectional typing for dependent types. More precisely, it contains a proof of equivalence
-between the standard presentation of the literature, and a bidirectional one.
-\Cref{chap:bidir-ccw} presents the general ideas that guide this work in a relatively
+between the standard presentation of CIC in the literature, and a bidirectional one.
+\Cref{chap:bidir-ccw} presents the main ideas in a relatively
 simple setting, in order to ease the exposition. \Cref{chap:bidir-pcuic} shows how to extend
 them to a more realistic setting, close to the type theory implemented in \kl{Coq}.
 Finally, \cref{chap:bidir-conv} focuses on the particular status of conversion%
@@ -566,13 +586,13 @@ of \kl{gradual types}. Since dependent types already form complex systems, their
 to the gradual approach is particularly delicate. A summary of the possibilities and issues is
 presented in \cref{chap:gradual-dependent}. An interesting point of emphasis is that the
 usual presentation of dependent types turns out to be unsuited, as it is too flexible.
-The additional structure provided by bidirectional typing is thus key. It also
-appeared relevant to present the type-directed elaboration of terms from a source language
-to a target one, an important characteristic shared by all\kl[gradual types]{gradual languages}.
+The additional structure provided by bidirectional typing is key to solve this issue. It is also
+relevant to present the type-directed elaboration of terms from a source language
+to a target one, an important characteristic shared by all \kl[gradual types]{gradual languages}.
 The use of a bidirectional elaboration, and the properties it allows us to obtain, are described
-in \cref{chap:bidir-gradual-elab}. Finally, \cref{chap:beyond-gcic} succinctly describes the
-rest of the work I took part in regarding gradual types, but which is not directly
-linked to bidirectional typing.
+in \cref{chap:bidir-gradual-elab}. Finally, \cref{chap:beyond-gcic} describes follow-up work
+complementing that of \cref{chap:bidir-gradual-elab}, but which is not directly linked to
+bidirectional typing.
 
 \subsection{Technical contributions}
 
@@ -581,11 +601,15 @@ My doctoral work started with the study of \kl(typ){gradual}
 I contributed, together with Kenji Maillard, Nicolas Tabareau and Éric Tanter, to
 \sidetextcite{LennonBertrand2022}, where we study a gradual extension to the
 Calculus of Inductive Constructions. My main technical contribution corresponds
-to \cref{chap:bidir-gradual-elab}. \Cref{chap:gradual-dependent} also comes from this
-publication. A second article, together with the same authors and in the continuity of the
-previous one, is currently under peer-reviewing. It is quickly summarized in
-\cref{chap:beyond-gcic}, together with the second technical part of
-\textcite{LennonBertrand2022}, whose main contributor is Kenji Maillard.
+to \cref{chap:bidir-gradual-elab}. The precise literature review and the impossibility
+theorem of \cref{chap:gradual-dependent} it leads to also comes from this
+publication.
+The second technical part of \textcite{LennonBertrand2022}, in which I participated but
+whose main author is Kenji Maillard, as well as a second article,%
+\sidenote{\textcite{Maillard2022}, currently under review.}%
+\margincite{Maillard2022}
+together with the same authors and again Kenji Maillard as main investigator,
+correspond to \cref{chap:beyond-gcic}.
 
 This work having shown the relevance of a bidirectional dependent type system and the relative
 scarceness of results on the subject, I focused more closely on it, both on
@@ -593,16 +617,21 @@ paper and by means of a formalization based on \kl{MetaCoq}. This led to a secon
 \sidecite{LennonBertrand2021}, and corresponds to \cref{chap:bidir-ccw,chap:bidir-pcuic}
 for the theoretical part, and \cref{sec:kernel-bidir} for the formalized proof
 of equivalence between bidirectional and undirected typing.
+The completeness bug in the kernel of \kl{Coq} found during this formalisation, together with
+the impact of this discovery on the implementation of \kl{Coq} is presented in
+\sidetextcite{Sozeau2022}.
 
 I then turned to the closer integration of this formalization into \kl{MetaCoq}, and its use
 in order to prove completeness of the \kl{kernel} it implements.%
 \sidenote{A definition of a type-checking algorithm proven correct but not complete by
-Simon Boulier was already present, although I had to alter it slightly for the completeness
-proof}
+Simon Boulier was already present, although I had to alter it during the completeness
+proof.}
 This is described in \cref{sec:kernel-typing}.
 I also contributed more generally to the project on various more minor points.
 This part of my thesis work has not been published yet, but the other contributors to
 \kl{MetaCoq} and I are currently working on it.
 
 Finally, \cref{chap:bidir-conv} corresponds to a project I initiated in order to extend
-\kl{MetaCoq}, but which did not reach the stage of publication yet.
+\kl{MetaCoq} to integrate extensionality η rules to conversion,
+but which did not reach the stage of publication yet. Yet, I presented the difficulties
+raised in \sidetextcite{LennonBertrand2022a}.

@@ -11,10 +11,10 @@
 
 \newfontfamily\checksymbol{DejaVu Sans} % because the checkmark is missing is Libertinus
 
-\setmathfont[Scale=MatchLowercase]{Libertinus Math}
-% Reset the mathcal and blackboard bold to the ones from computer modern
-\setmathfont[Scale=MatchUppercase,range={cal}]{Latin Modern Math}
-\setmathfont[Scale=MatchUppercase,ScaleAgain=1.07,range=bb]{Latin Modern Math}
+\setmathfont{Libertinus Math}[Scale=MatchLowercase]
+% % Reset the mathcal and blackboard bold to the ones from computer modern
+\DeclareMathAlphabet{\mathcal}{OMS}{cmsy}{m}{n}
+\setmathfont{Latin Modern Math}[Scale=MatchUppercase,ScaleAgain=1.07,range=bb]
 
 %% Colors
 

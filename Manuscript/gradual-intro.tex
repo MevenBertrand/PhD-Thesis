@@ -8,11 +8,11 @@ incorporate \kl(typ){gradual} features.
 checking by endowing programmers with imprecise static
 types \sidecite{Siek2006,Siek2015}. Optimistically well-typed
 programs are safeguarded by runtime checks that detect violations of
-statically-expressed assumptions. A gradual version of the simply-typed lambda
-calculus enjoys such flexibility that it can embed the untyped lambda
+statically-expressed assumptions. A gradual version of typed lambda
+calculus is flexible enough to embed the untyped lambda
 calculus \cite{Siek2015}.
 This means that gradually-typed languages tend to accommodate at least
-two kinds of effects, non-termination and runtime errors.
+two kinds of effects: non-termination and runtime errors.
 % The smoothness of the static-to-dynamic checking spectrum afforded by gradual languages
 % is usually captured by (static and dynamic) gradual
 % guarantees
@@ -34,7 +34,7 @@ Of those challenges, one of the first is the place of computation.
 In the gradual setting, in order to optimistically compare types,
 \kl{conversion} is replaced by \kl(grad){consistency}, a relation
 akin to unification. This relation is naturally
-non-transitive, meaning that the usual, \kl(typ){undirected} setting is not adapted to
+non-transitive, meaning that the usual, \kl(typ){undirected} setting is not suited for
 gradualization.%
 \sidenote{
   This is because \ruleref{rule:cic-conv} can be applied any number of times, which is sensible
@@ -43,23 +43,23 @@ gradualization.%
 Moreover, the semantics of \kl(typ){gradual} languages is usually explained
 through an elaboration phase to a second language, responsible for the runtime checks ensuring
 safety of evaluation. This elaboration is naturally described in a bidirectional
-system, which moreover provides enough constraints on the typing derivation so that replacing
+system, which furthermore provides enough constraints on the typing derivation so that replacing
 \kl{conversion} with \kl(grad){consistency} is reasonable. Finally, the identification of
 the role of \kl{reduction} for \kl{constrained inference} clarifies
 how the latter should be extended to incorporate imprecise types.
-In fact, I told the story upside down: it is the need for bidirectional typing in the context
-of \kl{gradual typing} that led me to its investigation!
+In fact, I told the story upside down: it is the pressing need for bidirectional typing
+in the context of \kl{gradual typing} that led me to its investigation!
 
 In this part, we go over a collaboration with Kenji Maillard, Éric Tanter and Nicolas
 Tabareau to address the challenge of gradualizing a full-blown dependently-typed language:
 \kl{CIC} \sidecite{LennonBertrand2022}.
-\cref{chap:gradual-dependent} gives a general overview of the challenges and trade-offs
+\cref{chap:gradual-dependent} gives an overview of the challenges and trade-offs
 involved in \kl(typ){gradual} \kl(typ){dependent} types, culminating with the
 \kl{Fire Triangle of Graduality}, which identifies an irreconcilable tension between
 the properties one should demand of such a type system. It ends with a broad picture
 of our proposed solution to those difficulties,
 the \reintro{Gradual Calculus of Inductive Constructions} (\kl{GCIC}).
-Next, \cref{chap:bidir-gradual-elab} describes precisely this \kl{GCIC},
+\Cref{chap:bidir-gradual-elab} describes precisely this \kl{GCIC},
 via a relation representing type-based, bidirectional elaboration,
 which represents my main technical contribution to \textcite{LennonBertrand2022}.
 Finally, \cref{chap:beyond-gcic} gives an overview of the rest of our work in the area:

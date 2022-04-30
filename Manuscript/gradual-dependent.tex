@@ -3,14 +3,14 @@
 
 \margintoc
 
-Before diving into what \kl{GCIC} is about, let us first say what it is not about.
+Before diving into what \kl{GCIC} is about, let me first say what it is not about.
 The aim is not to put forth a unique design or solution,
 but rather to explore the space of possibilities.
 Nor is it about a concrete implementation of gradual \kl{CIC} and an evaluation of its
 applicability; these are challenging perspectives of their own,
 which first require the theoretical landscape to be unveiled.
-Rather, we believe that studying the gradualization of a full-blown dependent type theory
-like \kl{CIC} is in and of itself an important scientific endeavour,
+Rather, I believe that studying the gradualization of a full-blown dependent type theory
+like \kl{CIC} is in and of itself a valuable scientific endeavour,
 which is very likely to inform the gradual typing research community in its drive towards
 supporting ever more challenging typing disciplines.
 
@@ -37,7 +37,7 @@ Inductive vec (A : Type) : ℕ -> Type :=
 \end{coqcode}
 
 Indexing the inductive type by its length allows us to define a \emph{total}
-\coqe{head} function, which can only be applied to non-empty lists:
+\coqe{head} function, which can only be applied to non-empty vectors:
 \begin{coqcode}
   head : forall A n, vec A (S n) -> A
 \end{coqcode}
@@ -83,7 +83,7 @@ In practice, one sometimes requires a simpler way to unplug termination checking
 and for that purpose, many proof assistants support external commands or parameters to deactivate termination checking.%
 \mintedstring{terminating}{{-# TERMINATING #-}}%
 \sidenote{For instance \mintinlinestring{agda}{terminating} in \kl{Agda}
-or \coqe{Unset Guard Checking.} in \kl{Coq}.}
+or \coqe{Unset Guard Checking} in \kl{Coq}.}
 
 Because the use of the \reintro{unknown type} $\?$
 allows the definition of fixed point combinators \sidecite{Siek2006,Eremondi2019},
@@ -93,8 +93,8 @@ This just means that the external facilities provided by specific proof assistan
 \subsection{Large elimination, gradually}
 \label{sec:elim}
 
-One of the argued benefit of dynamically-typed languages, which is accommodated by gradual typing, is the ability to define functions that can return values of different types depending on their inputs, such as the following%
-\sidenote{With \coqe{?>} a boolean comparison operator.}:
+One of the argued benefit of dynamically-typed languages, which is accommodated by gradual typing, is the ability to define functions that can return values of different types depending on their inputs, such as the following:%
+\sidenote{With \coqe{?>} a boolean comparison operator.}
 \begin{coqcode}
   Definition foo n m := if (n ?> m) then m + 1 else m ?> 0.
 \end{coqcode}
@@ -102,13 +102,15 @@ One of the argued benefit of dynamically-typed languages, which is accommodated 
 In a gradually-typed language, one can give such a function the type \coqe{?},
 or even \coqe{ℕ -> ℕ -> ?} in order to enforce proper argument types,
 and remain flexible in the treatment of the returned value.
-Of course, one knows very well that in a dependently-typed language, using large elimination, we can simply give \coqe{foo} the dependent type:
+Of course, we know very well that in a dependently-typed language, using large elimination, we can simply give \coqe{foo} the dependent type:
 \begin{coqcode}
   foo : forall (n m : ℕ), if (n ?> m) then ℕ else 𝔹
 \end{coqcode}
 
 Lifting the term-level comparison \coqe{n ?> m} to the type level is extremely expressive, but hard to work with as well, both for the implementer of the function and its clients.
-In a dependently-typed setting, one can explore the whole spectrum of type-level precision for such a function, starting from the least precise to the most precise, for instance:
+In a gradual, dependently-typed setting, one can explore the whole spectrum of type-level
+precision for such a function, starting from the least precise to the most precise,
+for instance:
 \begin{coqcode}
     foo : ?
     foo : ℕ -> ℕ -> ?
@@ -117,7 +119,8 @@ In a dependently-typed setting, one can explore the whole spectrum of type-level
     foo : forall (n m : ℕ), if (n ?> m) then ℕ else 𝔹
 \end{coqcode}
 
-At each stage from top to bottom, there is less flexibility (but more guarantees!) for both the implementer of \coqe{foo} and its clients. The \kl{gradual guarantee}%
+At each stage from top to bottom, there is less flexibility – but more guarantees! –
+for both the implementer of \coqe{foo} and its clients. The \kl{gradual guarantee}%
 \sidenote{One of the important properties we seek in our \kl{GCIC}.}
 ensures that if the function is actually faithful to the most precise type
 then giving it any of the less precise types above does not introduce any new failure
@@ -129,7 +132,7 @@ then giving it any of the less precise types above does not introduce any new fa
 Let us come back to the \coqe{filter} function from the first example.
 Its fully-precise type requires appealing to a type-level function that counts the number of
 elements in the list satisfying the predicate
-(notice the dependency to the input vector \coqe{v}):
+– notice the dependency to the input vector \coqe{v}:
 \begin{coqcode}
   filter : forall A n (p : A -> 𝔹) (v : vec A n),
             vec A (count A n p v)
@@ -171,7 +174,7 @@ expect to deal with programs rather than proofs.
 This observation is however misleading: from the point of view of the Curry-Howard correspondence, proofs and programs are intrinsically related, so that gradualizing the latter begs for a gradualization of the former. The examples above illustrate mixed programs and specifications, which naturally also appeal to proofs: dealing with indexed types typically requires exhibiting equality proofs to rewrite terms.
 Moreover, there are settings in which one must consider computationally-relevant proofs, such as constructive algebra and analysis, homotopy type theory, etc. In such settings, using axioms to bypass unwanted proofs breaks reduction, and because typing requires reduction, the use of axioms can simply prevent typing, as illustrated in the last example.
 
-\subsection{Fundamental Trade-Offs}
+\subsection{Fundamental trade-offs}
 
 Before exposing a specific approach to gradualizing \kl{CIC},
 there is a need for a general analysis of the properties at stake and tensions
@@ -179,7 +182,7 @@ that arise when gradualizing a dependent type theory.
 
 Thus, in what follows
 we start by recalling the two cornerstones properties of progress and normalization,
-and explain to the need to reconsider them carefully in a gradual setting
+and explain the need to reconsider them carefully in a gradual setting
 (\cref{sec:norm-canon-endang}).
 Next, we show why two obvious approaches based respectively on axioms (\cref{sec:axiom}),
 and exceptions (\cref{sec:extt}) are unsatisfying.
@@ -235,8 +238,8 @@ First, any \kl{closed term} can be ascribed the unknown type $\?$
 and then any other type: for instance, $\z \ascop \? \ascop \Bool$ is a
 well-typed closed term of type $\Bool$.%
 \sidenote{
-  We write $\intro*\asc{a}{A}$ for a type \intro{ascription}, which we define as syntactic sugar
-  for $(\l x:A.\ x)\ a$ \cite{Siek2006}, used to “force” the term $a$ to inhabit type $A$ –
+  We write $\intro*\asc{a}{A}$ for a type \intro{ascription}, used to “force” the term $a$ to inhabit type $A$. 
+  We define it as syntactic sugar for $(\l x:A.\ x)\ a$ \cite{Siek2006},
   so $\z \ascop \? \ascop \Bool$ is $(\z \ascop \?) \ascop \Bool$. In
   other systems, it is taken as a primitive notion \cite{Garcia2016}.}%
 \margincite{Siek2006}%
@@ -250,7 +253,7 @@ of canonical forms must be extended.
 \AP Second, \kl{normalization} is endangered.
 The quintessential example of non-termination in the untyped lambda calculus is the
 term $\Omega$, defined as $\delta~\delta$
-where $\delta$ is $\l x.(\ x\ x)$.
+where $\delta$ is $\l x.\ (x\ x)$.
 In the \intro{simply-typed lambda calculus}%
   \sidenote{Hereafter abbreviated as \intro{STLC}.},
 as in \kl{CIC}, \emph{self-applications} like $\delta\ \delta$ and $x\ x$ are ill-typed.
@@ -274,7 +277,7 @@ some care must be taken to restrict expressiveness.
 
 Let us first address the elephant in the room:
 why would one want to gradualize \kl{CIC} instead of simply postulating
-an axiom for any term (be it a program or a proof) that one does not feel like providing (yet)?
+an axiom for any term – be it a program or a proof – that one does not feel like providing (yet)?
 
 \AP Indeed, we can augment \kl{CIC} with a wildcard axiom $\intro*\axiom \ty \P A : \uni.\ A$.
 The resulting system, called \intro{CICax}, has an obvious practical benefit: we can use
@@ -302,14 +305,14 @@ The problem is that the term:
   head ℕ (ax ℕ) (filter ℕ 4 even [ 0 ; 1 ; 2 ; 3 ])
 \end{coqcode}
 is ill-typed since the type of the filtering expression, \coqe{vec A (ax ℕ)},
-is not convertible to \coqe{vec A (S (ax ℕ))}, as required by the domain type of
-\coqe{head ℕ (ax ℕ)}.
+is not convertible to \coqe{vec A (S (ax ℕ))}, as required by
+\coqe{head ℕ (ax ℕ)} in its domain type.
 
 Thus, the axiomatic approach is not useful for making dependently-typed programming
 any more pleasing.
 %
 That is, using axioms goes in total opposition to the \kl{gradual guarantee}
-– characteristic of gradual languages \sidecite{Siek2015} –
+– characteristic of gradual languages \sidecite{Siek2015}~–
 when it comes to the smoothness of
 the static-to-dynamic checking spectrum: given a well-typed term,
 making it “less precise” by using axioms for some sub-terms actually
@@ -331,13 +334,13 @@ $\ind{\Nat}{\axiom \Nat}{P}{b_{\z},b_{\Sop}}$.
 \subsection{Exceptions}
 \label{sec:extt}
 
-\AP \sidetextcite{Pedrot2018} present the exceptional type theory \intro{ExTT},
+\sidetextcite{Pedrot2018} present the exceptional type theory \intro{ExTT},
 demonstrating that it is possible to extend a
 type theory with a wildcard term while enjoying a satisfying notion of \kl{safety},
 which coincides with that of programming languages with exceptions.
 
 \kl{ExTT} is essentially \kl{CICrai}, that is, it
-extends \kl{CIC} with an indexed exceptional term $\intro*\rai[A]$ that can inhabit any type $A$.
+extends \kl{CIC} with an exceptional term $\intro*\rai[A]$ that can inhabit any type $A$.
 But instead of being treated as a computational black box like $\axiom A$,
 $\rai[A]$ is endowed with computational content
 emulating exceptions in programming languages, which propagate instead of being stuck.
@@ -374,7 +377,7 @@ consistency} is the \emph{most} one can expect in
 a theory with effects. Indeed, \sidetextcite{Pedrot2020} have
 shown that it is not possible to define a type theory with full
 dependent elimination%
-\sidenote{That is, a constructor such as $\indop$.}
+\sidenote{That is, a term former such as $\indop$.}
 that has observable effects – of which
 exceptions are a particular case – and at the same time validates
 traditional \kl{canonicity}.
@@ -420,8 +423,8 @@ to optimistically account for occurrences of $\?$.
 In a simple type system, the main predicate on types is equality, whose relaxed counterpart is called \intro(grad){consistency}%
 \sidenote{Not to be confused with \kl{logical consistency}!},
 usually written $\cons$.
-For instance, given a function $f$ of type $\Bool \to \?$, the expression $(f \true) + 1$
-should be well-typed, because $f$ could \emph{plausibly} return a number,
+For instance, given a function $f$ of type $\Bool \to \?$, the expression $(f\ \true) + 1$
+should be well-typed. Indeed, $f$ could \emph{plausibly} return a number,
 given that its codomain is $\?$, which is \kl(grad){consistent} with $\Nat$.
 
 Note that there are other ways to consider imprecise types, for instance by restricting the
@@ -450,11 +453,11 @@ in which casts between inconsistent types raise \reintro{errors}%
 \sidenote{We write those $\err$.}
 \sidecite{Siek2006}.
 
-In such a language, the notion of \kl{canonical form} used to phrase \kl{progress} – and,
+In such a language, the notion of \kl{canonical form} used to phrase \kl{progress} –~and,
 thus, \kl{safety} – has to account for these newly introduced errors. Indeed, $\err[A]$
 is now a valid \kl{canonical form} at type $A$ – at least for some types such as $\Bool$,
-since as we explained in \cref{sec:extt} \kl{call-by-name} errors are not normal forms of
-function types.
+since, as we explained in \cref{sec:extt},
+\kl{call-by-name} errors are not normal forms of function types.
 
 Alternatively – and equivalently from a semantics point of view – one can define \kl{reduction}
 of gradual programs directly on gradual typing derivations augmented with evidence about
@@ -467,7 +470,7 @@ which vary in terms of efficiency and eagerness of checking \sidecite{Herman2010
 \AP A first important property of a gradual language is that it is a
 \reintro{conservative extension} of a related static typing discipline:
 the gradual and static systems should coincide on static terms.
-This property is hereafter called \reintro{Conservativity},
+This property is hereafter called \reintro{conservativity},
 with respect to a given static system.
 %For instance, we write that \GTLC satisfies \pconst{\STLC}.
 Technically, \sidetextcite{Siek2006} prove that typing and reduction of \kl{GTLC} and
@@ -492,7 +495,7 @@ However, \sidetextcite{Siek2015} observed that this characterization left too ma
 possibilities for the impact of type information on program behaviour,
 compared to what was originally intended \sidecite{Siek2006}.
 %
-Consequently, \textcite{Siek2015} brought forth type \intro{precision}%
+Consequently, they brought forth type \intro{precision}%
 \sidenote{Denoted $\intro*\pre$: $A \pre B$ means that $A$ is more precise than $B$,
 \ie that $A$ contains more static information than $B$.}
 as the key notion, from which consistency can be derived: two types $A$ and $B$
@@ -502,7 +505,7 @@ The \kl{unknown type} $\?$ is the most imprecise type of all,
 %
 Precision is a pre-order that can be used to capture the intended \emph{monotonicity} of
 the static-to-dynamic spectrum afforded by gradual typing.
-The static and dynamic \intro{gradual guarantees} specify that typing
+The static and dynamic \intro{gradual guarantees} respectively specify that typing
 and reduction should be \emph{monotone with respect to precision}:
 losing precision should not introduce new static or dynamic errors.
 %
@@ -512,7 +515,7 @@ a term is more precise than another if they are \kl{α-equal}, except
 for their type annotations, which can be more precise in the former.
 
 \AP The \kl{static gradual guarantee} (\intro{SGG})
-ensures that imprecision does not break typeability:
+ensures that imprecision does not alter typeability.
 
 \begin{minipage}{\textwidth}
 \begin{property}[\intro{Static Gradual Guarantee}]
@@ -660,13 +663,13 @@ induces \kl{embedding-projection pairs}.
 Extending the gradual approach to a setting with full \kl(typ){dependent} types
 requires reconsidering several aspects.
 
-\subsection{Newcomers: the unknown term and the error type}
+\subsection{Newcomers: the unknown term and the error type}[Unknown term and error type]
 %
 In the simply-typed setting, there is a clear stratification: $\?$ is at the type level,
 $\err$ is at the term level. Likewise, type \kl{precision}, with $\?$ as greatest element,
 is distinct from term \kl{precision}, with $\err$ as least element.
 In the absence of a type/term syntactic distinction as in \kl{CIC},
-this stratification is untenable.
+this stratification cannot be kept.
 
 Because types permeate terms, $\?$ is no longer only the \kl{unknown} \emph{type},
 but it also acts as an “\kl{unknown term}”.
@@ -770,7 +773,7 @@ because a too syntactic one is likely not to be stable by reduction:
 $\asc{\asc{1}{X}}{\Nat} \pre \asc{\asc{1}{\?}}{\Nat}$ is obvious syntactically,
 but $\asc{\asc{1}{X}}{\Nat} \pre 1$ is not.
 
-\subsection{Dynamic Gradual Guarantee \vs Graduality}
+\subsection{Dynamic Gradual Guarantee \vs graduality}[DGG \vs graduality]
 In a dependently-typed setting, it is possible to satisfy the \kl{DGG} while not satisfying the \kl{embedding-projection pairs} requirement of \kl{graduality}.
 
 To see why, consider a system in which any term of type $A$ that is not
@@ -1029,7 +1032,7 @@ is compromised.
 This section gives an informal, non-technical overview of this system,
 highlighting the main challenges and results.
 
-\subsection{Three in One}
+\subsection{Three in one}
 \label{sec:gcic:-3-1}
 
 \paragraph{Two parameters…}
@@ -1224,7 +1227,7 @@ such a pragmatic approach might be the most judicious choice,
 making it possible to gather experience and empirical evidence about
 the pros and cons of each in a variety of concrete scenarios.
 
-\subsection{Typing, Conversion and Bidirectional Elaboration}
+\subsection{Typing, conversion and bidirectional elaboration}
 
 As explained in \cref{sec:grad-simple},
 in a gradual language, whenever we reclaim precision, we might be wrong and need to fail in order to preserve \kl{safety}.
@@ -1280,7 +1283,7 @@ Moreover, the bidirectional structure is very suited to the description of
 a type-based elaboration, and directly translates to a deterministic typing/elaboration
 algorithm for \kl{GCIC}.
 
-\subsection{Precisions and Properties}
+\subsection{Precisions and properties}
 \label{sec:precision-graduality}
 
 As explained earlier (\cref{sec:graduality}), we need three different notions of

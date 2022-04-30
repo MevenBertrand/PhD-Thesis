@@ -9,7 +9,7 @@ points subject to slight variations
 when one tries to give a precise definition of a system.
 Some of these variations are unimportant, but some introduce subtle albeit large differences
 in the resulting systems. In this chapter we go in details over
-the definition of what we refer to as the
+the definition of what I refer to as the
 \kl{Calculus of Inductive Constructions} (\kl{CIC}) in the rest of this
 thesis, where it serves as the base system.
 While doing so, I try to give an idea of the trade-offs involved, and of the reasons
@@ -22,8 +22,8 @@ mean an intensional type theory, with Church-style abstractions,
 a predicative hierarchy of universes%
 \sidenote[][14em]{
   And only those: by default I do \emph{not} include an impredicative sort of propositions, a feature often associated with the name \kl{CIC}. I still use that name because of
-  two feature that I feel sets apart the tradition around \kl{CIC} from that around
-  Martin-Löf type theory: the definition of \kl{conversion} as an \emph{untyped} relation,
+  two characteristics that I feel sets apart the tradition around \kl{CIC} in the dependent type
+  theory literature: the definition of \kl{conversion} as an \emph{untyped} relation,
   and the use of Church-style abstractions. See \cref{chap:names} for a longer discussion.}
 \textit{à la} Russell, and any amount of inductive types presented by recursors.
 % – the ones appearing most often in what comes next being the empty and
@@ -31,36 +31,35 @@ a predicative hierarchy of universes%
 Conversion is the reflexive, symmetric, transitive and congruent
 closure of βι-reduction, and so in particular it is untyped.
 
-For the others, this \namecref{chap:tech-intro} aims at introducing the basic
-systems and properties which we will refer to in the rest of the text.
+For the others, the present chapter aims at introducing the basic
+systems and properties which we refer to in the rest of the text.
 \cref{sec:tech-typing} introduces the basic notions;
 \cref{sec:tech-ccw} presents a first type system,
-the \kl[CCω]{Calculus of Constructions} (\kl{CCω}),
+the \kl{Calculus of Constructions} (\kl{CCω}),
 the purely functional core all our systems rely on;
-\cref{sec:tech-conversion} defines the various notions of \kl{conversion} and
+\cref{sec:tech-conversion} defines the main notions of \kl{conversion} and
 \kl{reduction} encountered in the rest of the thesis;
 \cref{sec:tech-properties} introduces the main properties our systems should satisfy;
 \cref{sec:tech-cic} adds inductive types to \kl{CCω} to build
 \kl{CIC}; finally \cref{sec:tech-pcuic} discusses the extra additions to go from
 \kl{CIC} to the \kl{Polymorphic, Cumulative Calculus of Inductive Constructions}
-(\kl{PCUIC}), a relatively faithful model of the type theory implemented by the
+(\kl{PCUIC}), a faithful model of the type theory implemented by the
 kernel of \kl{Coq}.
 
-\section{Terms, typing and derivations}
+\section{Terms and Types}
 \label{sec:tech-typing}
 
 \AP Throughout this chapter, type systems are defined by means of a relation
 $\Gamma \vdash t \ty T$, which reads “in the context $\Gamma$, the term $t$ has type $T$”.
-From the logical point of view, this judgement means that $\Gamma$
-contains the hypothesis available to deduce the
-conclusion $T$ by means of the proof $t$.
+From the logical point of view, this judgement means that $\Gamma$ is the list of
+hypothesis available to deduce the conclusion $T$ by means of the proof $t$.
 On the programming side, it means that $t$ is a well-formed program of type $T$,
 which uses the variables listed together with their types in $\Gamma$.
 Hence, $\Gamma$ is a list of declarations, of the form $x : A$.
 We write $\intro*\emptycon$ for the empty context,
 $\Gamma, x : A$ for the extension of context $\Gamma$ with the new variable $x : A$,
-and $(x : A) \in \Gamma$ to denote that the declaration $x : A$ appears at some
-point in the context $\Gamma$.
+and $(x : A) \in \Gamma$ to denote that the declaration $x : A$ appears
+in the context $\Gamma$.
 
 \begin{marginfigure}
   \ContinuedFloat*
@@ -76,7 +75,7 @@ This typing relation itself is defined by means of inference rules,
 such as \ruleref{rule:cic-var} opposite. The way to read this rule is that the judgement
 underneath the line follows from the one above,
 \ie from $(x : A) \in \Gamma$
-and $\vdash \Gamma$ – a judgement that will soon be defined asserting that the context
+and $\vdash \Gamma$ –~a judgement that we will soon define asserting that the context
 $\Gamma$ is well-formed – we can deduce $\Gamma \vdash x \ty A$.
 When objects appear in the hypothesis but not the conclusion, they are implicitly
 universally quantified.
@@ -92,23 +91,25 @@ are formalized as inductively defined propositions.}
 
 \AP As we have already introduced variables, a word on those as well. Variables are difficult
 to account for precisely, because of issues like shadowing – a conflict between two variables
-with the same name – or \intro{α-equality} $\intro*\alpheq$ – the identification between two terms
+with the same name – or \intro{α-equality} $\mathord{\intro*\alpheq}$~–
+the identification between two terms
 only differing on variable names. There are multiple techniques to solve these issues
 – see the many solutions to the POPLMark Challenge~\sidecite{Aydemir2005} –, 
 but we again treat these in an informal way, assuming
 there is no shadowing whatsoever and identifying α-equal terms when needed.%
-\sidenote{A precise treatment is given in \arefpart{metacoq}, where we
+\sidenote{A precise treatment is again given in \arefpart{metacoq}, where we
 use De Bruijn variables.}
 
 \AP \phantomintro{\into}
 A final important building block of all our type theories is \intro{substitution},
-that we write $\intro*\subs{t}{x}{u}$. This replaces every occurrence of $x$ in $t$ by the term
-$u$. Once again, we treat this operation informally, assuming it never creates
+that we write $\intro*\subs{t}{x}{u}$. This meta-operation replaces every occurrence of $x$
+in $t$ by the term $u$.
+Once again, we treat this operation informally, assuming it never creates
 shadowing – what is sometimes called “capture-avoiding” substitution.
 It is sometimes useful to substitute multiple variable at once in parallel,
 which we write $\intro*\multisubs{t}{x_1 \into u_1, \dots, x_n \into u_n}$.
 
-\section{Functional core: \kl(tit){CCω}}
+\section{Functional Core: \kl(tit){CCω}}
 \label{sec:tech-ccw}
 
 \AP Let us now turn to the core of \kl{CIC}, namely the
@@ -130,7 +131,7 @@ Let us start with the basic terms: functions and applications.
     \inferrule{\Gamma \vdash A \ty \uni \\ \Gamma, x : A \vdash t \ty T}
     {\Gamma \vdash \l x : A .\ t \ty A \to T}
     \and
-    \inferrule{\Gamma \vdash f \ty A \to T \\ \Gamma \vdash u \ty A }{ \Gamma \vdash t\ u \ty T}
+    \inferrule{\Gamma \vdash f \ty A \to T \\ \Gamma \vdash u \ty A }{ \Gamma \vdash f\ u \ty T}
   \end{mathpar}
   \caption{Typing for non-dependent functions}
   \label{fig:cic-nondep-fun}
@@ -176,8 +177,8 @@ since the codomain $T$ might depend on $x$, the type of the application $f\ u$ i
 Seen on the logical side, Π-types correspond to universal quantification
 $\operatorname{\forall} x : A.\ T(x)$.
 Indeed, if one can show that $T(x)$ holds for an unspecified $x$,
-then it must hold for all $x \ty A$ – this is \ruleref{rule:cic-abs}.
-Conversely, if $T$ holds for all $x \ty A$, then one can deduce $T(u)$ for any specific
+then it must hold for all $x: A$ – this is \ruleref{rule:cic-abs}.
+Conversely, if $T$ holds for all $x: A$, then one can deduce $T(u)$ for any specific
 $u \ty A$ – this is \ruleref{rule:cic-app}.
 The rules of \cref{fig:cic-nondep-fun} are just a special case
 of those, in the case where the codomain $T$ does not depend
@@ -203,7 +204,7 @@ thesis we stick with the approach used in \kl{Coq}, and annotate our abstraction
 To be able to express ideas like induction principles or polymorphic functions, it is
 extremely useful to use functions and Π-types quantifying over types.
 This is what the universe $\intro*\uni$ – read “Type” — is for. It is the type… of a type.
-This also means that the border between types and terms is not syntactic any more, because
+This also means that the border between types and terms is not a syntactic one, because
 \eg functions can abstract over a type. Instead, types are simply terms of type $\uni$.
 Despite this, we still use upper case letters for terms which we want to think of as types.
 Such a universe is called \textit{à la} Russell~\sidecite{Palmgren1998}, by contrast with
@@ -254,7 +255,8 @@ Using those universes, \ruleref{rule:cic-prod} gives the typing rule for
 judgement, asserting that a context is well-formed, in \cref{fig:cic-con}.
 It simply means that all its types
 are indeed types. Note that in \ruleref{rule:cic-cons-con}, we did not write down a
-\kl{level} for the universe, we do so to mean the existence of some unconstrained one.
+\kl{level} for the universe, we do so to mean the existence of some unconstrained one in
+order to ease reading.
 
 \begin{marginfigure}
   \ContinuedFloat
@@ -276,18 +278,18 @@ with the $\intro*\unextsymb$
 and $\intro*\umaxsymb$ operations interpreted by the usual ones.
 This is however not strictly necessary: we need levels
 to form a (well-founded) pre-order to avoid inconsistency, and operations
-such as $\unextsymb$ and $\umaxsymb$, but levels could very well be something
-different from natural numbers.
-In particular, the natural number approach fixes at which level a particular construction
+such as $\unextsymb$ and $\umaxsymb$ to express our typing rules,
+but levels could very well be something different from natural numbers.
+In particular, the natural number approach fixes at which exact level a particular construction
 is done, which is usually much more rigid than what one would wish for.
 A more flexible approach, introduced under the name \intro{typical ambiguity} by
 \sidetextcite{Harper1991},
 uses level expressions based on level variables, rather than numbers.
 This way, one can collect exactly the constraints between levels required for a
-term to type-check in a consistent system, without artificially enforcing a
+term to type-check, without artificially enforcing a
 rigid interpretation by fixing their value to a precise number once and for all.
-To simplify the presentation, our default \kl{CCω}/\kl{CIC} nonetheless use integers,
-but \kl{typical ambiguity} appears at multiple points in this thesis.
+To simplify the presentation, our default \kl{CCω} and \kl{CIC} nonetheless use natural
+numbers, but \kl{typical ambiguity} appears at multiple points in this thesis.
 
 \section{50 Shades of Conversion}
 \label{sec:tech-conversion}
@@ -306,10 +308,10 @@ but \kl{typical ambiguity} appears at multiple points in this thesis.
 
 \AP There is one big missing part in the picture so far. Remember we are working with
 dependent types, and that those can contain terms, which in turn can be seen as programs.
-In the case for instance of the vector type we used in the introduction (and that we are
-about to introduce formally), what happens if a function expects an argument of type
+In the case for instance of the vector type we used in the introduction – and that we are
+about to introduce formally –, what happens if a function expects an argument of type
 $\Vect(A,3)$, but it is given as argument the output of a concatenation function,
-which naturally has type $\Vect(A,(2+1))$?
+which naturally has type $\Vect(A,2+1)$?
 Surely we must have a way to relate both, since after all
 the small program $2+1$ ought to compute $3$! This is exactly what
 \ruleref{rule:cic-conv}%
@@ -317,13 +319,14 @@ the small program $2+1$ ought to compute $3$! This is exactly what
 rules for \kl{CCω}, collected in \cref{fig:ccw-typing}. The rule for non-dependent functions
 is not included, since the one for dependent functions subsumes it.}
 is for: it allows to replace a type $T$ with one that is related to it by
-\intro{conversion} – written $\intro*\conv$.
+\intro{conversion}, written $\intro*\conv$.
 As usual, there are two ways to look at this relation. From the point of view of programs,
 it incorporates a computational aspect directly inside the type system.
 From the point of view of logic, it corresponds to types being the same “by definition”
 rather than due to some reasoning
 – which is why conversion is also called definitional equality or judgemental equality.
-In our vector example, for instance, the two types are the same by the definition of addition.
+In our vector example, for instance, the two types are the same by virtue of
+the definition of addition.
 
 \begin{figure*}[ht]
   \LastFloat
@@ -364,8 +367,8 @@ In our vector example, for instance, the two types are the same by the definitio
   \label{fig:ccw-typing}
 \end{figure*}
 
-Conversion is a very complex relation, arguably the most subtle part of dependent types.
-Consequently, there are very different ways to present it, which in turn serve different
+Conversion is a complex relation, arguably the most subtle part of dependent types.
+Consequently, there are quite different ways to present it, which in turn serve different
 needs.
 For this reason, we took care to set the typing rules of
 \cref{fig:ccw-typing} up so that nothing has to
@@ -384,10 +387,12 @@ The “content” of the two rules is the same – they equate $(\l x : A.\ t)\ 
 and $\subs{t}{x}{u}$ – only the side-conditions differ substantially.
 \kl{Typed conversion} goes back to the type theory of
 \sidetextcite{MartinLoef1972}, and is a recurring feature in its many descendants.
-\AP \kl{Untyped conversion} relates strongly to (untyped) λ-calculus – Barendregt
-for instance uses the name “conversion” for the equational theory of untyped λ-calculus
-in his reference work on the subject~\sidecite{Barendregt1985} –, via
-the \intro{Pure Type Systems} (\kl{PTS})~\sidecite{Barendregt1991} literature.
+\AP \kl{Untyped conversion} relates strongly to (untyped) λ-calculus%
+\sidenote{Barendregt
+  for instance uses the name “conversion” for the equational theory of untyped λ-calculus
+in his reference work on the subject\cite{Barendregt1985}.}%
+\margincite{Barendregt1985}
+via the \intro{Pure Type Systems} (\kl{PTS}) \sidecite{Barendregt1991} literature.
 In this thesis, we mainly consider untyped conversion, as \kl{Coq}’s meta-theory
 has been mostly studied in that tradition.
 But the relation between both in the context of
@@ -407,7 +412,7 @@ bidirectional typing is the main subject of \cref{chap:bidir-conv}.
 
 A second axis is about how close the conversion relation is to an implementation.
 For instance, conversion should be an equivalence relation,
-but there are two approaches to that. The first – and standard – one
+but there are two approaches to that. The first – and most standard – one
 is to simply \emph{define} conversion as an equivalence relation, by adding rules 
 for \eg transitivity, as the one of \cref{fig:trans-conv}.
 \begin{marginfigure}
@@ -420,12 +425,13 @@ for \eg transitivity, as the one of \cref{fig:trans-conv}.
   \label{fig:trans-conv}
 \end{marginfigure}
 This ensures that conversion has the right properties, but means it does not directly correspond
-to an algorithm, as this transitivity rule cannot be directly implemented.
+to an algorithm, as this transitivity rule cannot be directly implemented,
+due to the need to “invent” the middle term $t'$.
 % , since its middle term is not recorded in any place.
 The λ-calculus theorists have known this issue for a long time, and they
 have a solution: characterizing conversion by means of a \kl{reduction} relation $\red$, which
-corresponds to the idea of program evaluation – see \sidetextcite{Barendregt1985} for
-instance. If this reduction is well-behaved,
+corresponds to the idea of program evaluation \cite{Barendregt1985}.
+If this reduction is well-behaved,
 %\sidenote{The main one being confluence.}
 then two terms are convertible exactly when they reduce to the same third term.
 This more operational characterization is closer to what can be implemented.
@@ -436,9 +442,9 @@ that were enforced in the first approach – typically, that it is transitive.
 we talk about \intro{algorithmic conversion}.
 
 In the rest of this section we give two presentations of \kl{untyped conversion}.
-First, a \kl(conv){declarative} one, which we use to define \kl{CCω}, as is the standard.
+First, a \kl(conv){declarative} one, which we use to define \kl{CCω}, as is standard.
 Second, an \kl(conv){algorithmic} one, anticipating the need for it later on
-in \arefpart{metacoq} and \arefpart{gradual}.
+in Parts \refname{metacoq} and \refname{gradual}.
 % in \arefpart{metacoq} where it is used to show decidability of type-checking, and
 % in \arefpart{gradual}, where we extend it into a relation that is by design not transitive, so
 % that basing it on declarative conversion would be nonsensical.
@@ -481,8 +487,8 @@ substitution.
 
 The rest of the rules ensure conversion has the properties it should. First are the
 ones ensuring it forms an equivalence relation: it
-is reflexive (\ruleref{rule:cic-uconv-refl}), symmetric (\ruleref{rule:cic-uconv-sym}),
-and transitive (\ruleref{rule:cic-uconv-trans}).
+is reflexive (\nameref{rule:cic-uconv-refl}), symmetric (\nameref{rule:cic-uconv-sym}),
+and transitive (\nameref{rule:cic-uconv-trans}).
 
 \begin{figure}[ht]
   \ContinuedFloat
@@ -554,17 +560,16 @@ corresponding to program evaluation. It itself decomposes into three components.
   \caption{Top-level reduction}
   \label{fig:cic-algo-conv}
 \end{marginfigure}
-which corresponds purely to computation, without any congruent closure.
+which corresponds purely to computation, without any congruence closure properties.
 In \kl{CCω} there is only the single \ruleref{rule:beta-red}.
 
-\AP The second component is the congruent closure of top-level reduction,
-\intro{one-step reduction} $\intro*\ored$, which allows triggering top-level reduction exactly once,
-but at any position in a term. Its definition is given in \cref{fig:ccw-ored}, as
-the congruent closure of \kl(red){top-level} reduction.
+\AP The second component is the congruent closure of \kl{top-level reduction},
+\intro{one-step reduction} $\intro*\ored$. It allows triggering top-level reduction exactly once,
+but at any position in a term. Its definition is given in \cref{fig:ccw-ored}.
 Note that while we talk about congruent closure both for
 \kl(decl){conversion} (\cref{fig:cic-uconv-cong})
 and \kl{one-step reduction}, we mean a different form of closure:
-in the case of conversion, we demand the relation to hold in all sub-terms,
+in the case of conversion, we demand the relation to recursively hold in all sub-terms,
 while for one-step reduction it is allowed in exactly one sub-term.
 
 \begin{figure}[ht]
@@ -633,7 +638,7 @@ transitive closure of one-step reduction, see \cref{fig:red}.
   \label{fig:red}
 \end{figure}
 
-With reduction out of the way, we can finally get to \kl{algorithmic conversion}: two terms
+We can now get to \kl{algorithmic conversion}: two terms
 are convertible whenever they reduce to terms that are \kl{α-equal}.
 As for declarative conversion,
 we impose a typing condition on the target type. Altogether, this leads to
@@ -644,18 +649,20 @@ its replacement by more complex relations later on.
   \ContinuedFloat
   \begin{mathpar}
     \inferdef{AlgConv}
-    {\Gamma \vdash T \ty \uni \\ T \red U \\ T' \red U' \\ U \alpheq U' }
+    {\Gamma \vdash T' \ty \uni \\ T \red U \\ T' \red U' \\ U \alpheq U' }
     {\Gamma \vdash T \aconv T' \ty \uni}
     \label{rule:alg-conv}
   \end{mathpar}
   \caption{Algorithmic conversion}
 \end{figure}
 
-To wrap up this section, let us backtrack for a moment on the reason why we separate
-the definition of reduction in three layers. The reason is that as we defined it, reduction
+To wrap up this section, let us backtrack for a moment on the reason why we separated
+the definition of reduction in three layers. This is because reduction as we defined it
 is somewhat too unconstrained.\sidenote{In particular, it is non-deterministic.}
 In what follows, a recurring need is that of a deterministic notion of reduction 
-which is able to expose a canonical term former, if it exists.
+which is able to expose a canonical term former,%
+\sidenote{This notion is formally introduced in \cref{sec:tech-properties}.}
+if it exists.
 \AP There is a way to do so, what is called
 \intro{weak-head reduction} $\intro\hred$. It amounts to restricting the place in a term where
 \kl{top-level reduction} can be used, by removing some congruence rules compared to reduction. More precisely, λ-abstractions, Π-types and universes are not reduced further,
@@ -663,9 +670,9 @@ as they already are canonical forms of their types.
 Variables are not reduced either, since they simply cannot be.
 Thus, the only reduction that is allowed is in the function position of an application,
 with the hope to get a λ-abstraction there that can be further reduced using top-level reduction.
-In the end, we get \cref{fig:wh-red}.
+Following these considerations, we arrive at \cref{fig:wh-red}.
 When we want to contrast this \kl{weak-head reduction} with the
-previously defined one $\fred$, we call the latter \intro{full reduction}.
+previously defined one $\mathord{\fred}$, we call the latter \intro{full reduction}.
 \begin{figure}[ht]
   \AP \phantomintro{\hored}
   \begin{mathpar}
@@ -696,8 +703,10 @@ previously defined one $\fred$, we call the latter \intro{full reduction}.
 Before going further into more definitions of type systems, we should stop and consider
 what makes these “good”. Designing type systems is a complex endeavour,
 and many things can go wrong. What are the properties we expect from a type
-system for it to give a valid notion of programming language or logic, and be well-behaved?
-Let us go over these, and some proof techniques that can be employed to establish them.
+system for it to give a valid notion of programming language or logic? How do we know that
+a type system is well-behaved?
+Let us go over some of these properties,
+and some proof techniques that can be employed to establish them.
 
 \subsection{Stability under basic operations}
 
@@ -717,8 +726,9 @@ one which contains at least the same variables:
   we have that $\Delta \vdash \multisubs{t}{x_1 \into y_1 \dots x_n \into y_n} \ty \multisubs{T}{x_1 \into y_1 \dots x_n \into y_n}$.
 \end{property}
 
-Since the context $x_1 : A_1 \dots x_n : A_n$ is well-formed – a consequence of
-\kl{validity}, another property we are about to see –, $A_i$ can only depend on variables
+Given the first premise, the context $x_1 : A_1 \dots x_n : A_n$ must be well-formed,%
+\sidenote{This is a consequence of \kl{validity}, another property we are about to see.}
+$A_i$ can only depend on variables
 $x_1 \dots x_{i-1}$, thus we do not actually need to substitute the variables
 $x_{i+1} \dots x_n$ in it. However, this presentation, where the same substitution is applied
 to all types even if applies to variables which we know are not present in them,
@@ -726,25 +736,29 @@ is easier to work with in practice.
 
 A direct consequence is the \kl{weakening} property:
 
-\begin{property}[\intro{Weakening}]
-  \label{prop:weakening}
-  Whenever $\Gamma \vdash t \ty T$
-  and $\Gamma \vdash A \ty \uni$, it holds that $\Gamma, x : A \vdash t \ty T$.
-\end{property}
+\begin{minipage}{\textwidth}
+  \begin{property}[\intro{Weakening}]
+    \label{prop:weakening}
+    Whenever $\Gamma \vdash t \ty T$
+    and $\Gamma \vdash A \ty \uni$, it holds that $\Gamma, x : A \vdash t \ty T$.
+  \end{property}
+\end{minipage}
 
-A stronger notion is that of stability under substitution, which allows replacing of
-variables by arbitrary terms:
+A stronger notion is that of stability under substitution, which allows replacing
+variables by arbitrary terms.
 
+\begin{minipage}{\textwidth}
 \begin{property}[\intro{Stability under substitution}]
   \label{prop:stab-subst}
   For any substitution $\sigma$ (function from variables to terms)
   such that the following hold
   \begin{itemize}
     \item $x_1 : A_1 \dots x_n : A_n \vdash t \ty T$
-    \item for all $x_i$, $\Delta \vdash \sigma(x_i) \ty \multisubs{A_i}{\sigma}$
+    \item for all $x_i$, we have $\Delta \vdash \sigma(x_i) \ty \multisubs{A_i}{\sigma}$
   \end{itemize} 
   it is also the case that $\Delta \vdash \multisubs{t}{\sigma} \ty \multisubs{T}{\sigma}$.
 \end{property}
+\end{minipage}
 
 These two stability properties can be proven by direct induction on the typing derivations,
 replacing hypotheses on the first context by hypothesis on the second. Of course, we need to
@@ -768,7 +782,7 @@ such as those operated by tactics.
 The difference between the two is that we do not ask for all variables appearing in $\Gamma$
 to be present in $\Delta$, only those that are “relevant” for $t$.
 Thus, the important consequence is the following, which allows removing unused variables
-from a context:
+from a context.
 
 \begin{property}[\intro{Strengthening}]
   \label{prop:strengthening}
@@ -783,8 +797,8 @@ presented in this thesis – it cannot be proven by a direct induction on the ty
 derivation. This is because of \ruleref{rule:cic-conv}. Indeed, in that rule the target type
 $T'$ might very well use the variable $x$, so that we do not have in general
 $\Gamma \vdash T' \ty \uni$. Thus, there is a need for further reasoning to prove that such a
-variable is never actually needed. We show in \arefpart{bidir} how the bidirectional
-makes proving strengthening straightforward.
+type is never actually needed. We show in \cref{thm:strengthening-bidir}
+how the bidirectional structure makes proving strengthening straightforward.
 
 \subsection{Properties of types}
 
@@ -813,31 +827,31 @@ of a same term.
 
 \begin{property}[\intro{Uniqueness of types}]
   \label{prop:uniqueness}
-  A type theory satisfies \reintro{uniqueness of types up to} a relation $\sqsubseteq$
-  if whenever $t$ is well-typed in $\Gamma$ (\ie whenever there exists $S$ such that $\Gamma \vdash t \ty S$), there exists a type $T$ such that $\Gamma \vdash t \ty T$
-  and for any $T'$ such that $\Gamma \vdash t \ty T'$, it is true that $T' \sqsubseteq T$.
+  A type theory satisfies \reintro{uniqueness of types up to} a relation $\preceq$
+  if whenever $t$ is well-typed in $\Gamma$,%
+  \sidenote{\textit{I.e.}\ whenever there exists $S$ such that $\Gamma \vdash t \ty S$.}
+  there exists a type $T$ such that $\Gamma \vdash t \ty T$
+  and for any $T'$ such that $\Gamma \vdash t \ty T'$, we have $T' \preceq T$.
 
   We simply say \kl{uniqueness of types} for uniqueness up to \kl{conversion}.
 \end{property}
 
-Note that in the case where the relation $\sqsubseteq$ is symmetric and transitive,
-(in particular, \kl{conversion}), \kl{uniqueness of types up to} $\sqsubseteq$ simplifies
+Note that in the case where the relation $\preceq$ is symmetric and transitive,
+–~in particular, \kl{conversion} –, \kl{uniqueness of types up to} $\preceq$ simplifies
 to the fact that whenever $\Gamma \vdash t \ty T$ and $\Gamma \vdash t \ty T'$,
-we have $T \sqsubseteq T'$. However, in \kl{PCUIC} we wish to replace \kl{conversion} with
-\kl{cumulativity}, which is not symmetric – it is a pre-order –, so the more involved
-definition is needed.
+we have $T \preceq T'$. However, in \kl{PCUIC} we wish to replace \kl{conversion} with
+\kl{cumulativity}, which is not symmetric –~it is only a pre-order –,
+so the more involved definition is needed.
 
-This property is not so easy to establish%
-\sidenote{For instance, in \kl{MetaCoq}, for some time only a weak notion of uniqueness was
-proven.},
+This property is not so easy to establish,
 but as for \kl{strengthening} the bidirectional setting gives a straightforward proof approach,
-see \arefpart{bidir}.
+see \cref{thm:unique-undir}.
 
 \subsection{Subject reduction}
 
-We already mentioned Milner’s slogan that “\textit{Well-typed programs cannot go wrong}”.
-In our context, this means that if a term is well-typed, its reduction – which corresponds to
-program evaluation –, should be well-behaved. This well-behaviour is separated 
+We already mentioned Milner’s slogan that “\textit{Well-typed programs cannot go wrong.}”
+In our context, this means that if a term is well-typed, its reduction –~which corresponds to
+program evaluation~–, should be well-behaved. This well-behaviour is separated 
 into multiple properties, the first of which is \kl{subject reduction},
 which asserts that typing is preserved by reduction.
 
@@ -853,18 +867,19 @@ reduces to \kl{top-level reduction} preserving typing. But how do we show this?
 
 Suppose we have a β-redex such that $\Gamma \vdash (\l x : A.\ t)\ u \ty T$.
 Analysing the typing
-derivation, we can conclude there exist $A'$, $B$ and $B'$ such that
+derivation, we can conclude there exists $A'$, $B$ and $B'$ such that
 \begin{itemize}
   \item $\Gamma, x : A \vdash t \ty B$
   \item $\P x : A.\ B \dconv \P x : A'.\ B'$
   \item $\Gamma \vdash u \ty A'$
   \item $\subs{B'}{x}{u} \dconv T$
 \end{itemize}
-If we were able to conclude that $A \dconv A'$ and $B \dconv B'$, then we could
+If we were able to conclude that $A \dconv A'$ and $B \dconv B'$, we could
 deduce $\Gamma \vdash u \ty A$, then using \kl{stability under
 substitution} we would get $\Gamma \vdash \subs{t}{x}{u} \ty \subs{B}{x}{u}$,
-which would finally lead to $\Gamma \vdash \subs{t}{x}{u} \ty T$ using \kl{stability under
-substitution} and transitivity of conversion. Thus, the key property is the following:
+which would finally lead to $\Gamma \vdash \subs{t}{x}{u} \ty T$ using stability of
+conversion under substitution and transitivity of conversion.
+Thus, the key property is the following:
 
 \begin{property}[\intro{Injectivity of function types}]
   \label{prop:prod-inj}
@@ -872,10 +887,13 @@ substitution} and transitivity of conversion. Thus, the key property is the foll
 \end{property}
 
 In the more general setting of \kl{CIC} or \kl{PCUIC}, we do not have only Π-types.
-Thus, we more generally talk about \kl{injectivity of type constructors}.
+Thus, we more generally talk about \reintro{injectivity of type constructors}.
 
 For \kl{declarative conversion}, transitivity is trivial, but \kl{injectivity of function types}
-is not so easy. Indeed, by transitivity we could have $\P x : A.\ B \conv T \conv \P x : A'.\ B'$ for an arbitrary $T$, and so it is not clear how to relate $A$ and $A'$.
+is not so easy. Indeed, due to transitivity we could have
+\[\P x : A.\ B \conv T_1 \conv \dots T_n \conv \P x : A'.\ B'\]
+where the $T_i$ have no reason to be Π-types,
+and so it is not so easy to relate $A$ and $A'$.
 Conversely, for \kl{algorithmic conversion}, \kl{injectivity of function types} is rather
 straightforward by induction on \kl{reduction} and \kl{α-equality}, but transitivity is
 hard to show. Thus, in both cases \kl{subject reduction} is not direct.
@@ -894,14 +912,13 @@ the corresponding notions of typing, is \kl{confluence} of reduction.
 
 \begin{property}[\intro{Confluence}]
   \label{prop:confluence}
-  If it holds that
-  $t \red t_1$ and $t \red t_2$, then there exists $t''$ such that
+  If $t \red t_1$ and $t \red t_2$ hold, then there exists some $t''$ such that
   $t_1 \red t''$ and $t_2 \red t''$.
 \end{property}
 
 This is a very widely studied property in the context of rewriting systems. A nice
-proof technique relies on the definition of a notion of parallel reduction, see
-\sidetextcite{Takahashi1995}.
+proof technique relies on the definition of a notion of parallel reduction 
+\sidecite{Takahashi1995}.
 
 \subsection{Progress}
 
@@ -926,34 +943,38 @@ proof technique relies on the definition of a notion of parallel reduction, see
 \kl{Subject reduction} ensures that when a term reduces, this reduction is type-preserving.
 The second important property linked to reduction characterizes which terms reduce.
 To state it, we first need to define the $\nm$ and $\ne$ predicates,
-characterizing respectively \intro{normal forms} $\nm$ and \intro{neutral forms} $\ne$.
+characterizing respectively \intro{normal forms} and \intro{neutral forms}.
 The inductive rules for those are given in \cref{fig:ccw-norm-neu}.
 The idea is that neutral forms are those terms which are stuck on a variable, which blocks
-further computation because it is not an λ-abstraction. Normal forms are either neutrals,
-or \intro{canonical forms}, which have finished computing. For instance, a λ-abstraction is
+further computation because it is not a λ-abstraction. Normal forms are either neutrals
+or \intro{canonical forms},%
+\sidenote{Alternatively called values.}
+which have finished computing. For instance, a λ-abstraction is
 the canonical form for a function. What \kl{progress} says is that these forms accurately
-characterize well-typed normal terms.
+characterize well-typed terms which do not reduce.
 
+\begin{minipage}{\textwidth}
 \begin{property}[\intro{Progress}]
-  Given a notion of \kl{normal forms} $\nm$, if for every well-typed term $t$,
-  either $\nm t$ holds, or there is $t'$ such that $t \ored t'$.
+  For every well-typed term $t$, either $\nm t$ holds,
+  or there is some $t'$ such that $t \ored t'$.
 \end{property}
+\end{minipage}
 
 To prove progress, one can again resort to induction on the typing derivation. The key point
 is to characterize the \kl{normal forms} at a given type,
 by proving that they are either \kl{neutral forms}, or \kl{canonical form}
 \emph{of the right kind}.
 For instance, if $f$ is a normal form and has a function type, then it must be
-either a neutral, or a λ-abstraction. If $f$ is applied to $u$, then either $f\ u$ is
-a neutral – a thus a normal form –, or it reduces further, by a β step.
+either a neutral, or a λ-abstraction. Then, if $f$ is applied to $u$, then in the first
+case $f\ u$ is a neutral – and thus a normal form –, or it reduces further, by a β step.
 
 One way to understand \kl{progress} – and, indeed, the origin of the name – is that well-typed
 terms do not get stuck: either they have finished computing, and thus satisfy $\nm$, or
 they should be able to make progress by reducing further.
 Put together with \kl{preservation}, progress can be iterated. Indeed,
-if a term is well-typed, it is either is a normal form, or reduces to a term, which is itself
-well-typed, so is either a normal form or reduces, and so on. This decomposition of
-program safety into progress and preservation
+if a term is well-typed, it is either a normal form, or reduces to a term, which is itself
+well-typed by \kl{preservation}, so is either a normal form or reduces, and so on.
+This decomposition of program safety into progress and preservation
 has been standard since \sidetextcite{Wright1994}.
 
 \begin{property}[\intro{Safety}]
@@ -966,8 +987,8 @@ has been standard since \sidetextcite{Wright1994}.
 
 \subsection{Normalization}
 
-The last important property, and one which is specific to type systems in the context of
-programming languages, is \kl{normalization}. It ensures that progress cannot be applied
+The last important property, and one which is rather specific to type systems in the context of
+proof languages, is \kl{normalization}. It ensures that progress cannot be applied
 forever, but that evaluation always ends up reaching a normal form.
 The most standard way to phrase this is to say that there is no infinite reduction sequence 
 starting from a well-typed term. This formulation, however, is constructively too weak,
@@ -976,13 +997,14 @@ using the following accessibility predicate.
 
 \begin{definition}[\intro{Accessibility}]
   Let $R$ be a relation on $A$. An inhabitant $a$ of $A$ is accessible if all $a'$
-  such that $a \mathop{R} a'$ are.
+  such that $a \mathrel{R} a'$ are.
 \end{definition}
 
 In the intuitionistic setting, this way to phrase well-foundedness
 is much better behaved because it does not appeal to negation. In particular,
 we can do constructions on all accessible terms of a given relation by means of well-founded
-induction, something we exploit in \kl{MetaCoq}.
+induction, something we exploit in \kl{MetaCoq}, where this is the formulation we use for
+normalization.
 
 \begin{property}[\intro{Normalization}]
   \label{prop:normalization}
@@ -990,39 +1012,44 @@ induction, something we exploit in \kl{MetaCoq}.
   the inverse relation of \kl{one-step reduction} $\ored$.
 \end{property}
 
-Normalization is a crucial building block towards decidability of typing,
-as it entails that one can rely on normal forms of
-terms to decide conversion. Thus, it is a property of prime importance if we wish to
-implement a type-checker.
+Normalization, combined with \kl{progress} and \kl{preservation}, 
+entails that any well-typed term
+eventually reduces to a normal form – which is moreover unique, by \kl{confluence}.
+This gives a naive way to decide conversion. Even if one uses a more complex strategy,
+normalization is a crucial building block towards decidability of typing.
+Thus, it is a property of prime importance if we wish to
+implement a type-checker for dependent types.
 
 Another key consequence, of normalization is that,
-combined with \kl{progress} and \kl{preservation}, it entails that any well-typed term
-eventually reduces to a normal form, which is unique by \kl{confluence}.
-It follows that there are some uninhabited types in the empty context,
+there are some uninhabited types in the empty context,
 for instance $\P A : \uni.\ A$.
-Indeed, there are no normal forms at that type – suppose there is one,
-and reason by induction on the derivation. This is one way to phrase
-\kl{logical consistency}, which has the advantage that it does not put forward one particular
-“false” type.
+This is one way to phrase \kl{logical consistency},%
+\sidenote{Thanks to the principle of explosion.}
+which has the advantage that it does not put forward one particular “false” type.
 
 \begin{property}[\intro{Logical consistency}]
   \label{prop:log-cons}
   There is a type which is not inhabited in the empty context.
 \end{property}
 
-\AP Thus, normalization ensures our type systems are meaningful as logics,
+\AP
+Indeed, there are no normal forms in the empty context at that type, and since any term
+of that type must reduce to such a normal form, there are none.
+Thus, normalization ensures our type systems are meaningful as logics,
 which we of course care about!
-More generally, it entails the \kl{canonicity} property for \intro{closed terms} –
-\eg those that have no free variables.%
+
+More generally, normalization entails the \kl{canonicity} property for \intro{closed terms}
 \sidenote{Terms which are not closed are called \reintro{open}.}
+– \eg those that have no free variables, or, equivalently, that are well-typed in the empty
+context.
 
 \begin{property}[\intro{Canonicity}]
   \label{prop:canonicity}
   Every term $t$ that is well-typed in the empty context reduces to a \kl{canonical form}.
 \end{property}
 
-The issue is that, since normalization entails logical consistency, it is a hard
-property to prove. In particular, due to Gödel’s incompleteness theorem, one cannot hope
+There is however an issue here: since normalization entails logical consistency, it is a hard
+property to prove. In particular, due to Gödel’s incompleteness theorem, we cannot hope
 to prove normalization of a type system in the logic given by that system itself…
 Still, there are multiple approaches to proving normalization, from the venerable
 reducibility method \sidecite{Tait1967} to the recent normalization by evaluation 
@@ -1036,14 +1063,16 @@ or prove it relatively to that of another, simpler theory.
 
 \AP Of course, not everything in mathematics or programming is a function.
 Although \kl{CCω} is powerful enough to encode many constructions,%
-\sidenote[][-2em]{At least if one extends its universe hierarchy with an impredicative
+\sidenote{At least if one extends its universe hierarchy with an impredicative
 universe.}
 such encodings are not fully satisfactory: \sidetextcite{Geuvers2001} shows
-that it is impossible to construct a type of natural numbers
-satisfying an induction principle, which is their defining characteristic!
+that it is impossible to construct%
+\sidenote{In a system close to our \kl{CCω}, but again with an impredicative universe.}
+an encoding of natural numbers satisfying an induction principle,
+which is their defining characteristic!
 Because of such limitations of encodings, and in order to faithfully
 represent the use of induction in mathematics and pattern-matching in programming languages,
-the general class of \intro{inductive types} have been introduced
+the general class of \intro{inductive types} has been introduced
 by \sidetextcite{PaulinMohring1993}.%
 \sidenote{
   Earlier type theories, such as \cite{MartinLoef1972,MartinLoef1984}, presented specific
@@ -1054,6 +1083,7 @@ Adding these to \kl{CCω} results in \intro{CIC},
 the \intro{Calculus of Inductive Constructions}.
 
 \subsection{Booleans}
+\FloatBarrier
 
 \begin{marginfigure}
   \ContinuedFloat*
@@ -1087,12 +1117,13 @@ and the true one $\intro*\true$ – this is Rules~\nameref{rule:false} and \name
 The last one is a way to use those canonical inhabitants.
 For booleans, this corresponds to a conditional,
 taking one branch or another depending on the value of the term being used,
-whose typing rule is given in \ruleref{rule:bool-ind}.%
-\sidenote{We call $s$ the \intro{scrutinee}, $P$ the \reintro{predicate}
-and $b_{\false}$, $b_{\true}$ the \reintro{branches}.}
+whose typing rule is given in \ruleref{rule:bool-ind}.
+We call $s$ the \intro{scrutinee}, $P$ the \reintro{predicate}
+and $b_{\false}$, $b_{\true}$ the \reintro{branches}.
 As was the case for dependent functions, here also there is a generalization with respect to
-conditionals in usual programming languages: the return type itself can depend on the scrutinee.
-The usual if-then-else conditional with the same type in both branches is a special case,
+usual programming languages: the predicate type itself can depend on the
+\kl{scrutinee}.
+The usual if-then-else conditional thus corresponds to the special case
 when $P$ does not depend on the variable $z$.
 \AP We call this $\intro*\indop$ term former \intro{induction principle}, as
 one can read $\ind{\Bool}{s}{z.P}{b_{\false},b_{\true}}$ as case distinction
@@ -1136,7 +1167,7 @@ but especially when we want to emphasize the programming point of view.
 
 One thing is still missing in this picture: computation. The extension of
 \kl{top-level reduction} is given in \cref{fig:bool-red} – our first example of
-ι-reduction, the reduction of recursors on constructors.
+ι-reduction, the reduction of recursors on \kl{constructors}.
 These rules pick the branch corresponding to the scrutinee,
 which is sensible if $\indop_{\Bool}$ is understood as a conditional.
 \kl{Declarative conversion} can be extended in exactly the same way.
@@ -1145,9 +1176,9 @@ we need to add new congruence rules, see \cref{fig:bool-cong}.
 For \kl{one-step reduction} and \kl{declarative conversion},
 there is no subtlety, all positions behave the same. The interesting rule is the
 one for \kl{weak-head reduction}: there is only one congruence rule, which allows for
-reduction of the scrutinee. This is similar to functions, we allow reduction only in the
+reduction of the scrutinee. This is similar to functions, where we allow reduction only in the
 position in the term that triggers a computation if it is a canonical form – in the case
-of $\indop$, in the scrutinee.
+of $\indop$, the scrutinee.
 
 \begin{figure*}
   \ContinuedFloat
@@ -1222,31 +1253,31 @@ The rules are more verbose than those for booleans, but the general idea is very
 and \ruleref{rule:succ-type} its constructors, and \ruleref{rule:nat-ind} its induction
 principle. This time said induction principle is a real one, as we can see in
 the second branch, where an induction hypothesis $p_{y}$ on the predecessor $y$ is available.
-As for booleans, the induction principle reduces when its scrutinee is a constructor.
+Similarly to booleans, the induction principle reduces when its scrutinee is a constructor.
 But, again, since we have real recursion,
 a recursive call appears in the reduct of \ruleref{rule:iota-succ}.
 We do not repeat the congruence rules, as they are similar to those for booleans
 (\cref{fig:bool-cong}). The only difference is that now there is also a need for congruence
 rules for the term former $\Sop$, since it has a sub-term.
 
-At this point, it might be good to add a note on the way we represent constructors:
+At this point, it might be good to add a note on the way we represent \kl{constructors}:
 we enforce them to be \intro{fully applied}, meaning $\Sop$ does not make sense on its own
 as a term. \kl{Coq} is slightly more permissive, and allows $\Sop \ty \Nat \to \Nat$.
-We forbid this – but one can always consider $\l x : \Nat.\ \S{x}$ instead if needed.
+We forbid this, but one can always consider $\l x : \Nat.\ \S{x}$ instead if needed.
 Likewise, inductive types are also enforced to be fully applied.
 We also avoid using the $\P$ and $\l$ term formers to represent binding in the predicate
 and branches of constructors, rather using contexts directly.
 This allows for a clear separation
 of concerns, by reducing interactions between the functional fragment and
 inductive types. \kl{Coq}'s kernel used to rely on $\P$ and $\l$ abstractions to represent
-predicates and branches, but a version close to our presentation has recently replaced it%
-\sidenote{The exact change is documented by pull-request \coqPR{13563}.}, 
-in part due to concerns raised while working on this thesis that are detailed in
-\arefpart{bidir}.
+predicates and branches, but a version close to our presentation has recently replaced it,%
+\sidenote{The exact change is documented by pull-request \coqPR{13563}.}
+in part due to concerns raised while working on this thesis, that are detailed in
+\cref{sec:bidir-pcuic-inductives}.
 
 \subsection{Parameters}
 
-\begin{figure}[h]
+\begin{figure}
   \AP
   \begin{mathpar}
     \inferdef{PairTy}
@@ -1274,21 +1305,21 @@ in part due to concerns raised while working on this thesis that are detailed in
 \end{figure}
 
 \AP A second direction for enhancement is the ability to have inductive types with parameters.
-The main use of this is for type constructors, for instance the pair type $A \times B$
-that appears in \cref{chap:intro-en}. As is probably not very surprising by
+The main use of this is for type operators, that is types that take other types as
+arguments, for instance the pair type $A \times B$
+of \cref{chap:intro-en}. As is probably not very surprising by
 now, this type is a restricted instance of a more general type, the
 dependent pair type $\intro*\Sb x : A.\ B$.
 Logically, its dependency on $A$ means that if we see $B$ as a property,
 the whole pair type describes a subset of $A$ – those elements
 which validate $B$. The rules are given in \cref{fig:sig}.
-As for functions we need an annotation on
+Similarly to functions, we need an annotation on
 the pair constructor, for the exact same reason: we want to ensure that any term can
 infer a type. We also omit congruence rules, as they are again similar to those of
 \cref{fig:bool-cong}, although now not only the pair constructor but also the type constructor
 $\Sb$ get their congruence rules, since both have sub-terms.
 
 \begin{figure}
-  \AP
 \begin{mathpar}
   \inferdef{ListTy}
     {\vdash A \ty \uni[i]}
@@ -1339,7 +1370,7 @@ given in \cref{fig:list}.
 
 There is one feature missing in the previous inductive types. Indeed, in all of them
 the return types of constructors are always the same. In some way, they do not exploit
-the possibilities of dependent types. What if we wanted constructors
+the real possibilities of dependent types. What if we wanted constructors
 to specify that they inhabit a type at some specific value? This is exactly the point of
 \intro{indexed inductive types}.
 
@@ -1373,8 +1404,8 @@ to specify that they inhabit a type at some specific value? This is exactly the 
 
 The paradigmatic example here is (propositional) equality, an
 inductive meant to represent equality \emph{internally} to the logic, \ie as a notion on
-which one can reason (for instance, do proofs by induction), rather than an external one
-such as \kl{conversion}.
+which one can reason – for instance, do proofs by induction –,
+rather than an external one such as \kl{conversion}.
 Rules for equality are given in \cref{fig:eq-type}. \ruleref{rule:eq-type} does not depart
 much from what we have already seen,
 apart from the fact that it takes not only a type as a parameter, but
@@ -1382,7 +1413,10 @@ also a term. \ruleref{rule:eq-refl} is already more interesting. Here we can see
 the second argument of type $A$ is fixed to be $a$ by the constructor. This gets
 more visible in \ruleref{rule:eq-ind}: in order for the branch $b$
 to be typeable, the predicate needs to be abstracted not only on the scrutinee,
-but also on that second argument.
+but also on that second argument. Such arguments to an inductive type,
+whose value depends on the constructor and need to be abstracted over in branches,
+are called \reintro{indices}. By contrast, the other arguments that behave uniformly
+are called parameters.
 
 As for the logical interpretation, in the simplified case where $P$ only depends on the index,
 \ruleref{rule:eq-ind} corresponds to the idea that equal terms should be indiscernible:
@@ -1450,25 +1484,24 @@ by mere virtue of typing.
 
 So far we only gave examples of the inductive types one could wish for.
 A description of how to generally define inductive types and construct induction principles
-in a way that keeps the good properties of the system would be technical and not
+in a way that keeps the good properties of the system would not
 very enlightening at this point. Let us simply say that the main restriction – barring typing
 constraints – is to ensure, through a criterion called (strict) positivity,
 that the recursive structure of the inductive type
-is well-founded, so that positing its existence does not allow for the
-introduction of paradoxes.
-On paper, rather than a hard-to-read general presentation we reuse the previous
+is well-founded, so that positing its existence does not endanger \kl{normalization} or
+\kl(log){consistency}.
+
+On paper, rather than a difficult to read general presentation we reuse the previous
 set of examples to show how our setting adapts to inductive types in their
 three main complexities – recursion, parameters and indices.
-The formalizations handle the general case, in the even more complex setting of \kl{PCUIC}
-as presented in \cref{sec:tech-pcuic}.
+But the formalization in \kl{MetaCoq} handles the general case,
+in the even more complex setting of \kl{PCUIC} as presented in \cref{sec:tech-pcuic}.
 
 In the end, when we talk about \kl{CIC} we mean the extension of \kl{CCω} with any number of
-valid inductive types in the previous sense.
-At some points in the thesis, especially \arefpart{gradual}, we need to restrict to
+inductive types, valid in the previous sense.
+As already explained, in \arefpart{gradual} we need to restrict to
 non-indexed inductive types. In that setting, our base system is \intro{CIC-},
-the restriction of \kl{CIC} excluding \kl{indexed inductive types}.
-
-
+the restriction of \kl{CIC} to exclude \kl{indexed inductive types}.
 
 \section{Beyond \kl(tit){CIC}: \kl(tit){PCUIC}}
 \label{sec:tech-pcuic}
@@ -1480,7 +1513,7 @@ formalized in \kl{MetaCoq}, the \intro{Polymorphic, Cumulative Calculus of Induc
 which extends \kl{CIC} with many features which are crucial for usability. 
 As some additions of \kl{PCUIC} are discussed throughout this
 thesis, we wish to already give a high level idea of them,
-while reserving the fully precise technical details for \arefpart{metacoq}.
+while reserving the technical details for \arefpart{metacoq}.
 
 \subsection{Cumulativity}
 
@@ -1494,7 +1527,7 @@ universe levels appear under the hood, this would quickly become unhandy.
 
 \AP Instead, \intro{cumulativity} – written $\intro*\cum$ – is an extension of conversion
 with a limited form of subtyping,
-corresponding to inclusion of a universe $\uni[i]$ in any larger universe $\uni[j]$.
+generated by the inclusion of a universe $\uni[i]$ in any larger universe $\uni[j]$.
 This means that while $\uni[i] \conv \uni[j]$ is true only if $i = j$, cumulativity
 allows for $\uni[i] \cum \uni[j]$ as soon as $i \leq j$.
 This subtyping can be extended to function types,
@@ -1503,9 +1536,9 @@ Note that contrarily to other forms of subtyping, this does not allow for contra
 subtyping on the domain – that would correspond to $A' \cum A$ –, only for equivariant
 one – the domains should be convertible. This is because cumulativity is usually modelled
 using set inclusion \sidecite{Lee2011}, which straightforwardly handles equivariant
-subtyping, but not so easily to contravariant subtyping.
+subtyping, but not so easily contravariant subtyping.
 
-\begin{figure}
+\begin{figure}[h]
   \begin{mathpar}
     \inferdef{UnivCum}{i \leq j}{\uni[i] \cum \uni[j]} \label{rule:univ-cum} \and
     \inferdef{ΠCum}{A \conv A' \\ B \cum B'}{\P x : A.\ B \cum \P x : A'.\ B'}
@@ -1525,13 +1558,15 @@ subtyping, but not so easily to contravariant subtyping.
 
 To adapt the definitions of \kl{declarative conversion} to cumulativity,
 the three important rules are given in \cref{fig:tech-cumul}.
-The first two rules are the ones we already defined: \ruleref{rule:univ-cum} is the base case for cumulativity, and \ruleref{rule:prod-cum}
+The first two rules are the ones we already hinted at:
+\ruleref{rule:univ-cum} is the base case for cumulativity, and \ruleref{rule:prod-cum}
 is the relaxed congruence rule for Π-types. The next one, \ruleref{rule:conv-cum}, allows
 to turn any proof of conversion in a cumulativity one, effectively describing how cumulativity
 behaves outside the fragment formed by Π-types and universes. 
 Next come Rules \nameref{rule:cum-refl} and \nameref{rule:cum-trans}, which assert that cumulativity
-is a pre-order. Of course there is no rule for symmetry, because cumulativity should not be
-an equivalence relation. Finally, Rules \nameref{rule:cic-ucum} and \nameref{rule:cic-cum} show how
+is a pre-order. Of course there is no rule for symmetry,
+because we do not want cumulativity to be an equivalence relation.
+Finally, Rules \nameref{rule:cic-ucum} and \nameref{rule:cic-cum} show how
 cumulativity is used: it simply replaces conversion.
 
 \AP
@@ -1574,37 +1609,32 @@ Indeed, those usually prove consistency of the modelled system,
 something which requires having an even higher logical strength than it.
 Since parts of this thesis – especially \arefpart{gradual} – use such models that do not
 scale to an impredicative sort of proposition,
-we refrain from including one in our reference \kl{CIC}.
+we refrain from including one in our standard \kl{CIC}. In the other cases, including a sort of
+propositions makes the system more complex but without raising new interesting questions.
 
 \AP The second defining characteristic of $\Prop$ is \intro{proof irrelevance}.
 This means that \kl{PCUIC} has a criterion, called singleton elimination, which maintains
 a form of segregation between terms inhabiting types in $\uni$ and
-those inhabiting types in $\Prop$, ensuring that the first kind cannot depend in a relevant
-way on the second. For instance, if $P \ty \Prop$, it ensures that it is impossible
+those inhabiting types in $\Prop$, ensuring that terms of the first kind cannot
+depend in a relevant way on terms of the second.
+For instance, if $P \ty \Prop$, it ensures that it is impossible
 to build a function $f \ty P \to \Bool$ and two terms $p_1 \ty P$ and $p_2 \ty P$ such that
 $f\ p_1 \conv \false$ and $f\ p_2 \conv \true$. This segregation aims at allowing separation
 between the part of the system that should be seen as programs and that which should be
 seen as proofs, so that it is possible to write programs decorated with
 complex correctness proofs, while later on erasing all the
 logical content to keep only the computational content of the program.
+This is the erasure procedure we introduced in \cref{sec:intro-metacoq-en},
+for which $\Prop$ is crucial.
 
 \subsection{Local definitions}
 
 It is often useful to locally introduce a shorthand to be used repeatedly, and
-this is what \kl{PCUIC} allows with \intro{local definitions} $\letin{x}{A}{t}{u}$.
+this is what \kl{PCUIC} allows with a new term former,
+\intro{local definitions} $\letin{x}{A}{t}{u}$.
 In such a local definition, $x$ can be used in the term $u$ as a shorthand for $t$.
 
-The main impact of this addition is its effect on contexts: as \ruleref{rule:pcuic-letin}
-illustrates, when typing $u$, not only the type of the definition is recorded, but
-also its value $t$. This is again due to dependency, because the value of the definition,
-and not only its type, might be needed for $u$ to be well-typed.
-As an example, suppose we have a function
-$\operatorname{head} \ty \P (A : \uni) (x : \Nat).\ \Vect(A,\S x) \to A$, and consider
-\[\letin{x}{\Nat}{1}{\l v : \Vect(\Bool,x).\ \operatorname{head}\ \Bool\ \z\ v} \]
-This term is well-typed only if the fact that $x$ has value $1$ is available in the
-right-hand side.
-
-\begin{figure}
+\begin{figure}[ht]
   \ContinuedFloat*
   \begin{mathpar}
     \inferdef{LetIn}{\Gamma \vdash A \ty \uni \\ \Gamma \vdash t \ty A \\
@@ -1616,16 +1646,16 @@ right-hand side.
   \label{fig:local-def}
 \end{figure}
 
-This also means that contexts now should be recorded in
-\kl{conversion} and \kl{cumulativity}, because those need to access the value of a
-variable bound by a definition if we want to enable the behaviour just described.
-In the end, there are two \kl{top-level reductions} for definitions: they can be either
-simplified right away into a substitution (\nameref{rule:zeta-red})%
-\sidenote{The notations are a bit misleading here: the local definition is part
-of the syntax of terms, while substitution is a meta-level operation. While the former
-encodes the latter in the syntax, they are quite different!},
-or recorded into the context and simplified only later on
-using \ruleref{rule:delta-red}.
+The main impact of this addition is its effect on contexts: as \ruleref{rule:pcuic-letin}
+illustrates, when typing $u$, not only the type of the definition is recorded, but
+also its value $t$. This is again due to dependency, because the value of the definition,
+and not only its type, might be needed for $u$ to be well-typed.
+As an example, suppose we have a function
+\[\operatorname{head} \ty \P (A : \uni) (x : \Nat).\ \Vect(A,\S x) \to A\]
+and consider
+\[\letin{x}{\Nat}{1}{\l v : \Vect(\Bool,x).\ \operatorname{head}\ \Bool\ \z\ v} \]
+This term is well-typed only if the fact that $x$ has value $1$ is available in the
+right-hand side.
 
 \begin{marginfigure}
   \ContinuedFloat
@@ -1636,7 +1666,20 @@ using \ruleref{rule:delta-red}.
     \label{rule:delta-red}
   \end{mathpar}
   \caption{Top-level reduction for local definitions}
+  \label{fig:local-def-red}
 \end{marginfigure}
+
+This also means that contexts now should be recorded in
+\kl{conversion} and \kl{cumulativity}, because those need to access the value of a
+variable bound by a definition if we want to enable the behaviour just described.
+In the end, there are two \kl{top-level reductions} for definitions, given opposite:
+they can be either simplified right away into a substitution (\nameref{rule:zeta-red})%
+\sidenote{The notations are a bit misleading here: the local definition is part
+of the syntax of terms, while substitution is a meta-level operation. While the former
+encodes the latter in the syntax, they are quite different!},
+or recorded into the context and simplified only later on
+using \ruleref{rule:delta-red}.
+
 
 \subsection{Global environments}
 
@@ -1658,19 +1701,21 @@ This environment is not only used for definitions and assumptions,
 but also to keep track of inductive types.
 It thus effectively implements our somewhat vague assumption that
 \kl{CIC} is extended with “any number of valid inductive types”. Of course, there is a notion
-of environment well-formation, which accounts for the fact that as for contexts it should
+of environment well-formation, which accounts for the fact that it should
 only contain objects that are well-typed, together with other constraints, for instance
 that inductive types respect the strict positivity criterion.
 
 There is a further use for this environment: it also records the level variables available for
-universes, and their constraints. Indeed, in \kl{PCUIC}, universe levels are expressions,
+universes, and their constraints. Indeed, in \kl{PCUIC}, universe levels are expressions
+rather than simple natural numbers,
 and the order between expressions is relative to a given environment $\Sigma$.
 There are actually two kinds of those universe variables.
 The first are global ones, that are recorded in an ever-growing fashion in the environment.
 This is the older approach, that was introduced in \kl{Coq} together with \kl{typical
 ambiguity}, following \sidetextcite{Pollack1992}.
-This approach is slightly not flexible enough, which is why a second kind of variables
-were more recently introduced \sidecite{Sozeau2014}. Those are attached locally to
+
+This approach is however still not flexible enough, which is why a second kind of variables
+were more recently introduced \sidecite{Sozeau2014}. These are attached locally to
 an entry in the environment, corresponding to a form of \intro{universe polymorphism},
 and each time such a definition is used it can be instantiated with new universe levels.%
 \sidenote{
@@ -1681,26 +1726,30 @@ and each time such a definition is used it can be instantiated with new universe
 This is for instance useful to have a single (polymorphic) definition of categories,
 and still be able to define the category – at level $j$ – of all categories
 – at a level $i < j$ –, by instantiating the definition at the two different levels $i$ and $j$.
+If there was just one global level $k$, then doing this would result in a constraint $k < k$,
+and this definition would not be accepted.
 
 \subsection{Enhanced inductive types}
 \label{sec:pcuic-ind}
 
-Of course inductive types in \kl{PCUIC} are also affected by those extensions.
+Of course inductive types in \kl{PCUIC} are also affected by these extensions.
 Not only can they be polymorphic, as definitions, they also feature a form of 
 cumulativity, that makes this polymorphism more seamless – see \sidetextcite{Timany2018}
 for a precise description.
 This for instance prevents issues with $\lnil[A]$ not being of type $\List(A)$ because of a
 mismatch between type variables – those do not appear in our presentation of \kl{CIC},
 but are present in \kl{PCUIC} due to the general setting for polymorphic 
-inductive types. Moreover, the strict positivity criterion adopted in \kl{PCUIC} is
+inductive types.
+
+Moreover, the strict positivity criterion adopted in \kl{PCUIC} is
 very general, as it allows mutually defined and nested inductive types.
 The former are multiple inductive types defined at the same time,
 where a constructor of one type can take a recursive argument of another. For instance,
 an inductive oddness/evenness predicate with constructors
 $\operatorname{oddS} \ty \P x : \Nat.\ \operatorname{even} x \to \operatorname{odd} \S x$ and $\operatorname{evenS} \ty \P x : \Nat.\ \operatorname{odd} x \to \operatorname{even} \S x$.
 The latter are types where a constructor can take a recursive argument mentioning the type
-being defined as a parameter to and inductive type –
-for instance, a type of tree where a node takes a list of trees as arguments.
+being defined as a parameter to another inductive type –
+for instance, a type of tree where a node takes a list of trees as argument.
 
 But the most significant difference is that the induction principles,
 such as the ones we gave for \kl{CIC},
@@ -1715,8 +1764,8 @@ structurally smaller sub-terms – by means of pattern-matching. This guard cond
 theoretically ensures that fixed-points and pattern-matching can always be reduced to
 \kl{recursors} \sidecite{Gimenez1995}, which are what proofs of \kl{normalization} and/or
 consistency usually consider.
-However, in practice the former give more
-flexible and natural definitions than the latter.
+However, in practice the former is much more
+flexible and natural to use than the latter.
 
 \subsection{Records and co-inductive types}
 \label{sec:pcuic-records}
@@ -1729,7 +1778,7 @@ a generalization of Σ-types which allows for any number of
 named fields. The main addition of record types is the ability to access those fields via
 \intro{projections} rather than by using pattern-matching. For the Σ-type as presented in
 \cref{sec:tech-cic}, this would mean accessing the two fields of the pair $p$ with two
-term formers $p._{\pi_{1}}$ and $p._{\pi_{2}}$. These record types are very useful to package
+term formers $p._{1}$ and $p._{1}$. These record types are very useful to package
 objects together, be it in programming or in mathematics – where such bundles are ubiquitous,
 for instance when formalizing hierarchies of mathematical structures \sidecite{Cohen2020}.
 
@@ -1737,7 +1786,7 @@ for instance when formalizing hierarchies of mathematical structures \sidecite{C
 These are somewhat similar to inductive types, but
 while the latter correspond to well-founded objects, the former represent
 potentially infinite objects, such as streams of values. Because of this flavour of infinity,
-co-inductive types pose an inherent threat to good properties of the system, such as
+co-inductive types pose an inherent threat to good properties of the system, in particular
 decidability of type-checking. At the time of their introduction in \kl{Coq}
 \sidecite{Gimenez1995}, they were presented in a so-called “positive” fashion – close
 to the presentation of \kl{inductive types} –, which
@@ -1746,5 +1795,5 @@ Another presentation, inspired by more recent work on
 co-induction, and especially co-patterns \sidecite{Abel2013}, is the “negative” one –
 similar to the projection-based presentation of \kl{record types} –,
 which regains the good properties of the system. While the older positive presentation
-is still present in \kl{Coq} for compatibility reasons,
+is still present in \kl{Coq}, in part for compatibility reasons,
 only the negative one is formalized in \kl{MetaCoq}.

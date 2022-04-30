@@ -1,4 +1,4 @@
-\chapter{Bidirectional conversion}
+\chapter{Bidirectional Conversion}
 \label{chap:bidir-conv}
 
 In \sidetextcite{Abel2017}, decidability of conversion is shown by introducing a notion
@@ -6,14 +6,16 @@ of “algorithmic conversion”, a relation which directly corresponds to an alg
 check convertibility of two terms. This is very similar to how we show decidability of typing
 in \arefpart{metacoq} by going through bidirectional typing as an intermediate, more structured
 representation.
-Even better: this conversion is type-based,%
+Even better: this conversion is typed,%
 \sidenote{It uses type information to trigger η-expansion when comparing inhabitants of
 a Π-type.}
 and it is in fact bidirectional! Indeed, while regular conversion-checking uses a type as
 input, it is mutually defined with conversion of neutrals, which \emph{infers} a type
-while converting neutrals.
+while checking for conversion.
 
-This section is devoted to the re-casting of the ideas of \sidetextcite{Abel2017} in our
+This section is devoted to the re-casting of the ideas of \sidetextcite{Abel2017} in the
 bidirectional setting, and to the proof, made relatively easy by the bidirectional structure,
 that this typed conversion relation agrees with an untyped one, close to the conversion algorithm
-implemented in \kl{Coq}.
+implemented in \kl{Coq}. This could be a first step towards a specification of
+\kl{MetaCoq} using a typed conversion, which would facilitate the incorporation of
+η laws that are currently missing to the project.
