@@ -127,7 +127,7 @@
   publisher = {Oxford University Press},
   file      = {:Hofmann1996 - The Groupoid Interpretation of Type Theory.ps:PostScript},
   groups    = {CIC, HoTT, meven:2, Models of TT},
-  priority  = {prio2},
+  priority  = {prio3},
 }
 
 @InProceedings{Lehmann2017,
@@ -3803,7 +3803,7 @@ on an original handling of the no-confusion property of constructors.},
   institution = {University of Ljubljana},
   title       = {Meta-analysis of type theories with an application to the design of formal proofs},
   file        = {:PetkovicKomel2021 - Meta Analysis of Type Theories with an Application to the Design of Formal Proofs.pdf:PDF},
-  priority    = {prio2},
+  priority    = {prio3},
 }
 
 @Thesis{Haselwarter2022,
@@ -3815,7 +3815,50 @@ on an original handling of the no-confusion property of constructors.},
   url          = {https://repozitorij.uni-lj.si/IzpisGradiva.php?lang=eng&id=134439},
   abstractnote = {In this dissertation, I propose finitary type theories as a definition of a wide class of type theories in the style of Martin-Löf, and I design a programming language for deriving judgements in finitary type theories. State of the art computer implementations of type theory rely on a computational interpretation of type theory, either via decidability results or via realisability. Such results are not readily available for all type theories studied in the literature, which renders their implementation challenging. The implementation of a flexible proof assistant supporting user-specified type theories requires a general definition outlining the structure of a type theory. I give a mathematically precise definition of a class of finitary type theories, that covers familiar examples, including Extensional Type Theory, the Calculus of Constructions, and Homotopy Type Theory. I first focus on the mathematical development of finitary type theories, before turning to their implementation in proof assistants. The definition proceeds in stages, starting with raw syntax, raw rules, and raw type theories, then delineating finitary rules and type theories, and finally specifying standard type theories. Once these definitions are accomplished, general meta-theoretic results in the form of a uniqueness of typing theorem and a cut elimination theorem are proved. I reformulate finitary type theories with a suitable treatment of free variables as context-free type theories, paving the way to an implementation in a proof assistant. The definition of context-free type theories again proceeds in stages of refinement, and I prove metatheorems for each successive stage. Translation theorems between context-free and finitary type theories relate the two formalisms. I introduce the Andromeda metalanguage (AML), an effectful programming language that allows convenient manipulation of judgement and rules of user-definable context-free type theories, and supports common proof development techniques. AML leverages algebraic effects and runners to extend proof assistant algorithms with local hypothesis in a modular way. The operational semantics of AML is inspired by bidirectional typing and helps the user harness contextual information, exhibiting a virtuous interaction with effect operations. AML has been implemented in the Andromeda prover, and I describe first experiments in the computer-assisted development of context-free type theories in AML.},
   file         = {:Haselwarter2022 - Effective Metatheory for Type Theory.pdf:PDF},
+  priority     = {prio3},
+}
+
+@Article{Harper2005,
+  author       = {Harper, Robert and Pfenning, Frank},
+  date         = {2005-01},
+  journaltitle = {ACM Trans. Comput. Logic},
+  title        = {On Equivalence and Canonical Forms in the LF Type Theory},
+  doi          = {10.1145/1042038.1042041},
+  issn         = {1529-3785},
+  number       = {1},
+  pages        = {61–101},
+  volume       = {6},
+  abstract     = {Decidability of definitional equality and conversion of terms into canonical form play a central role in the meta-theory of a type-theoretic logical framework. Most studies of definitional equality are based on a confluent, strongly normalizing notion of reduction. Coquand has considered a different approach, directly proving the correctness of a practical equivalance algorithm based on the shape of terms. Neither approach appears to scale well to richer languages with, for example, unit types or subtyping, and neither provides a notion of canonical form suitable for proving adequacy of encodings.In this article, we present a new, type-directed equivalence algorithm for the LF type theory that overcomes the weaknesses of previous approaches. The algorithm is practical, scales to richer languages, and yields a new notion of canonical form sufficient for adequate encodings of logical systems. The algorithm is proved complete by a Kripke-style logical relations argument similar to that suggested by Coquand. Crucially, both the algorithm itself and the logical relations rely only on the shapes of types, ignoring dependencies on terms.},
+  file         = {:Harper2005 - On Equivalence and Canonical Forms in the LF Type Theory.pdf:PDF},
+  issue_date   = {January 2005},
+  keywords     = {type theory, Logical frameworks},
+  location     = {New York, NY, USA},
+  numpages     = {41},
   priority     = {prio2},
+  publisher    = {Association for Computing Machinery},
+}
+
+@PhdThesis{Werner1994,
+  author      = {Werner, Benjamin},
+  date        = {1994-05},
+  institution = {{Universit{\'e} Paris-Diderot - Paris VII}},
+  title       = {{Une Th{\'e}orie des Constructions Inductives}},
+  type        = {Theses},
+  url         = {https://tel.archives-ouvertes.fr/tel-00196524},
+  file        = {main.pdf:https\:/tel.archives-ouvertes.fr/tel-00196524v2/file/main.pdf:PDF},
+  hal_id      = {tel-00196524},
+  hal_version = {v2},
+  keywords    = {Curry-Howard isomorphism ; typed lambda-calculus ; reducibility ; inductive types ; calculus of constructions ; Isomorphisme de Curry-Howard ; lambda-calcul typ{\'e} ; normalisation ; r{\'e}ductibilit{\'e} ; confluence ; types inductifs ; calcul des constructions},
+  priority    = {prio2},
+}
+
+@Thesis{Altenkirch1993,
+  author      = {Thorsten Altenkirch},
+  date        = {1993},
+  institution = {University of Edinburgh},
+  title       = {Constructions, Inductive Types and Strong Normalization},
+  type        = {phdthesis},
+  priority    = {prio3},
 }
 
 @Comment{jabref-meta: databaseType:biblatex;}
