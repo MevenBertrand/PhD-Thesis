@@ -19,7 +19,7 @@ more structured representation.
 But the interesting point is that this \kl(conv){typed}%
 \sidenote{Type information is used to trigger η-expansion when comparing inhabitants of
 a Π-type.},
-algorithmic conversion, and it is, in fact, bidirectional!
+algorithmic conversion is in fact bidirectional!
 Indeed, while regular conversion-checking uses the type as
 \kl{input}, it is mutually defined with a specific relation to compare \kl{neutrals},
 which \kl[inference]{\emph{infers}} a type while checking that the neutrals are convertible.
@@ -36,18 +36,29 @@ This is not because we do not know how to handle them in the kernel%
 in a term-directed fashion.}
 but rather because it is difficult to give a good specification of them in the
 \kl(conv){untyped} setting chosen for \kl{MetaCoq}’s conversion.%
-\sidenote{I gave a workshop presentation \cite{LennonBertrand2022a} on this issue.}%
-\margincite{LennonBertrand2022a}
-Thus, this could be a first step towards a specification of
+\sidenote{The changelog of Coq 8.4, where extensionality for functions was introduced,
+actually reads: \textit{“The addition of η-conversion is justified by the confidence
+that the formulation of the Calculus of Inductive Constructions based on typed equality
+(such as the one considered in Lee and Werner to build a set-theoretic model of CIC
+\cite{Lee2011}) is applicable to the concrete implementation of Coq.”}
+See \textcite{LennonBertrand2022a} for more insight on the difficulties in the untyped
+setting.}%
+\margincite{Lee2011,LennonBertrand2022a}
+Thus, showing that typed and untyped algorithms agree could be a first step towards a specification of
 \kl{MetaCoq} using \kl{typed conversion}, which would facilitate the incorporation of
 extensionality rules that are currently direly missing to the project.
 
 The chapter is organized as follows: \cref{sec:bidir-conv} introduces the main relation we will
 be interested in, namely the bidirectional conversion inspired by \textcite{Abel2017};
-\cref{sec:bidir-conv-meta} discusses the difficulties encountered when establishing the
-meta-theory of such a system; finally, \cref{sec:unty-conv-equiv} presents the equivalence
-between this bidirectional conversion and an untyped one, very close to how \kl{Coq}’s kernel
-handles η-rules.
+\cref{sec:unty-conv} presents its untyped counterpart, close to the implementation of \kl{Coq};
+\cref{sec:bd-conv-disc} discusses the meta-theoretical properties needed for the rest of
+the chapter, and the difficulties they pose;
+finally, \cref{sec:unty-conv-equiv} presents the equivalence
+between this bidirectional conversion and the untyped one.
+
+All of the chapter is rather new, and its material has not yet been submitted to peer-reviewing.
+As such, it should be regarded as a first attempt at making interesting ideas visible,
+rather than a finished and polished exposition.
 
 \section{Bidirectional Conversion}
 \label{sec:bidir-conv}
@@ -57,67 +68,78 @@ handles η-rules.
 
 Before we can get to bidirectional conversion, let us first go over why using typed conversion
 is interesting. Typed conversion is as old as type theory itself \cite{MartinLoef1972},
-and there are two main reasons that make it a better choice over untyped conversion.
+and there are two main reasons that make it a better choice over untyped conversion as we
+have used until now.
 The first is that it is easier to build models%
 \sidenote{Or logical relations, translations…} using typed conversion,
-because these can use the extra type information to interpret conversion based on the type.
+because these can use that extra information to interpret conversion \emph{at a given type}.
 But the reason that is of interest to us here, as we do not build such
 models, are extensionality rules.
 
 In general, extensionality rules allow equating two terms, not based on their shape,%
 \sidenote{As is the case of all the rules introduced so far, especially β and ι.}
-but on the type. The most basic one is that for functions,
+but on their type. The most basic one is that for functions,
 which says that any function $f$ and $g$ of type $\P x : A.\ B$
-should be convertible whenever $f\ x \conv g\ x \ty B$ – note that here $f$ and $g$ are
+should be convertible whenever $f\ x$ and $g\ x$ are – note that here $f$ and $g$ are
 \emph{any} functions.
 As their name suggest, this kind of rules constrain the
-system to not be too intentional. For instance, in the case of functions, $f$ and $g$ cannot
-contain any “hidden” information that disappear when observing their behaviour using
-application, because that information would disappear when applying the extensionality rule.
+system to be somewhat extensional. For instance, in the case of functions, $f$ and $g$ cannot
+contain any “hidden” information other than their behaviour using
+application, because such information would disappear when applying the extensionality rule.
 In \kl{Coq}, similar extensionality rules exist for dependent pair types%
-\sidenote{Or more generally for record types, which are a generalized version of these,
-see \cref{sec:pcuic-ind}.}
-– saying that $p$ and $q$ of type $\Sb x : A.\ B$, $p$ and $q$ are convertible whenever
-their two components are –
-and for strict propositions – saying that whenever $P \ty \SProp$, and $p \ty P$, $q \ty P$,
-$p$ and $q$ are convertible.
+\sidenote{Saying that $p$ and $q$ of type $\Sb x : A.\ B$ are convertible whenever
+their two components are.},
+and more broadly for record types,%
+\sidenote{A generalized version of pair types, see \cref{sec:pcuic-ind}.}
+as well as for strict propositions \cite{Gilbert2019,Pujet2022}.%
+\sidenote{Saying that whenever $P \ty \SProp$, and $p \ty P$, $q \ty P$,
+$p$ and $q$ are convertible.}
 
 In the case of functions,%
 \sidenote{Something similar happens for record types.}
 the extensionality rule is inter-derivable with what is called the η-rule, which equates
 $f$ and $\l x : A. f\ x$. While less useful than β-rules, η-rules are still valuable.
 For instance, in the setting of homotopy type theory, they are needed to deduce function
-extensionality from univalence \sidecite{UniFoundationsProgram2013}.
+extensionality from the univalence axiom \sidecite[][Theorem 4.9.4]{UniFoundationsProgram2013}.
+Strict propositions are also seen as a promising tool for proof management
+\sidecite{Appel2022}.
 
 \subsection{Conversion checks, neutral comparison infers}
 
-If we wish to describe such type-based rules, it is natural to wish for a typing relation
-that maintains that type, in order to use it to trigger extensionality rules.
+If we want to describe such type-based rules, it is natural to wish for a typing relation
+that maintains the type, in order to use it to trigger extensionality rules.
 This what happens for instance in \kl{Agda} \sidecite{Norell2007}.%
-\sidenote{Although in the specific case of functions,
+\sidenote{In the specific case of functions, for performance reasons
 the \kl{Agda} implementation actually uses the
-same term-directed technique as \kl{Coq}, as presented in \cref{sec:unty-conv-equiv}.}
-Because the type is maintained, we need the conversion rules to obey McBride’s discipline too.
-A nice presentation of this is given by the “algorithmic conversion” of \sidetextcite{Abel2017},
-from which we take inspiration here to describe a bidirectional conversion relation for
-\kl{CCω}.
+same term-directed technique as \kl{Coq}, similar to that of \cref{sec:unty-conv}.
+But type-directed extensionality rules are used \eg for the definitional unit type.}
+A nice theoretical presentation of this is given by the “algorithmic conversion”
+of \sidetextcite{Abel2017}, from which we take inspiration here to describe a bidirectional
+conversion relation for \kl{CCω}.
 
-The important intuition about this relation is that it actually decomposes conversion in two
-relations. On one side, \intro{generic conversion}, that we will continue writing $\bconvop$,
-which takes a type as \kl{input} – \ie, it \emph{checks}. On the other side,
-\intro{neutral comparison}, written $\nconvop$, which takes a type as \kl{output} – it \emph{infers}.
+\AP The important intuition about this relation is that it actually decomposes conversion in two
+components. On one side, \intro{generic conversion}, that we will continue writing%
+\sidenote{We use the color \typedcolor{blue} for the typed relations, and the $\typedcolor{\vdash_{\symup{t}}}$
+symbol to distinguish typing judgments defined using the typed relations.}
+$\intro* \bconvop$,
+which takes a type as \kl{input} – \ie it \emph{checks}. On the other side,
+\intro{neutral comparison}, written $\intro* \nconvop$,
+which takes a type as \kl{output} – it \emph{infers}.
 There are two reasons for this. First, applying extensionality rules on neutrals is
-useless, as it will simply create a blocked redex. For instance, if $n$ and $n'$ are neutral
+useless, as this will simply create blocked redexes. For instance, if $n$ and $n'$ are neutral
 functions, $n\ x$ and $n'\ x$ are convertible exactly when $n$ and $n'$ are. But more
 importantly, the inferred information is used to know at which type the recursive appeals to
-conversion need to be done. In the case of applications for instance, comparing $n\ t$ with
-$n'\ t'$, we need to infer a type $\P x : A.\ B$ while comparing $n$ with $n'$ to recursively
-compare $t$ to $t'$ at type $A$.
+conversion need to be done. In the case of applications again, comparing $n\ t$ with
+$n'\ t'$, we need to infer a type $\P x : A.\ B$ while recursively comparing $n$ with $n'$
+to compare $t$ to $t'$ at type $A$. This information can only be inferred from the neutrals:
+even if we know that the comparison between $n\ t$ and $n'\ t'$ happens at type $T$,
+this gives no insight on the type at which $t$ and $t'$ should be compared.
+
 
 \begin{figure*}[h]
   \ContinuedFloat*
   \begin{mathpar}
-  \inferdef{Check}{\inferty{\Gamma}{t}{T} \\ \bcum{\Gamma}{T}{T'}}{\checkty{\Gamma}{t}{T'}}
+  \inferdef{Check}{\tinferty{\Gamma}{t}{T} \\ \bcum{\Gamma}{T}{T'}}{\tcheckty{\Gamma}{t}{T'}}
     \label{rule:bd-cum-check} \and
   \inferdef{RedCum}{T \hred T' \\ U \hred U' \\ \cumh{\Gamma}{T'}{U'}}{\bcum{\Gamma}{T}{U}}
     \label{rule:bd-red-cum}
@@ -131,18 +153,18 @@ the rules of \cref{fig:ccw-bidir-infer,fig:bidir-ccw-other}, replacing \ruleref{
 of \cref{fig:bidir-ccw-other} by \ruleref{rule:bd-cum-check} of \cref{fig:gene-cum}.
 We cannot define a system based purely on \kl{conversion},%
 \sidenote{This is due to the product rule, to which we will get soon.}
-so we use \kl{generic cumulativity} $\mathord{\bcumop}$ instead.
+so we use \intro{generic cumulativity} $\intro* \bcumop$ instead.
 Note also that there is no known level at which the two types should be compared,
 hence \kl{generic cumulativity} “checks”, but against the mere
-fact of being a type, rather than against a precise type. This is akin to the relation often
+fact of being a type, rather than against a precise type. This is akin to the relation
 written $\Gamma \vdash T \conv T'$ or $\Gamma \vdash T \conv T'\ Type$ often used in the
 setting of Martin-Löf type theory.
 To deduce \kl{generic cumulativity},
 there is only one rule that applies, \ruleref{rule:bd-red-cum}:
-both arguments are reduced to \kl{weak-head} normal forms, before being compared
-by the auxiliary relation $\cumhop$.
+both arguments are reduced to \kl(red){weak-head} normal forms, before being compared
+by the auxiliary relation $\intro* \cumhop$.
 
-\begin{figure*}[h]
+\begin{figure}[h]
   \ContinuedFloat
   \begin{mathpar}
     \inferdef{BdNeuCum}{\nconv{\Gamma}{N}{N'}{S}}{\cumh{\Gamma}{N}{N'}}
@@ -155,12 +177,12 @@ by the auxiliary relation $\cumhop$.
   \end{mathpar}
   \caption{\kl{Generic cumulativity} between reduced types}
   \label{fig:gene-cumh}
-\end{figure*}
+\end{figure}
 
 This auxiliary relation, in turn, is defined by the rules of \cref{fig:gene-cumh}, which
-either apply congruence rules if both types being compared are \kl{canonical} forms –
-Rules \nameref{rule:bd-uni-cum} and \nameref{rule:bd-prod-cum} –, or call
-\kl{neutral comparison} otherwise – \ruleref{rule:bd-neu-cum}.
+either apply congruence rules if both types being compared are \kl{canonical forms}
+(Rules \nameref{rule:bd-uni-cum} and \nameref{rule:bd-prod-cum}), or call
+\kl{neutral comparison} otherwise (\ruleref{rule:bd-neu-cum}).
 
 \begin{figure*}[h]
   \ContinuedFloat
@@ -179,8 +201,8 @@ Rules \nameref{rule:bd-uni-cum} and \nameref{rule:bd-prod-cum} –, or call
   \label{fig:gene-conv-ty}
 \end{figure*}
 
-\kl{Generic conversion} is defined in \cref{fig:gene-conv-ty}, in a way very similar to
-\kl{generic cumulativity}.
+\kl{Generic conversion} between types is defined in \cref{fig:gene-conv-ty},
+in a way very similar to \kl{generic cumulativity}.
 
 \begin{figure*}[h]
   \ContinuedFloat
@@ -198,7 +220,8 @@ Rules \nameref{rule:bd-uni-cum} and \nameref{rule:bd-prod-cum} –, or call
 \end{figure*}
 
 Next, we get to \kl{neutral comparison}, in \cref{fig:neu-comp}. Neutrals are
-related exactly when they are the same variable, applied to two lists of recursively convertible arguments. The interesting rule is \ruleref{rule:neu-comp-app}, where we see
+related exactly when they are the same variable, applied to two lists of recursively convertible arguments.
+The interesting rule is \ruleref{rule:neu-comp-app}, where we see
 the behaviour described earlier: the domain of the inferred type for the neutral is used to
 compare the arguments.
 
@@ -206,7 +229,7 @@ compare the arguments.
   \ContinuedFloat
   \begin{mathpar}
     \inferdef{RedConvTm}{t \hred t' \\ u \hred u' \\ A \hred A' \\ \convh{\Gamma}{t'}{u'}[A']}
-      {\bconv{\Gamma}{t}{u}[A]}\label{rule:bd-red-conv-tm} \and
+      {\bconv{\Gamma}{t}{u}[A]}\label{rule:bd-red-conv-tm} \\
     \inferdef{BdNeuConvUni}{\nconv{\Gamma}{n}{n'}{S}}{\convh{\Gamma}{n}{n'}[\uni[i]]}
       \label{rule:bd-neu-conv-uni} \and
     \inferdef{BdNeuConvNeu}{\nconv{\Gamma}{n}{n'}{S} \\ \ne N}{\convh{\Gamma}{n}{n'}[N]}
@@ -222,21 +245,21 @@ compare the arguments.
   \label{fig:gene-conv-tm}
 \end{figure*}
 
-Finally, we get to \kl{generic conversion} between terms, which is called recursively by
+Finally, we are left with \kl{generic conversion} between terms, which is called recursively by
 \kl{neutral comparison}.
 The first set of rules, given in \cref{fig:gene-conv-tm} is very similar to the one for types.
-First, the two terms are reduced, and the type at which they are compared too,
-and the terms are then compared using relation $\convhop$
+First, the two terms and the type at which they are compared are reduced,
+and the terms are then compared using the auxiliary relation $\intro* \convhop$
 (\ruleref{rule:bd-red-conv-tm}). If the terms are neutrals, \kl{neutral comparison} is used
 (Rules \nameref{rule:bd-neu-conv-uni} and \nameref{rule:bd-neu-conv-neu}). This is only possible
 if the type is a universe or a neutral. Indeed, to keep the relation deterministic, this
-rule cannot be applied at a Π-type, where extensionality \emph{must} be applied.
+rule cannot be applied at a Π-type, where extensionality \emph{must} be used instead.
 
 Otherwise, congruence rules must be used. In case the comparison happens at the universe, 
 these are very similar to that for types (Rules \nameref{rule:bd-uni-conv-tm} and
 \nameref{rule:bd-prod-conv-tm}).
-Note however, that to maintain the well-formedness invariant mandated by McBride’s discipline,
-we should always call $\bconv{\Gamma}{t}{t'}{A}$ when we know that both $t$ and $t'$
+Note, however, that in order to maintain the well-formation invariant mandated by McBride’s discipline,
+we should only appeal to $\bconv{\Gamma}{t}{t'}{A}$ when we know that both $t$ and $t'$
 check against $A$. But in \ruleref{rule:bd-prod-conv-tm}, the domains and codomains might be at
 a universe level lower that $i$ even if the whole product is at that level.%
 \sidenote{For instance, $A$ might be $\uni[0]$ and $B$ might be $\uni[1]$, so that $A \to B$
@@ -258,38 +281,42 @@ check against $\uni[i]$, which requires \kl{cumulativity}.
 
 The last rule is that for comparing two functions (\ruleref{rule:bd-fun-conv}).
 In that case, an extensionality rule is directly applied without even looking
-at the two terms. There is thus no congruence rule for λ-abstractions, but it is actually
-derivable, because $(\l x : A.\ t)\ x \hred t$, and so in case both $f$ and $f'$ are
+at the two terms. There is thus no primitive congruence rule for λ-abstractions,
+but it is derivable,%
+\sidenote{This is \cref{lem:bd-abs-cong}.}
+because $(\l x : A.\ t)\ x \hred t$, and so in case both $f$ and $f'$ are
 abstractions, the recursive calls amount to comparing their bodies.
 
-The rules as given directly translate to an algorithm, as they nicely term/type directed,
+The rules as given directly translate to an algorithm, as they are nicely term- or type-directed,
 \ie there is always at most one rule that applies to derive a judgment. Moreover,
-if in \kl{generic cumulativity} and \kl{generic conversion} we view all objects as \kl{inputs}%
+if in \kl{generic cumulativity} and \kl{generic conversion} we view all objects as \kl{inputs},%
 \sidenote{The subject is the “computational content” of the judgment, \ie whether the
 conversion/cumulativity holds. This is similar to the conversion judgments of
-\textcite{Bauer2020}.}
+general type theories \cite{Bauer2020}.}%
 \margincite{Bauer2020}
 in \kl{neutral comparison} the type is an \kl{output} and all other objects are inputs,
 and in \kl{reduction} $t \hred t'$, $t$ is an \kl{input} and $t'$ is an \kl{output}, then
 all rules respect McBride’s discipline.
 
 \section{Untyped Presentation}
-\label{sec:unty-conv-equiv}
+\label{sec:unty-conv}
 
 In the presentation of \cref{sec:bidir-conv}, types are carried around,
 but almost never used. Indeed,
 only \ruleref{rule:bd-fun-conv} really needs the type information to be applied.
-However, there is an alternative approach, which is the one used by the kernels of \kl{Coq}
-and \kl{Agda}, which avoids looking at types altogether, by replacing \ruleref{rule:bd-fun-conv}
-by term-directed rather than type-directed ones.
-As we do not want to maintain types, there is also no point in maintaining the context either.
-Thus, this alternative \kl{conversion} is of the following form: $\buconv{\gamma}{t}{t'}$.
+However, there is an alternative approach, used by the kernels of \kl{Coq}
+and \kl{Agda}, which avoids looking at types altogether by replacing the
+type-directed \ruleref{rule:bd-fun-conv} with term-directed ones.
+As types are not maintained, there is also no point in maintaining the context either.
+Thus, this alternative \kl{conversion} simply relates two terms: $\buconv{\gamma}{t}{t'}$.%
+\sidenote{We use the color \untypedcolor{purple} for untyped relations, and the
+$\untypedcolor{\vdash_{\symup{u}}}$ symbol for typing judgments defined using those relations.}
 Let us now spell out the rules for this alternative, untyped presentation.
 
-\begin{figure*}[h]
+\begin{figure}[h]
   \ContinuedFloat*
   \begin{mathpar}
-  \inferdef{CheckUty}{\inferty{\Gamma}{t}{T} \\ \bucum{\left| \Gamma \right|}{T}{T'}}{\checkty{\Gamma}{t}{T'}}
+  \inferdef{CheckUty}{\uinferty{\Gamma}{t}{T} \\ \bucum{\left| \Gamma \right|}{T}{T'}}{\ucheckty{\Gamma}{t}{T'}}
     \label{rule:bd-ucum-check} \and
   \inferdef{RedCumUty}{t \hred t' \\ u \hred u' \\ \ucumh{\gamma}{t'}{u'}}
     {\bucum{\gamma}{t}{u}} \label{rule:bd-red-ucum} \and
@@ -302,7 +329,7 @@ Let us now spell out the rules for this alternative, untyped presentation.
   \end{mathpar}
   \caption{Untyped cumulativity and conversion}
   \label{fig:gene-ucum}
-\end{figure*}
+\end{figure}
 
 The first rules of \cref{fig:gene-ucum} are similar to those for the typed variants: cumulativity can be used
 in checking, and terms are compared by first reducing them to weak-head normal form, and if they are neutrals
@@ -329,7 +356,7 @@ the special \kl{neutral comparison} is called.
 \end{figure}
 
 The rules for the comparison of types are given in \cref{fig:bd-cong-univ}, and are again
-very similar to those for the typed variant: there is a congruence rule for Π-types,
+close to those for the typed variant: there is a congruence rule for Π-types,
 and universes are convertible when their levels are in the right relation.
 
 \begin{figure}[h]
@@ -347,9 +374,8 @@ and universes are convertible when their levels are in the right relation.
 \end{figure}
 
 In the case of \kl{neutral comparison}, the rules (\cref{fig:neu-ucomp}) are even simpler
-than in the typed case, because there is no need for a special rule to reduce the type,
-as they are not maintained. Thus, there are only two rules, one for application and one
-base case for variables.
+than in the typed case, because there is no need for a special rule to reduce the type.
+Thus, there are only two rules, one for application and one base case for variables.
 
 \begin{figure}[h]
   \ContinuedFloat
@@ -375,26 +401,30 @@ then there is no need to compare the domains of the abstractions because they ar
 convertible.} 
 In case both are neutrals, the extensionality rule only inserts
 a useless application to a variable, but \kl{neutral comparison} can be directly used
-instead. The only setting where the extensionality rule is useful is when comparing a neutral
+instead, by means of \ruleref{rule:bd-neu-uconv}.
+The only situation where the extensionality rule is useful is when comparing a neutral
 to an abstraction. But in those cases, the information that the comparison happens at a function
 type and that the neutral needs to be η-expanded can be obtained from the abstraction.
 This is what the symmetric Rules \nameref{rule:bd-abs-neu} and \nameref{rule:bd-neu-abs} do.
 
 \section{McBride’s Discipline}
+\label{sec:bd-conv-disc}
 
 \subsection{Modes for the relations}
 
 As we have seen in \cref{sec:bidir-mcbride}, for a bidirectional system to be well-behaved,
-it must preserve the well-formation of its components as an invariant. First, we need to
-distinguish \kl{subjects}, \kl{inputs} and \kl{outputs} of the judgments. In all cases, the
-\kl{subject}%
+it must preserve the well-formation of the objects it manipulates as an invariant, what we
+have called McBride’s discipline. First, we need to
+distinguish \kl{subjects}, \kl{inputs} and \kl{outputs} of the judgments. In all relations
+we just defined, the \kl{subject}%
 \sidenote{That which is under scrutiny.}
 is not a term as in typing, but rather whether a certain relation holds.
-As in the case of the typing relation, the context is always an \kl{input}. In all
-“conversion”-style relations, \ie \kl{cumulativity}, \kl{conversion} and
+As in the case of the typing relation, the context is always an \kl{input}.
+In \kl{cumulativity}, \kl{conversion} and
 \kl{neutral comparison}, the two terms are also \kl{inputs}, since we wonder whether
 two \emph{given} terms are related. This is contrast with \kl{reduction}, where only the
-redex is an \kl{input}, while the reduct is an output. This separation already appeared
+redex is an \kl{input}, while the reduct is an output. This separation of modes between
+conversion/cumulativity and reduction already appeared
 in \cref{sec:bidir-mcbride}. Finally, as hinted by the use of the inference \textit{versus}
 checking symbols, the type is an \kl{output} in \kl{neutral comparison}, while it is an
 \kl{input} in conversion and cumulativity. As for the type-level relations%
@@ -402,8 +432,11 @@ checking symbols, the type is an \kl{output} in \kl{neutral comparison}, while i
 there is no real input, only the knowledge that the comparison happens at the type
 level, which is similar to performing the comparison at some $\uni[i]$ for an unspecified $i$.
 
-With these set down, the following definitions of \kl{inputs} and \kl{outputs}
-well-formation are rather natural.
+With the modes set down, the following definitions of \kl{inputs} and \kl{outputs}
+well-formation are rather natural. The only maybe surprising point is that we express
+all those conditions in the typed variant. This way, we need only consider the meta-theory of
+one system – the one based on typed relations –, and can carry over all these properties to
+the other system after we have proven their equivalence.
 
 \begin{definition}[Inputs well-formation – typed relations]
   We say that “inputs are well-formed” for one of the relations of \cref{fig:gene-cum,fig:gene-cumh,fig:gene-conv-ty,fig:neu-comp,fig:gene-conv-tm,fig:gene-conv-fun}
@@ -411,16 +444,16 @@ well-formation are rather natural.
   \begin{itemize}
     \item in the case of $\bconv{\Gamma}{t}{t'}[T]$ and of $\convh{\Gamma}{t}{t'}[T]$,
       that $\vdash \Gamma$,
-      that there exists $i$ such that $\pinferty{\uni}{\Gamma}{T}{\uni[i]}$,
-      and that $\checkty{\Gamma}{t}{T}$ and $\checkty{\Gamma}{t'}{T}$;
+      that there exists $i$ such that $\tpinferty{\uni}{\Gamma}{T}{\uni[i]}$,
+      and that $\tcheckty{\Gamma}{t}{T}$ and $\tcheckty{\Gamma}{t'}{T}$;
     \item in the case of $\bconv{\Gamma}{T}{T'}$, $\convh{\Gamma}{T}{T'}$,
       $\bcum{\Gamma}{T}{T'}$ and $\cumh{\Gamma}{T}{T'}$, that $\vdash \Gamma$,
-      and that there exist $i$ and $j$ such that $\pinferty{\uni}{\Gamma}{T}{\uni[i]}$
-      and $\pinferty{\uni}{\Gamma}{T'}{\uni[j]}$;
+      and that there exist $i$ and $j$ such that $\tpinferty{\uni}{\Gamma}{T}{\uni[i]}$
+      and $\tpinferty{\uni}{\Gamma}{T'}{\uni[j]}$;
     \item in the case of $\nconv{\Gamma}{n}{n'}{S}$ and of $\pnconv{\P}{\Gamma}{n}{n'}{S}$,
       that $\vdash \Gamma$,
-      and that there exists $T$ and $T'$ such that $\inferty{\Gamma}{n}{T}$ and
-      $\inferty{\Gamma}{n'}{T'}$.%
+      and that there exists $T$ and $T'$ such that $\tinferty{\Gamma}{n}{T}$ and
+      $\tinferty{\Gamma}{n'}{T'}$.%
       \sidenote{Note that we do not \textit{a priori} demand that $S$ be related to $T$, 
       as this is a well-formation property of the \emph{\kl{output}} $S$.}
   \end{itemize}
@@ -432,29 +465,29 @@ well-formation are rather natural.
   \begin{itemize}
     \item in the case of $\buconv{\gamma}{t}{t'}$ and of $\uconvh{\gamma}{t}{t'}$,
       that there exists some $\Gamma$, $T$ and $i$ such that $\vdash \Gamma$,
-      $\pinferty{\uni}{\Gamma}{T}{\uni[i]}$,
-      and $\checkty{\Gamma}{t}{T}$ and $\checkty{\Gamma}{t'}{T}$ hold;
+      $\tpinferty{\uni}{\Gamma}{T}{\uni[i]}$,
+      $\tcheckty{\Gamma}{t}{T}$ and $\tcheckty{\Gamma}{t'}{T}$ hold;
     \item in the case of $\nuconv{\gamma}{n}{n'}$,
       that there exists some $\Gamma$, $T$ and $T'$ such that $\vdash \Gamma$,
-      $\inferty{\Gamma}{n}{T}$ and $\inferty{\Gamma}{n'}{T'}$.
+      $\tinferty{\Gamma}{n}{T}$ and $\tinferty{\Gamma}{n'}{T'}$.
   \end{itemize}
   Moreover, we say that “inputs are well-formed types” in the case of
   $\buconv{\gamma}{T}{T'}$, $\uconvh{\gamma}{T}{T'}$,
   $\bucum{\gamma}{T}{T'}$ and $\ucumh{\gamma}{T}{T'}$, to mean the existence of $\Gamma$,
   $i$ and $j$ such that $\vdash \Gamma$,
-  $\pinferty{\uni}{\Gamma}{T}{\uni[i]}$ and $\pinferty{\uni}{\Gamma}{T'}{\uni[j]}$.
+  $\tpinferty{\uni}{\Gamma}{T}{\uni[i]}$ and $\tpinferty{\uni}{\Gamma}{T'}{\uni[j]}$.
 \end{definition}
 
 \begin{definition}[Outputs well-formation]
   We say that “outputs are well-formed” for \kl{neutral comparison} between two
   terms $n$ and $n'$ assumed to be well-typed to mean the following:
   \begin{itemize}
-    \item in the case of $\nconv{\Gamma}{n}{n'}{T}$, that $\inferty{\Gamma}{n}{T}$ holds,
-      and also $\inferty{\Gamma}{n'}{T'}$, with $\bconv{\Gamma}{T}{T'}$;
+    \item in the case of $\nconv{\Gamma}{n}{n'}{T}$, that $\tinferty{\Gamma}{n}{T}$ holds,
+      and also $\tinferty{\Gamma}{n'}{T'}$, for some $T'$ such that $\bconv{\Gamma}{T}{T'}$;
     \item in the case of $\pnconv{\P}{\Gamma}{n}{n'}{\P x : A.\ B}$,
-      that $\pinferty{\P}{\Gamma}{n}{\P x : A.\ B}$,
-      and moreover $\pinferty{\P}{\Gamma}{n'}{\P x : A'.\ B'}$,
-      with $\bconv{\Gamma}{\P x : A.\ B}{\P x : A'.\ B'}$ all hold.
+      that $\tpinferty{\P}{\Gamma}{n}{\P x : A.\ B}$ holds,
+      and moreover that $\tpinferty{\P}{\Gamma}{n'}{\P x : A'.\ B'}$ holds too,
+      with some $A$ and $B$ such that $\bconv{\Gamma}{\P x : A.\ B}{\P x : A'.\ B'}$.
   \end{itemize}
 \end{definition}
 
@@ -463,34 +496,34 @@ well-formation are rather natural.
 Let us now try and see what meta-theoretical properties we need of the typed system to
 show that its rules respect McBride’s discipline.
 
-In the case of Rules \nameref{rule:bd-red-cum}, \nameref{rule:bd-red-conv-ty} and
+In Rules \nameref{rule:bd-red-cum}, \nameref{rule:bd-red-conv-ty} and
 \nameref{rule:bd-red-conv-tm}, the well-formation of \kl{inputs} to the last premise
 under the hypothesis that \kl{inputs} to the conclusion are well-formed is exactly
 \kl{subject reduction}. In the case of a β-redex, \kl{subject reduction} is equivalent
 to the following weak version of stability by substitution.
 
-\begin{property}[Weak stability of typing by substitution]
+\begin{property}[Stability of typing by substitution]
   \label{prop:weak-ty-sub-stab}
-  If $\inferty{\Gamma,x : A}{t}{T}$ and $\checkty{\Gamma}{u}{A}$ hold and their inputs
-  are well-formed, then $\checkty{\Gamma}{\subs{t}{x}{u}}{\subs{T}{x}{u}}$.
+  If $\tinferty{\Gamma,x : A}{t}{T}$ and $\tcheckty{\Gamma}{u}{A}$ hold and their inputs
+  are well-formed, then $\tcheckty{\Gamma}{\subs{t}{x}{u}}{\subs{T}{x}{u}}$.
 \end{property}
 
 A similar property appears even more directly in the case of \kl{neutral comparison},
 this time regarding \kl{output} well-formation in \ruleref{rule:neu-comp-app}.
 Indeed, in that case by \kl{output} well-formation of in premises, we can assume that
-$\pinferty{\P}{\Gamma}{n'}{\P x : A'.\ B'}$, with
+$\tpinferty{\P}{\Gamma}{n'}{\P x : A'.\ B'}$, with
 $\bconv{\Gamma}{\P x : A.\ B}{\P x : A'.\ B'}$, and we need to show that
-$\bconv{\Gamma}{\subs{B}{x}{t}}{\subs{B'}{x}{t'}}$. Again, the main property here
-is a form of stability by substitution.
+$\bconv{\Gamma}{\subs{B}{x}{t}}{\subs{B'}{x}{t'}}$. Again, here we have
+a form of stability by substitution.
 
-\begin{property}[Weak stability of conversion by substitution]
+\begin{property}[Stability of conversion by substitution]
   \label{prop:weak-conv-sub-stab}
   If $\bconv{\Gamma,x : A}{t}{t'}{T}$ and $\bconv{\Gamma}{u}{u'}[A]$
   and their inputs are well-formed, then
   $\bconv{\Gamma}{\subs{t}{x}{u}}{\subs{t'}{x}{u'}}[\subs{T}{x}{u}]$.
 \end{property}
 
-However, here lies an important difficulty: \cref{prop:weak-conv-sub-stab} implies
+However, here lies a difficulty: \cref{prop:weak-conv-sub-stab} implies
 \kl{normalization}. To see why, a first remark: congruence of conversion holds for
 all canonical forms, respectively by Rules \nameref{rule:bd-prod-conv-tm} and
 \nameref{rule:bd-uni-conv-tm}, and by the following lemma.
@@ -499,7 +532,7 @@ all canonical forms, respectively by Rules \nameref{rule:bd-prod-conv-tm} and
   \label{lem:bd-abs-cong}
   If $\bconv{\Gamma, x : A}{t}{t'}{B}$ then
   $\bconv{\Gamma}{\l x : A.\ t}{\l x : A'.\ t'}[\P x : A.\ B]$.%
-  \sidenote{For this lemma, there is no need for a relation between $A$ and $A'$,
+  \sidenote{For the purpose of this congruence, there is no need for a relation between $A$ and $A'$,
   but for the inputs to the conclusion to be well-formed,
   we should also have $\bconv{\Gamma}{A}{A'}$.}
 \end{lemma}
@@ -509,12 +542,12 @@ all canonical forms, respectively by Rules \nameref{rule:bd-prod-conv-tm} and
   and $u_1 \hred u_2$, $u_1' \hred u_2'$ and $U_1 \hred U_2$
   then $\bconv{\Gamma}{u_1}{u_1'}[U_1]$.
   Indeed, if the former holds, it must be by an application of \ruleref{rule:bd-red-conv-tm},
-  and so there are $u_3$ and $u_3'$ and $U_3$ such that $\convh{\Gamma}{u_3}{u_3'}[U_3]$,
-  and they are respective reducts of $u_2$, $u_2'$ and $U_2$. But the also $u_1 \hred u_3$
+  and so there are $u_3$ and $u_3'$ and $U_3$ respective reducts of $u_2$, $u_2'$ and $U_2$
+  such that $\convh{\Gamma}{u_3}{u_3'}[U_3]$. But then also $u_1 \hred u_3$
   and similarly for the other two, and so we can use again \ruleref{rule:bd-red-conv-tm}.
   
-  Now, by an application of \ruleref{rule:bd-fun-conv}, we only need to show
-  $\bconv{\Gamma,x : A}{(\l x : A.\ t)\ x}{(\l x : A'.\ t')\ x}{B}$, and we can use
+  Now, by an application of \ruleref{rule:bd-fun-conv}, we only need to show that
+  $\bconv{\Gamma,x : A}{(\l x : A.\ t)\ x}{(\l x : A'.\ t')\ x}{B}$ holds, and we can use
   stability by anti-reduction to conclude.
 \end{proof}
 
@@ -522,28 +555,34 @@ Moreover, if we assume \cref{prop:weak-conv-sub-stab}, then congruence also hold
 for application.
 
 \begin{lemma}[Congruence of application]
-  Assuming \cref{prop:weak-conv-sub-stab}, we have that if
+  Assuming \cref{prop:weak-conv-sub-stab}, if
   $\bconv{\Gamma}{t}{t'}{\P x : A.\ B}$ and $\bconv{\Gamma}{u}{u'}{A}$
   and their inputs are well-formed,
-  then also $\bconv{\Gamma}{t\ u}{t'\ u}{\subs{B}{x}{u}}$.
+  then also $\bconv{\Gamma}{t\ u}{t'\ u'}{\subs{B}{x}{u}}$.
 \end{lemma}
 
 \begin{proof}
   The only way to obtain the first premise is to apply \ruleref{rule:bd-red-cum} and
   \ruleref{rule:bd-fun-conv}. Thus, we have that $t \hred f$, $t' \hred f'$ and
   $\bconv{\Gamma, x : A}{f\ x}{f'\ x}{B}$. By \cref{prop:weak-conv-sub-stab}, we have
-  $\bconv{\Gamma}{\subs{f\ x}{x}{u}}{\subs{f'\ x}{x}{u'}}{\subs{B}{x}{u}}$.
-  But since we assume no shadowing happens, $x$ does not appear in $f$ or $f'$, so that
-  we actually have $\bconv{\Gamma}{f\ u}{f'\ u'}{\subs{B}{x}{u}}$.
-  Now stability by anti-reduction is enough to conclude.
+  \[\bconv{\Gamma}{\subs{(f\ x)}{x}{u}}{\subs{(f'\ x)}{x}{u'}}{\subs{B}{x}{u}}\]
+  But since we assume no shadowing happens,
+  $x$ does not appear in $f$ or $f'$,%
+  \sidenote{In de Bruijn indices, $f$ and $f'$ are lifted when they are η-expanded,
+  thus they cannot mention variable $0$ corresponding to $x$.}
+  so that we actually have $\bconv{\Gamma}{f\ u}{f'\ u'}{\subs{B}{x}{u}}$.
+  Now stability by anti-reduction is enough to conclude, since $t\ u \hred f\ u$
+  and $t'\ u' \hred f'\ u'$.
 \end{proof}
 
 Applying all these congruences in the diagonal case, we obtain reflexivity of conversion.
 
+\begin{minipage}{\textwidth}
 \begin{proposition}[Reflexivity]
   Assuming \cref{prop:weak-conv-sub-stab}, if $\vdash \Gamma$ and
-  $\inferty{\Gamma}{t}{T}$, then also $\bconv{\Gamma}{t}{t}{T}$.
+  $\tinferty{\Gamma}{t}{T}$, then also $\bconv{\Gamma}{t}{t}{T}$.
 \end{proposition}
+\end{minipage}
 
 \begin{proof}
   By induction on the typing derivation, using the previous congruences in each case.
@@ -553,15 +592,15 @@ But since conversion amounts to iterated weak-head normalization of both terms,
 reflexivity implies \kl{normalization}, in the following sense.
 
 \begin{proposition}[Normalization]
-  Assuming \cref{prop:weak-conv-sub-stab}, if $\inferty{\Gamma}{t}{T}$ and
+  Assuming \cref{prop:weak-conv-sub-stab}, if $\tinferty{\Gamma}{t}{T}$ and
   $\vdash \Gamma$, then there is some normal form $t'$ such that $t \red t'$.
 \end{proposition}
 
 Thus, if we wished to establish that our rules respect McBride’s discipline, we
 would need a proof technique able to show normalization of the system under consideration.
-In the case of a “toy” system such as that of this chapter, a technique close to the logical
-relation of \sidecite{Abel2017} might be enough. In a more complex setting, especially if
-we add an impredicative sort of propositions, proofs of normalization are scarcer and
+In the case of a system such as that of this chapter, a technique close to the logical
+relation of \sidecite{Abel2017} might be enough. But if we add an impredicative sort of propositions,
+proofs of normalization are scarcer and
 further from the presentations of this chapter \sidecite{Werner1994,Altenkirch1993}.
 An alternative solution, following \kl{MetaCoq},
 would be to assume a property such as normalization and derive the needed meta-theory from
@@ -571,7 +610,7 @@ In any case, a substantial meta-theoretical study would be needed, one that I do
 to pursue further here. Thus, let us simply \emph{assume} the properties
 we need for McBride’s discipline to be correctly maintained in both presentations.
 Apart from stability by substitution and subject reduction that we have already mentioned,
-the main properties we would need are those necessary to handle the left-biais of rules.
+the main needed properties are those necessary to handle the left bias of rules.
 % For instance, in \kl{neutral comparison}, the inferred type is that of the left term,%
 % \sidenote{See the substitution with the left argument in \ruleref{rule:neu-comp-app}.}
 % so that in \ruleref{rule:neu-comp-app} the conversion of the second premise is used at a
@@ -586,7 +625,7 @@ to $A$.
 
 \begin{property}[Subject reduction]
   \label{prop:bd-conv-sr}
-  If $\checkty{\Gamma}{t}{T}$ and $t \hred t'$ then $\checkty{\Gamma}{t'}{T}$.
+  If $\tcheckty{\Gamma}{t}{T}$ and $t \hred t'$ then $\tcheckty{\Gamma}{t'}{T}$.
 \end{property}
 
 \begin{property}[Stability by context and type conversion]
@@ -594,18 +633,38 @@ to $A$.
   Let $\Gamma$ and $\Gamma'$ be two well-formed context that are pointwise convertible
   and $T$, $T'$ be two well-formed types – respectively in $\Gamma$ and $\Gamma'$ –,
   such that $\bconv{\Gamma}{T}{T'}$.
-  Then if $\checkty{\Gamma}{t}{T}$ then $\checkty{\Gamma'}{t}{T'}$, and
-  if $\pinferty{\uni}{\Gamma}{U}{\uni[i]}$ then $\pinferty{\uni}{\Gamma'}{U}{\uni[i]}$.
+  If $\tcheckty{\Gamma}{t}{T}$ then $\tcheckty{\Gamma'}{t}{T'}$, and
+  if $\tpinferty{\uni}{\Gamma}{U}{\uni[i]}$ then $\tpinferty{\uni}{\Gamma'}{U}{\uni[i]}$.
 \end{property}
 
+\begin{minipage}{\textwidth}
 \begin{conjecture}[Meta-theoretical properties]
   \label{conj:wf-pres-ty}
   \Cref{prop:weak-ty-sub-stab,prop:weak-conv-sub-stab,prop:bd-conv-sr,prop:bd-stab-conv}
   hold.
 \end{conjecture}
+\end{minipage}
 
 With this conjecture in hand, we can show that McBride’s discipline is preserved, giving
 the following.
+
+\begin{minipage}{\textwidth}
+\begin{proposition}[Input well-formation – untyped]
+  If one of the relations of \cref{fig:gene-cum,fig:gene-cumh,fig:gene-conv-ty,fig:neu-comp,fig:gene-conv-tm,fig:gene-conv-fun}
+  holds and its inputs are well-formed, then inputs to any sub-derivation are also well-formed
+  and outputs are too.
+\end{proposition}
+\end{minipage}
+
+\begin{proof}
+  The proof is by mutual induction. It requires stability of typing by context/type cumulativity to handle the fact that the
+  rules are left biased — \eg context extension in \ruleref{rule:bd-prod-conv-ty} is done using the domain of the left Π-type –,
+  and to deduce that the η-expansions of \ruleref{rule:bd-fun-conv} are well-formed.
+  Subject reduction is needed to know that weak-head reduction preserves well-formation.
+  Finally, well-formation of outputs is necessary in \ruleref{rule:neu-comp-app}
+  to ensure that $t'$ indeed checks against $A$. It requires stability by substitution of conversion
+  to ensure that outputs of \ruleref{rule:neu-comp-app} are well-formed.
+\end{proof}
 
 \begin{proposition}[Input well-formation – untyped]
   If one of the relations of \cref{fig:gene-ucum,fig:bd-cong-univ,fig:neu-ucomp,fig:bd-uconv-fun}
@@ -617,35 +676,29 @@ the following.
   The proof is by mutual induction, and similar to the typed case.
 \end{proof}
 
-\begin{proposition}[Input well-formation – untyped]
-  If one of the relations of \cref{fig:gene-cum,fig:gene-cumh,fig:gene-conv-ty,fig:neu-comp,fig:gene-conv-tm,fig:gene-conv-fun}
-  holds and its inputs are well-formed, then inputs to any sub-derivation are also well-formed
-  and outputs are too.
-\end{proposition}
-
 \section{Equivalence of the presentations}
+\label{sec:unty-conv-equiv}
 
 With the meta-theoretical requirement exposed, we can now turn to the part of interest to us: the equivalence between both
 presentations.
 
 \paragraph{Typed to untyped}
-In this direction, the main rule that needs looking at is that which differs between the two systems,
+Unsurprisingly, the main rule that needs looking at is that which differs between the two systems,
 \ie \ruleref{rule:bd-fun-conv}.
 This is taken care of by the following lemma.
 
 \begin{lemma}[Injectivity of η-expansion]
   \label{lem:inj-eta}
-  If $\convh{\Gamma}{f}{f'}{\P x : A.\ B}$ holds, its inputs are well-formed, and $\buconv{| \Gamma |,x}{f\ x}{f'\ x}$ holds too,
+  If $\vdash \Gamma$, $\tcheckty{\Gamma}{f}{\P x : A.\ B}$ and $\tcheckty{\Gamma}{f'}{\P x : A.\ B}$ hold,
+  and moreover $\buconv{| \Gamma |,x}{f\ x}{f'\ x}$ holds too,
   then $\uconvh{| \Gamma |}{f}{f'}$.
 \end{lemma}
 
 \begin{proof}
-  By inversion on $\convh{\Gamma}{f}{f'}{\P x : A.\ B}$, we know that $f\ x$ and $f'\ x$ reduce to weak-head normal forms,
-  say $f\ x \hred v$, $f'\ x \hred v'$ and by
-  inversion on these derivations, we get that also $f$ and $f'$ reduce to weak-head normal forms, say
+  By inversion on the last hypothesis, we know that $f\ x$ and $f'\ x$ reduce to weak-head normal forms,
+  say $f\ x \hred v$, $f'\ x \hred v'$ and that $\uconvh{| \Gamma |,x}{v}{v'}$.
+  By inversion on the reductions, we get that also $f$ and $f'$ reduce to weak-head normal forms, say
   $f \hred w$ and $f' \hred w'$.
-  By inversion on $\buconv{| \Gamma |,x}{f\ x}{f'\ x}$ and because weak-head normal forms are unique,
-  we also get that and $\uconvh{| \Gamma |,x}{v}{v'}$.
   Moreover, because of input well-formation and \kl{subject reduction}, we know that both $w$ and $w'$
   check against $\P x : A.\ B$. Since they are weak-head normal forms, they must thus be either λ-abstractions, or neutrals.
   We thus have four cases to consider.
@@ -657,8 +710,8 @@ This is taken care of by the following lemma.
 
   In case $w$ is a λ-abstraction, say $\l x : A.\ t$ and $w'$ is a neutral $n'$, then $v'$ must be equal to $n'\ x$.
   Then we have $f\ x \hred w\ x \hored t \hred v$, and thus $\buconv{|\Gamma|,x}{t}{n'\ x}$ since $\uconvh{|\Gamma|,x}{v}{n'\ x}$.
-  Thus, \ruleref{rule:bd-abs-neu} applies to conclude. The reasoning in the symmetric case where $w'$ is an abstraction
-  and $w$ is not is similar.
+  Therefore \ruleref{rule:bd-abs-neu} applies to conclude. The reasoning in the symmetric case where $w'$ is an abstraction
+  and $w$ is neutral is similar.
 
   In the last case, both $w$ and $w'$ are neutrals, say $n$ and $n'$. Then $v$ and $v'$ are respectively $n\ x$ and $n'\ x$.
   Since $\uconvh{|\Gamma|,x}{n\ x}{n'\ x}$, we must have also $\nuconv{|\Gamma|,x}{n\ x}{n'\ x}$ because all rules but
@@ -683,33 +736,32 @@ This is taken care of by the following lemma.
 
   Most cases are direct, the induction hypothesis can directly be combined to give the desired result, replacing a typed rule
   by its untyped counterpart. The only difficulty is for the one rule which does not have an untyped counterpart, namely
-  \ruleref{rule:bd-fun-conv}. But in that case, \cref{lem:wf-pres-ty} ensures that inputs are well-formed since we
-  started from a rule with well-formed inputs, and combining this with the induction hypothesis we get exactly
-  the hypotheses of \cref{lem:inj-eta}. Applying that lemma, we get the desired result.
+  \ruleref{rule:bd-fun-conv}. But in that case, \cref{conj:wf-pres-ty} ensures that inputs are well-formed since we
+  started from a rule with well-formed inputs, thus \cref{lem:inj-eta} applies, giving the desired result.
 \end{proof}
 
 \paragraph{From untyped to typed}
 
-Here again, the main lemma is to show that the rules of \cref{fig:bd-uconv-fun} can be simulated by \ruleref{rule:bd-fun-conv}.
+Here again, the main point is to show that the rules of \cref{fig:bd-uconv-fun} can be simulated by \ruleref{rule:bd-fun-conv}.
 \Cref{lem:bd-abs-cong} already gives the congruence of abstractions, corresponding to \ruleref{rule:bd-abs-uconv}.
-In the case of \ruleref{rule:bd-abs-neu} – and its symmetric \ruleref{rule:bd-neu-abs}–, this is rather direct.
+In the case of \ruleref{rule:bd-abs-neu} – and its symmetric \ruleref{rule:bd-neu-abs}–, it is also rather direct.
 
 \begin{lemma}[Neutral against abstraction]
   \label{lem:neu-abs}
   If $\bconv{\Gamma}{t}{n'\ x}{B}$, $\vdash \Gamma$, and there exists a $T$ such that
-  $\checkty{\Gamma}{\l x : A.\ t}{T}$, then
+  $\tcheckty{\Gamma}{\l x : A.\ t}{T}$, then
   $T \red \P x : A'. B'$ and $\convh{\Gamma}{\l x : A.\ t}{n'}[\P x : A'.\ B']$.
 \end{lemma}
 
 \begin{proof}
-  By inversion on $\checkty{\Gamma}{\l x : A.\ t}{T}$, we get that $T$ must be convertible to the type
+  By inversion on $\tcheckty{\Gamma}{\l x : A.\ t}{T}$, we get that $T$ must be convertible to the type
   inferred for $\l x : A.\ t$. But that inferred type is a Π-type, so $T$ must also reduce to a Π-type.
   An application of \ruleref{rule:bd-fun-conv} and stability of conversion by anti-reduction is enough
   to get $\convh{\Gamma}{\l x : A.\ t}{n'}[\P x : A'.\ B']$ from the first hypothesis.
 \end{proof}
 
 But the main difficulty comes from \ruleref{rule:bd-neu-uconv}. Indeed, this rule can be applied whenever
-the compared terms are neutral while in the typed relation, following \sidecite{Abel2017}, extensionality
+the compared terms are neutral while in the typed relation, following \sidetextcite[0pt]{Abel2017}, extensionality
 for functions takes precedence over neutral comparison at Π-types. Thus, to simulate \ruleref{rule:bd-neu-uconv}
 we need to show \kl{neutral comparison} is always included in conversion, even if neutrals get η-expanded.
 
@@ -754,6 +806,6 @@ We now have all ingredients for the second implication.
 \begin{proof}
   By mutual induction. Most rules can be directly replaced by (one of) their typed counterpart, but for those which
   do not have such a counterpart, namely those of \cref{fig:bd-uconv-fun}, and \ruleref{rule:bd-neu-uconv} in case
-  its arguments are terms – if they are types, then \ruleref{rule:bd-neu-cum} applies. In each case, one of
+  its arguments are terms – if they are types, then \ruleref{rule:bd-neu-cum} always applies. In each case, one of
   \cref{lem:bd-abs-cong,lem:neu-abs,lem:nconv-conv} is enough to conclude.
 \end{proof}

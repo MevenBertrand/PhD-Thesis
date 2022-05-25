@@ -406,40 +406,49 @@ set fill color=DarkBlue!10,
 
 % Bidirectional conversion
 
-\knowledgenewrobustcmd{\bconvop}{\mathrel{\cmdkl{\cong}}}
-\knowledgenewrobustcmd{\convhop}{\mathrel{\cmdkl{\cong_{\symup{h}}}}}
-\knowledgenewrobustcmd{\bcumop}{\mathrel{\cmdkl{\preceq}}}
-\knowledgenewrobustcmd{\cumhop}{\mathrel{\cmdkl{\preceq_{\symup{h}}}}}
-\knowledgenewrobustcmd{\nconvop}{\mathrel{\cmdkl{\approx}}}
+\newcommand{\typedcolor}[1]{\mathcolor{DarkBlue}{#1}}
+\newcommand{\tycol}[1]{\typedcolor{#1}}
+\newcommand{\untypedcolor}[1]{\mathcolor{Purple}{#1}}
+\newcommand{\ucol}[1]{\untypedcolor{#1}}
+
+\knowledgenewrobustcmd{\bconvop}{\typedcolor{\cmdkl{\cong}}}
+\knowledgenewrobustcmd{\convhop}{\typedcolor{\cmdkl{\cong_{\symup{h}}}}}
+\knowledgenewrobustcmd{\bcumop}{\typedcolor{\cmdkl{\preceq}}}
+\knowledgenewrobustcmd{\cumhop}{\typedcolor{\cmdkl{\preceq_{\symup{h}}}}}
+\knowledgenewrobustcmd{\nconvop}{\typedcolor{\cmdkl{\approx}}}
 % \knowledgenewrobustcmd{\nconvhop}{\mathrel{\cmdkl{\approx_{\symup{h}}}}}
 
-\NewDocumentCommand{\bconv}{m m m o}
-	{#1 \vdash #2 \bconvop #3 \cty \IfValueT{#4}{#4}}
-\NewDocumentCommand{\convh}{m m m o}
-  {#1 \vdash #2 \convhop #3 \cty \IfValueT{#4}{#4}}
-\NewDocumentCommand{\bcum}{m m m}
-	{#1 \vdash #2 \bcumop #3 \cty}
-\NewDocumentCommand{\cumh}{m m m}
-  {#1 \vdash #2 \cumhop #3 \cty}
-\newcommand{\nconv}[4]{#1 \vdash #2 \nconvop #3 \ity #4}
-\newcommand{\pnconv}[5]{#2 \vdash #3 \nconvop #4 \pity{#1} #5}
+\newcommand{\tinferty}[3]{#1 \typedcolor{\vdash_{\symup{t}}} #2 \typedcolor{\ity} #3}
+\newcommand{\tpinferty}[4]{#2 \typedcolor{\vdash_{\symup{t}}} #3 \typedcolor{\pity{#1}} #4}
+\newcommand{\tcheckty}[3]{#1 \typedcolor{\vdash_{\symup{t}}} #2 \typedcolor{\cty} #3}
 
-% \NewDocumentCommand{\buconv}{m m m}
-% 	{#1 \vdash #2 \bconvop #3}
-% \NewDocumentCommand{\uconvh}{m m m}
-%   {#1 \vdash #2 \convhop #3}
-% \NewDocumentCommand{\bucum}{m m m}
-% 	{#1 \vdash #2 \bcumop #3}
-% \NewDocumentCommand{\ucumh}{m m m}
-%   {#1 \vdash #2 \cumhop #3}
-% \newcommand{\nuconv}[3]{#1 \vdash #2 \nconvop #3}
+\NewDocumentCommand{\bconv}{m m m o}
+	{#1 \typedcolor{\vdash} #2 \mathrel{\bconvop} #3 \typedcolor{\cty} \IfValueT{#4}{#4}}
+\NewDocumentCommand{\convh}{m m m o}
+  {#1 \typedcolor{\vdash} #2 \mathrel{\convhop} #3 \typedcolor{\cty} \IfValueT{#4}{#4}}
+\NewDocumentCommand{\bcum}{m m m}
+	{#1 \typedcolor{\vdash} #2 \mathrel{\bcumop} #3 \typedcolor{\cty}}
+\NewDocumentCommand{\cumh}{m m m}
+  {#1 \typedcolor{\vdash} #2 \mathrel{\cumhop} #3 \typedcolor{\cty}}
+\newcommand{\nconv}[4]{#1 \typedcolor{\vdash} #2 \mathrel{\nconvop} #3 \typedcolor{\ity} #4}
+\newcommand{\pnconv}[5]{#2 \typedcolor{\vdash} #3 \mathrel{\nconvop} #4 \typedcolor{\pity{#1}} #5}
+
+\newcommand{\uinferty}[3]{#1 \untypedcolor{\vdash_{\symup{u}}} #2 \untypedcolor{\ity} #3}
+\newcommand{\upinferty}[4]{#2 \untypedcolor{\vdash_{\symup{u}}} #3 \untypedcolor{\pity{#1}} #4}
+\newcommand{\ucheckty}[3]{#1 \untypedcolor{\vdash_{\symup{u}}} #2 \untypedcolor{\cty} #3}
+
+\knowledgenewrobustcmd{\buconvop}{\untypedcolor{\cmdkl{\cong}}}
+\knowledgenewrobustcmd{\uconvhop}{\untypedcolor{\cmdkl{\cong_{\symup{h}}}}}
+\knowledgenewrobustcmd{\bucumop}{\untypedcolor{\cmdkl{\preceq}}}
+\knowledgenewrobustcmd{\ucumhop}{\untypedcolor{\cmdkl{\preceq_{\symup{h}}}}}
+\knowledgenewrobustcmd{\nuconvop}{\untypedcolor{\cmdkl{\approx}}}
 
 \NewDocumentCommand{\buconv}{m m m}
-	{#2 \bconvop #3}
+	{#2 \mathrel{\buconvop} #3}
 \NewDocumentCommand{\uconvh}{m m m}
-  {#2 \convhop #3}
+  {#2 \mathrel{\uconvhop} #3}
 \NewDocumentCommand{\bucum}{m m m}
-	{#2 \bcumop #3}
+	{#2 \mathrel{\bucumop} #3}
 \NewDocumentCommand{\ucumh}{m m m}
-  {#2 \cumhop #3}
-\newcommand{\nuconv}[3]{#2 \nconvop #3}
+  {#2 \mathrel{\ucumhop} #3}
+\newcommand{\nuconv}[3]{#2 \mathrel{\nuconvop} #3}
