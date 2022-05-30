@@ -38,7 +38,7 @@ of Curry-style syntax, where every term infers a type,
 the case of Church-style syntax is quite different. In the case of normal forms,
 the proof ideas presented in this thesis should be easily adapted.
 But if we wish to go beyond normal forms, we must consider the use of annotations in terms,
-as is done in \eg \sidetextcite{McBride2022} \sidetextcite{Gratzer2019} or
+as is done in \eg \sidetextcite{McBride2022}, \sidetextcite{Gratzer2019} or
 \sidetextcite{Dunfield2021}.
 However, due to the dependently-typed
 setting, we have to investigate how these annotations play out with conversion and/or reduction.
@@ -46,11 +46,11 @@ To the best of my knowledge, only \citeauthor{McBride2022} has taken that questi
 but does not arrive – yet – at a definitive solution, so there is
 matter left for further research.
 
-Another thread to pull is the relation with Generalized Type Systems, as presented in
-\sidetextcite{Bauer2020,Bauer2022}. Here as in McBride’s discipline we find
+Another thread to pull is the relation with Generalized Type Systems
+\sidecite{Bauer2020,Bauer2022}. Here, as in McBride’s discipline, we find
 well-formation invariants to be preserved,
 and carefully structured rules that should respect them. Re-casting
-the bidirectional ideas in such a setting could allow for a better understanding both of the
+the bidirectional concepts in such a setting could allow for a better understanding both of the
 ideas at work in bidirectional typing,
 yielding a proper formal account of McBride’s discipline
 together with a general proof that it ensures
@@ -62,7 +62,10 @@ it also seems natural
 to question how we can marry conversion and bidirectionalism. Here again there are ingredients in
 the air: \sidetextcite{Abel2017} show a notion of conversion geared towards proving decidability
 of typing, but which is clearly bidirectional, and could serve as a basis to give a general
-notion of bidirectional conversion.
+notion of bidirectional conversion. This subject is only scratched in \cref{chap:bidir-conv}, but
+I believe that the ideas presented there can be scaled to a system such as \kl{PCUIC}, and
+be an interesting building block in order to specify extensionality rules as used in \kl{Coq}’s
+kernel.
 
 \section{\kl{MetaCoq}’s Future}
 
@@ -97,9 +100,11 @@ much trickier in that of untyped conversion. However, the whole structure of \kl
 around that untyped notion of conversion, and could not be so easily adapted to a typed
 conversion. This makes the integration of η laws challenging. The case of strict propositions is
 less well-known, being much more recent, but poses similar challenges.
+A possibile direction would be to move the whole development over to typed conversion,
+using the ideas introduced in \cref{chap:bidir-conv}.
 
 The second lacking feature are modules and functors.
-While these are less pervasive than η laws, they are still important in a number of developments.
+While these are less pervasive than η laws, they are still present in a number of developments.
 Here again the difficulty is not simply to show that an implementation is faithful to a given
 semantic, but to precisely pin down said semantic. This is tricky in the case of modules, which
 have interactions with global environments, contrarily to records – their first-class counterpart.
@@ -113,7 +118,7 @@ can at least implement a guard condition,
 and show that it fulfils the conditions we abstractly ask for
 in the current development. More ambitious, the complex guard condition implemented in \kl{Coq}
 was designed \sidecite{Gimenez1995} in order to allow a translation back to eliminators.
-This gives a much stronger validity criterion for the guard, and would not be a simple project.
+This gives a much stronger validity criterion for the guard, but would not be an easy project.
 But as for modules, reaching
 that goal would make the guard much more trustworthy than it currently is. Moreover,
 it could open the door to extending it, with the formalization

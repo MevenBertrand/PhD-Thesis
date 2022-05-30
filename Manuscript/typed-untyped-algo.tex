@@ -56,7 +56,7 @@ the chapter, and the difficulties they pose;
 finally, \cref{sec:unty-conv-equiv} presents the equivalence
 between this bidirectional conversion and the untyped one.
 
-All of the chapter is rather new, and its material has not yet been submitted to peer-reviewing.
+The content of this chapter is rather new, and its material has not yet been submitted to peer-reviewing.
 As such, it should be regarded as a first attempt at making interesting ideas visible,
 rather than a finished and polished exposition.
 
@@ -119,7 +119,7 @@ conversion relation for \kl{CCω}.
 
 \AP The important intuition about this relation is that it actually decomposes conversion in two
 components. On one side, \intro{generic conversion}, that we will continue writing%
-\sidenote{We use the color \typedcolor{blue} for the typed relations, and the $\typedcolor{\vdash_{\symup{t}}}$
+\sidenote{We use the colour \typedcolor{blue} for the typed relations, and the $\typedcolor{\vdash_{\symup{t}}}$
 symbol to distinguish typing judgments defined using the typed relations.}
 $\intro* \bconvop$,
 which takes a type as \kl{input} – \ie it \emph{checks}. On the other side,
@@ -301,15 +301,15 @@ all rules respect McBride’s discipline.
 \section{Untyped Presentation}
 \label{sec:unty-conv}
 
-In the presentation of \cref{sec:bidir-conv}, types are carried around,
+\AP In the presentation of \cref{sec:bidir-conv}, types are carried around,
 but almost never used. Indeed,
 only \ruleref{rule:bd-fun-conv} really needs the type information to be applied.
 However, there is an alternative approach, used by the kernels of \kl{Coq}
 and \kl{Agda}, which avoids looking at types altogether by replacing the
 type-directed \ruleref{rule:bd-fun-conv} with term-directed ones.
 As types are not maintained, there is also no point in maintaining the context either.
-Thus, this alternative \kl{conversion} simply relates two terms: $\buconv{\gamma}{t}{t'}$.%
-\sidenote{We use the color \untypedcolor{purple} for untyped relations, and the
+Thus, this alternative \kl{conversion} simply relates two terms: $intro* \buconv{\gamma}{t}{t'}$.%
+\sidenote{We use the colour \untypedcolor{purple} for untyped relations, and the
 $\untypedcolor{\vdash_{\symup{u}}}$ symbol for typing judgments defined using those relations.}
 Let us now spell out the rules for this alternative, untyped presentation.
 
@@ -331,6 +331,7 @@ Let us now spell out the rules for this alternative, untyped presentation.
   \label{fig:gene-ucum}
 \end{figure}
 
+\AP \phantomintro{\bucumhop}
 The first rules of \cref{fig:gene-ucum} are similar to those for the typed variants: cumulativity can be used
 in checking, and terms are compared by first reducing them to weak-head normal form, and if they are neutrals
 the special \kl{neutral comparison} is called.
@@ -355,6 +356,7 @@ the special \kl{neutral comparison} is called.
   \label{fig:bd-cong-univ}
 \end{figure}
 
+\AP \phantomintro{\uconvhop}\phantomintro{\ucumhop}
 The rules for the comparison of types are given in \cref{fig:bd-cong-univ}, and are again
 close to those for the typed variant: there is a congruence rule for Π-types,
 and universes are convertible when their levels are in the right relation.
@@ -373,6 +375,7 @@ and universes are convertible when their levels are in the right relation.
   \label{fig:neu-ucomp}
 \end{figure}
 
+\AP \phantomintro{\nuconvop}
 In the case of \kl{neutral comparison}, the rules (\cref{fig:neu-ucomp}) are even simpler
 than in the typed case, because there is no need for a special rule to reduce the type.
 Thus, there are only two rules, one for application and one base case for variables.
@@ -435,7 +438,7 @@ level, which is similar to performing the comparison at some $\uni[i]$ for an un
 With the modes set down, the following definitions of \kl{inputs} and \kl{outputs}
 well-formation are rather natural. The only maybe surprising point is that we express
 all those conditions in the typed variant. This way, we need only consider the meta-theory of
-one system – the one based on typed relations –, and can carry over all these properties to
+one system – the one based on typed relations~–, and can carry over all these properties to
 the other system after we have proven their equivalence.
 
 \begin{definition}[Inputs well-formation – typed relations]
@@ -710,7 +713,7 @@ This is taken care of by the following lemma.
 
   In case $w$ is a λ-abstraction, say $\l x : A.\ t$ and $w'$ is a neutral $n'$, then $v'$ must be equal to $n'\ x$.
   Then we have $f\ x \hred w\ x \hored t \hred v$, and thus $\buconv{|\Gamma|,x}{t}{n'\ x}$ since $\uconvh{|\Gamma|,x}{v}{n'\ x}$.
-  Therefore \ruleref{rule:bd-abs-neu} applies to conclude. The reasoning in the symmetric case where $w'$ is an abstraction
+  Therefore, \ruleref{rule:bd-abs-neu} applies to conclude. The reasoning in the symmetric case where $w'$ is an abstraction
   and $w$ is neutral is similar.
 
   In the last case, both $w$ and $w'$ are neutrals, say $n$ and $n'$. Then $v$ and $v'$ are respectively $n\ x$ and $n'\ x$.
