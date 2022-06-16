@@ -182,7 +182,11 @@ by the auxiliary relation $\intro* \cumhop$.
 This auxiliary relation, in turn, is defined by the rules of \cref{fig:gene-cumh}, which
 either apply congruence rules if both types being compared are \kl{canonical forms}
 (Rules \nameref{rule:bd-uni-cum} and \nameref{rule:bd-prod-cum}), or call
-\kl{neutral comparison} otherwise (\ruleref{rule:bd-neu-cum}).
+\kl{neutral comparison} otherwise (\ruleref{rule:bd-neu-cum}). In the latter case,
+we do not need to check that the type $S$ inferred by the neutral comparision matches that
+at which cumulativity happens: this will always be true thanks to the well-typing invariants
+we maintain, so we do not need to re-check it here. Instead, the inferred type is only
+useful to recover information in further neutral comparison, see \cref{fig:neu-comp}.
 
 \begin{figure*}[h]
   \ContinuedFloat
@@ -241,7 +245,7 @@ compare the arguments.
       {\convh{\Gamma}{\P x : A.\ B}{\P x : A'.\ B'}[\uni[i]]}
       \label{rule:bd-prod-conv-tm}
   \end{mathpar}
-  \caption{\kl{Generic conversion} between terms at the universe}
+  \caption{\kl{Generic conversion} between terms}
   \label{fig:gene-conv-tm}
 \end{figure*}
 
