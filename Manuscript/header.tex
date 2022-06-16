@@ -47,6 +47,10 @@
 %	DEDICATION
 %----------------------------------------------------------------------------------------
 
+\dedication{\raggedleft\emph{À Tangi,\\
+Parce que je sais que tu aurais été le premier à te réjouir avec moi de là où j’en suis arrivé…
+et le premier à te moquer de moi pour me garder les pieds sur terre.}}
+
 % \dedication{
 % 	% The harmony of the world is made manifest in Form and Number, and the heart and soul and all the poetry of Natural Philosophy are embodied in the concept of mathematical beauty.\\
 % 	% \flushright -- D'Arcy Wentworth Thompson
@@ -64,6 +68,12 @@
 %----------------------------------------------------------------------------------------
 %	PREFACE
 %----------------------------------------------------------------------------------------
+
+\begingroup
+
+  %in the header, chapters start on any page to avoid too many blank pages
+  \let\cleardoublepage\clearpage
+  \pagelayout{margin}
 
 \addchap{Abstract}
 
@@ -90,6 +100,160 @@ ideas from gradual typing, with the aim of bringing more flexibility to developm
 The bidirectional structure is once again valuable, as the characteristics of gradual typing
 – in particular the way it relaxes conversion – 
 make it impossible to base the extension on the standard presentation of CIC.
+
+\addchap{Acknowledgments}
+
+I wouldn’t have got halfway to the end of this thesis without the many great people around me,
+so let me try and thank them here for all they have brought me.
+
+Obviously, the one person this thesis owes the most to is my advisor Nicolas. I feel extremely
+lucky to have had the possibility to run free and do my things, while still knowing that
+he was in the next office with an open door whenever I got an issue.
+I am proud that I can call myself his student.
+
+Beyond Nicolas, I am very honoured that my jury members accepted to be part of it.
+Neel and Conor,
+because of their deep knowledge about bidirectional typing and programming language
+theory in general.
+Herman, because my year in Nijmegen has been an important one for where I am today.
+Christine and Hugo, because they shaped the great tool that \kl{Coq} is today; and, for Hugo,
+because he was the one who introduced me both to \kl{Coq} and to research.
+Jesper, because I have a great respect his work on \kl{Agda}.
+I hope there are still many pages to
+write in the collaboration between our two close but yet subtly different worlds.
+Matthieu, because his work on \kl{MetaCoq} is impressive, and he still is kind enough to
+let me leave him discharge on him my ugliest lemmas.
+Finally, Assia, because I admire both her achievements and her genuine humanity.
+
+During these three and a half years, I have learned so much from the researchers around me,
+and I am very grateful for that.
+From Pierre-Marie, that you should not be afraid to stand by your ideas.
+From Assia, that this does not mean you have to crush others,
+but that you can instead learn a great deal from them, exactly because they took another path.
+From Guillaume, that there are some non-negotiable values in academia that you cannot just 
+ignore.
+From Guilhem, I hopefully learned a bit about teaching. Thanks for helping me navigate the
+meanders of the university and for trusting me with your exercise sessions.
+From Matthieu, I learned most of what I know about another kind of meanders,
+those of \kl{Coq} and formalization.
+Éric taught me that having a solid technique
+is only useful if readers get that far in your paper, and showed me how to achieve that.
+
+But Gallinette is not only permanent researchers, and I learned an equally great deal from
+my \textit{senpais}. Marie and Étienne came up with the brilliant idea of the Quésaco seminars.
+Yannick still patiently answer my random questions, even after so many of them.
+Théo guided me through the intricacies of the PhD, which is no small feat.
+Loïc does not really fit in the \textit{senpai} category,
+after all of the two thesis siblings I am
+the one coming out first. Still, I learned a lot with him, from precious insight on
+normalization to painting beautiful banners.
+Good luck with your own writing, and see you on the other side!
+Last but not least, Kenji taught me just too many things to be all recorded here.
+I’ll miss our random but always worthwhile exchanges between computer screens and your
+valuable ideas on dependent types and vegetables alike.
+
+Learning is nice, but it’s not everything. Happily, the Gallinette members are not just
+cool researchers, they are also wonderful people, and it’s been an immense pleasure to work
+in that team. Thanks to all those I have already mentioned and to
+Pierre (Vial), Maxime, Simon, Matthieu (Piquerez), Ambroise, Xavier, Martin, Enzo,
+Pierre (Benjamin? Giraud? How do I cite you?), Hamza, Chris, Gaëtan
+for the seminars, coffee discussion, corridor talks, online chats, beer disputes,
+and all the other conversations. A special acknowledgment to Ambroise for thanking me in
+advance in his thesis, the prophecy has been accomplished.
+Following this now established tradition, I hereby thank in advance
+Martin, Enzo, Pierre, Hamza and Chris for thanking me in their own theses when the time comes.
+Best of luck to get there.
+Another special thanks to those who proofread this thesis even with the rushy calendar,
+and especially to Martin who found the courage to go through all of it. You made it much
+better than it was.
+And let me not forget Anne-Claire, who kindly watches over our unruly lot.
+
+\selectlanguage{french}
+
+Au-delà de Gallinette, je me dois aussi de mentionner les doctorant·e·s du LS2N.
+Entre le Covid et la rédaction, je n’ai que trop peu profité d’eux, mais quelle
+une chouette équipe ! Merci aussi à toute l’équipe des CHATS, Sylvain, Bertrand, Rémi,
+Brigitte, Audrey, Marianne, Baptiste, Mélanie, et tou·te·s les profs et élèves du lycée
+Michelet. Ces trois années d’art et de sciences n’ont pas exactement été de tout repos,
+mais j’ai été très heureux de partager un peu de mon enthousiasme pour
+les mathématiques et l’informatique, et de tant recevoir en retour.
+J’ai également eu le plaisir de faire partie de l’éphémère collectif des précaires à l’hiver
+2020, presque aussi vite dispersé qu’il s’est formé.
+% Où que le vent de la lutte vous
+% porte, j’espère que vous continuerez à semer des petites graines de révolte.
+Merci à eux et à tous les autres qui luttent pour faire de l’université et
+du monde des endroits un peu meilleurs.
+
+\selectlanguage{english}
+
+These pandemics years have not exactly been the best for exchanges. Yet, I feel very
+fortunate to be part of the thriving proof assistants and types communities. Thanks for
+all the online questions, answers and discussions, for giving nice talks and listening to
+mine. Hope to finally meet you all in person soon. And thanks to Andrej for giving me the
+occasion to have the first (!) scientific trip of my PhD in Ljubljana.
+
+\selectlanguage{french}
+
+Je n’aurais jamais pu arriver là où j’en suis sans les nombreux·ses enseignant·e·s
+qui ont croisé ma longue route de la maternelle au master. Ils et elles ont su nourrir
+ma curiosité, et me montrer que ce n’est pas parce qu’un sujet est difficile que son
+apprentissage doit être dur. Je ne saurais toutes et tous les nommer, mais je veux en
+particulier remercier Jean-Michel Rey et François Sauvageot pour m’avoir fait entrer dans
+le monde des grandes personnes en posant les fondations sur lesquelles tout le reste s’est
+construit, et Daniel Hirschkoff pour avoir veillé avec bienveillance sur mes années à l’ENS
+et m’avoir un jour parlé de cette petite équipe sympathique qui fait du Coq à Nantes.
+\selectlanguage{english}
+I have already mentioned Herman, but let me extend the praise to Freek, Jurriaan, and
+my other Dutch professors, for having been great teachers and having introduced me to proof
+assistants, type theory, and many of the ideas I still use today.
+
+\selectlanguage{french}
+
+Si on en croit von Neumann, si les gens ne croient pas que les mathématiques sont simples,
+c’est qu’ils ne réalisent pas à quel point la vie est compliquée. Fort heureusement,
+je suis au moins aussi bien entouré dans la vie qu’en mathématiques.
+
+Bien sûr, par ma famille. Merci évidemment à mes parents
+d’avoir été là pour moi depuis toujours, de m’avoir soutenu de toutes les manières possibles,
+dans tous mes choix. Et d’avoir été
+d’attentifs et exigeants lecteurs et relecteurs de cette introduction. Merci à Tangi pour
+les leçons si profondes et les moments si légers. Et pour être toujours avec moi.
+Merci à Malo et Maïan d’avoir repris avec brio le flambeau de la taquinerie de ses mains,
+et à Marc et Karine de nous avoir fait grandir, eux et moi. Enfin, merci à Papi de toujours
+croire en ma réussite avec une confiance sans faille, même sans y comprendre grand-chose.
+
+Je serais devenu fou si je n’avais pas pu sortir de mon bureau pour prendre un peu de grand
+air, merci donc à Karlijn (\foreignlanguage{english}{not sure our trips
+qualify as simply “a little fresh air” though}),
+Olivier (pour le trad et pour les olives), Daniel (à quand la grande voie en 7?),
+Manon (les force 5, quelle aventure), Jodie, Émile, Alice,
+et Sacha. J’accepterai un jour qu’avec les Zouzous on passe plus de temps
+de part et d’autre d’une table bien garnie que d’une corde à double.
+Merci à Léo pour avoir été non seulement un excellent compagnon de cordée, mais aussi un
+compagnon de mathématiques, de musique, bref de vie ! Et à Paul de compléter avec brio
+le trio et pour sa curiosité scientifique toujours passionnante.
+Comment oublier les lyonnais qui ont toujours eu une place pour moi sur un canapé
+quand je les rejoignais pour une soirée de fête ou à jouer (Dune c’est le feu).
+Merci donc à Hugo, Angèle, Solène, Audrey, Clément, Loïs, Colin
+et tous les autres.
+Enfin, comment parler de soirées sans évoquer celles à la Milleterie, organisées et
+surtout illustrées avec un talent rare par Valentin.
+
+L’évasion n’est pas tout, j’ai aussi été entouré par une équipe de choc dans ma vie nantaise.
+Allan et Maxou sont aussi généreux comme hôtes que féroces aux aventuriers du rail, et
+c’est parfait ainsi.
+Marine, qui même si elle réussit l’exploit d’être encore plus busy que moi reste une ancre
+à laquelle je sais que je peux me raccrocher.
+Mes colocataires, Julien, Laurine et Martin, pour avoir partagé ma
+vie et mon quotidien, les rires et les moments moins funs, et avoir survécu aux confinements
+ensemble sans qu’on s’entretue. Lucie, qui à ce stade rentre
+presque dans la catégorie précédente (la team Olivettes restera).
+Enfin merci évidemment à Jo, qui est à la fois une colocataire, une ancre, une féroce joueuse,
+une compagne d’aventure, et bien plus encore, pour m’avoir nourri pendant ma rédaction,
+traîné à la mer, ou pallié mon inculture cinématographique quand je n’en pouvais plus…
+Hâte de lire tes remerciements à toi, j’espère que j’y serai en aussi bonne place.
+
+\selectlanguage{english}
 
 \addchap{How to Read This Thesis}
 
@@ -122,9 +286,13 @@ Finally, although I primarily intend this document to be read on screen, I tried
 keep it adapted for printing. In particular,
 no information should be conveyed using only colour, though I use it to ease readability.
 
+\endgroup
+
 %----------------------------------------------------------------------------------------
 %	TABLE OF CONTENTS & LIST OF FIGURES/TABLES
 %----------------------------------------------------------------------------------------
+
+\pagelayout{wide}
 \cleardoubleevenemptypage
 
 \knowledgeconfigure{protect links}
