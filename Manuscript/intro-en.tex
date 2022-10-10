@@ -55,7 +55,7 @@ the theoretical foundation of \kl{Coq} – but also of the closely related
 
 This thesis aims at filling that gap, by providing a thorough study of bidirectional \kl{CIC},
 formalized in the framework offered by \kl{MetaCoq} project. This is a key
-ingredient in the first formal proof of correctness and completeness of a type-checking
+ingredient in the first formal proof of soundness and completeness of a type-checking
 algorithm for a realistic proof assistant kernel.
 It was also able to uncover bugs in \kl{Coq}’s kernel that had gone unnoticed until then.
 
@@ -475,15 +475,17 @@ consists in implementing a type-checking algorithm as close as possible to the o
 \kl{kernel}, directly in \kl{Gallina}%
 \sidenote{Indeed, thanks to the \kl{Curry-Howard correspondence}, \kl{Gallina} is not
 only a proof language, but also a true programming language!}.
-We show, while defining the algorithm, that it is indeed \reintro(bidir){correct}%
+We show, while defining the algorithm, that it is indeed \reintro(bidir){sound}%
 \sidenote{If the algorithm claims that a term is well-typed, then it is the case.}
 and \reintro(bidir){complete}%
 \sidenote{The algorithm answers positively on all well-typed programs.}.
+Together, these two properties correspond to the \intro(bidir){correctness} of
+the program.
 
 Finally, in a third step, we extract out of this certified \kl{Gallina} program another
 more efficient program, by erasing the content related to the proof of correctness, in order
 to keep only the algorithmically relevant one.
-This extraction is a complex but cructial step if we wish to replace the current \kl{kernel}
+This extraction is a complex but crucial step if we wish to replace the current \kl{kernel}
 while keeping a reasonable efficiency. Therefore, we also prove that said extraction
 is correct,%
 \sidenote{Meaning that it preserves the semantics of programs.}
@@ -623,7 +625,7 @@ the impact of this discovery on the implementation of \kl{Coq} is presented in
 
 I then turned to the closer integration of this formalization into \kl{MetaCoq}, and its use
 in order to prove completeness of the \kl{kernel} it implements.%
-\sidenote{A definition of a type-checking algorithm proven correct but not complete by
+\sidenote{A definition of a type-checking algorithm proven sound but not complete by
 Simon Boulier was already present, although I had to alter it during the completeness
 proof.}
 This is described in \cref{sec:kernel-typing}.

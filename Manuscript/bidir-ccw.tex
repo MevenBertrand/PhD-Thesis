@@ -344,23 +344,23 @@ and a second one to handle the wildcard $\?$, characteristic of gradual type sys
 
 Let us now state and sketch proofs of the main properties of the bidirectional system.
 The first two relate it to the
-undirected one: it is both \kl(bidir){correct} – terms typeable in the bidirectional system are typeable in the undirected system – and \kl(bidir){complete} – all terms typeable in the undirected system are also typeable in the bidirectional system.
+undirected one: it is both \kl(bidir){sound} – terms typeable in the bidirectional system are typeable in the undirected system – and \kl(bidir){complete} – all terms typeable in the undirected system are also typeable in the bidirectional system.
 Next, we investigate \kl{uniqueness of types}, and its relation to the choice of a strategy for reduction.
 Finally, we expose how \kl{strengthening} can be shown for undirected \kl{CCω}
 by proving it on the bidirectional side.
 
-\subsection{Correctness}
+\subsection{Soundness}
 
 A bidirectional derivation can be seen as a refinement of an undirected derivation.
 Indeed, the bidirectional structure can be erased to obtain an undirected derivation, 
 replacing each bidirectional rule with the corresponding undirected rule.
 As bidirectional rules lack some premises of the undirected ones, missing some sub-derivations
 must be retrieved by relying on the well-formation invariants going with McBride’s discipline.
-Thus, we get the following correctness theorem – note how the
+Thus, we get the following soundness theorem – note how the
 discipline manifests as well-formation hypothesis on inputs.
 
 \begin{minipage}{\textwidth}
-\begin{theorem}[\intro{Correctness} of bidirectional typing for \kl{CCω}]
+\begin{theorem}[\intro{Soundness} of bidirectional typing for \kl{CCω}]
   \label{thm:corr-ccomega}
   If $\Gamma$ is well-formed and $\inferty{\Gamma}{t}{T}$ or $\pinferty{h}{\Gamma}{t}{T}$,
   then $\Gamma \vdash t \ty T$.
@@ -402,7 +402,7 @@ discipline manifests as well-formation hypothesis on inputs.
 
 \subsection{Completeness}
 
-Contrarily to correctness, which keeps the structure of a derivation,
+Contrarily to soundness, which keeps the structure of a derivation,
 completeness is of a different nature.
 Because in bidirectional derivations the computation rules are much less liberal than in
 undirected ones, the structure of derivations must be altered.
@@ -410,7 +410,7 @@ The crux of the proof is thus to ensure that all uses of \ruleref{rule:cic-conv}
 can be permuted down through the other rules,
 in order to concentrate them in the places where they are authorized in the bidirectional
 derivation.
-In a way, composing completeness with correctness gives a kind of normalization procedure
+In a way, composing completeness with soundness gives a kind of normalization procedure
 on undirected derivations, which produces a canonical one by pushing conversion
 down as much as possible.
 
@@ -483,7 +483,7 @@ the version of \cref{prop:prod-inj} is a direct consequence.
   $\checkty{\Gamma}{u}{A'}$, and we can apply \ruleref{rule:bd-app} to conclude.
 \end{proof}
 
-Interestingly, the proof of correctness relies on \kl{subject reduction}, which itself
+Interestingly, the proof of soundness relies on \kl{subject reduction}, which itself
 needs \kl{injectivity of type constructors} and transitivity of conversion.
 Similarly, completeness relies both on the injectivity as given by \cref{lem:conv-red-tycons},
 and transitivity of conversion. Be it for algorithmic or declarative conversion, one at
@@ -557,7 +557,7 @@ However, inferred types are still related:
   the conclusion is direct from the induction hypotheses.
 \end{proof}
 
-Combining this with \kl(bidir){correctness} and \kl(bidir){completeness},
+Combining this with \kl(bidir){soundness} and \kl(bidir){completeness},
 we get \kl{uniqueness of types} for the undirected system.
 
 \begin{theorem}[Uniqueness of types]
@@ -567,7 +567,7 @@ we get \kl{uniqueness of types} for the undirected system.
 
 \begin{minipage}{\textwidth}
 \begin{proof}
-  Since $\Gamma \vdash t \ty T$, by correctness
+  Since $\Gamma \vdash t \ty T$, by soundness
   there exists some $T'$ such that $\inferty{\Gamma}{t}{T'}$ and moreover $T' \conv T$.
   Similarly, there exists some $S'$ such that $\inferty{\Gamma}{t}{S'}$
   and moreover $S' \conv S$.
@@ -595,8 +595,8 @@ In order to completely eliminate indeterminacy, a reduction strategy can be fixe
 This amounts to replacing \kl{full reduction} with \kl{weak-head reduction},
 \eg to replace the two reduction rules in \cref{fig:bidir-ccw-other} by those of
 \cref{fig:wh-pinf}.
-This is still \kl(bidir){correct} and \kl(bidir){complete}.
-Correctness follows exactly the same proof as
+This is still \kl(bidir){sound} and \kl(bidir){complete}.
+Soundness follows exactly the same proof as
 \cref{thm:corr-ccomega}. As for completeness, the main point is to show an analogous
 to \cref{lem:conv-red-tycons} for weak-head reduction.
   
@@ -627,10 +627,10 @@ to \cref{lem:conv-red-tycons} for weak-head reduction.
 \subsection{Strengthening}
 
 Reasoning on the bidirectional derivation makes proofs easier,
-while \kl(bidir){correctness} and \kl(bidir){completeness} ensure the results
+while \kl(bidir){soundness} and \kl(bidir){completeness} ensure the results
 can be carried to the undirected system.
 One way to understand this is that the canonical derivation obtained by combining
-correctness and completeness is more structured, and thus more amenable to proofs.
+soundness and completeness is more structured, and thus more amenable to proofs.
 
 An example of this is the \kl{strengthening} property, a consequence of
 \kl{conditional stability under renaming}. We explained in \cref{sec:tech-properties}

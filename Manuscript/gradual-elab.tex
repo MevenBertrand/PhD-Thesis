@@ -899,10 +899,10 @@ and our mixing of both computation and gradual typing makes that need even clear
 \subsection{Direct properties}
 
 Let us establish already some important properties of elaboration that we can
-prove at this stage. First, elaboration is \emph{correct},
+prove at this stage. First, elaboration is \emph{sound},
 insofar as it always produces well-typed \kl{CCIC} terms.
 
-\begin{theorem}[Correctness of elaboration]
+\begin{theorem}[Soundness of elaboration]
   \label{thm:correction}
 	Elaboration produces well-typed terms in a well-formed context.
   Namely, given $\tcol{\Gamma}$ such that $\vdash \tcol{\Gamma}$, we have that
@@ -917,7 +917,7 @@ insofar as it always produces well-typed \kl{CCIC} terms.
 \begin{proof}
   The proof is by induction on the elaboration derivation,
   mutually with similar properties for all elaboration judgements.
-  It resembles a lot the \kl(bidir){correctness} proof for bidirectional typing
+  It resembles a lot the \kl(bidir){soundness} proof for bidirectional typing
   (\cref{thm:compl-ccomega}).
   %
   In particular, for checking, we have an extra hypothesis that the
@@ -1793,7 +1793,7 @@ requires an additional hypothesis relating elaboration and precision judgements.
   $\inferelab{\Gamma}{\tilde{t}}{t}{T}$ are \intro{universe adequate} if the
   universe level $j$ given by the well-formation judgement
   $\pinferty{\uni}{\tcol{\Gamma}}{\tcol{T}}{\tcol{\uni[j]}}$
-  induced by correction of the elaboration satisfies $i = j$.
+  induced by soundness of the elaboration satisfies $i = j$.
   %
   More generally, $\scol{\tilde{t}} \apre \scol{\tilde{s}}$ and
   $\inferelab{\Gamma}{\tilde{t}}{t}{T}$ are \reintro{universe adequate} if for any

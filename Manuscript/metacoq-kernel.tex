@@ -15,8 +15,8 @@ Finally, \cref{sec:kernel-beyond-typing} describes two extra functions belonging
 \kl{kernel}: re-typing, and checking of \kl{global environment}.
 
 I personally contributed the formalizations of \cref{sec:kernel-bidir},
-the completeness part of \cref{sec:kernel-typing} –
-by modifying the pre-existing proven-correct type-checker –,
+the \kl(bidir){completeness} part of \cref{sec:kernel-typing} –
+by modifying the pre-existing proven-\kl(bidir){sound} type-checker –,
 and heavily modified re-typing – part of \cref{sec:kernel-beyond-typing}.
 
 \section{Formalized Bidirectional Typing}
@@ -98,7 +98,7 @@ hypotheses. I did not try to take this path and prove such a strong induction pr
 as it did not seem so easy: it would effectively correspond to an inline proof
 of \kl{validity}.
 Instead, the discipline is reflected in the choice of the predicates proven by induction.
-For instance, in the case of correctness, the mutually proven predicate for inference
+For instance, in the case of soundness, the mutually proven predicate for inference
 is \coqe{wf_local Σ Γ -> Σ ;;; Γ |- t : T}, and more generally
 assumptions are added as pre-condition for all inputs.
 Still, I conjecture that such a strong induction principle should be provable, if the need
@@ -107,7 +107,7 @@ the rules follow the discipline correctly.
 
 \subsection{Equivalence with undirected typing}
 
-\kl(bidir){Correctness}%
+\kl(bidir){Soundness}%
 \sidenote{Bidirectional typing implies undirected typing, akin to \cref{thm:corr-ccomega}.}
 is shown in \pcuicfile[Bidirectional][BD]{ToPCUIC}.
 The main proof is by induction on the derivation,
@@ -125,7 +125,7 @@ where \coqe{ci.(ci_ind)}, \coqe{p.(puinst)} and \coqe{p.(pparams)}
 are respectively the inductive type being matched upon, its universe instance, and its
 parameters – all stored in the case node –, and \coqe{indices}
 are free. From the point of view of bidirectional typing, this rule is invalid:%
-\sidenote{It is not mode correct \cite{Dunfield2021}.}%
+\sidenote{It is not mode-correct \cite{Dunfield2021}.}%
 \margincite{Dunfield2021}
 because \coqe{indices} is free, this cannot be turned into a checking premise, but it also
 cannot be directly turned into inference, or even constrained inference, because it is
@@ -144,7 +144,7 @@ the injectivity properties of \pcuicfile{Conversion} to show that
 inference of a type related by \kl{cumulativity} to a sort, Π- or inductive type implies
 constrained inference of the corresponding kind.
 In order to simplify proofs in the case of projections,
-\kl(bidir){correctness} is used in conjunction
+\kl(bidir){soundness} is used in conjunction
 with \kl{validity}, but this could probably be avoided, making the two proofs independent.
 
 \subsection{Properties of bidirectional typing}
@@ -195,7 +195,7 @@ on the second problem, which requires a form of shortest-path algorithm
 on a graph obtained from the universe constraints, in order
 to detect the presence of negative cycles.
 These correspond to violations of the universe stratification.
-\kl{MetaCoq} implements such an algorithm, with a proof that it is correct and complete, meaning that
+\kl{MetaCoq} implements such an algorithm, with a proof that it is correct – \ie sound and complete –, meaning that
 the algorithm answers “yes” exactly when there is a mapping from universe levels to integers satisfying
 all constraints declared in the environment.
 More details on this can be found in \sidetextcite[][Section 3.3]{Sozeau2020}.
@@ -241,7 +241,7 @@ A detailed description of this algorithm and its formalization%
 \sidenote{In files \safefile{SafeReduce} for the implementation of \kl{weak-head reduction}, and
 \safefile{SafeConversion} for the cumulativity checker.} is given by Théo Winterhalter,
 who implemented it,%
-\sidenote{It was only proven correct at the time. Jakob Botch Nielsen
+\sidenote{It was only proven sound at the time. Jakob Botch Nielsen
 wrote most of the completeness proof.
 }
 in his PhD thesis \sidecite[][Chapters 21-24]{Winterhalter2020}.
@@ -277,7 +277,7 @@ as a whole cannot either.}
 At function definition, this is hidden by notations, so it feels like we are actually using a
 monad, but under the hood proof obligations are generated each time we use a bind.
 
-\section{Correct and Complete Inference}
+\section{Sound and Complete Inference}
 \label{sec:kernel-typing}
 
 Given the work already done in \cref{sec:kernel-bidir}, the definition of a
@@ -307,9 +307,9 @@ an error and a proof that the term cannot infer any type, using the inductive ty
   \caption{The “error monad” used for \safeline{SafeChecker}{infer}{1323}’s return type}
   \label{fig:meta-error-mon}
 \end{figure}
-Thus, the function is correct and complete by construction.
+Thus, the function is sound and complete by construction.
 In fact, we cannot separate
-the definition from the correctness proof, since the conversion checker
+the definition from the soundness proof, since the conversion checker
 expects a well-typed term as input in order to be terminating when it is called.
 
 \begin{figure*}
